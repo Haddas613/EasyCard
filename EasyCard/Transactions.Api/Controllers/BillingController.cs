@@ -211,9 +211,9 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
-                if (!model.CreditCardToken.HasValue)
+                if (!model.CreditCardToken.HasValue || model.CreditCardToken.Value == default)
                 {
-                    EnsureExists(model.CreditCardToken);
+                    return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
                 var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
@@ -264,6 +264,11 @@ namespace Transactions.Api.Controllers
                 model.InvoiceDetails = null;
             }
 
+            if (billingDeal.InvoiceOnly)
+            {
+                return BadRequest(new OperationResponse(Messages.ThisMethodCannotBeUsedForInvoiceOnlyBillings, StatusEnum.Error));
+            }
+
             if (model.PaymentType != billingDeal.PaymentType)
             {
                 return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
@@ -308,6 +313,103 @@ namespace Transactions.Api.Controllers
             {
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
+
+            if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.SpecifiedDate && model.BillingSchedule?.StartAt.HasValue == true)
+            {
+                if (model.BillingSchedule?.StartAt > billingDeal.BillingSchedule?.StartAt)
+                {
+                    billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
+                }
+                else if (model.BillingSchedule?.StartAt < billingDeal.BillingSchedule?.StartAt)
+                {
+                    return BadRequest(new OperationResponse($"{nameof(model.BillingSchedule.StartAt)} must be bigger than {billingDeal.BillingSchedule?.StartAt}", StatusEnum.Error));
+                }
+            }
+            else if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.Today && billingDeal.BillingSchedule?.StartAtType != StartAtTypeEnum.Today)
+            {
+                //only re-evaluate to today if it was changed, to not update it each time
+                billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
+            }
+
+            mapper.Map(model, billingDeal);
+
+            billingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, billingDeal, null);
+
+            if (billingDeal.InvoiceDetails == null && billingDeal.IssueInvoice)
+            {
+                billingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            await billingDealService.UpdateEntity(billingDeal);
+
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
+        }
+
+        /// <summary>
+        /// Billing deal that only process invoice. Does not produce transaction
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("/api/invoiceonlybilling")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceOnlyRequest model)
+        {
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            // Optional calculate if values were not specified
+            model.Calculate(terminal.Settings.VATRate.GetValueOrDefault(0));
+
+            var newBillingDeal = mapper.Map<BillingDeal>(model);
+            newBillingDeal.Active = true;
+            newBillingDeal.MerchantID = terminal.MerchantID;
+            newBillingDeal.TerminalID = terminal.TerminalID;
+
+            newBillingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newBillingDeal, null);
+
+            if (newBillingDeal.InvoiceDetails == null && newBillingDeal.IssueInvoice)
+            {
+                newBillingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            // TODO: calculation
+
+            newBillingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            newBillingDeal.NextScheduledTransaction = newBillingDeal.BillingSchedule.GetInitialScheduleDate();
+
+            await billingDealService.CreateEntity(newBillingDeal);
+
+            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
+        }
+
+        [HttpPut]
+        [Route("/api/invoiceonlybilling/{BillingDealID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceOnlyUpdateRequest model)
+        {
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            if (!billingDeal.InvoiceOnly)
+            {
+                return BadRequest(new OperationResponse(Messages.ThisMethodCannotBeUsedForRegularBillings, StatusEnum.Error));
+            }
+
+            if (model.PaymentType != billingDeal.PaymentType)
+            {
+                return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
+            }
+
+            EnsureExists(model.DealDetails);
 
             mapper.Map(model, billingDeal);
 
@@ -388,13 +490,19 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        [Route("due-billings")]
+        [Route("due-billings/{terminalID:guid}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue()
+        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue(Guid terminalID)
         {
-            var response = new SummariesResponse<Guid>();
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var billings = await GetFilteredQueueBillingDeals();
+            if (terminal.Status == Merchants.Shared.Enums.TerminalStatusEnum.Disabled || !terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.Billing))
+            {
+                return new SendBillingDealsToQueueResponse { Status = StatusEnum.Error,
+                    Message = $"Terminal does not meet requirements. Status: {terminal.Status} is incorrect or Billing feature is not enabled" };
+            }
+
+            var billings = await GetFilteredQueueBillingDeals(terminal);
 
             var numberOfRecords = billings.Count();
 
@@ -483,11 +591,12 @@ namespace Transactions.Api.Controllers
         /// Retrieves billing deals for queue and sends credit card expired emails to customers if required.
         /// </summary>
         /// <returns></returns>
-        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals()
+        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals(Terminal terminal)
         {
             var filter = new BillingDealsFilter
             {
-                Actual = true
+                Actual = true,
+                TerminalID = terminal.TerminalID
             };
 
             var allBillings = await billingDealService.GetBillingDeals()
@@ -504,32 +613,17 @@ namespace Transactions.Api.Controllers
                 return response;
             }
 
-            var allTerminalsID = allBillings.Select(t => t.TerminalID).Distinct().ToList();
-
-            // we need all terminals to mark billing inactive in case if card expired even if it is not automatic
-            var terminals = (await terminalsService.GetTerminals().Include(d => d.Merchant).Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
-                .ToDictionary(k => k.TerminalID, v => v);
-
             var billingsToDeactivate = new List<Guid>();
 
             foreach (var billing in allBillings)
             {
-                if (!terminals.TryGetValue(billing.TerminalID, out var terminal))
-                {
-                    logger.LogError($"Could not send {nameof(SendBillingDealCreditCardTokenExpiredEmail)}. Terminal {billing.TerminalID} was not present in dictionary.");
-                    continue;
-                }
-
                 if (billing.CardExpiration?.Expired == true)
                 {
                     billingsToDeactivate.Add(billing.BillingDealID);
                 }
-                else
+                else if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
                 {
-                    if (terminal.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true && terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
-                    {
-                        response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
-                    }
+                    response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
                 }
             }
 
@@ -540,7 +634,7 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
-                await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminals[dealEntity.TerminalID]);
+                await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminal);
             }
 
             return response;

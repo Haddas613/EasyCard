@@ -22,6 +22,14 @@ const mixins = {
         },
         $apiSuccess: function (operation){
             return operation && operation.status == "success";
+        },
+        $showDeleted: function(boolean){
+            /**
+             * OnlyActive = 0,
+             * OnlyDeleted = 1,
+             * All = 2 (not supported)
+             */
+            return boolean ? 1 : 0;
         }
     }
 };

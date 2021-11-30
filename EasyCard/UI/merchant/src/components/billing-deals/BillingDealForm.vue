@@ -1,8 +1,16 @@
 <template>
   <v-form class="pt-0" ref="form" v-model="valid" lazy-validation>
     <v-row>
+      <v-col cols="12" class="py-0 d-flex justify-center">
+        <v-switch
+          v-model="model.invoiceOnly"
+          :label="$t('InvoiceOnly')"
+          :disabled="!!model.billingDealID"
+          @change="invoiceOnlySwitchChanged()"
+          class="pt-0 mt-0"></v-switch>
+      </v-col> 
       <v-col cols="12" md="6" class="py-0">
-        <terminal-select v-model="model.terminalID" clearable></terminal-select>
+        <terminal-select v-model="model.terminalID" disabled></terminal-select>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
         <v-select
@@ -24,86 +32,93 @@
           ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
-        <payment-type :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="['cash', 'cheque']"></payment-type>
+        <payment-type :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash'] : ['cash', 'cheque']"></payment-type>
       </v-col>
-      <v-col
-        cols="12"
-        class="pb-2"
-        v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
-        v-if="model.paymentType == appConstants.transaction.paymentTypes.card"
-      >
-        <v-flex class="d-flex justify-end">
-          <v-btn
-            color="success"
-            x-small
-            :disabled="!model.dealDetails.consumerID"
-            @click="ctokenDialog = true;"
-          >
-            <v-icon left small>mdi-plus</v-icon>
-            {{$t("AddToken")}}
-          </v-btn>
-        </v-flex>
-        <card-token-form-dialog
-          v-if="model.dealDetails.consumerID"
-          :key="model.dealDetails.consumerID"
-          :customer-id="model.dealDetails.consumerID"
-          :show.sync="ctokenDialog"
-          v-on:ok="onCreateCardToken($event)"
-          ref="ctokenDialogRef"
-        ></card-token-form-dialog>
-        <ec-dialog :dialog.sync="tokensDialog">
-          <template v-slot:title>{{$t('SavedTokens')}}</template>
-          <template>
-            <ec-radio-group
-              :data="customerTokens"
-              valuekey="creditCardTokenID"
-              item-disabled-key="expired"
-              return-object
-              :model.sync="token"
-            >
-              <template v-slot="{ item }">
-                <card-token-string :token="item"></card-token-string>
-              </template>
-            </ec-radio-group>
-          </template>
-        </ec-dialog>
-        <ec-dialog-invoker
-          v-on:click="handleClick()"
-          :clickable="model.dealDetails.consumerID"
-          class="pt-2"
+      <template v-if="model.invoiceOnly">
+        <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
+        <cheque-details-fields ref="chequeDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cheque"></cheque-details-fields>
+        <bank-transfer-details-fields ref="bankDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank"></bank-transfer-details-fields>
+      </template>
+      <template v-else>
+        <v-col
+          cols="12"
+          class="pb-2"
+          v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
+          v-if="model.paymentType == appConstants.transaction.paymentTypes.card"
         >
-          <template v-slot:prepend>
-            <v-icon>mdi-credit-card-outline</v-icon>
-          </template>
-          <template v-slot:left>
-            <div v-if="!token">
-              <span
-                v-if="customerTokens.length > 0"
-              >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
-              <span
-                class="ecgray--text"
-                v-if="!model.dealDetails.consumerID && customerTokens.length === 0"
-              >{{$t("PleaseSelectCustomerFirst")}}</span>
-              <span
-                v-if="model.dealDetails.consumerID && customerTokens.length === 0"
-              >{{$t("NoSavedCards")}}</span>
-            </div>
-            <div v-if="token">
-              <span class="primary--text">{{token.cardNumber}}</span>
-            </div>
-          </template>
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
-          </template>
-        </ec-dialog-invoker>
-      </v-col>
-      <v-col
-        cols="12"
-        class="pb-2"
-        v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
-        v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
-        <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
-      </v-col>
+          <v-flex class="d-flex justify-end">
+            <v-btn
+              color="success"
+              x-small
+              :disabled="!model.dealDetails.consumerID"
+              @click="ctokenDialog = true;"
+            >
+              <v-icon left small>mdi-plus</v-icon>
+              {{$t("AddToken")}}
+            </v-btn>
+          </v-flex>
+          <card-token-form-dialog
+            v-if="model.dealDetails.consumerID"
+            :key="model.dealDetails.consumerID"
+            :customer-id="model.dealDetails.consumerID"
+            :show.sync="ctokenDialog"
+            v-on:ok="onCreateCardToken($event)"
+            ref="ctokenDialogRef"
+          ></card-token-form-dialog>
+          <ec-dialog :dialog.sync="tokensDialog">
+            <template v-slot:title>{{$t('SavedTokens')}}</template>
+            <template>
+              <ec-radio-group
+                :data="customerTokens"
+                valuekey="creditCardTokenID"
+                item-disabled-key="expired"
+                return-object
+                :model.sync="token"
+              >
+                <template v-slot="{ item }">
+                  <card-token-string :token="item"></card-token-string>
+                </template>
+              </ec-radio-group>
+            </template>
+          </ec-dialog>
+          <ec-dialog-invoker
+            v-on:click="handleClick()"
+            :clickable="model.dealDetails.consumerID"
+            class="pt-2"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-credit-card-outline</v-icon>
+            </template>
+            <template v-slot:left>
+              <div v-if="!token">
+                <span
+                  v-if="customerTokens.length > 0"
+                >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+                <span
+                  class="ecgray--text"
+                  v-if="!model.dealDetails.consumerID && customerTokens.length === 0"
+                >{{$t("PleaseSelectCustomerFirst")}}</span>
+                <span
+                  v-if="model.dealDetails.consumerID && customerTokens.length === 0"
+                >{{$t("NoSavedCards")}}</span>
+              </div>
+              <div v-if="token">
+                <span class="primary--text">{{token.cardNumber}}</span>
+              </div>
+            </template>
+            <template v-slot:append>
+              <re-icon>mdi-chevron-right</re-icon>
+            </template>
+          </ec-dialog-invoker>
+        </v-col>
+        <v-col
+          cols="12"
+          class="pb-2"
+          v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
+          v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
+          <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
+        </v-col>
+      </template>
       <v-col cols="12">
         <ec-dialog :dialog.sync="scheduleDialog" color="ecbg">
           <template v-slot:title>{{$t('BillingSchedule')}}</template>
@@ -204,6 +219,7 @@
       ></deal-details>
       <v-col cols="12">
         <v-switch
+          v-show="!model.invoiceOnly"
           v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)"
           v-model="model.issueInvoice"
           :label="$t('IssueDocument')"
@@ -249,7 +265,9 @@ export default {
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
     BankDetailsFields: () => import("../transactions/BankDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
-    
+    InvoiceCreditCardDetailsFields: () => import("../invoicing/InvoiceCreditCardDetailsFields"),
+    ChequeDetailsFields: () => import("../invoicing/ChequeDetailsFields"),
+    BankTransferDetailsFields: () => import("../invoicing/BankTransferDetailsFields"),
   },
   props: {
     data: {
@@ -328,19 +346,58 @@ export default {
         return;
       }
 
-      if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
-        result.creditCardToken = null;
-        result.bankDetails = this.$refs.bankDetails.getData();
-      }
-      else if(this.model.paymentType == appConstants.transaction.paymentTypes.card){
-        if(!this.token){
-          this.$toasted.show(this.$t("PleaseSelectCardToken"), { type: "error" });
-          if(this.customerTokens.length > 0){
-            this.tokensDialog = true;
-          }
-          return;
+      if(this.model.invoiceOnly){
+        result.paymentDetails = [];
+        let data = null;
+        switch(this.model.paymentType){
+          case this.appConstants.transaction.paymentTypes.card:
+            data = this.$refs.ccDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...data,
+                paymentType: this.appConstants.transaction.paymentTypes.card
+              });
+            }
+            break;
+          case this.appConstants.transaction.paymentTypes.cash:
+            result.paymentDetails.push({
+              paymentType: this.appConstants.transaction.paymentTypes.cash
+            });
+            break;
+          case this.appConstants.transaction.paymentTypes.cheque:
+            data = this.$refs.chequeDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...data,
+                paymentType: this.appConstants.transaction.paymentTypes.cheque
+              });
+            }
+            break;
+          case this.appConstants.transaction.paymentTypes.bank:
+            data = this.$refs.bankDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...data,
+                paymentType: this.appConstants.transaction.paymentTypes.bank
+              });
+            }
+            break;
         }
-        result.bankDetails = null;
+      }else{
+        if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
+          result.creditCardToken = null;
+          result.bankDetails = this.$refs.bankDetails.getData();
+        }
+        else if(this.model.paymentType == appConstants.transaction.paymentTypes.card){
+          if(!this.token){
+            this.$toasted.show(this.$t("PleaseSelectCardToken"), { type: "error" });
+            if(this.customerTokens.length > 0){
+              this.tokensDialog = true;
+            }
+            return;
+          }
+          result.bankDetails = null;
+        }
       }
 
       //if this is edit and billing schedule has not been clicked, no need to validate
@@ -399,6 +456,15 @@ export default {
       // this.itemsRefreshKey = `${data.totalAmount}:${this.lodash.join(this.lodash.map(data.items, i => i.itemName))}`;
       this.calculateTotal();
     },
+    invoiceOnlySwitchChanged(){
+      if(this.model.invoiceOnly){
+        this.token = null;
+        this.model.paymentDetails = [];
+        this.model.issueInvoice = true;
+      }else{
+        this.model.paymentDetails = null;
+      }
+    }
   },
   async mounted() {
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
@@ -436,6 +502,10 @@ export default {
     }
     else if (this.model.issueInvoice) {
       this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
+    }
+    
+    if(!this.model.vatRate){
+      this.model.vatRate = this.terminalStore.settings.vatRate;
     }
     this.calculateTotal();
   }

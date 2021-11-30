@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shared.Api.Models.Enums;
+﻿using Shared.Api.Models.Enums;
+using Shared.Helpers.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +20,6 @@ namespace Shared.Api.Models
 
         public bool? SortDesc { get; set; }
 
-        public bool ShowDeleted { get; set; }
+        public ShowDeletedEnum ShowDeleted { get; set; }
     }
 }

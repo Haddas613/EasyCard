@@ -3,6 +3,7 @@
     <v-tabs grow color="primary" v-model="tab">
       <v-tab key="info">{{$t("Info")}}</v-tab>
       <v-tab key="history">{{$t("History")}}</v-tab>
+      <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab" class="bg-ecbg">
       <v-tab-item key="info">
@@ -112,7 +113,7 @@
             >{{$t("Items")}}</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <transaction-items-list :items="model.dealDetails.items"></transaction-items-list>
+              <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency"></transaction-items-list>
             </v-card-text>
           </v-card>
           <deal-details
@@ -188,6 +189,11 @@
           <transaction-history :transaction-id="model.$paymentTransactionID"></transaction-history>
         </div>
       </v-tab-item>
+      <v-tab-item key="integrations">
+        <div v-if="model">
+          <integration-logs-list :entity-id="model.$paymentTransactionID"></integration-logs-list>
+        </div>
+      </v-tab-item>
     </v-tabs-items>
   </v-flex>
 </template>
@@ -215,6 +221,8 @@ export default {
       import("../../components/details/UpayTransactionDetails"),
     ClearingHouseTransactionDetails: () =>
       import("../../components/details/ClearingHouseTransactionDetails"),
+    IntegrationLogsList: () =>
+      import("../../components/integration-logs/IntegrationLogsList")
   },
   data() {
     return {

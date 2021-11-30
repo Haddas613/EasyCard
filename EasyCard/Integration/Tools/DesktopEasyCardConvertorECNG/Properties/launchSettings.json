@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DesktopEasyCardConvertorECNG": {
+      "commandName": "Project",
+      "commandLineArgs": "ExampleConfig.json"
+    }
+  }
+}

@@ -72,6 +72,9 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("InvoiceOnly")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IssueInvoice")
                         .HasColumnType("bit");
 
@@ -103,11 +106,21 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime?>("PausedFrom")
                         .HasColumnType("date");
 
                     b.Property<DateTime?>("PausedTo")
                         .HasColumnType("date");
+
+                    b.Property<string>("PaymentDetails")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PaymentDetails");
 
                     b.Property<short>("PaymentType")
                         .HasColumnType("smallint");

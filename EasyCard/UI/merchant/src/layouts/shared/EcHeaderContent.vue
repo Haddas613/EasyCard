@@ -26,7 +26,7 @@
             <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
           </template>
           <v-list class="py-0" color="grey darken-3">
-            <v-list-item v-for="item in tdMenuItems" v-bind:key="item.type" @click="item.fn()">
+            <v-list-item v-for="item in tdMenuItems" v-bind:key="item.type" @click="item.fn()" :disabled="item.disabled">
               <v-list-item-title>{{$t(item.text)}}</v-list-item-title>
             </v-list-item>
           </v-list>

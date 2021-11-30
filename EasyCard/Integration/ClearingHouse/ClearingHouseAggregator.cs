@@ -142,7 +142,7 @@ namespace ClearingHouse
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
 
                 integrationMessage.Request = requestStr;
                 integrationMessage.Response = responseStr;
@@ -201,6 +201,11 @@ namespace ClearingHouse
         }
 
         public bool AllowTransmissionCancellation() => true;
+
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
+        }
 
         private async Task HandleIntegrationMessage(IntegrationMessage msg)
         {

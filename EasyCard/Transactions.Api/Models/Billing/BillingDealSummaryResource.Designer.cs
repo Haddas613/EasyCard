@@ -142,6 +142,15 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Only.
+        /// </summary>
+        public static string InvoiceOnly {
+            get {
+                return ResourceManager.GetString("InvoiceOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchant ID.
         /// </summary>
         public static string MerchantID {

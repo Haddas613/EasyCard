@@ -78,6 +78,19 @@ namespace BasicServices
             }
         }
 
+        public async Task<IEnumerable<IntegrationMessage>> GetAll(string entityID)
+        {
+            var query = new TableQuery<IntegrationMessage>();
+            var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, entityID);
+
+            query.FilterString = filter;
+            query.TakeCount = 100; //TODO
+
+            var segment = await _table.ExecuteQuerySegmentedAsync(query, null);
+
+            return segment.Results;
+        }
+
         // TODO
         public async Task<IntegrationMessage> Get(DateTime requestDate, string correlationId)
         {

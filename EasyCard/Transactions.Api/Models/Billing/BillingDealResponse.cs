@@ -139,6 +139,8 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         public bool IssueInvoice { get; set; }
 
+        public bool InvoiceOnly { get; set; }
+
         public decimal VATRate { get; set; }
 
         public decimal VATTotal { get; set; }
@@ -156,5 +158,7 @@ namespace Transactions.Api.Models.Billing
         public string LastError { get; set; }
 
         public string LastErrorCorrelationID { get; set; }
+
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
     }
 }

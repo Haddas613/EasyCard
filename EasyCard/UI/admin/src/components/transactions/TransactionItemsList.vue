@@ -57,6 +57,11 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    currency: {
+      type: String,
+      required: false,
+      default: null
     }
   },
 //   computed: {

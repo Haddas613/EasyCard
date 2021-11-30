@@ -2,6 +2,7 @@
 using IdentityServerClient;
 using Merchants.Api.Models;
 using Merchants.Api.Models.Audit;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.System;
 using Merchants.Api.Models.Terminal;
@@ -16,6 +17,7 @@ using Merchants.Business.Models.Merchant;
 using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using Shared.Business.Audit;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using SharedIntegrations = Shared.Integration;
@@ -165,6 +167,8 @@ namespace Merchants.Api.Mapping
 
             CreateMap<SharedIntegrations.ExternalSystems.NullAggregatorSettings, Terminal>()
                .ForAllMembers(d => d.Ignore());
+
+            CreateMap<IntegrationMessage, IntegrationRequestLog>();
         }
     }
 }

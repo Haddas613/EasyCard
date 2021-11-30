@@ -25,9 +25,11 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
+
+                    b.Property<string>("BankDetails")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BillingDesktopRefNumber")
                         .HasMaxLength(50)
@@ -39,7 +41,6 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConsumerEmail")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
@@ -154,9 +155,7 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("BillingDesktopRefNumber")
                         .HasMaxLength(50)
@@ -200,8 +199,18 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("SKU")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)

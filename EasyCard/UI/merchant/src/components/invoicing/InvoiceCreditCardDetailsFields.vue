@@ -66,10 +66,10 @@ export default {
   },
   data() {
     return {
-      invoice: { ...this.data },
       model: {
         cardNumber: null,
-        cardExpiration: null
+        cardExpiration: null,
+        ...this.data
       },
       vr: ValidationRules,
       errors: {

@@ -40,10 +40,11 @@ export default {
       this.banks = await this.$api.dictionaries.getBanks();
 
       if(this.data){
-          this.model = this.lodash.find(this.banks, e => e.value == this.data) || this.banks[0];
+          this.model = (this.lodash.find(this.banks, e => e.value == this.data) || this.banks[0]).value;
       }else{
-          this.model = this.banks[0];
+          this.model = this.banks[0].value;
       }
+      this.$emit("change", this.model);
   },
   methods: {
     ok() {

@@ -120,6 +120,7 @@
   "TerminalsTokens": "Terminals Tokens",
   "TokensTransactions": "Tokens Transactions",
   "ListOfPinpadDevices": "List of PinPad Devices",
+  "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -403,6 +404,7 @@
   "DoNotCreateSaveTokenInitialDeal": "Do not create initial deal for save token",
   "EuroRate": "Euro Rate",
   "DollarRate": "Dollar Rate",
+  "InvoiceOnly": "Invoice Only",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

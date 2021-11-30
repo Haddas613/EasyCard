@@ -19,7 +19,7 @@ namespace MerchantProfileApi.Models.Billing
 
         public decimal Price { get; set; }
 
-        public bool Active { get; set; } = true;
+        public bool? Active { get; set; }
 
         public CurrencyEnum Currency { get; set; }
 
@@ -30,5 +30,13 @@ namespace MerchantProfileApi.Models.Billing
         [SwaggerExclude]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BillingDesktopRefNumber { get; set; }
+
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string SKU { get; set; }
+
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string Origin { get; set; }
     }
 }

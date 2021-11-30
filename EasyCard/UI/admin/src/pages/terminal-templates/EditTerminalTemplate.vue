@@ -69,7 +69,7 @@ export default {
       let data = this.$refs.terminalSettingsRef.getData();
       let operaionResult = await this.$api.terminalTemplates.updateTerminalTemplate(data);
       if (operaionResult.status === "success") {
-        return this.$router.push({ name: "TerminalTemplates" });
+        return this.$router.push({ name: "EditTerminalTemplate", params: {id: this.$route.params.id} });
       }
     },
     async getTerminalTemplate(){

@@ -15,7 +15,7 @@ namespace Merchants.Api.Models.Terminal
         public Guid MerchantID { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 6)]
+        [StringLength(50, MinimumLength = 3)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Label { get; set; }
 

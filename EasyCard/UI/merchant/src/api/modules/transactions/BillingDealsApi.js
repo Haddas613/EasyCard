@@ -3,6 +3,7 @@ export default class BillingDealsApi {
         this.base = base;
         this.baseUrl = this.base.cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
         this.billingUrl = this.baseUrl + '/api/billing';
+        this.invoiceOnlyBillingUrl = this.baseUrl + '/api/invoiceonlybilling';
     }
 
     async get(params) {
@@ -49,6 +50,14 @@ export default class BillingDealsApi {
 
     async updateBillingDeal(id, data) {
         return await this.base.put(this.billingUrl + `/${id}`, data);
+    }
+
+    async createBillingDealInvoice(data) {
+        return await this.base.post(this.invoiceOnlyBillingUrl, data);
+    }
+
+    async updateBillingDealInvoice(id, data) {
+        return await this.base.put(this.invoiceOnlyBillingUrl + `/${id}`, data);
     }
 
     async switchBillingDeal(id, data) {

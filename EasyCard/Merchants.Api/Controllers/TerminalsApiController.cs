@@ -148,6 +148,12 @@ namespace Merchants.Api.Controllers
 
                 response.Data = await mapper.ProjectTo<TerminalSummary>(query).Future().ToListAsync();
 
+                //TODO: filter on DB level
+                if (filter.HasFeature.HasValue)
+                {
+                    response.Data = response.Data.Where(t => t.EnabledFeatures?.Contains(filter.HasFeature.Value) == true);
+                }
+
                 response.NumberOfRecords = numberOfRecords.Value;
 
                 return Ok(response);

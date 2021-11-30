@@ -130,6 +130,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public bool IssueInvoice { get; set; }
 
+        public bool InvoiceOnly { get; set; }
+
         /// <summary>
         /// Date-time when transaction status updated
         /// </summary>
@@ -190,20 +192,24 @@ namespace Transactions.Business.Entities
 
         public string LastErrorCorrelationID { get; set; }
 
-        public void UpdateNextScheduledDate(PaymentTransaction transaction)
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
+
+        public string Origin { get; set; }
+
+        public void UpdateNextScheduledDate(DateTime? timestamp, DateTime? legalDate)
         {
-            CurrentTransactionTimestamp = transaction.TransactionTimestamp;
+            CurrentTransactionTimestamp = timestamp;
             CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value + 1 : 1;
             HasError = false;
             LastError = null;
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments && BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
-                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && BillingSchedule.EndAt <= transaction.TransactionDate.Value))
+                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && BillingSchedule.EndAt <= legalDate))
             {
                 NextScheduledTransaction = null;
             }
             else
             {
-                NextScheduledTransaction = BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, CurrentDeal.Value);
+                NextScheduledTransaction = BillingSchedule?.GetNextScheduledDate(legalDate.Value, CurrentDeal.Value);
             }
 
             Active = NextScheduledTransaction != null;

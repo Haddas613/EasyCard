@@ -62,6 +62,7 @@
         <v-card-text>
           <transaction-items-list
             :items="model.dealDetails.items"
+            :currency="model.$currency"
           ></transaction-items-list>
         </v-card-text>
       </v-card>

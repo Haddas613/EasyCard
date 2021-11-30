@@ -91,6 +91,9 @@
   "TransmissionsList": "רשימת שידורים",
   "FilterTransmissions": "מסנן שידורים",
   "UserPaid": "שולם על ידי המשתמש",
+  "DeletedItems": "פריטים שנמחקו",
+  "DeletedCustomers": "לקוחות שנמחקו",
+  "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -338,6 +341,7 @@
   "BillingDesktopRefNumber": "מזהה ממערכת בילינג דסקטופ",
   "SecondPhone": "טלפון שני",
   "Note": "הערה",
+  "InvoiceOnly": "חשבונית מס בלבד",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -391,6 +395,8 @@
   "GenerateMasavFile": "וגם: הצג מפתח פרטי",
   "ConvertToJ4": "המרה ל- J4",
   "ClearItems": "למחוק פריט",
+  "ShowActive": "הצג פעיל",
+  "ShowDeleted": "הצג שנמחקו",
 
   "--AUTH--": null,
   "Login": "כניסה",

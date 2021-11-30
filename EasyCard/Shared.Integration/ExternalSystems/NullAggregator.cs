@@ -38,6 +38,11 @@ namespace Shared.Integration.ExternalSystems
             return false;
         }
 
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Validate(AggregatorCreateTransactionRequest transactionRequest)
         {
             throw new NotImplementedException();

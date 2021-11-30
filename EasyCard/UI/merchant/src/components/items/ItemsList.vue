@@ -19,7 +19,6 @@
         </v-col>
       </v-row>
     </v-card-title>
-
     <v-card-text>
       <ec-list :items="items">
         <template v-slot:prepend="{ item }">
@@ -93,6 +92,7 @@ export default {
       let data = await this.$api.items.getItems({
           search: searchApply ? this.search : null,
           terminalID: this.terminalStore.terminalID,
+          showDeleted: this.$showDeleted(this.showDeletedItems),
           ...this.paging
       });
       if (data) {
@@ -107,11 +107,11 @@ export default {
     },
     async loadMore() {
       this.paging.skip += this.paging.take;
-      await this.getItems();
+      await this.getItems(true);
     },
 
     getSelectedItems() {
-        return this.lodash.filter(this.items, i => i.selected);
+      return this.lodash.filter(this.items, i => i.selected);
     }
   },
   watch: {
@@ -134,11 +134,15 @@ export default {
     },
     async 'terminalStore.terminalID'(newValue){
       await this.getItems();
+    },
+    async 'showDeletedItems'(){
+      await this.getItems();
     }
   },
   computed: {
     ...mapState({
-      terminalStore: state => state.settings.terminal
+      terminalStore: state => state.settings.terminal,
+      showDeletedItems: state => state.ui.showDeletedItems,
     }),
     canLoadMore() {
       return this.totalAmount > 0 && this.paging.take < this.totalAmount && this.paging.skip < this.totalAmount;
@@ -146,6 +150,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

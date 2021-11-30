@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.RapidOne;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RapidOne;
 using Shared.Api;
+using Shared.Api.Models;
 
 namespace Merchants.Api.Controllers.Integrations
 {
@@ -19,10 +22,12 @@ namespace Merchants.Api.Controllers.Integrations
     public class RapidOneApiController : ApiControllerBase
     {
         private readonly RapidOneInvoicing rapidOneInvoicing;
+        private readonly IMapper mapper;
 
-        public RapidOneApiController(RapidOneInvoicing rapidOneInvoicing)
+        public RapidOneApiController(RapidOneInvoicing rapidOneInvoicing, IMapper mapper)
         {
             this.rapidOneInvoicing = rapidOneInvoicing;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -56,6 +61,26 @@ namespace Merchants.Api.Controllers.Integrations
 
             var response = result.Where(r => r.Active)
                 .Select(r => new DepartmentSummary { BranchID = r.BranchID, DepartmentID = r.DepartmentID, Name = r.Name, Active = r.Active });
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("request-logs/{entityID}")]
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        {
+            if (string.IsNullOrWhiteSpace(entityID))
+            {
+                return NotFound();
+            }
+
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await rapidOneInvoicing.GetStorageLogs(entityID));
+
+            var response = new SummariesResponse<IntegrationRequestLog>
+            {
+                Data = data,
+                NumberOfRecords = data.Count()
+            };
 
             return Ok(response);
         }

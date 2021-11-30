@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ConsumerRequest.cs" Link="Models\Billing\ConsumerRequest.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ConsumerResponse.cs" Link="Models\Billing\ConsumerResponse.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ConsumersFilter.cs" Link="Models\Billing\ConsumersFilter.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ConsumerSummary.cs" Link="Models\Billing\ConsumerSummary.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ItemRequest.cs" Link="Models\Billing\ItemRequest.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ItemResource.Designer.cs" Link="Models\Billing\ItemResource.Designer.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ItemResponse.cs" Link="Models\Billing\ItemResponse.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ItemsFilter.cs" Link="Models\Billing\ItemsFilter.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\ItemSummary.cs" Link="Models\Billing\ItemSummary.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\UpdateConsumerRequest.cs" Link="Models\Billing\UpdateConsumerRequest.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Billing\UpdateItemRequest.cs" Link="Models\Billing\UpdateItemRequest.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Dictionaries\MerchantDictionaries.cs" Link="Models\Dictionaries\MerchantDictionaries.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\ExternalSystemRequest.cs" Link="Models\Terminal\ExternalSystemRequest.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\ExternalSystemSummary.cs" Link="Models\Terminal\ExternalSystemSummary.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\FeatureSummary.cs" Link="Models\Terminal\FeatureSummary.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalBillingSettingsUpdate.cs" Link="Models\Terminal\TerminalBillingSettingsUpdate.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalCheckoutSettingsUpdate.cs" Link="Models\Terminal\TerminalCheckoutSettingsUpdate.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalDeviceResponse.cs" Link="Models\Terminal\TerminalDeviceResponse.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalEnumsResource.Designer.cs" Link="Models\Terminal\TerminalEnumsResource.Designer.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalExternalSystemDetails.cs" Link="Models\Terminal\TerminalExternalSystemDetails.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalInvoiceSettingsUpdate.cs" Link="Models\Terminal\TerminalInvoiceSettingsUpdate.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalPaymentRequestSettingsUpdate.cs" Link="Models\Terminal\TerminalPaymentRequestSettingsUpdate.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalResponse.cs" Link="Models\Terminal\TerminalResponse.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalSettingsUpdate.cs" Link="Models\Terminal\TerminalSettingsUpdate.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalsFilter.cs" Link="Models\Terminal\TerminalsFilter.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalSummary.cs" Link="Models\Terminal\TerminalSummary.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\TerminalTransmissionScheduleResource.Designer.cs" Link="Models\Terminal\TerminalTransmissionScheduleResource.Designer.cs" />
+    <Compile Include="..\MerchantProfileApi\Models\Terminal\UpdateTerminalRequest.cs" Link="Models\Terminal\UpdateTerminalRequest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Billing\" />
+    <Folder Include="Models\Dictionaries\" />
+    <Folder Include="Models\Terminal\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
+    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
+  </ItemGroup>
+
+</Project>

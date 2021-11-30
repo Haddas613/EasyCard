@@ -131,8 +131,9 @@ export default {
       }
       let data = this.$refs.terminalSettingsRef.getData();
       let operaionResult = await this.$api.terminals.updateTerminal(data);
+      this.$refs.terminalSettingsRef.watchModel();
       if (operaionResult.status === "success") {
-        return this.$router.push({ name: "Terminals" });
+        return this.$router.push({ name: "Merchant", params: {id: this.terminal.merchantID} });
       }
     },
     async refreshTerminal() {

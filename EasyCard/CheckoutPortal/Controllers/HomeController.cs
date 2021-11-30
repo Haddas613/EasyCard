@@ -219,10 +219,22 @@ namespace CheckoutPortal.Controllers
                 ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
             }
 
-            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
+            {
+                ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == false)
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+            } 
+            else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            {
+                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+            }
 
+            if (!ModelState.IsValid)
+            {
                 return await IndexViewResult(checkoutConfig, request);
             }
 
@@ -406,17 +418,24 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                if (checkoutConfig.Settings.LegacyRedirectResponse)
+                if (checkoutConfig.Settings?.LegacyRedirectResponse == true)
                 {
-                    var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
+                    if (checkoutConfig.PaymentRequest?.OnlyAddCard == true)
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
+                    }
+                    else
+                    {
+                        var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
 
-                    redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+                        redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
 
-                    return Redirect(redirectUrl);
+                        return Redirect(redirectUrl);
+                    }
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    if (checkoutConfig.PaymentRequest?.OnlyAddCard == true)
                     {
                         return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
                     }
@@ -785,6 +804,7 @@ namespace CheckoutPortal.Controllers
             }
 
             checkoutConfig.Settings.TransactionTypes = transactionTypes;
+            checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
 
             return checkoutConfig;
         }

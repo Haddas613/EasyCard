@@ -57,7 +57,9 @@ namespace Merchants.Shared.Models
             }
         }
 
-        [JsonIgnore]
+        /// <summary>
+        /// Vat Rate from global settings. Read only.
+        /// </summary>
         public decimal VATRateGlobal { get; set; }
 
         public bool VATExempt { get; set; }

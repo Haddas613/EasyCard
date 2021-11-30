@@ -56,7 +56,7 @@ export default {
       this.rules = [this.vr.primitives.required];
     }
     this.terminals = (await this.$api.terminals.getTerminals(null, {
-          showDeleted: this.showDeleted
+          showDeleted: this.$showDeleted(this.showDeleted)
         })
     ).data || [];
   },

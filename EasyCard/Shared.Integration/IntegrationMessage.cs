@@ -7,10 +7,13 @@ namespace Shared.Integration
 {
     public class IntegrationMessage : TableEntity
     {
-        public IntegrationMessage(DateTime messageDate, string messageId, string correlationId)
+        public IntegrationMessage() { }
+
+        public IntegrationMessage(DateTime messageDate, string entityID, string messageId, string correlationId)
         {
             this.messageDate = messageDate;
             this.correlationId = correlationId;
+            this.EntityID = entityID;
             SetPartitionKey();
 
             this.RowKey = messageId;
@@ -28,6 +31,8 @@ namespace Shared.Integration
                 SetPartitionKey();
             }
         }
+
+        public string EntityID { get; set; }
 
         public string Request { get; set; }
 
@@ -64,7 +69,7 @@ namespace Shared.Integration
 
         private void SetPartitionKey()
         {
-            this.PartitionKey = $"{this.messageDate.ToString("yy-MM-dd")}-{this.correlationId}";
+            this.PartitionKey = $"{this.EntityID}";
         }
     }
 }

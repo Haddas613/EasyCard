@@ -91,6 +91,9 @@
   "TransmissionsList": "Transmissions List",
   "FilterTransmissions": "Filter Transmissions",
   "UserPaid": "User Paid",
+  "DeletedItems": "Deleted Items",
+  "DeletedCustomers": "Deleted Customers",
+  "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -338,6 +341,7 @@
   "BillingDesktopRefNumber": "Billing Desktop Reference Number",
   "SecondPhone": "Second Phone",
   "Note": "Note",
+  "InvoiceOnly": "Invoice Only",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -391,6 +395,8 @@
   "GenerateMasavFile": "Generate Masav File",
   "ConvertToJ4": "Convert to J4",
   "ClearItems": "Clear Items",
+  "ShowActive": "Show Active",
+  "ShowDeleted": "Show Deleted",
 
   "--AUTH--": null,
   "Login": "Login",

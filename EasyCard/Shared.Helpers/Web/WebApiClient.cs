@@ -368,6 +368,34 @@ namespace Shared.Helpers
             }
         }
 
+        public async Task<HttpResponseMessage> PostRawFormRawResponse(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null)
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            if (payload != null)
+            {
+                request.Content = new FormUrlEncodedContent(payload);
+            }
+
+            onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            return response;
+        }
+
         public async Task<T> Delete<T>(string enpoint, string actionPath, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             )

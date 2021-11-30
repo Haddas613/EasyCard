@@ -20,7 +20,7 @@
         class="elevation-1"
       >
         <template v-slot:item.merchantBusinessName="{ item }">
-          <router-link v-if="item.merchantID" class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
+          <router-link v-if="item.merchantID" class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
             {{item.merchantBusinessName || item.merchantID}}
           </router-link>
         </template> 

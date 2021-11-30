@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.System;
@@ -72,6 +73,26 @@ namespace Merchants.Api.Controllers.Integrations
             }
         }
 
+        [HttpGet]
+        [Route("request-logs/{entityID}")]
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        {
+            if (string.IsNullOrWhiteSpace(entityID))
+            {
+                return NotFound();
+            }
+
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await shvaProcessor.GetStorageLogs(entityID));
+
+            var response = new SummariesResponse<IntegrationRequestLog>
+            {
+                Data = data,
+                NumberOfRecords = data.Count()
+            };
+
+            return Ok(response);
+        }
+
         private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -127,7 +148,8 @@ namespace Merchants.Api.Controllers.Integrations
             {
                 NewPassword = newPassword,
                 CorrelationId = GetCorrelationID(),
-                ProcessorSettings = processorSettings
+                ProcessorSettings = processorSettings,
+                TerminalID = externalSystem.TerminalID
             };
 
             return await shvaProcessor.ChangePassword(processorRequest);

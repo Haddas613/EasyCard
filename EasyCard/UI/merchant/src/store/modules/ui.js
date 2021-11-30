@@ -31,7 +31,9 @@ const state = () => ({
         customDate: false,
         dateFrom: null,
         dateTo: null
-    }
+    },
+    showDeletedItems: false,
+    showDeletedCustomers: false,
 });
 
 const getters = {};
@@ -55,6 +57,12 @@ const mutations = {
     },
     setDashboardDateFilterAlt(state, value){
         state.dashboardDateFilterAlt = value;
+    },
+    setShowDeletedItems(state, value){
+        state.showDeletedItems = value;
+    },
+    setShowDeletedCustomers(state, value){
+        state.showDeletedCustomers = value;
     }
 }
 

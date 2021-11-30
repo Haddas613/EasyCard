@@ -4,7 +4,14 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
-        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals">
+        <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDealInvoice(Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest)">
+            <summary>
+            Billing deal that only process invoice. Does not produce transaction
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>
@@ -64,6 +71,71 @@
             </summary>
             <param name="filter"></param>
             <returns></returns>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.TransactionAmount">
+            <summary>
+            Transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.TransactionAmount">
+            <summary>
+            Transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TerminalID">
             <summary>
@@ -304,6 +376,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentDeal">
             <summary>
               Looks up a localized string similar to Current deal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.InvoiceOnly">
+            <summary>
+              Looks up a localized string similar to Invoice Only.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantID">
@@ -1266,9 +1343,19 @@
             Is the card physically scanned (telephone deal or magnetic)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CreditCardSecureDetails">
             <summary>
             Credit card details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreateTransactionRequest">

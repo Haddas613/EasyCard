@@ -47,6 +47,9 @@ namespace Shared.Helpers
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );
 
+        Task<HttpResponseMessage> PostRawFormRawResponse(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null);
+
         HttpClient HttpClient { get; }
     }
 

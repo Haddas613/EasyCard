@@ -144,6 +144,9 @@
   <data name="CurrentDeal" xml:space="preserve">
     <value>עסקה נוכחית</value>
   </data>
+  <data name="InvoiceOnly" xml:space="preserve">
+    <value>חשבונית מס בלבד</value>
+  </data>
   <data name="MerchantID" xml:space="preserve">
     <value>מזהה בית עסק</value>
   </data>
