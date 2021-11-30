@@ -420,6 +420,9 @@
   "CopiedToClipboard": "הועתק ללוח",
   "CanNotCopyToClipboard": "לא ניתן להעתיק ללוח",
   "TransactionTransmitted": "עסקה שודרה",
+  "@TransactionsQueuedSuccess": "@count עסקאות נוספו בהצלחה לתור",
+  "@TransactionsQueuedError": "לא הצליח להכניס @count עסקאות לתור",
+  "CreditCardTokenNotAvailable": "אסימון כרטיס אשראי אינו זמין יותר. זה נמחק",
 
   "--MISC--": null,
   "AllCustomers": "כל הלקוחות",
