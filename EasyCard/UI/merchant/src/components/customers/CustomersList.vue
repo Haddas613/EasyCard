@@ -29,7 +29,7 @@
             <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -51,7 +51,7 @@
               <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
               <v-list-item-subtitle
                 class="caption"
-                v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+                v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
               ></v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -73,7 +73,7 @@
             <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
