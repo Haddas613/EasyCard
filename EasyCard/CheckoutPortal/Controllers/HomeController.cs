@@ -224,7 +224,7 @@ namespace CheckoutPortal.Controllers
                 ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
             }
 
-            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == false)
+            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
             } 
