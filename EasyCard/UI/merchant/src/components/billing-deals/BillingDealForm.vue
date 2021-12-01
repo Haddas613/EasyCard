@@ -10,7 +10,7 @@
           class="pt-0 mt-0"></v-switch>
       </v-col> 
       <v-col cols="12" md="6" class="py-0">
-        <terminal-select v-model="model.terminalID" clearable></terminal-select>
+        <terminal-select v-model="model.terminalID" disabled></terminal-select>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
         <v-select
@@ -502,6 +502,10 @@ export default {
     }
     else if (this.model.issueInvoice) {
       this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
+    }
+    
+    if(!this.model.vatRate){
+      this.model.vatRate = this.terminalStore.settings.vatRate;
     }
     this.calculateTotal();
   }

@@ -47,7 +47,7 @@ namespace DesktopEasyCardConvertorECNG
                     .AddFilter("DesktopEasyCardConvertorECNG.Program", LogLevel.Debug)
                     .AddConsole()
                     .AddDebug()
-                    .AddSerilog(dispose: false);
+                    .AddSerilog(new LoggerConfiguration().WriteTo.File("log.txt").CreateLogger(), dispose: false);
             });
             Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
             logger.LogInformation("Application started");

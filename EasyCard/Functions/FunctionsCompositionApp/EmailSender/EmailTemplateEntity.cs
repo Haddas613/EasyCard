@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure;
+using Microsoft.Azure.Cosmos.Table;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,7 +30,7 @@ namespace Shared.Helpers.Email
 
         public string BodyTemplate { get; set; }
 
-        [IgnoreProperty]
+        //[IgnoreProperty]
         public string TemplateCode
         {
             get { return this.RowKey; }

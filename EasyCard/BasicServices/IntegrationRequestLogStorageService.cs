@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Integration;
 using System;
@@ -10,12 +9,14 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System.IO;
+using Azure.Data.Tables;
+using System.Linq;
 
 namespace BasicServices
 {
     public class IntegrationRequestLogStorageService : IIntegrationRequestLogStorageService
     {
-        private readonly CloudTable _table;
+        private readonly TableClient _table;
 
         public string StorageTableName => _table?.Name;
 
@@ -26,11 +27,7 @@ namespace BasicServices
         // TODO: logger
         public IntegrationRequestLogStorageService(string storageConnectionString, string tableName, string containerName)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            _table = tableClient.GetTableReference(tableName);
+            _table = new TableClient(storageConnectionString, tableName);
 
             _table.CreateIfNotExists();
 
@@ -67,9 +64,7 @@ namespace BasicServices
                 entity.Request = entity.Request?.Left(30000);
                 entity.Response = entity.Response?.Left(30000);
 
-                TableOperation insertOperation = TableOperation.Insert(entity);
-
-                await _table.ExecuteAsync(insertOperation);
+                await _table.AddEntityAsync(entity);
             }
             catch (Exception ex)
             {
@@ -80,32 +75,18 @@ namespace BasicServices
 
         public async Task<IEnumerable<IntegrationMessage>> GetAll(string entityID)
         {
-            var query = new TableQuery<IntegrationMessage>();
-            var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, entityID);
+            var segment = _table.QueryAsync<IntegrationMessage>($"PartitionKey eq '{entityID}'", 100);
 
-            query.FilterString = filter;
-            query.TakeCount = 100; //TODO
+            var e = segment.AsPages().GetAsyncEnumerator();
 
-            var segment = await _table.ExecuteQuerySegmentedAsync(query, null);
+            if (await e.MoveNextAsync()) 
+            { 
+                var res = e.Current;
 
-            return segment.Results;
-        }
-
-        // TODO
-        public async Task<IntegrationMessage> Get(DateTime requestDate, string correlationId)
-        {
-            TableOperation getOperation = TableOperation.Retrieve<IntegrationMessage>(requestDate.ToString("yy-MM-dd"), correlationId);
-
-            var result = await _table.ExecuteAsync(getOperation);
-
-            if (result.Result != null)
-            {
-                return (IntegrationMessage)result.Result;
+                return res.Values;
             }
-            else
-            {
-                return null;
-            }
+
+            return Enumerable.Empty<IntegrationMessage>();
         }
 
         private async Task UploadString(string fileName, string content)

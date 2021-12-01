@@ -194,6 +194,8 @@ namespace Transactions.Business.Entities
 
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
+        public string Origin { get; set; }
+
         public void UpdateNextScheduledDate(DateTime? timestamp, DateTime? legalDate)
         {
             CurrentTransactionTimestamp = timestamp;

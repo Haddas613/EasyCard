@@ -19,7 +19,6 @@
         </v-col>
       </v-row>
     </v-card-title>
-
     <v-card-text>
       <ec-list :items="items">
         <template v-slot:prepend="{ item }">
@@ -93,7 +92,7 @@ export default {
       let data = await this.$api.items.getItems({
           search: searchApply ? this.search : null,
           terminalID: this.terminalStore.terminalID,
-          showDeleted: this.showDeletedItems,
+          showDeleted: this.$showDeleted(this.showDeletedItems),
           ...this.paging
       });
       if (data) {

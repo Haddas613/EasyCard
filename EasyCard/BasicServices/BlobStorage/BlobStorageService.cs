@@ -1,7 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

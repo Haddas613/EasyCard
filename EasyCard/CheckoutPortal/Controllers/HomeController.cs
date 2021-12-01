@@ -406,9 +406,9 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                if (checkoutConfig.Settings.LegacyRedirectResponse)
+                if (checkoutConfig.Settings?.LegacyRedirectResponse == true)
                 {
-                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    if (checkoutConfig.PaymentRequest?.OnlyAddCard == true)
                     {
                         return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
                     }
@@ -423,7 +423,7 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    if (checkoutConfig.PaymentRequest?.OnlyAddCard == true)
                     {
                         return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
                     }

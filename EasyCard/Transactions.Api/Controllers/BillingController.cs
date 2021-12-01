@@ -211,9 +211,9 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
-                if (!model.CreditCardToken.HasValue)
+                if (!model.CreditCardToken.HasValue || model.CreditCardToken.Value == default)
                 {
-                    EnsureExists(model.CreditCardToken);
+                    return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
                 var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");

@@ -7,6 +7,7 @@ using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
+using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api.Extensions.Filtering
 {
@@ -42,7 +43,7 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = src.Where(t => t.NextScheduledTransaction == null);
             }
-            else if (filter.ShowDeleted == true)
+            else if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyDeleted)
             {
                 src = src.Where(t => t.Active == false);
             }
@@ -114,6 +115,11 @@ namespace Transactions.Api.Extensions.Filtering
             if (!string.IsNullOrWhiteSpace(filter.DealReference))
             {
                 src = src.Where(t => t.DealDetails.DealReference == filter.DealReference);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Origin))
+            {
+                src = src.Where(t => t.Origin == filter.Origin);
             }
 
             return src;

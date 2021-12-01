@@ -68,7 +68,7 @@
           </v-switch>
         </v-col>
         <v-col cols="3" md="2">
-          <v-switch v-model="model.showDeleted" @change="switchFilterChanged('showDeleted')">
+          <v-switch v-model="model.showDeleted" @change="switchFilterChanged('showDeleted')" true-value="1" false-value="0">
             <template v-slot:label>
               <small>{{$t('Inactive')}}</small>
             </template>
@@ -142,7 +142,11 @@ export default {
     async switchFilterChanged(type){
       let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
       for(var t of allTypes){
-        this.$set(this.model, t, false);
+        if(t === "showDeleted"){
+          this.$set(this.model, t, 0);
+        }else{
+          this.$set(this.model, t, false);
+        }
       }
     }
   }

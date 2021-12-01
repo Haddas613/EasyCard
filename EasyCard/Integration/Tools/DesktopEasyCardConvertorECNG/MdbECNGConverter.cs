@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using RapidOne;
 using RapidOne.Models;
 using Shared.Api.Models;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -66,23 +67,42 @@ namespace DesktopEasyCardConvertorECNG
             {
                 dataFromFile = await ReadDataFromMDBFile();
 
+                logger.LogInformation($"----------------------------------");
+
                 ecngTerminal = await SyncTerminalSettings();
 
-                RateVat = ecngTerminal.Settings.VATRate.GetValueOrDefault() == 0 ? 0.17m : ecngTerminal.Settings.VATRate.GetValueOrDefault();
+                logger.LogInformation($"----------------------------------");
+
+                RateVat = ecngTerminal.Settings.VATRate.GetValueOrDefault();
 
                 if (isRapidOneClient)
                 {
-                    defaultRapidItemCategory = await SyncDefaultRapidItemCategory();
-                    rapidOneItems = await SyncRapidOneItems(dataFromFile.Products);
+                    if (!config.DoNotCreateRapidItems)
+                    {
+                        defaultRapidItemCategory = await SyncDefaultRapidItemCategory();
+
+                        logger.LogInformation($"----------------------------------");
+
+                        rapidOneItems = await SyncRapidOneItems(dataFromFile.Products);
+
+                        logger.LogInformation($"----------------------------------");
+                    }
                 }
 
-                ecngItems = await SyncECNGItems();
+                if (!config.DoNotCreateECNGItems)
+                {
+                    ecngItems = await SyncECNGItems();
+                }
+
+                logger.LogInformation($"----------------------------------");
 
                 await SyncECNGCustomers();
 
+                logger.LogInformation($"END");
+
                 return 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
 
@@ -97,11 +117,15 @@ namespace DesktopEasyCardConvertorECNG
         {
             try
             {
-                string connectionString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={config.FullPathToMDBFile};Jet OLEDB:Database Password=D09h3c;";
+                logger.LogInformation($"Loading from {config.FullPathToMDBFile}");
+
+                string passwordString = string.IsNullOrWhiteSpace(config.MDBFilePassword) ? string.Empty : $"Jet OLEDB:Database Password={config.MDBFilePassword};";
+
+                string connectionString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={config.FullPathToMDBFile};{passwordString}";
                 using (OleDbConnection myConnection = new OleDbConnection(connectionString))
                 {
                     myConnection.Open();
-                    
+
                     var billingSettings = await myConnection.QueryAsync<BillingSettings>("SELECT * FROM tblOptions");
 
                     var items = await myConnection.QueryAsync<Product>("SELECT * FROM tblRivName");
@@ -114,14 +138,23 @@ namespace DesktopEasyCardConvertorECNG
 
                     var rowndsProduct = await myConnection.QueryAsync<RowndsProductsPerCustomer>("select customers.dealid as DealID, customers.totalsum, sums.customerTotalSum, sums.customerTotalSum * 1.17 as sumprodWithMaam from tblDeal as customers inner join(select DEALID, SUM(DealSum) as customerTotalSum from tbldealPROP GROUP BY DEALID) as sums on sums.dealid = customers.dealid");
 
-                    DataFromMDBFile data = new DataFromMDBFile() {
+                    DataFromMDBFile data = new DataFromMDBFile()
+                    {
                         BillingSetting = billingSettings.AsList()[0],
                         Products = items.AsList(),
                         NotActiveProducts = itemsnotActive.AsList(),
                         Customers = customers.AsList(),
                         ProductsPerCustomer = productsPerCustomer.AsList(),
-                        RowndsProductsPerCustomer = rowndsProduct.AsList() 
+                        RowndsProductsPerCustomer = rowndsProduct.AsList()
                     };
+
+                    logger.LogInformation($"Loaded from MDB:");
+                    logger.LogInformation($"\tBillingSetting");
+                    logger.LogInformation($"\tProducts: {data.Products.Count()}");
+                    logger.LogInformation($"\tNotActiveProducts: {data.NotActiveProducts.Count()}");
+                    logger.LogInformation($"\tCustomers: {data.Customers.Count()}");
+                    logger.LogInformation($"\tProductsPerCustomer: {data.ProductsPerCustomer.Count()}");
+                    logger.LogInformation($"\tRowndsProductsPerCustomer: {data.RowndsProductsPerCustomer.Count()}");
 
                     return data;
                 }
@@ -143,6 +176,8 @@ namespace DesktopEasyCardConvertorECNG
 
             var terminal = await metadataMerchantService.GetTerminal(terminalRef.TerminalID);
 
+            logger.LogInformation($"Loaded Terminal data: {terminal.Label} ({terminal.TerminalID})");
+
             var updateTerminalReq = mapper.Map<UpdateTerminalRequest>(terminal);
 
             updateTerminalReq.Settings.VATExempt = !dataFromFile.BillingSetting.AddMaam;
@@ -153,7 +188,19 @@ namespace DesktopEasyCardConvertorECNG
 
             var resp = await metadataMerchantService.UpdateTerminal(updateTerminalReq);
 
-            return await metadataMerchantService.GetTerminal(terminalRef.TerminalID);
+            logger.LogInformation($"Updated Terminal data: {resp.Status}");
+
+            var res = await metadataMerchantService.GetTerminal(terminalRef.TerminalID);
+
+            logger.LogInformation($"\tVATExempt: {res.Settings.VATExempt}");
+            logger.LogInformation($"\tVATRate: {res.Settings.VATRate}");
+            logger.LogInformation($"\tDollarRate: {res.Settings.DollarRate}");
+            logger.LogInformation($"\tEuroRate: {res.Settings.EuroRate}");
+            logger.LogInformation($"\tDoNotCreateSaveTokenInitialDeal: {res.Settings.DoNotCreateSaveTokenInitialDeal}");
+            logger.LogInformation($"\tCvvRequired: {res.Settings.CvvRequired}");
+            logger.LogInformation($"\tCreateRecurrentPaymentsAutomatically: {res.BillingSettings.CreateRecurrentPaymentsAutomatically}");
+
+            return res;
         }
 
         private async Task<ItemCategoryDto> SyncDefaultRapidItemCategory()
@@ -169,6 +216,12 @@ namespace DesktopEasyCardConvertorECNG
                 };
 
                 itemCategory = (await rapidOneService.CreateItemCategory(itemCategory)); // TODO: process error case
+
+                logger.LogInformation($"Created RapidOne default Item Category: {itemCategory.Name} ({itemCategory.Code})");
+            }
+            else
+            {
+                logger.LogInformation($"RapidOne default Item Category: {itemCategory.Name} ({itemCategory.Code})");
             }
 
             return itemCategory;
@@ -176,34 +229,57 @@ namespace DesktopEasyCardConvertorECNG
 
         private async Task<Dictionary<string, ItemWithPricesDto>> SyncRapidOneItems(IEnumerable<Product> products)
         {
-            var allR1Items = (await rapidOneService.GetItems()).ToDictionary(d => d.Name);
-            foreach (var item in products)
+            try
             {
-                var foundItemsInRapid = allR1Items.TryGetValue(item.RivName, out var r1Item);
-               
-                if (!foundItemsInRapid)
+                var srvItems = (await rapidOneService.GetItems());
+                var allR1Items = srvItems.GroupBy(d => d.Name).Select(x => x.FirstOrDefault()).ToDictionary(d => d.Name);
+
+                logger.LogInformation($"Loaded RapidOne Items: {allR1Items.Count} ({srvItems.Count()})");
+
+                foreach (var item in products)
                 {
-                    var newR1Item = new RapidOne.Models.ItemDto() {
-                        Name = item.RivName,
-                        Active = 1,
-                        ManufacturerCode = -1,
-                        CategoryCode = (defaultRapidItemCategory?.Code).GetValueOrDefault(),
-                        Prices = new[] { new RapidOne.Models.ItemPriceDto() { 
+                    var foundItemsInRapid = allR1Items.TryGetValue(item.RivName, out var r1Item);
+
+                    if (!foundItemsInRapid)
+                    {
+                        var newR1Item = new RapidOne.Models.ItemDto()
+                        {
+                            Name = item.RivName,
+                            Active = 1,
+                            ManufacturerCode = -1,
+                            CategoryCode = (defaultRapidItemCategory?.Code).GetValueOrDefault(),
+                            Prices = new[] { new RapidOne.Models.ItemPriceDto() {
                             Price = item.RivSum
                             }
                         }
-                    };
+                        };
 
-                    await rapidOneService.CreateItem(newR1Item);
+                        var itemRes = await rapidOneService.CreateItem(newR1Item);
+
+                        logger.LogInformation($"Created RapidOne Item: {itemRes.Name} ({itemRes.Code})");
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Found RapidOne Item: {r1Item.Name} ({r1Item.Code})");
+                    }
                 }
+
+                return (await rapidOneService.GetItems()).GroupBy(d => d.Name).Select(x => x.FirstOrDefault()).ToDictionary(d => d.Name);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to sync RapidOne items");
+                return null;
             }
 
-            return (await rapidOneService.GetItems()).ToDictionary(d => d.Name);
         }
 
         private async Task<Dictionary<string, ItemSummary>> SyncECNGItems()
         {
-            var allEcngItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data.ToDictionary(d => d.ExternalReference);
+            var allEcngSrvItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data;
+            var allEcngItems = allEcngSrvItems.Where(d => !string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
+
+            logger.LogInformation($"Loaded ECNG Items: {allEcngItems.Count} ({allEcngSrvItems.Count()})");
 
             foreach (var product in dataFromFile.Products)
             {
@@ -211,7 +287,7 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     ItemWithPricesDto r1Item = null;
 
-                    var foundItemsInRapid = isRapidOneClient ? rapidOneItems.TryGetValue(product.RivName, out r1Item) : false;
+                    var foundItemsInRapid = rapidOneItems != null && rapidOneItems.TryGetValue(product.RivName, out r1Item);
 
                     var itemRequest = new ItemRequest()
                     {
@@ -225,81 +301,89 @@ namespace DesktopEasyCardConvertorECNG
                         // SKU = //product.RivCodeקופת הכנסה לא קוד
                     };
 
-                    var AddUtemsRes = await metadataMerchantService.CreateItem(itemRequest);
+                    var addItemsRes = await metadataMerchantService.CreateItem(itemRequest);
+
+                    logger.LogInformation($"Created ECNG item : {product.RivName} ({addItemsRes.EntityUID} - {product.RevID})");
+                }
+                else
+                {
+                    logger.LogInformation($"Found ECNG item : {ecngItem.ItemName} ({ecngItem.ItemID} - {product.RevID})");
                 }
             }
 
-            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data.ToDictionary(d => d.ExternalReference);
+            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data.Where(d => string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
         }
 
         private async Task SyncECNGCustomers()
         {
             foreach (var customerInFile in dataFromFile.Customers)
             {
-                var consumer = await SyncECNGCustomer(customerInFile);
-
-                var token = await CreateTokenPerCustomer(customerInFile, consumer);
-
-                // items pack
-                var itemsPerCustomerInFile = dataFromFile.ProductsPerCustomer.Where(x => x.DealID == customerInFile.DealID);
-                List<Item> items = new List<Item>();
-                foreach (var itemInFile in itemsPerCustomerInFile)
+                try
                 {
-                    var ecngItemExists = ecngItems.TryGetValue(itemInFile.RivID, out var item);
-                    
-                    decimal amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero);
-                    decimal netAmount = dataFromFile.BillingSetting.AddMaam ? amount : Math.Round(((amount) / 1m + RateVat), 2, MidpointRounding.AwayFromZero);
-                    items.Add(new Item()
-                    {
-                        Price = itemInFile.ProdSum,
-                        ExternalReference = itemInFile.RivID,
-                        ItemName = itemInFile.DealText,
-                        Quantity = itemInFile.DealCount,
-                        //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
-                        Amount = amount,
-                        ItemID = item?.ItemID,
-                        NetAmount = netAmount,
-                        VAT = Math.Round(netAmount * RateVat, 2, MidpointRounding.AwayFromZero),
-                        VATRate = RateVat
-                    });
-                }
+                    var consumer = await SyncECNGCustomer(customerInFile);
 
-                // TODO: logging
-                await CreateBillingDeal(customerInFile, token, consumer, items);
+                    var token = await CreateTokenPerCustomer(customerInFile, consumer);
+
+                    if (!config.DoNotCreateBillings)
+                    {
+                        await CreateBillingDeal(customerInFile, token, consumer);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to sync customer {customerInFile.DealID} {ex.Message}");
+
+                    if (ex is WebApiServerErrorException)
+                    {
+                        logger.LogError(((WebApiServerErrorException)ex).Response);
+                    }
+                    else if (ex is WebApiClientErrorException)
+                    {
+                        logger.LogError(((WebApiClientErrorException)ex).Response);
+                    }
+                }
             }
         }
 
         private async Task<ConsumerResponse> SyncECNGCustomer(Customer customerInFile)
         {
-            var externalReference = isRapidOneClient ? $"RPS_{customerInFile.RivCode}" : null; // TODO: check if consumer exist in R1
+            var externalReference = string.IsNullOrWhiteSpace(customerInFile.RivCode) ? null : isRapidOneClient ? $"RPS_{customerInFile.RivCode}" : null; // TODO: check if consumer exist in R1
             var consumerAddress = new Shared.Integration.Models.Address() { City = customerInFile.CityID, Street = customerInFile.Street, Zip = customerInFile.ZipCode };
-            var bankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch/*, PaymentType = Shared.Integration.Models.PaymentTypeEnum.Bank* todo to check*/ };
+
             var customerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName);
+
+            Shared.Integration.Models.PaymentDetails.BankDetails bankDetails = null;
+            if (customerInFile.BankID > 0 && !string.IsNullOrWhiteSpace(customerInFile.BankAccount) && customerInFile.BankBranch > 0)
+            {
+                bankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch/*, PaymentType = Shared.Integration.Models.PaymentTypeEnum.Bank* todo to check*/ };
+            }
 
             ConsumersFilter cf = new ConsumersFilter
             {
                 BillingDesktopRefNumber = customerInFile.DealID,
-                ShowDeleted = true,
+                ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All,
                 Origin = config.Origin
             };
 
             Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
             if (consumerID.HasValue)
             {
-                var resCreateCustomer = await metadataMerchantService.UpdateConsumer(new MerchantProfileApi.Models.Billing.UpdateConsumerRequest
-                {
-                    Active = customerInFile.Active,
-                    BankDetails = bankDetails,
-                    BillingDesktopRefNumber = customerInFile.DealID,
-                    ConsumerAddress = consumerAddress,
-                    ConsumerName = customerName,
-                    ConsumerNationalID = customerInFile.ClientCode,
-                    ConsumerPhone = customerInFile.Phone1,
-                    ConsumerID = consumerID.Value,
-                    ConsumerSecondPhone = customerInFile.Phone2,
-                    ExternalReference = externalReference,
-                    Origin = config.Origin
-                });
+                var existingConsumer = await metadataMerchantService.GetConsumer(consumerID.Value);
+
+                var request = mapper.Map<UpdateConsumerRequest>(existingConsumer);
+
+                request.Active = customerInFile.Active;
+                request.BankDetails = bankDetails;
+                request.ConsumerAddress = consumerAddress;
+                request.ConsumerName = customerName;
+                request.ConsumerNationalID = customerInFile.ClientCode.NormalizeIsraelNationalID();
+                request.ConsumerPhone = customerInFile.Phone1;
+                request.ConsumerSecondPhone = customerInFile.Phone2;
+                request.ExternalReference = externalReference;
+
+                var resUpdateCustomer = await metadataMerchantService.UpdateConsumer(request);
+
+                logger.LogInformation($"Updated ECNG customer {customerInFile.DealID} {customerName} ({consumerID}, R1 code: {externalReference})");
             }
             else
             {
@@ -310,44 +394,138 @@ namespace DesktopEasyCardConvertorECNG
                     BillingDesktopRefNumber = customerInFile.DealID,
                     ConsumerAddress = consumerAddress,
                     ConsumerName = customerName,
-                    ConsumerNationalID = customerInFile.ClientCode,
+                    ConsumerNationalID = customerInFile.ClientCode.NormalizeIsraelNationalID(),
                     ConsumerPhone = customerInFile.Phone1,
                     ConsumerSecondPhone = customerInFile.Phone2,
                     ExternalReference = externalReference,
-                    Origin = config.Origin
+                    Origin = config.Origin,
+                    TerminalID = ecngTerminal.TerminalID
                 });
                 consumerID = resCreateCustomer.EntityUID ?? Guid.Empty;
+
+                logger.LogInformation($"Created ECNG customer {customerName} ({consumerID} - {externalReference})");
             }
 
             return await metadataMerchantService.GetConsumer(consumerID.Value);
 
         }
 
-        // TODO: check if token for this card already exists
         private async Task<Guid?> CreateTokenPerCustomer(Customer customerInFile, ConsumerResponse ecngCustomer)
         {
-            if (!String.IsNullOrEmpty(customerInFile.CardNumber))
+            if (String.IsNullOrEmpty(customerInFile.CardNumber))
             {
-                var request = new Transactions.Api.Models.Tokens.TokenRequest()
-                {
-                    ConsumerID = ecngCustomer.ConsumerID,
-                    CardNumber = customerInFile.CardNumber,
-                    CardExpiration = ConvertCardDateToMonthYearcs.GetMonthYearFromCardDate(customerInFile.CardDate),
-                    CardOwnerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName),
-                };
-
-                return (await transactionsService.CreateToken(request)).EntityUID;
+                logger.LogWarning($"Card number is empty. Deal {customerInFile.DealID} for {ecngCustomer.ConsumerName} ({ecngCustomer.ConsumerID})");
+                return null;
             }
 
-            return null;
+            var fltr = new Transactions.Api.Models.Tokens.CreditCardTokenFilter
+            {
+                ConsumerID = ecngCustomer.ConsumerID,
+                CardNumber = CreditCardHelpers.GetCardDigits(customerInFile.CardNumber)
+            };
+
+            var existingToken = (await transactionsService.GetTokens(fltr))?.Data?.FirstOrDefault();
+
+            if (existingToken != null)
+            {
+                logger.LogInformation($"Token already exist {fltr.CardNumber} ({existingToken.CreditCardTokenID}) for {ecngCustomer.ConsumerName} ({ecngCustomer.ConsumerID})");
+
+                return existingToken.CreditCardTokenID;
+            }
+
+
+            var expiration = ConvertCardDateToMonthYearcs.GetMonthYearFromCardDate(customerInFile.CardDate);
+
+            if (expiration.Expired)
+            {
+                logger.LogWarning($"Card expired {fltr.CardNumber} for { ecngCustomer.ConsumerName} ({ ecngCustomer.ConsumerID})");
+                return null;
+            }
+
+            var request = new Transactions.Api.Models.Tokens.TokenRequest()
+            {
+                TerminalID = ecngTerminal.TerminalID,
+                ConsumerID = ecngCustomer.ConsumerID,
+                CardNumber = customerInFile.CardNumber,
+                CardExpiration = expiration,
+                CardOwnerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName),
+            };
+
+            var res = (await transactionsService.CreateToken(request)).EntityUID;
+
+            logger.LogInformation($"Created token {fltr.CardNumber} ({res}) for {request.CardOwnerName} ({ecngCustomer.ConsumerID})");
+
+            return res;
         }
 
-
-        private async Task CreateBillingDeal(Customer customerInFile, Guid? TokenCreditCard, ConsumerResponse consumer, List<Item> items)
+        // TODO: update existing billing
+        private async Task CreateBillingDeal(Customer customerInFile, Guid? TokenCreditCard, ConsumerResponse consumer)
         {
+            if (!(customerInFile.TotalSum > 0))
+            {
+                logger.LogInformation($"Skipped creating billing for {customerInFile.DealID} because amount is 0");
+                return;
+            }
+
+            var paymentType = Models.Helper.EnumConvertor.ConvertToPaymentType(customerInFile.PayType);
+
+            if (paymentType == PaymentTypeEnum.Card && !TokenCreditCard.HasValue)
+            {
+                logger.LogError($"Skipped creating billing for {customerInFile.DealID} because credit card token is empty");
+                return;
+            }
+
+            if (paymentType != PaymentTypeEnum.Card)
+            {
+                logger.LogError($"Skipped TODO: payment type {paymentType} billing for {customerInFile.DealID}");
+                return;
+            }
+
+            var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter 
+            { 
+                 PaymentType = paymentType,
+                 CreditCardTokenID = TokenCreditCard,
+                 TerminalID = ecngTerminal.TerminalID,
+                 Origin = config.Origin,
+                 DealReference = customerInFile.DealID
+            }))?.Data?.FirstOrDefault();
+
+            if (existingBilling != null)
+            {
+                logger.LogInformation($"Skipped creating billing for {customerInFile.DealID} because it is exist already");
+                return;
+            }
+
+
+            // items pack
+            var itemsPerCustomerInFile = dataFromFile.ProductsPerCustomer.Where(x => x.DealID == customerInFile.DealID);
+            List<Item> items = new List<Item>();
+            foreach (var itemInFile in itemsPerCustomerInFile)
+            {
+                ItemSummary item = null;
+                var ecngItemExists = ecngItems != null && ecngItems.TryGetValue(itemInFile.RivID, out item);
+
+                decimal amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero);
+                decimal netAmount = dataFromFile.BillingSetting.AddMaam ? amount : Math.Round(((amount) / 1m + RateVat), 2, MidpointRounding.AwayFromZero);
+                items.Add(new Item()
+                {
+                    Price = itemInFile.ProdSum,
+                    ExternalReference = itemInFile.RivID,
+                    ItemName = itemInFile.DealText,
+                    Quantity = itemInFile.DealCount,
+                    //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
+                    Amount = amount,
+                    ItemID = item?.ItemID,
+                    NetAmount = netAmount,
+                    VAT = Math.Round(netAmount * RateVat, 2, MidpointRounding.AwayFromZero),
+                    VATRate = RateVat
+                });
+            }
+
             var request = new Transactions.Api.Models.Billing.BillingDealRequest()
             {
-                BankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch },
+                // TODO: bank billings
+                //BankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch },
                 BillingSchedule = new Transactions.Shared.Models.BillingSchedule()
                 {
                     RepeatPeriodType = Models.Helper.EnumConvertor.ConvertToBillingType(customerInFile.BillingTypeID),
@@ -359,9 +537,9 @@ namespace DesktopEasyCardConvertorECNG
                 CreditCardToken = TokenCreditCard,
                 Currency = Models.Helper.EnumConvertor.ConvertToCurrecy(customerInFile.MTypeID),
                 //InvoiceDetails = new Shared.Integration.Models.Invoicing.InvoiceDetails() { }
-                PaymentType = Models.Helper.EnumConvertor.ConvertToPaymentType(customerInFile.PayType),
+                PaymentType = paymentType,
                 TransactionAmount = customerInFile.TotalSum,
-
+                TerminalID = ecngTerminal.TerminalID,
                 DealDetails = new Shared.Integration.Models.DealDetails()
                 {
                     ConsumerAddress = consumer.ConsumerAddress,
@@ -375,10 +553,14 @@ namespace DesktopEasyCardConvertorECNG
 
                     DealDescription = "Export from MDB", // TODO
                     DealReference = customerInFile.DealID
-                }
+                },
+                Origin = config.Origin
             };
 
-            var AddBillingDeal = await transactionsService.CreateBillingDeal(request);
+            var res = await transactionsService.CreateBillingDeal(request);
+
+            logger.LogInformation($"Created billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) {customerInFile.TotalSum} {request.Currency}");
+   
         }
     }
 }
