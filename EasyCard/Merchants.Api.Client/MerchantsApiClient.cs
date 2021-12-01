@@ -132,8 +132,9 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
+                throw;
                 //logger?.LogError(clientError.Message);
-                return new SummariesResponse<TerminalSummary>();
+                //return new SummariesResponse<TerminalSummary>();
             }
         }
     }
