@@ -16,8 +16,8 @@ const primitives = {
         : i18n.t('@StringLength').replace("@min", min).replace("@max", max)
     ),
 
-    inRange: (min, max) => (v) => (v >= min && v <= max) || i18n.t('@InRange').replace("@min", min).replace("@max", max),
-    inRangeFlat: (min, max) => (v) => (v >= min && v <= max) || `${min}-${max}`,
+    inRange: (min, max) => (v) => (!v || (v >= min && v <= max)) || i18n.t('@InRange').replace("@min", min).replace("@max", max),
+    inRangeFlat: (min, max) => (v) => (!v || (v >= min && v <= max)) || `${min}-${max}`,
 
     expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 

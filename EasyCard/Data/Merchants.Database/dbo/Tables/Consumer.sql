@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[Consumer] (
     [ConsumerID]              UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]              UNIQUEIDENTIFIER NOT NULL,
-    [Active]                  BIT              DEFAULT (CONVERT([bit],(1))) NOT NULL,
+    [Active]                  BIT              NOT NULL,
     [UpdateTimestamp]         ROWVERSION       NULL,
-    [ConsumerEmail]           NVARCHAR (50)    NOT NULL,
+    [ConsumerEmail]           NVARCHAR (50)    NULL,
     [ConsumerName]            NVARCHAR (50)    NOT NULL,
     [ConsumerPhone]           NVARCHAR (50)    NULL,
     [ConsumerAddress]         NVARCHAR (MAX)   NULL,
@@ -19,8 +19,11 @@
     [ConsumerNote]            NVARCHAR (512)   NULL,
     [BillingDesktopRefNumber] NVARCHAR (50)    NULL,
     [ConsumerSecondPhone]     NVARCHAR (50)    NULL,
+    [BankDetails]             NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
+
+
 
 
 

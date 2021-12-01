@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyCard Next Generation API v1 - Checkout Page</title>
+
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                    <img src="/img/pay-with-easycard.png" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-page="/">Back to EasyCard Merchant's Portal'</a></li>
+                    <li><a href="https://github.com/">GitHub</a></li>
+                    <li><a href="https://www.e-c.co.il/">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+       
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year, EasyCard</p>
+        </footer>
+    </div>
+
+
+</body>
+</html>

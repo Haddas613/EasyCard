@@ -31,16 +31,13 @@ namespace Shared.Api
                 var correlationId = context.TraceIdentifier;
                 int responseStatusCode = 500;
                 string result = string.Empty;
-
-                if (ex != null)
-                {
-                    logger.LogError(ex, ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
-                }
+                bool logAsWarning = false;
 
                 if (ex is EntityNotFoundException enfeEx)
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType, EntityReference = enfeEx.EntityReference });
                     responseStatusCode = 404;
+                    logAsWarning = true;
                 }
                 else if (ex is EntityConflictException econEx)
                 {
@@ -68,6 +65,18 @@ namespace Shared.Api
                 else
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = "System error occurred. Please contact support", Status = StatusEnum.Error, CorrelationId = correlationId });
+                }
+
+                if (ex != null)
+                {
+                    if (logAsWarning)
+                    {
+                        logger.LogWarning(ex, ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
+                    }
+                    else
+                    {
+                        logger.LogError(ex, ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
+                    }
                 }
 
                 context.Response.ContentType = "application/json";
