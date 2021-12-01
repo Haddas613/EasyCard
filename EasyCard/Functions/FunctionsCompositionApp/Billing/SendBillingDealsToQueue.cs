@@ -59,9 +59,13 @@ namespace FunctionsCompositionApp.Billing
 
                 foreach (var terminal in terminals.Data)
                 {
-                    log.LogInformation($"Sending billing deals for terminal #{terminal.TerminalID}:{terminal.Label}");
                     var response = await transactionsApiClient.SendBillingDealsToQueue(terminal.TerminalID);
                     totalBillingDeals += response.Count;
+                    
+                    if (response.Count > 0)
+                    {
+                        log.LogInformation($"Sent {response.Count} billing deals for terminal #{terminal.TerminalID}:{terminal.Label}");
+                    }
                 }
 
                 filter.Skip += filter.Take;
