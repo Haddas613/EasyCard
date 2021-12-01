@@ -94,7 +94,7 @@ namespace CheckoutPortal.Models
         [RegularExpression("^ *[0-9]{2} */ *[0-9]{2} *$", ErrorMessageResourceName = "CardExpirationValidator", ErrorMessageResourceType = typeof(CheckoutPortal.Messages))]
         public string CardExpiration { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(4, MinimumLength = 3)]
         [RegularExpression("^[0-9]{3,4}$")]
         public string Cvv { get; set; }

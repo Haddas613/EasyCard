@@ -10,6 +10,9 @@
               <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
                 {{$t("CreditCardExpired")}}
               </v-alert>
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.tokenNotAvailable">
+                {{$t("CreditCardTokenNotAvailable")}}
+              </v-alert>
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>

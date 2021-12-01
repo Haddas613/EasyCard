@@ -32,6 +32,8 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Terminal, TerminalCheckoutCombinedSettings>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForMember(d => d.CvvRequired, o => o.MapFrom(d => d.Settings.CvvRequired))
+                .ForMember(d => d.NationalIDRequired, o => o.MapFrom(d => d.Settings.NationalIDRequired))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Merchants.Business.Entities.Billing.Consumer, ConsumerInfo>();

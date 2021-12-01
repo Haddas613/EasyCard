@@ -56,8 +56,13 @@
     [ConsumerName]                NVARCHAR (50)    NULL,
     [ConsumerNationalID]          VARCHAR (20)     NULL,
     [CardExpirationDate]          DATE             NULL,
+    [InvoiceOnly]                 BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [PaymentDetails]              NVARCHAR (MAX)   NULL,
+    [Origin]                      NVARCHAR (50)    NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

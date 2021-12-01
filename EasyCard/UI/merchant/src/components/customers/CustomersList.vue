@@ -29,7 +29,7 @@
             <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -51,7 +51,7 @@
               <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
               <v-list-item-subtitle
                 class="caption"
-                v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+                v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
               ></v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -73,13 +73,13 @@
             <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              v-text="(customer.consumerEmail || '-') + (customer.consumerPhone ? ' ● ' + customer.consumerPhone : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
       <v-flex class="text-center" v-if="canLoadMore">
-        <v-btn outlined color="primary" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
+        <v-btn class="my-4" outlined color="primary" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
       </v-flex>
     </template>
     <p v-if="customers.length === 0" class="pt-4 pb-0 px-4 body-2">{{$t('NothingToShow')}}</p>
@@ -171,7 +171,6 @@ export default {
         terminalID: terminalID,
         showDeleted: this.allowShowDeleted ? this.$showDeleted(this.showDeletedCustomers) : false
       });
-      this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
 
       if (extendData) {
@@ -190,7 +189,7 @@ export default {
     },
     async loadMore() {
       this.paging.skip += this.paging.take;
-      await this.getCustomers();
+      await this.getCustomers(true);
     }
   },
   watch: {
@@ -203,7 +202,7 @@ export default {
       if (!searchWasAppliable && !searchApply) {
         return;
       }
-
+      this.paging.skip = 0;
       this.searchTimeout = setTimeout(
         (async () => {
           await this.getCustomers();
@@ -228,7 +227,7 @@ export default {
       showDeletedCustomers: state => state.ui.showDeletedCustomers,
     }),
     canLoadMore() {
-      return this.totalAmount > 0 && this.paging.take < this.totalAmount && this.paging.skip < this.totalAmount;
+      return (this.paging.take + this.paging.skip) < this.totalAmount;
     }
   }
 };

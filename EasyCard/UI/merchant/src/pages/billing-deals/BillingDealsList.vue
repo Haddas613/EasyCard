@@ -321,10 +321,19 @@ export default {
         this.lodash.map(billings, i => i.$billingDealID)
       );
 
-      if (true || opResult.status === "success") {
-        this.lodash.forEach(billings, i => {
-          i.selected = false;
-          i.processed = true;
+      this.lodash.forEach(billings, i => {
+        i.selected = false;
+        i.processed = true;
+      });
+
+      if(opResult.failedCount > 0){
+        this.$toasted.show(this.$t("@TransactionsQueuedError").replace("@count", opResult.failedCount), {
+          type: "error"
+        });
+      } 
+      if(opResult.successfulCount > 0){
+        this.$toasted.show(this.$t("@TransactionsQueuedSuccess").replace("@count", opResult.successfulCount), {
+          type: "success"
         });
       }
     },

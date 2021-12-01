@@ -187,6 +187,11 @@ namespace Transactions.Api.Controllers
                     billingDeal.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == billingDeal.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
 
+                if (dbBillingDeal.PaymentType == PaymentTypeEnum.Card && dbBillingDeal.CreditCardToken.HasValue)
+                {
+                    billingDeal.TokenNotAvailable = (await keyValueStorage.Get(dbBillingDeal.CreditCardToken.ToString())) == null;
+                }
+
                 return Ok(billingDeal);
             }
         }
@@ -289,6 +294,10 @@ namespace Transactions.Api.Controllers
                 }
 
                 var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+                //Ensure that token is not removed from key vault
+                EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
+
                 billingDeal.InitialTransactionID = token.InitialTransactionID;
                 billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 
@@ -312,6 +321,23 @@ namespace Transactions.Api.Controllers
             else
             {
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
+            }
+
+            if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.SpecifiedDate && model.BillingSchedule?.StartAt.HasValue == true)
+            {
+                if (model.BillingSchedule?.StartAt > billingDeal.BillingSchedule?.StartAt)
+                {
+                    billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
+                }
+                else if (model.BillingSchedule?.StartAt < billingDeal.BillingSchedule?.StartAt)
+                {
+                    return BadRequest(new OperationResponse($"{nameof(model.BillingSchedule.StartAt)} must be bigger than {billingDeal.BillingSchedule?.StartAt}", StatusEnum.Error));
+                }
+            }
+            else if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.Today && billingDeal.BillingSchedule?.StartAtType != StartAtTypeEnum.Today)
+            {
+                //only re-evaluate to today if it was changed, to not update it each time
+                billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
             }
 
             mapper.Map(model, billingDeal);

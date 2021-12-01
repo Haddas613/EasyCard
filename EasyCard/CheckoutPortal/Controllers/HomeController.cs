@@ -219,11 +219,18 @@ namespace CheckoutPortal.Controllers
                 ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
             }
 
-            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
+            {
+                ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-
-                return await IndexViewResult(checkoutConfig, request);
+            } 
+            else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            {
+                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
             }
 
             InstallmentDetails installmentDetails = null;
@@ -280,11 +287,6 @@ namespace CheckoutPortal.Controllers
             {
                 ModelState[nameof(request.Amount)].Errors.Clear();
                 ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
-
-                if (string.IsNullOrWhiteSpace(request.NationalID))
-                {
-                    ModelState.AddModelError(nameof(request.NationalID), Messages.NationalIDRequiredWhenSaveCardSelected);
-                }
             }
 
             if (!ModelState.IsValid)
@@ -315,8 +317,8 @@ namespace CheckoutPortal.Controllers
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
-                mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
+                mapper.Map(checkoutConfig.PaymentRequest, mdel);
 
                 if (checkoutConfig.PaymentIntentID != null)
                 {
