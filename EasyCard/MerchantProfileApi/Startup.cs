@@ -362,12 +362,12 @@ namespace ProfileApi
                 config.HtmlTagBlackList = "script|iframe|object|embed|form"; // default
 
                 // Simplest: Use all default settings
-                //var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
+                var folderConfig = config.AddMarkdownProcessingFolder("/doc/", "~/Views/__MarkdownPageTemplate.cshtml");
 
                 // Customized Configuration: Set FolderConfiguration options
                 //folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
 
-                var folderConfig = config.AddMarkdownProcessingFolder("/doc/");
+                //var folderConfig = config.AddMarkdownProcessingFolder("/doc/");
 
                 // Optionally strip script/iframe/form/object/embed tags ++
                 folderConfig.SanitizeHtml = false;  //  default
