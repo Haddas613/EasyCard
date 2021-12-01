@@ -420,6 +420,9 @@
   "CopiedToClipboard": "Copied to Clipboard",
   "CanNotCopyToClipboard": "Can not copy to Clipboard",
   "TransactionTransmitted": "Transaction Transmitted",
+  "@TransactionsQueuedSuccess": "Successfully queued @count transactions",
+  "@TransactionsQueuedError": "Could not queue @count transactions",
+  "CreditCardTokenNotAvailable": "Credit Card Token is no longer available. It has been deleted",
 
   "--MISC--": null,
   "AllCustomers": "All Customers",

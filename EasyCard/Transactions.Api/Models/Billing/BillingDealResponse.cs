@@ -95,7 +95,7 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Stored credit card details token
         /// </summary>
-        public Guid CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; set; }
 
         /// <summary>
         /// Deal information
@@ -128,6 +128,8 @@ namespace Transactions.Api.Models.Billing
         public bool Active { get; set; }
 
         public bool? CardExpired { get; set; }
+
+        public bool? TokenNotAvailable { get; set; }
 
         /// <summary>
         /// Invoice details

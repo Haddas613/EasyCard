@@ -45,5 +45,9 @@ namespace Transactions.Api.Models.Checkout
         public IEnumerable<PinPadDevice> PinPadDevices { get; set; }
 
         public string BlobBaseAddress { get; set; }
+
+        public bool? NationalIDRequired { get; set; }
+
+        public bool? CvvRequired { get; set; }
     }
 }
