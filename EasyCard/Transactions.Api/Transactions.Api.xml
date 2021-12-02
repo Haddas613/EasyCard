@@ -318,6 +318,11 @@
             Create document for transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerName">
+            <summary>
+            Performs search by both consumer name and card owner name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
             <summary>
             End-customer Email
