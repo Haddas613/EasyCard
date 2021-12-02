@@ -142,13 +142,16 @@ namespace Transactions.Api.Controllers
 
                 var processorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
                 var pinpadProcessorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = pinpadProcessorSettings, CorrelationId = GetCorrelationID() };
-
-                await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
-
+                
+                ProcessorUpdateParamteresResponse updatedResult = await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
+                bool updatedSuccess = updatedResult.Success;
                 if (terminalPinpadAllow)
                 {
-                    await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
+                    ProcessorUpdateParamteresResponse pinpadUpdatedResult = await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
+                    updatedSuccess = updatedSuccess && pinpadUpdatedResult.Success;
                 }
+
+                return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = updatedSuccess ? UpdateParamsStatusEnum.Updated : UpdateParamsStatusEnum.UpdateFailed };
             }
             catch (Exception e)
             {
@@ -156,7 +159,7 @@ namespace Transactions.Api.Controllers
                 return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.UpdateFailed };
             }
 
-            return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.Updated };
+            
         }
     }
 }
