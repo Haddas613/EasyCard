@@ -227,7 +227,7 @@ namespace Shva
 
             var changePasswordReq = shvaParameters.GetChangePasswordRequestBody(changePasswordRequest.NewPassword);
 
-            var changePasswordReqResult = await this.DoRequest(changePasswordReq, changePasswordRequest.TerminalID.ToString(), ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
+            var changePasswordReqResult = await this.DoRequest(changePasswordReq, ChangePasswordUrl, changePasswordRequest.TerminalID.ToString(), changePasswordRequest.CorrelationId, HandleIntegrationMessage);
 
             var changePasswordResultBody = changePasswordReqResult?.Body?.Content as ChangePasswordResponseBody;
 
