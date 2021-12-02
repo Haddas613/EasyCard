@@ -5,6 +5,7 @@ using Shared.Helpers;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace DesktopEasyCardConvertorECNG
             this.configuration = configuration;
         }
 
-        public async Task<TokenResponse> GetToken()
+        public async Task<TokenResponse> GetToken(NameValueCollection headers = null)
         {
             if (this.Token != null)
             {

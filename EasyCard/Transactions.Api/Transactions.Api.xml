@@ -1549,6 +1549,16 @@
             SignalR connection id
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.BitPaymentInitiationId">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.BitTransactionSerialId">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Does not store full card number. Used 123456****1234 pattern
@@ -1662,6 +1672,16 @@
         <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.ConnectionID">
             <summary>
             SignalR connection ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.BitPaymentInitiationId">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.BitTransactionSerialId">
+            <summary>
+            For Bit Processor only
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">

@@ -1,4 +1,5 @@
 ﻿using Bit.Configuration;
+using Bit.Converters;
 using Bit.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,9 +42,22 @@ namespace Bit
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-            
-            //TODO: validate transaction from Bit to be the same as our transaction
-            throw new NotImplementedException();
+
+            var bitTransaction = await GetBitTransaction(paymentTransactionRequest.BitPaymentInitiationId, integrationMessageId);
+
+            ValidateAgainstBitTransaction(paymentTransactionRequest, bitTransaction, integrationMessageId);
+
+            var captureRequest = new BitCaptureRequest
+            {
+                RequestAmount = bitTransaction.RequestAmount,
+                PaymentInitiationId = bitTransaction.PaymentInitiationId,
+                SourceTransactionId = bitTransaction.SourceTransactionId,
+                IssuerTransactionId =  bitTransaction.IssuerTransactionId
+            };
+
+            var captureResponse = await CaptureBitTransaction(captureRequest, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
+
+            return captureResponse.GetBitCreateTransactionResponse();
         }
 
         public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
@@ -101,17 +116,45 @@ namespace Bit
             }
         }
 
-        private async Task<BitCaptureResponse> CaptureBitTransaction(BitCaptureRequest request, string integrationMessageId)
+        private async Task<BitCaptureResponse> CaptureBitTransaction(BitCaptureRequest request, string paymentTransactionID, string integrationMessageId, string correlationID)
         {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
             try
             {
-                return await apiClient.Post<BitCaptureResponse>(configuration.BaseUrl, $"{GetBitTransactionUrl(request.PaymentInitiationId)}/capture", request, BuildHeaders);
+                var response =  await apiClient.Post<BitCaptureResponse>(configuration.BaseUrl, $"{GetBitTransactionUrl(request.PaymentInitiationId)}/capture", request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+
+                return response;
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
 
                 throw new IntegrationException("Bit integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
             }
         }
 
@@ -123,16 +166,19 @@ namespace Bit
             }
         }
 
-        //TODO: Ocp-Apim-Subscription-Key
         private async Task<NameValueCollection> BuildHeaders()
         {
             NameValueCollection headers = new NameValueCollection();
+            headers.Add("Ocp-Apim-Subscription-Key", configuration.OcpApimSubscriptionKey);
 
-            var apiToken = await tokenService.GetToken();
+            var apiToken = await tokenService.GetToken(headers);
 
-            headers.Add("Ocp-Apim-Subscription-Key", string.Empty);
+            if (apiToken != null)
+            {
+                headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", apiToken.AccessToken).ToString());
+            }
 
-            return await Task.FromResult(headers);
+            return headers;
         }
 
         //public async Task<TokenResponse> GetToken()
