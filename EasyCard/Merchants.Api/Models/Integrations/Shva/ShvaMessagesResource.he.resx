@@ -132,4 +132,7 @@
   <data name="CouldNotSetNewPassword" xml:space="preserve">
     <value>נכשלה שליחת סיסמא חדשה</value>
   </data>
+  <data name="UpdatedParametersSuccessfully" xml:space="preserve">
+    <value>פרמטרים עודכנו בהצלחה</value>
+  </data>
 </root>

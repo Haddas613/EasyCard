@@ -466,6 +466,7 @@
   "RequestLog": "Request Log",
   "Download": "Download",
   "ConvertToJ4": "Convert to J4",
+  "UpdateParameters": "Update Parameters",
 
   "--AUTH--": null,
   "Login": "Login",
