@@ -32,7 +32,7 @@ namespace Transactions.Api.Models.Billing
 
         public DateTime? NextScheduledTransaction { get; set; }
 
-        public string CardOwnerName { get; set; }
+        public string ConsumerName { get; set; }
 
         /// <summary>
         /// Billing Schedule

@@ -135,8 +135,8 @@
   <data name="CardNumber" xml:space="preserve">
     <value>מספר כרטיס</value>
   </data>
-  <data name="CardOwnerName" xml:space="preserve">
-    <value>שם בעל הכרטיס</value>
+  <data name="ConsumerName" xml:space="preserve">
+    <value>לקוח</value>
   </data>
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>

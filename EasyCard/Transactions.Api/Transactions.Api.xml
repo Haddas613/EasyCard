@@ -394,9 +394,9 @@
               Looks up a localized string similar to Card Number.
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardOwnerName">
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerName">
             <summary>
-              Looks up a localized string similar to Card Owner.
+              Looks up a localized string similar to Customer.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">

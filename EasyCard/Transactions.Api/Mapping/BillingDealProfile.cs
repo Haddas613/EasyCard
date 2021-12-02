@@ -56,13 +56,13 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(o => o.Ignore());
 
             CreateMap<BillingDeal, BillingDealSummary>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName ?? d.DealDetails.ConsumerName))
+                .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, BillingDealSummaryAdmin>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName ?? d.DealDetails.ConsumerName))
+                .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
