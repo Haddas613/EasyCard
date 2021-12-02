@@ -263,6 +263,12 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        public async Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/pause", model, BuildHeaders);
+            return res;
+        }
+
         public async Task<OperationResponse> UpdateBillingDeal(Guid billingDealID, BillingDealUpdateRequest model)
         {
             var res = await webApiClient.Put<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}", model, BuildHeaders);
