@@ -42,6 +42,6 @@ namespace Transactions.Api.Client
         Task<OperationResponse> GenerateMasavFile();
 
         Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request);
-
+        Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model);
     }
 }

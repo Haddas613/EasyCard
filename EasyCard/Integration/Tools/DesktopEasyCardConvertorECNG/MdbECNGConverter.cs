@@ -20,7 +20,7 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transactions.Api.Client;
+using Transactions.Api.Models.Billing;
 
 namespace DesktopEasyCardConvertorECNG
 {
@@ -137,6 +137,8 @@ namespace DesktopEasyCardConvertorECNG
                     var productsPerCustomer = await myConnection.QueryAsync<ProductPerCustomer>(" SELECT DealID, DealText, DealSum/ DealCount as ProdSum,DealCount,RivID,products.RivCode FROM tblDealProp as prodpercust inner join tblrivname as products on    products.revid = prodpercust.rivid");
 
                     var rowndsProduct = await myConnection.QueryAsync<RowndsProductsPerCustomer>("select customers.dealid as DealID, customers.totalsum, sums.customerTotalSum, sums.customerTotalSum * 1.17 as sumprodWithMaam from tblDeal as customers inner join(select DEALID, SUM(DealSum) as customerTotalSum from tbldealPROP GROUP BY DEALID) as sums on sums.dealid = customers.dealid");
+                    
+                    var pausedBillingDeal = await myConnection.QueryAsync<PausedDealsPerCustomer>("select DealID, Month,Year,Note from tbldeallock");
 
                     DataFromMDBFile data = new DataFromMDBFile()
                     {
@@ -145,7 +147,8 @@ namespace DesktopEasyCardConvertorECNG
                         NotActiveProducts = itemsnotActive.AsList(),
                         Customers = customers.AsList(),
                         ProductsPerCustomer = productsPerCustomer.AsList(),
-                        RowndsProductsPerCustomer = rowndsProduct.AsList()
+                        RowndsProductsPerCustomer = rowndsProduct.AsList(),
+                        PausedBillingDeal = pausedBillingDeal.AsList()
                     };
 
                     logger.LogInformation($"Loaded from MDB:");
@@ -155,6 +158,7 @@ namespace DesktopEasyCardConvertorECNG
                     logger.LogInformation($"\tCustomers: {data.Customers.Count()}");
                     logger.LogInformation($"\tProductsPerCustomer: {data.ProductsPerCustomer.Count()}");
                     logger.LogInformation($"\tRowndsProductsPerCustomer: {data.RowndsProductsPerCustomer.Count()}");
+                    logger.LogInformation($"\tPausedDealsPerCustomer: {data.PausedBillingDeal.Count()}");
 
                     return data;
                 }
@@ -481,7 +485,7 @@ namespace DesktopEasyCardConvertorECNG
                 return;
             }
 
-            var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter 
+            var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter
             { 
                  PaymentType = paymentType,
                  CreditCardTokenID = TokenCreditCard,
@@ -560,7 +564,21 @@ namespace DesktopEasyCardConvertorECNG
             var res = await transactionsService.CreateBillingDeal(request);
 
             logger.LogInformation($"Created billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) {customerInFile.TotalSum} {request.Currency}");
-   
+
+            // paused billingdeal
+            var pausedBillingDeals = dataFromFile.PausedBillingDeal.Where(x => x.DealID == customerInFile.DealID);
+            foreach (var pausedBillingDeal in pausedBillingDeals)
+            {
+                DateTime startPauseDate = new DateTime(pausedBillingDeal.Year, pausedBillingDeal.Month, 1);
+                var requestPausedBillingDeal = new PauseBillingDealRequest()
+                {
+                    DateFrom = startPauseDate,
+                    DateTo = startPauseDate.AddMonths(1).AddDays(-1),
+                     Reason = pausedBillingDeal.Note
+                };
+                var resPausedBillingDeal = await transactionsService.PauseBillingDeal(res.EntityUID, requestPausedBillingDeal);
+                logger.LogInformation($"Paused billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) for dates {requestPausedBillingDeal.DateFrom} - {requestPausedBillingDeal.DateTo} Reason: {requestPausedBillingDeal.Reason}");
+            }
         }
     }
 }
