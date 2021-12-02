@@ -211,12 +211,21 @@ namespace CheckoutPortal.Controllers
                     }
                 }
 
-                ModelState[nameof(request.Cvv)].Errors.Clear();
-                ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
-                ModelState[nameof(request.CardNumber)].Errors.Clear();
-                ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
-                ModelState[nameof(request.CardExpiration)].Errors.Clear();
-                ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                if (ModelState[nameof(request.Cvv)] != null)
+                {
+                    ModelState[nameof(request.Cvv)]?.Errors?.Clear();
+                    ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardNumber)] != null)
+                {
+                    ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardExpiration)] != null)
+                {
+                    ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
