@@ -321,7 +321,7 @@ namespace Shva
         {
             NameValueCollection headers = new NameValueCollection();
 
-            headers.Add("SOAPAction", $"{soapAction}");
+            headers.Add("SOAPAction", $"http://shva.co.il/xmlwebservices/{soapAction}");
 
             return await Task.FromResult(headers);
         }
