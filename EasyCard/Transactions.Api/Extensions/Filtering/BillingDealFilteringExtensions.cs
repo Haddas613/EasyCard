@@ -92,9 +92,10 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
+            if (!string.IsNullOrWhiteSpace(filter.ConsumerName))
             {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
+                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.ConsumerName.UseWildCard(true))
+                    || EF.Functions.Like(t.DealDetails.ConsumerName, filter.ConsumerName.UseWildCard(true)));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))

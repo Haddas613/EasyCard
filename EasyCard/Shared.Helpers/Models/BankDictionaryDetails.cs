@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Helpers.Models
 {
-    public class BankDetails
+    public class BankDictionaryDetails
     {
         public string Description { get; set; }
 

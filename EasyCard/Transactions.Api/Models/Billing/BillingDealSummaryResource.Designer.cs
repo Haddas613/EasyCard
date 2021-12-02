@@ -115,11 +115,11 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Card Owner.
+        ///   Looks up a localized string similar to Customer.
         /// </summary>
-        public static string CardOwnerName {
+        public static string ConsumerName {
             get {
-                return ResourceManager.GetString("CardOwnerName", resourceCulture);
+                return ResourceManager.GetString("ConsumerName", resourceCulture);
             }
         }
         

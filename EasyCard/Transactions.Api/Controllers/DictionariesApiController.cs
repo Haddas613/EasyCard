@@ -36,7 +36,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         [Route("banks")]
         [ResponseCache(VaryByHeader = "Accept-Language", Duration = 3600)]
-        public async Task<ActionResult<IEnumerable<BankDetails>>> GetBanks()
+        public async Task<ActionResult<IEnumerable<BankDictionaryDetails>>> GetBanks()
         {
             return Ok(BankHelper.GetListOfBankOptions(CurrentCulture));
         }

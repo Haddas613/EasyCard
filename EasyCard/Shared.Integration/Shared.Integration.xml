@@ -1,0 +1,1087 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Shared.Integration</name>
+    </assembly>
+    <members>
+        <member name="T:Shared.Integration.Exceptions.IntegrationException">
+            <summary>
+            This exception type should contain message appropriate to user
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.ExternalSystems.IAggregator.Validate(Shared.Integration.Models.AggregatorCreateTransactionRequest)">
+            <summary>
+             Validate data if it's compatible with aggregator requirements
+            </summary>
+            <param name="transactionRequest"></param>
+            <returns>Error message when there is an error, null otherwise</returns>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCancelTransactionRequest.TransactionID">
+            <summary>
+            Unique transaction ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCancelTransactionRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCancelTransactionResponse.ErrorMessage">
+            <summary>
+            TODO: error codes
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.TransactionID">
+            <summary>
+            Unique transaction ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.ProcessorTransactionDetails">
+            <summary>
+            Shva details
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.NumberOfInstallments">
+            <summary>
+            Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionResponse.ErrorMessage">
+            <summary>
+            TODO: error codes
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.TransactionID">
+            <summary>
+            Unique transaction ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.EasyCardTerminalID">
+            <summary>
+            Original terminal
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.AggregatorSettings">
+            <summary>
+            Specific aggregator settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.TransactionType">
+            <summary>
+            Transaction type
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.CardPresence">
+            <summary>
+            50 telephone deal
+            00 regular (megnetic)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.NumberOfInstallments">
+            <summary>
+            Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.CurrentInstallment">
+            <summary>
+            Current installment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.TransactionDate">
+            <summary>
+            Legal transaction day
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.CreditCardDetails">
+            <summary>
+            Does not have real credit card number
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.JDealType">
+            <summary>
+            J3, J4, J5
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.IsPinPad">
+            <summary>
+            IsPinPad transaction
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Models.CardPresenceEnum">
+            <summary>
+            Is the card physically scanned
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.CardPresenceEnum.CardNotPresent">
+            <summary>
+            Telephone deal
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.CardPresenceEnum.Regular">
+            <summary>
+            Magnetic
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Models.DealDetails">
+            <summary>
+            Additional deal information. All these data are not required and used only for merchant's business purposes.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.DealReference">
+            <summary>
+            Deal identifier in merchant's system
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.DealDescription">
+            <summary>
+            Deal description. In case of generating payment link, these description will be displayed on Checkout Page
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerName">
+            <summary>
+            End-customer Name
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerNationalID">
+            <summary>
+            End-customer National Id
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerPhone">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerID">
+            <summary>
+            End-customer record UUId in EasyCard system
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.Items">
+            <summary>
+            Deal Items
+            ID, Count, Name
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerAddress">
+            <summary>
+            End-customer address
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ConsumerExternalReference">
+            <summary>
+            External system consumer identifier for example RapidOne customer code
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Models.InstallmentDetails">
+            <summary>
+            Installment payments details
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.InstallmentDetails.NumberOfPayments">
+            <summary>
+            Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.InstallmentDetails.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.InstallmentDetails.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.InstallmentDetails.InstallmentPaymentAmount">
+            <summary>
+            Amount of each additional payments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.InvoiceDate">
+            <summary>
+            Invoice date
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.InvoiceAmount">
+            <summary>
+            Invoice amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.NumberOfPayments">
+            <summary>
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.TransactionType">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.Amount">
+            <summary>
+            Row amount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.VATRate">
+            <summary>
+            VAT Rate
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.VAT">
+            <summary>
+            VAT amount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.NetAmount">
+            <summary>
+            Net amount (before VAT)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.Discount">
+            <summary>
+            Discount
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Models.PaymentDetails.BankDetails">
+            <summary>
+            For billing deal only. For invoice and payment transaction use <see cref="T:Shared.Integration.Models.PaymentDetails.BankTransferDetails"></see>
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorUpdateParametersRequest.ProcessorSettings">
+            <summary>
+            Shva terminal settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorUpdateParametersRequest.TerminalID">
+            <summary>
+            Easy Card TerminalID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorUpdateParametersRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.CreditCardSecureDetails.AuthNum">
+            <summary>
+            after code 3 or 4 user can insert this value from credit company
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.JDealTypeEnum.J2">
+            <summary>
+            Check
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.JDealTypeEnum.J4">
+            <summary>
+            Regular deal
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.JDealTypeEnum.J5">
+            <summary>
+            Block card
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Processor.ShvaTransactionDetails.ShvaShovarNumber">
+            <summary>
+             Shva Shovar Number
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Processor.ShvaTransactionDetails.TransmissionDate">
+            <summary>
+            Transmission Date
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorChangePasswordRequest.ProcessorSettings">
+            <summary>
+            Shva terminal settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorChangePasswordRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorChangePasswordRequest.TerminalID">
+            <summary>
+            Easy Card Terminal ID
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorChangePasswordResponse.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorChangePasswordResponse"/> class.
+            Use in case of success
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorChangePasswordResponse.#ctor(System.String,Shared.Integration.Models.RejectionReasonEnum,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorChangePasswordResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="rejectionReasonEnum"></param>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorChangePasswordResponse.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorChangePasswordResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="errorCode"></param>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorChangePasswordResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.ProcessorSettings">
+            <summary>
+            Shva terminal settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.PinPadProcessorSettings">
+            <summary>
+            Nayax terminal settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.PinpadDeviceID">
+            <summary>
+            Nayax TerminalID optional, in case of terminal supports multiple  devices
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.PinPadTransactionID">
+            <summary>
+            Unique transaction ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.EasyCardTerminalID">
+            <summary>
+            Original terminal
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.TransactionDate">
+            <summary>
+            Legal transaction day
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.TransactionType">
+            <summary>
+            Transaction Type
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.JDealType">
+            <summary>
+            J3, J4, J5
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.CardPresence">
+            <summary>
+            50 telephone deal
+            00 regular (megnetic)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.CurrentDeal">
+            <summary>
+            Current deal (billing)
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.NumberOfPayments">
+            <summary>
+            To be used for credit or installments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.CreditCardToken">
+            <summary>
+            Real credit card number
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.InitialDeal">
+            <summary>
+            For billing deal
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorCreateTransactionResponse"/> class.
+            Use in case of success
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor(System.String,Shared.Integration.Models.RejectionReasonEnum,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorCreateTransactionResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="rejectionReasonEnum"></param>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorCreateTransactionResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="errorCode"></param>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionResponse.CompRetailerNum">
+            <summary>
+            Retailer number (code) to tell when calling to TelToGetAuthNum
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionResponse.TelToGetAuthNum">
+            <summary>
+            Phone number to call when authorization code is required
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorPreCreateTransactionResponse"/> class.
+            Use in case of success
+            </summary>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.#ctor(System.String,Shared.Integration.Models.RejectionReasonEnum,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorPreCreateTransactionResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="rejectionReasonEnum"></param>
+        </member>
+        <member name="M:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorPreCreateTransactionResponse"/> class.
+            Use this in case of error response
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="errorCode"></param>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsRequest.ProcessorSettings">
+            <summary>
+            Shva terminal settings
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsRequest.TransactionIDs">
+            <summary>
+            Processor transaction IDs
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsRequest.TerminalID">
+            <summary>
+            Easy Card Terminal ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsResponse.TransmissionReference">
+            <summary>
+            Shva Transmission ID
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Models.TransactionTypeEnum">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.TransactionTypeEnum.RegularDeal">
+            <summary>
+            Simple deal type
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.TransactionTypeEnum.Installments">
+            <summary>
+            Deal to pay by parts
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.TransactionTypeEnum.Credit">
+            <summary>
+            Credit deal
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.TransactionTypeEnum.Immediate">
+            <summary>
+            Credit deal
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.CardPresenceResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardPresenceResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardPresenceResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardPresenceResource.CardNotPresent">
+            <summary>
+              Looks up a localized string similar to Card not present.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardPresenceResource.Regular">
+            <summary>
+              Looks up a localized string similar to Regular.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.FilterEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.AwaitingForTransmission">
+            <summary>
+              Looks up a localized string similar to Awaiting for Transmission.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Canceled">
+            <summary>
+              Looks up a localized string similar to Canceled.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Completed">
+            <summary>
+              Looks up a localized string similar to Done.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Created">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Failed">
+            <summary>
+              Looks up a localized string similar to Failed.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last15Minutes">
+            <summary>
+              Looks up a localized string similar to Last 15 minutes.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last24Hours">
+            <summary>
+              Looks up a localized string similar to Last 24 hours.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last30Days">
+            <summary>
+              Looks up a localized string similar to Last 30 Days.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last30Minutes">
+            <summary>
+              Looks up a localized string similar to Last 30 minutes.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last3Months">
+            <summary>
+              Looks up a localized string similar to Last 3 Months.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Last5Minutes">
+            <summary>
+              Looks up a localized string similar to Last 5 minutes.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.LastHour">
+            <summary>
+              Looks up a localized string similar to Last hour.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.LastMonth">
+            <summary>
+              Looks up a localized string similar to Last month.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.LastTwoWeeks">
+            <summary>
+              Looks up a localized string similar to Last two weeks.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.LastWeek">
+            <summary>
+              Looks up a localized string similar to Last week.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.LastYear">
+            <summary>
+              Looks up a localized string similar to Last year.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.None">
+            <summary>
+              Looks up a localized string similar to None.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Pending">
+            <summary>
+              Looks up a localized string similar to Pending.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.ThisMonth">
+            <summary>
+              Looks up a localized string similar to This Month.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.ThisWeek">
+            <summary>
+              Looks up a localized string similar to This week.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Today">
+            <summary>
+              Looks up a localized string similar to Today.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Updated">
+            <summary>
+              Looks up a localized string similar to Updated.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Yesterday">
+            <summary>
+              Looks up a localized string similar to Yesterday.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.InvoiceEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CreditNote">
+            <summary>
+              Looks up a localized string similar to Credit Note.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Initial">
+            <summary>
+              Looks up a localized string similar to Pending.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Invoice">
+            <summary>
+              Looks up a localized string similar to Invoice.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.InvoiceWithPaymentInfo">
+            <summary>
+              Looks up a localized string similar to Invoice WIth Payment Info.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.PaymentInfo">
+            <summary>
+              Looks up a localized string similar to Payment Info.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.RefundInvoice">
+            <summary>
+              Looks up a localized string similar to Refund Invoice with Payment Info.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Sending">
+            <summary>
+              Looks up a localized string similar to Sending.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.SendingFailed">
+            <summary>
+              Looks up a localized string similar to Sending Failed.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Sent">
+            <summary>
+              Looks up a localized string similar to Sent.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.JDealTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.JDealTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.JDealTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.JDealTypeResource.J2">
+            <summary>
+              Looks up a localized string similar to J2.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.JDealTypeResource.J4">
+            <summary>
+              Looks up a localized string similar to J4.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.JDealTypeResource.J5">
+            <summary>
+              Looks up a localized string similar to J5.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.RejectionReasonResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.CardOwnerNationalIdRequired">
+            <summary>
+              Looks up a localized string similar to Card owner national id required.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.CreditCardDailyUsageExceeded">
+            <summary>
+              Looks up a localized string similar to Credit card daily usage exceeded.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.CreditCardIsMerchantsCard">
+            <summary>
+              Looks up a localized string similar to Credit card is merchants card.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.DailyAmountExceeded">
+            <summary>
+              Looks up a localized string similar to Daily amount exceeded.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.NationalIdIsMerchantsId">
+            <summary>
+              Looks up a localized string similar to National id is merchants id.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.RefundExceededCollateral">
+            <summary>
+              Looks up a localized string similar to Refund exceeded collateral.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.RefundNotMatchRegularAmount">
+            <summary>
+              Looks up a localized string similar to Refund not match regular amount.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.SingleTransactionAmountExceeded">
+            <summary>
+              Looks up a localized string similar to Single transaction amount exceeded.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.RejectionReasonResource.Unknown">
+            <summary>
+              Looks up a localized string similar to Unknown.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.ReportEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.Date">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.LastMonth">
+            <summary>
+              Looks up a localized string similar to Last month.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.LastWeek">
+            <summary>
+              Looks up a localized string similar to Last week.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.Month">
+            <summary>
+              Looks up a localized string similar to Month.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.NoComparison">
+            <summary>
+              Looks up a localized string similar to No comparison.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.PrevPeriod">
+            <summary>
+              Looks up a localized string similar to Previous period.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.ReportEnumsResource.Week">
+            <summary>
+              Looks up a localized string similar to Week.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.SpecialTransactionTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.SpecialTransactionTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.SpecialTransactionTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.SpecialTransactionTypeResource.InitialDeal">
+            <summary>
+              Looks up a localized string similar to Initial deal.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.SpecialTransactionTypeResource.Refund">
+            <summary>
+              Looks up a localized string similar to Refund.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.SpecialTransactionTypeResource.RegularDeal">
+            <summary>
+              Looks up a localized string similar to Regular deal.
+            </summary>
+        </member>
+        <member name="T:Shared.Integration.Resources.TransactionTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.Credit">
+            <summary>
+              Looks up a localized string similar to Credit.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.Immediate">
+            <summary>
+              Looks up a localized string similar to Immediate.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.Installments">
+            <summary>
+              Looks up a localized string similar to Installments.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.TransactionTypeResource.RegularDeal">
+            <summary>
+              Looks up a localized string similar to Regular deal.
+            </summary>
+        </member>
+    </members>
+</doc>

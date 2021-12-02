@@ -56,6 +56,9 @@ using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
+    /// <summary>
+    /// Payment transactions API
+    /// </summary>
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/transactions")]
@@ -181,8 +184,15 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment transaction details
+        /// </summary>
+        /// <param name="transactionID">Payment transaction UUId</param>
+        /// <returns>Transaction details</returns>
         [HttpGet]
         [Route("{transactionID}")]
+        [ProducesResponseType(typeof(TransactionResponse), StatusCodes.Status200OK)]
+        [SwaggerResponseExample(201, typeof(GetTransactionResponseExample))]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {
             Debug.WriteLine(User);
@@ -276,6 +286,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment transactions list using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {

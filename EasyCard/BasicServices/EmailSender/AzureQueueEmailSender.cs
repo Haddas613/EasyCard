@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure.Data.Tables;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Helpers.Email;
@@ -18,17 +18,13 @@ namespace BasicServices
     public class AzureQueueEmailSender : IEmailSender
     {
         private readonly IQueue queue;
-        private readonly CloudTable table;
+        private readonly TableClient table;
 
         public AzureQueueEmailSender(IQueue queue, string storageConnectionString, string tableName)
         {
             this.queue = queue;
 
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            table = tableClient.GetTableReference(tableName);
+            table = new TableClient(storageConnectionString, tableName);
 
             table.CreateIfNotExists();
         }
@@ -39,9 +35,7 @@ namespace BasicServices
 
             var entity = new EmailEntity(queueMessage, email);
 
-            TableOperation insertOperation = TableOperation.Insert(entity);
-
-            await table.ExecuteAsync(insertOperation);
+            await table.AddEntityAsync(entity);
 
             await queue.PushToQueue(queueMessage);
         }

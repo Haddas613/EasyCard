@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure;
+using Azure.Data.Tables;
 using Newtonsoft.Json;
 using Shared.Helpers.Email;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace BasicServices
 {
-    public class EmailEntity : TableEntity
+    public class EmailEntity : ITableEntity
     {
         public EmailEntity()
         {
@@ -35,5 +36,13 @@ namespace BasicServices
         public string Substitutions { get; set; }
 
         public string Attachments { get; set; }
+
+        public string PartitionKey { get; set; }
+
+        public string RowKey { get; set; }
+
+        public DateTimeOffset? Timestamp { get; set; }
+
+        public ETag ETag { get; set; }
     }
 }

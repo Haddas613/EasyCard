@@ -1,6 +1,12 @@
 <template>
   <v-flex width="100%">
-    <customers-list :show-previously-charged="false" v-on:ok="customerClicked($event)" :filter-by-terminal="true" allow-show-deleted></customers-list>
+    <customers-list
+      :show-previously-charged="false"
+      v-on:ok="customerClicked($event)"
+      :filter-by-terminal="true"
+      allow-show-deleted
+      overview
+    ></customers-list>
   </v-flex>
 </template>
 
@@ -15,13 +21,12 @@ export default {
   data() {
     return {
       totalAmount: 0,
-      customers: [],
       dictionaries: {}
     };
   },
   computed: {
     ...mapState({
-      showDeletedCustomers: state => state.ui.showDeletedCustomers,
+      showDeletedCustomers: state => state.ui.showDeletedCustomers
     })
   },
   methods: {
@@ -31,20 +36,29 @@ export default {
         params: { id: customer.consumerID }
       });
     },
-    initThreeDotMenu(){
+    initThreeDotMenu() {
       this.$store.commit("ui/changeHeader", {
         value: {
           threeDotMenu: [
             {
               text: this.$t("CreateCustomer"),
-              fn: () => this.$router.push({name: 'CreateCustomer'})
+              fn: () => this.$router.push({ name: "CreateCustomer" })
             },
             {
-              text: this.showDeletedCustomers ? this.$t("ShowActive") : this.$t("ShowDeleted"),
-              fn: () => this.$store.commit("ui/setShowDeletedCustomers", !this.showDeletedCustomers)
+              text: this.showDeletedCustomers
+                ? this.$t("ShowActive")
+                : this.$t("ShowDeleted"),
+              fn: () =>
+                this.$store.commit(
+                  "ui/setShowDeletedCustomers",
+                  !this.showDeletedCustomers
+                )
             }
           ],
-          text: { translate: true, value: this.showDeletedCustomers ? "DeletedCustomers" : "Customers" }
+          text: {
+            translate: true,
+            value: this.showDeletedCustomers ? "DeletedCustomers" : "Customers"
+          }
         }
       });
     }
@@ -56,9 +70,6 @@ export default {
     showDeletedCustomers(newValue, oldValue) {
       this.initThreeDotMenu();
     }
-  },
+  }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

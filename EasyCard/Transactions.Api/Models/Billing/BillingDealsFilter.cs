@@ -39,7 +39,10 @@ namespace Transactions.Api.Models.Billing
 
         public string CardOwnerNationalID { get; set; }
 
-        public string CardOwnerName { get; set; }
+        /// <summary>
+        /// Performs search by both consumer name and card owner name
+        /// </summary>
+        public string ConsumerName { get; set; }
 
         /// <summary>
         /// End-customer Email

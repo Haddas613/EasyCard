@@ -1,11 +1,12 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure;
+using Azure.Data.Tables;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentIntent : TableEntity
+    public class PaymentIntent : ITableEntity
     {
         private readonly string partitionKey = "1";
 
@@ -35,5 +36,13 @@ namespace Transactions.Business.Entities
         }
 
         public bool Deleted { get; set; }
+
+        public string PartitionKey { get; set; }
+
+        public string RowKey { get; set; }
+
+        public DateTimeOffset? Timestamp { get; set; }
+
+        public ETag ETag { get; set; }
     }
 }

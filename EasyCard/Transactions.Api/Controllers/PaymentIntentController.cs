@@ -36,10 +36,15 @@ using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using System.Security;
 using Shared.Api.Validation;
+using Swashbuckle.AspNetCore.Filters;
+using Transactions.Api.Swagger;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
+    /// <summary>
+    /// Payment link API
+    /// </summary>
     [Route("api/paymentIntent")]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -102,9 +107,20 @@ namespace Transactions.Api.Controllers
             return Ok(paymentRequest);
         }
 
+        /// <summary>
+        /// Create payment link to Checkout Page
+        /// </summary>
+        /// <param name="model">Payment parameters</param>
+        /// <returns>Redirect url</returns>
         [HttpPost]
         [ValidateModelState]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OperationResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OperationResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(OperationResponse), StatusCodes.Status400BadRequest)]
+        [SwaggerRequestExample(typeof(PaymentRequestCreate), typeof(CreatePaymentIntentExample))]
+        [SwaggerResponseExample(201, typeof(PRCreatedOperationResponseExample))]
+        [SwaggerResponseExample(404, typeof(EntityNotFoundOperationResponseExample))]
+        [SwaggerResponseExample(400, typeof(ValidationErrorsOperationResponseExample))]
         public async Task<ActionResult<OperationResponse>> CreatePaymentIntent([FromBody] PaymentRequestCreate model)
         {
             var merchantID = User.GetMerchantID();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Shared.Helpers
 {
@@ -36,6 +37,22 @@ namespace Shared.Helpers
             {
                 return false;
             }
+        }
+
+        private static Regex digitsOnly = new Regex(@"[^\d]");
+
+        public static string NormalizeIsraelNationalID(this string nationalIDStr)
+        {
+            if (string.IsNullOrWhiteSpace(nationalIDStr))
+            {
+                return null;
+            }
+
+            var res = digitsOnly.Replace(nationalIDStr, string.Empty);
+
+            res = res.Left(9);
+
+            return res.PadLeft(9, '0');
         }
     }
 }

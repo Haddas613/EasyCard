@@ -165,7 +165,7 @@
             </b>
             <span v-else>-</span>
             </v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.consumerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">

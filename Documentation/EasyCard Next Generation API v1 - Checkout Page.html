@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EasyCard Next Generation API v1 - Checkout Page.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="easycard-next-generation-api-v1---checkout-page-redirect-page">EasyCard Next Generation API v1 - <em>Checkout Page (Redirect Page)</em></h1>
+<blockquote>
+<p>The simple way to collect payments hosted by EasyCard.</p>
+</blockquote>
+<p>Dear customer,
+The purchase process on an e-commerce site includes three steps: searching for products to buy, filling in delivery details and making a purchase on a payment page.
+The most sensitive in the process is the payment page.</p>
+<p>One option is to enter the payment information on the site itself, but then the entire site, software and servers, must meet the PCI standard and go through a long and expensive certificate process.
+The more recommended option is to use the Redirect interface, the user is redirected to a payment page located on a remote server and is part of the website of a company certified by the PCI standard. This ensures that the payment page has passed testing and certification as part of that company’s certification.
+This saves a lot of time in developing the clearing interface,
+Makes it easier for the site to get approval from the credit card companies and most importantly gives peace of mind that the credit data is secure and not stored at all on the trading site.</p>
+<p>EasyCard’s Redirect debit page is included in the company’s PCI certification, PCI DSS Level 1 and is secured according to the strongest standards of credit card companies and ensures secure execution of credit charges.</p>
+<h1 id="environments">Environments</h1>
+<h2 id="api-addresses">API addresses</h2>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>API</th>
+<th>Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sandbox</td>
+<td>Transactions API</td>
+<td>https://ecng-transactions.azurewebsites.net</td>
+</tr>
+<tr>
+<td></td>
+<td>Metadata API</td>
+<td>https://ecng-profile.azurewebsites.net</td>
+</tr>
+<tr>
+<td></td>
+<td>Identity Server</td>
+<td>https://ecng-identity.azurewebsites.net</td>
+</tr>
+<tr>
+<td>Stage</td>
+<td>Transactions API</td>
+<td>https://api-stage.e-c.co.il</td>
+</tr>
+<tr>
+<td></td>
+<td>Metadata API</td>
+<td>https://merchant-stage.e-c.co.il</td>
+</tr>
+<tr>
+<td></td>
+<td>Identity Server</td>
+<td>https://identity-stage.e-c.co.il</td>
+</tr>
+<tr>
+<td>Live</td>
+<td>Transactions API</td>
+<td>https://api.e-c.co.il</td>
+</tr>
+<tr>
+<td></td>
+<td>Metadata API</td>
+<td>https://merchant.e-c.co.il</td>
+</tr>
+<tr>
+<td></td>
+<td>Identity Server</td>
+<td>https://identity.e-c.co.il</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Please use &lt;api_address&gt;/swagger to get full API description</p>
+</blockquote>
+<blockquote>
+<p>Please request our developers team for Postman examples if needed</p>
+</blockquote>
+<h2 id="checkout-page-addresses">Checkout Page addresses</h2>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sandbox</td>
+<td>https://ecng-checkout.azurewebsites.net</td>
+</tr>
+<tr>
+<td>Stage</td>
+<td>https://checkout-stage.e-c.co.il</td>
+</tr>
+<tr>
+<td>Live</td>
+<td>https://checkout.e-c.co.il</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<h1 id="checkout-page---common-information">Checkout Page - common information</h1>
+<p>There are two options to generate Checkout Page:</p>
+<ul>
+<li>classic style with query string which contains all deal parameters (which can be used first of all to support legacy systems)</li>
+<li>Payment-Intent based Checkout Page</li>
+</ul>
+<p><img src="images/CheckoutPage.png" alt="Checkout Page"></p>
+<blockquote>
+<p>Please note that under the hood Checkout Page generates regular payment transaction, so all documentation and settings related to transactions are relevant also for transactions generated by Checkout Page - please see corresponding documentation.</p>
+</blockquote>
+<blockquote>
+<p>Checkout Page url for live environment is <a href="https://checkout.e-c.co.il">https://checkout.e-c.co.il</a></p>
+</blockquote>
+<!-- <div style="page-break-after: always;"></div> -->
+<p><br/><br/></p>
+<h1 id="classic-checkout-page">Classic Checkout Page</h1>
+<p>The general behavior is next:</p>
+<img src="http://www.plantuml.com/plantuml/svg/LP0zZW8n34RxdCAYvm9J8AGH9w3OsYG6BFAtZYCqjz_CR2A6Ad7q_Favvw8eMeCtkPriEMDKECmfbXf83e05R2--aH-wmPMLDkHDjzBktyG5opAZE9YVP5-fwdzQBumPkSTJRvzWiu6CIw2efZyVJwC79aYP8jJ2yG6_bMHfBTAANTWElhFtO8KSAzZLn94Y-s86inkzKa9MGTEwyPqbe7AApUP17vMTQX825Om5xGQEy8zsTvh6HYquP4zA3ioPecl__WS0" alt="uml diagram">
+<blockquote>
+<p>Checkout page can be opened inside iframe</p>
+</blockquote>
+<p><br/><br/></p>
+<hr>
+<h2 id="query-string-parameters">Query string parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Description</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>deal description</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>consumer name</td>
+</tr>
+<tr>
+<td>NationalID</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>consumer national id</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>consumer's email</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>consumer's phone</td>
+</tr>
+<tr>
+<td>Currency</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>currency in ISO format, like ILS, USD etc.</td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>query</td>
+<td>decimal</td>
+<td>false</td>
+<td>deal amount, can be omitted - see description below</td>
+</tr>
+<tr>
+<td>UserAmount</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>use this flag if consumer can change payment amount</td>
+</tr>
+<tr>
+<td>RedirectUrl</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>url on your website which will accept response from EasyCard</td>
+</tr>
+<tr>
+<td>ApiKey</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>Shared api key - see description below</td>
+</tr>
+<tr>
+<td>IssueInvoice</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>invoice will be generated by EasyCard if &quot;true&quot;</td>
+</tr>
+<tr>
+<td>AllowPinPad</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>Pinpad device payment can be used within Checkout page</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Sample query string:</p>
+</blockquote>
+<pre class="hljs"><code><div>https://checkout.e-c.co.il/?Description=Goods%20and%20services%20from%20Test%20Web%20Store%3A%20My%20Product&amp;Name=John%20Smith&amp;Email=testemail@gmail.com&amp;Currency=ILS&amp;Amount=99.99&amp;RedirectUrl=https%3A%2F%2Fecng-testwebstore.azurewebsites.net%3A443%2FPaymentResult%3FInternalOrderID%3D123456&amp;ApiKey=XXXXXXXX&amp;IssueInvoice=True&amp;AllowPinPad=False&amp;UserAmount=False
+</div></code></pre>
+<blockquote>
+<p>You can use simple <strong>Test Web Store</strong> (demo web page) which demonstrate query string redirect: <a href="https://ecng-testwebstore.azurewebsites.net/">https://ecng-testwebstore.azurewebsites.net/</a>
+If you need to specify any additional parameters, like <code>OrderID</code> or some security key in your system, you can simple add it to <code>RedirectUrl </code></p>
+</blockquote>
+<p><br/><br/></p>
+<hr>
+<h2 id="configuration-in-easycard-merchants-portal">Configuration in EasyCard Merchant's Portal</h2>
+<p>On EasyCard Merchant's portal <a href="https://merchant.e-c.co.il">https://merchant.e-c.co.il</a> there are few settings related to Checkout Page. To open the settings page you need to press on your user name link:
+<img src="images/OpenSettings.png" alt="Open settings"></p>
+<br/>
+<hr>
+<h3 id="redirect-urls">Redirect urls</h3>
+<p>Then you need to find <strong>Checkout Redirect URLs</strong> section:</p>
+<p><img src="images/CheckoutRedirectURLs.png" alt="Checkout Redirect URLs"></p>
+<p>Please add base address of your website here. You can use several base addresses. <code>RedirectUrl</code> in query string described above should belongs to one of the configured base urls.</p>
+<br/>
+<hr>
+<h3 id="custom-logo-and-stylesheet">Custom logo and stylesheet</h3>
+<p>You can specify custom logo image and custom css file. Please use <strong>Checkout</strong> section and <strong>Payment Request</strong> section:</p>
+<p><img src="images/CustomLogoAndCss.png" alt="Custom logo and css"></p>
+<br/>
+<hr>
+<h3 id="legacy-redirect-url-response">Legacy redirect url response</h3>
+<p>In <strong>Checkout Redirect URLs</strong> section there is a flag <strong>Extended response for checkout transaction</strong> enables additional query string parameters which will be added to <code>RedirectUrl</code> by EasyCard. In this mode NextGen EasyCard will mimic EasyCard classic behavior.</p>
+<p><img src="images/LegacyRedirectResponse.png" alt="Legacy redirect response"></p>
+<blockquote>
+<p>You can use <strong>Test Web Store</strong> to check all parameters which will be present in this mode.</p>
+</blockquote>
+<p>In case if <strong>Extended response for checkout transaction</strong> is disabled, only EasyCard <code>TransactionID</code> will be present in response, then you can get transaction details via API (see below).</p>
+<br/>
+<hr>
+<h2 id="shared-api-key">Shared API Key</h2>
+<p>You can get <code>ApiKey</code> for simple Checkout Page using <strong>Show Shared Key</strong> button in  <strong>Checkout</strong> section or generate ne key using <strong>Reset Shared Key</strong> button:
+<img src="images/SharedApiKey.png" alt="Shared Api Key"></p>
+<p><br/><br/></p>
+<h1 id="advanced-checkout-page">Advanced Checkout Page</h1>
+<p>EasyCard Next Generation also provides more secured and solid way to collect Checkout transactions using Payment Intent API:</p>
+<img src="http://www.plantuml.com/plantuml/svg/VP9FRuCm3CNl-HGMzsftLA5ER0TkbLffbrrCuh9e8M69KSMtdsb1mDRjb3_w-Vdv9OV46BbldUfajTfsw1coClZKjnGpm0HwEcoHDwhXP9bko9Ng9FijyOffA34QA3z8VuQUxshJuG_s-LZTCEoiKdFdNJ4roE7c5peSMlAifkjT8NWEcOw4JB2lY-CTWCgpBFkdkiYKCBkLKlOGWpwwRD6TtOBmeICFVRA-WNzA5y-hsejr3iITiGnw7DCGetL9pSpArqX5qWmSnkWlDhR8DdWPkg5t7xmRu1pH9zJZTVK2rr6z9a1Zo8nbNpt5GQAAudMRKKEYknJFFgQnDh8_yph_BbkqL-yJ8ZrgiSfqIYYVdr76R3j7BERLWRoHx_WD" alt="uml diagram">
+<p>The general idea is to keep all information required for Checkout Page securely in structured way (which is more convenient than query string). You can use <code>Create Payment Intent API method</code> to create it. This method returns short url which you can use to redirect your consumer to Checkout Page (so, in other words this method creates payment link).</p>
+<p>As soon consumer will enter credit card details and pressed <code>Pay With EasyCard</code> button, Checkout Page will be redirected to the link, specified in <code>Create Payment Intent</code> parameters. EasyCard <code>TransactionID</code> will be added to redirect url.</p>
+<p>Then you can use this <code>TransactionID</code> to get payment transaction details from the API - please use <code>Get Transaction Details</code> method.</p>
+<p>Please find out API description in section below.</p>
+<blockquote>
+<p>Please note, all request should be secured with Authorization header <code>Bearer {{access_token}}</code> - see <strong>Authentication</strong> section below to get information about how to obtain this token.</p>
+</blockquote>
+<blockquote>
+<p>You can simple check how this functionality works by using <strong>Payment Link</strong> feature on Merchant's Portal:</p>
+</blockquote>
+<p><img src="images/PaymentLink.png" alt="Payment Link"></p>
+<p><br/><br/></p>
+<h1 id="easycard-next-generation-api-v1---transactions-api-sections-related-to-checkout-page">EasyCard Next Generation API v1 - <em>Transactions API (sections related to Checkout Page)</em></h1>
+<blockquote>
+<p>Please check details in full API description using swagger <a href="https://api.e-c.co.il/swagger">https://api.e-c.co.il/swagger</a></p>
+</blockquote>
+<blockquote>
+<p>Live transactions api address is <a href="https://api.e-c.co.il">https://api.e-c.co.il</a></p>
+</blockquote>
+<p><br/><br/></p>
+<hr>
+<h2 id="authentication">Authentication</h2>
+<h3 id="authenticationauthorization-type">Authentication/Authorization type</h3>
+<ul>
+<li>Bearer (oauth2)
+<ul>
+<li>Parameter Name: <strong>Authorization</strong>, in: header. Standard Authorization header using the Bearer scheme. Example: <code>bearer {access_token}</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="get-access-token">Get Access Token</h3>
+<p><code>POST {{IdentityServerAddress}}/connect/token</code></p>
+<blockquote>
+<p>Live Identity Server Address is <a href="https://identity.e-c.co.il">https://identity.e-c.co.il</a></p>
+</blockquote>
+<blockquote>
+<p>Headers</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content-Type</td>
+<td>application/x-www-form-urlencoded</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Body parameter (<code>x-www-form-urlencoded</code>)</p>
+</blockquote>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;?php</span>
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL,<span class="hljs-string">"https://identity.e-c.co.il/api/token"</span>);
+curl_setopt($ch, CURLOPT_POST, <span class="hljs-number">1</span>);
+curl_setopt($ch, CURLOPT_POSTFIELDS,
+            <span class="hljs-string">"client_id=terminal&amp;grant_type=terminal_rest_api&amp;authorizationKey=hL5pXeI96df0wxCb....IWYcmhJH2bye1gg=="</span>);
+curl_setopt($ch, CURLOPT_HTTPHEADER, <span class="hljs-keyword">array</span>(<span class="hljs-string">'Content-Type: application/x-www-form-urlencoded'</span>));
+
+
+<span class="hljs-comment">// receive server response ...</span>
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="hljs-keyword">true</span>);
+
+$server_output = curl_exec ($ch);
+
+curl_close ($ch);
+
+<span class="hljs-comment">// further processing ....</span>
+<span class="hljs-keyword">if</span> ($server_output == <span class="hljs-string">"OK"</span>) { ... } <span class="hljs-keyword">else</span> { ... }
+
+<span class="hljs-meta">?&gt;</span>
+</div></code></pre>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>client_id</td>
+<td>terminal</td>
+</tr>
+<tr>
+<td>grant_type</td>
+<td>terminal_rest_api</td>
+</tr>
+<tr>
+<td>authorizationKey</td>
+<td>{{TerminalApiKey}}</td>
+</tr>
+</tbody>
+</table>
+<p>You can get <code>TerminalApiKey</code> by using <code>Reset Private Key</code> button on merchant's portal:</p>
+<p><img src="images/ResetApiKey.png" alt="Reset Private Key"></p>
+<blockquote>
+<p>Please note - you need to store given key securely. You cannot get active value from the merchant's portal - you only can reset current value (new key will be generated and old key will be no longer valid)</p>
+</blockquote>
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="hljs"><code><div>
+{
+    <span class="hljs-attr">"access_token"</span>: <span class="hljs-string">"eyJhbGciOiJSUzI1NsImtpZCI6Ij.....q7MQ8jfwbQ_JKJif_7lTuiVhOGWA"</span>,
+    <span class="hljs-attr">"expires_in"</span>: <span class="hljs-number">86400</span>,
+    <span class="hljs-attr">"token_type"</span>: <span class="hljs-string">"Bearer"</span>,
+    <span class="hljs-attr">"scope"</span>: <span class="hljs-string">"transactions_api"</span>
+}
+
+</div></code></pre>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Value which should be added to each API request in Authorization header with Bearer prefix <code>Bearer {{access_token}}</code></td>
+</tr>
+<tr>
+<td>expires_in</td>
+<td>number</td>
+<td>number of seconds before token will be expires</td>
+</tr>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>always Bearer</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>string</td>
+<td>API scope</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="create-payment-intent-payment-link">Create Payment Intent <em>(payment link)</em></h2>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-keyword">require</span> <span class="hljs-string">'vendor/autoload.php'</span>;
+
+$headers = <span class="hljs-keyword">array</span>(
+    <span class="hljs-string">'Content-Type'</span> =&gt; <span class="hljs-string">'application/json'</span>,
+    <span class="hljs-string">'Accept'</span> =&gt; <span class="hljs-string">'application/json'</span>,
+);
+
+$client = <span class="hljs-keyword">new</span> \GuzzleHttp\Client();
+
+<span class="hljs-comment">// Define array of request body.</span>
+$request_body = <span class="hljs-keyword">array</span>();
+
+<span class="hljs-keyword">try</span> {
+    $response = $client-&gt;request(<span class="hljs-string">'POST'</span>,<span class="hljs-string">'/api/paymentIntent'</span>, <span class="hljs-keyword">array</span>(
+        <span class="hljs-string">'headers'</span> =&gt; $headers,
+        <span class="hljs-string">'json'</span> =&gt; $request_body,
+       )
+    );
+    print_r($response-&gt;getBody()-&gt;getContents());
+ }
+ <span class="hljs-keyword">catch</span> (\GuzzleHttp\<span class="hljs-keyword">Exception</span>\BadResponseException $e) {
+    <span class="hljs-comment">// handle exception or api errors.</span>
+    print_r($e-&gt;getMessage());
+ }
+
+ <span class="hljs-comment">// ...</span>
+
+</div></code></pre>
+<p><code>POST /api/paymentIntent</code></p>
+<p><em>Create payment link to Checkout Page (Auth policies: terminal_or_merchant_frontend_or_admin)</em></p>
+<blockquote>
+<p>Body parameter</p>
+</blockquote>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"dealDetails"</span>: {
+    <span class="hljs-attr">"dealReference"</span>: <span class="hljs-string">"123456"</span>,
+    <span class="hljs-attr">"dealDescription"</span>: <span class="hljs-string">"some product pack: 3kg."</span>,
+    <span class="hljs-attr">"consumerEmail"</span>: <span class="hljs-string">"email@example.com"</span>,
+    <span class="hljs-attr">"consumerPhone"</span>: <span class="hljs-string">"555-765"</span>,
+    <span class="hljs-attr">"consumerID"</span>: <span class="hljs-string">"7263d33c-7e4a-4043-9594-0f4b804fee03"</span>
+  },
+  <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"USD"</span>,
+  <span class="hljs-attr">"paymentRequestAmount"</span>: <span class="hljs-number">1200</span>,
+  <span class="hljs-attr">"dueDate"</span>: <span class="hljs-string">"2021-12-31T00:00:00"</span>,
+  <span class="hljs-attr">"installmentDetails"</span>: {
+    <span class="hljs-attr">"numberOfPayments"</span>: <span class="hljs-number">6</span>,
+    <span class="hljs-attr">"initialPaymentAmount"</span>: <span class="hljs-number">200</span>,
+    <span class="hljs-attr">"totalAmount"</span>: <span class="hljs-number">1200</span>,
+    <span class="hljs-attr">"installmentPaymentAmount"</span>: <span class="hljs-number">200</span>
+  },
+  <span class="hljs-attr">"isRefund"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"redirectUrl"</span>: <span class="hljs-string">"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&amp;MySecurityCode=45678912345"</span>,
+  <span class="hljs-attr">"userAmount"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"extension"</span>: {
+    <span class="hljs-attr">"customPropertyInMySystem"</span>: <span class="hljs-string">"MyCustomValue"</span>
+  }
+}
+</div></code></pre>
+<h3 id="post__api_paymentintent-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>body</td>
+<td>body</td>
+<td><a href="#schemapaymentrequestcreate">PaymentRequestCreate</a></td>
+<td>false</td>
+<td>Payment parameters</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>201 Response</p>
+</blockquote>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Payment Request Created"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+  <span class="hljs-attr">"entityUID"</span>: <span class="hljs-string">"572da646-aadc-4c8a-9f73-8a183ed22f3f"</span>,
+  <span class="hljs-attr">"additionalData"</span>: {
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://checkout.e-c.co.il/i?r=4xgxjJrpKhOgdJa01YhT9fMy7AHdUi1XmWralF9lbbnB0nTGB1vw%3d%3d"</span>
+  }
+}
+</div></code></pre>
+<blockquote>
+<p>400 Response</p>
+</blockquote>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Validation Errors"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,
+  <span class="hljs-attr">"correlationId"</span>: <span class="hljs-string">"a01373f0-db4a-4433-a728-0508a6546062"</span>,
+  <span class="hljs-attr">"errors"</span>: [
+    {
+      <span class="hljs-attr">"code"</span>: <span class="hljs-string">"paymentRequestAmount"</span>,
+      <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."</span>
+    }
+  ]
+}
+</div></code></pre>
+<blockquote>
+<p>404 Response</p>
+</blockquote>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Entity Not Found"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,
+  <span class="hljs-attr">"correlationId"</span>: <span class="hljs-string">"2dbc9714-7e50-4ab0-bd84-e135c039938d"</span>,
+  <span class="hljs-attr">"entityType"</span>: <span class="hljs-string">"Consumer"</span>
+}
+</div></code></pre>
+<h3 id="post__api_paymentintent-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>201</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.2">Created</a></td>
+<td>Success</td>
+<td><a href="#schemaoperationresponse">OperationResponse</a></td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>Bad Request</td>
+<td><a href="#schemaoperationresponse">OperationResponse</a></td>
+</tr>
+<tr>
+<td>401</td>
+<td><a href="https://tools.ietf.org/html/rfc7235#section-3.1">Unauthorized</a></td>
+<td>Unauthorized</td>
+<td>None</td>
+</tr>
+<tr>
+<td>403</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.3">Forbidden</a></td>
+<td>Forbidden</td>
+<td>None</td>
+</tr>
+<tr>
+<td>404</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.4">Not Found</a></td>
+<td>Not Found</td>
+<td><a href="#schemaoperationresponse">OperationResponse</a></td>
+</tr>
+</tbody>
+</table>
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None ( Scopes: terminal_or_merchant_frontend_or_admin )
+</aside>
+<p><br/><br/></p>
+<hr>
+<h2 id="get-transaction-details">Get Transaction details</h2>
+<blockquote>
+<p>Please note, you need to find <code>transactionID</code> in the query string parameters in redirect Url (see above)</p>
+</blockquote>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-keyword">require</span> <span class="hljs-string">'vendor/autoload.php'</span>;
+
+$headers = <span class="hljs-keyword">array</span>(
+    <span class="hljs-string">'Accept'</span> =&gt; <span class="hljs-string">'application/json'</span>,
+);
+
+$client = <span class="hljs-keyword">new</span> \GuzzleHttp\Client();
+
+<span class="hljs-comment">// Define array of request body.</span>
+$request_body = <span class="hljs-keyword">array</span>();
+
+<span class="hljs-keyword">try</span> {
+    $response = $client-&gt;request(<span class="hljs-string">'GET'</span>,<span class="hljs-string">'/api/transactions/{transactionID}'</span>, <span class="hljs-keyword">array</span>(
+        <span class="hljs-string">'headers'</span> =&gt; $headers,
+        <span class="hljs-string">'json'</span> =&gt; $request_body,
+       )
+    );
+    print_r($response-&gt;getBody()-&gt;getContents());
+ }
+ <span class="hljs-keyword">catch</span> (\GuzzleHttp\<span class="hljs-keyword">Exception</span>\BadResponseException $e) {
+    <span class="hljs-comment">// handle exception or api errors.</span>
+    print_r($e-&gt;getMessage());
+ }
+
+ <span class="hljs-comment">// ...</span>
+
+</div></code></pre>
+<p><code>GET /api/transactions/{transactionID}</code></p>
+<p><em>Get payment transaction details (Auth policies: terminal_or_merchant_frontend_or_admin)</em></p>
+<h3 id="get__api_transactions_{transactionid}-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transactionID</td>
+<td>path</td>
+<td>string(uuid)</td>
+<td>true</td>
+<td>Payment transaction UUId</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"paymentTransactionID"</span>: <span class="hljs-string">"b4e3e791-2b73-4359-b582-9efed8f497e8"</span>,
+  <span class="hljs-attr">"transactionDate"</span>: <span class="hljs-string">"2021-11-29T00:00:00"</span>,
+  <span class="hljs-attr">"transactionTimestamp"</span>: <span class="hljs-string">"2021-11-29T17:45:18.3038024Z"</span>,
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"awaitingForTransmission"</span>,
+  <span class="hljs-attr">"paymentTypeEnum"</span>: <span class="hljs-string">"card"</span>,
+  <span class="hljs-attr">"quickStatus"</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">"transactionType"</span>: <span class="hljs-string">"installments"</span>,
+  <span class="hljs-attr">"specialTransactionType"</span>: <span class="hljs-string">"regularDeal"</span>,
+  <span class="hljs-attr">"jDealType"</span>: <span class="hljs-string">"J4"</span>,
+  <span class="hljs-attr">"currency"</span>: <span class="hljs-string">"USD"</span>,
+  <span class="hljs-attr">"cardPresence"</span>: <span class="hljs-string">"cardNotPresent"</span>,
+  <span class="hljs-attr">"numberOfPayments"</span>: <span class="hljs-number">6</span>,
+  <span class="hljs-attr">"transactionAmount"</span>: <span class="hljs-number">1200</span>,
+  <span class="hljs-attr">"amount"</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">"initialPaymentAmount"</span>: <span class="hljs-number">200</span>,
+  <span class="hljs-attr">"totalAmount"</span>: <span class="hljs-number">1200</span>,
+  <span class="hljs-attr">"installmentPaymentAmount"</span>: <span class="hljs-number">200</span>,
+  <span class="hljs-attr">"creditCardDetails"</span>: {
+    <span class="hljs-attr">"cardNumber"</span>: <span class="hljs-string">"123456****1234"</span>,
+    <span class="hljs-attr">"cardExpiration"</span>: <span class="hljs-string">"12/22"</span>,
+    <span class="hljs-attr">"cardBrand"</span>: <span class="hljs-string">"VISA"</span>,
+    <span class="hljs-attr">"cardOwnerName"</span>: <span class="hljs-string">"John Smith"</span>,
+    <span class="hljs-attr">"cardOwnerNationalID"</span>: <span class="hljs-string">"1234567"</span>
+  },
+  <span class="hljs-attr">"dealDetails"</span>: {
+    <span class="hljs-attr">"dealReference"</span>: <span class="hljs-string">"123456"</span>,
+    <span class="hljs-attr">"dealDescription"</span>: <span class="hljs-string">"some product pack: 3kg."</span>,
+    <span class="hljs-attr">"consumerEmail"</span>: <span class="hljs-string">"email@example.com"</span>,
+    <span class="hljs-attr">"consumerPhone"</span>: <span class="hljs-string">"555-765"</span>,
+    <span class="hljs-attr">"consumerID"</span>: <span class="hljs-string">"0f6cc8b7-95bf-4b8b-8be4-fdb6b22b1437"</span>
+  },
+  <span class="hljs-attr">"shvaTransactionDetails"</span>: {
+    <span class="hljs-attr">"shvaShovarNumber"</span>: <span class="hljs-string">"123456"</span>,
+    <span class="hljs-attr">"shvaDealID"</span>: <span class="hljs-string">"12345678901234567890"</span>
+  },
+  <span class="hljs-attr">"allowTransmission"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"allowTransmissionCancellation"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"vatRate"</span>: <span class="hljs-number">0.17</span>,
+  <span class="hljs-attr">"vatTotal"</span>: <span class="hljs-number">174.36</span>,
+  <span class="hljs-attr">"netTotal"</span>: <span class="hljs-number">1025.64</span>,
+  <span class="hljs-attr">"correlationId"</span>: <span class="hljs-string">"738579cc-026a-42c5-95f7-f316aba6064f"</span>,
+  <span class="hljs-attr">"invoiceID"</span>: <span class="hljs-string">"6014afae-2a3c-4397-a3cb-03c0e77ade86"</span>,
+  <span class="hljs-attr">"issueInvoice"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"documentOrigin"</span>: <span class="hljs-string">"checkout"</span>,
+  <span class="hljs-attr">"paymentRequestID"</span>: <span class="hljs-string">"e135fa95-0fa2-4e26-a8e2-3a8e852f834c"</span>,
+  <span class="hljs-attr">"extension"</span>: {
+    <span class="hljs-attr">"customPropertyInMySystem"</span>: <span class="hljs-string">"MyCustomValue"</span>
+  }
+}
+</div></code></pre>
+<h3 id="get__api_transactions_{transactionid}-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>Success</td>
+<td><a href="#schematransactionresponse">TransactionResponse</a></td>
+</tr>
+<tr>
+<td>401</td>
+<td><a href="https://tools.ietf.org/html/rfc7235#section-3.1">Unauthorized</a></td>
+<td>Unauthorized</td>
+<td>None</td>
+</tr>
+<tr>
+<td>403</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.3">Forbidden</a></td>
+<td>Forbidden</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None ( Scopes: terminal_or_merchant_frontend_or_admin )
+</aside>
+<p><br/><br/></p>
+<h1 id="easycard-next-generation-api-v1---transactions-api-schemas-sections-related-to-checkout-page">EasyCard Next Generation API v1 - <em>Transactions API Schemas (sections related to Checkout Page)</em></h1>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_PaymentRequestCreate">PaymentRequestCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentrequestcreate"></a>
+<a id="schema_PaymentRequestCreate"></a>
+<a id="tocSpaymentrequestcreate"></a>
+<a id="tocspaymentrequestcreate"></a>
+<p>Create a link to Checkout Page</p>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>terminalID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>EasyCard Terminal</td>
+</tr>
+<tr>
+<td>dealDetails</td>
+<td><a href="#schemadealdetails">DealDetails</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>currency</td>
+<td><a href="#schemacurrencyenum">CurrencyEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>ILS<br><br>USD<br><br>EUR</td>
+</tr>
+<tr>
+<td>paymentRequestAmount</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal amount including VAT. This amount will be displayed on Checkout Page. Consumer can override this amount in case if UserAmount flag specified.</td>
+</tr>
+<tr>
+<td>dueDate</td>
+<td>string(date-time)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Due date of payment link</td>
+</tr>
+<tr>
+<td>installmentDetails</td>
+<td><a href="#schemainstallmentdetails">InstallmentDetails</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>invoiceDetails</td>
+<td><a href="#schemainvoicedetails">InvoiceDetails</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>issueInvoice</td>
+<td>boolean¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Create document - Invoice, Receipt etc. If omitted, default terminal settings will be used</td>
+</tr>
+<tr>
+<td>allowPinPad</td>
+<td>boolean¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Enables PinPad button on checkout page</td>
+</tr>
+<tr>
+<td>vatRate</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal tax rate. Can be omitted if only PaymentRequestAmount specified - in this case VAT rate from terminal settings will be used</td>
+</tr>
+<tr>
+<td>vatTotal</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Total deal tax amount. VATTotal = NetTotal * VATRate. Can be omitted if only PaymentRequestAmount specified</td>
+</tr>
+<tr>
+<td>netTotal</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal. Can be omitted if only PaymentRequestAmount specified</td>
+</tr>
+<tr>
+<td>requestSubject</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>You can override default email subject When sending payment link via email</td>
+</tr>
+<tr>
+<td>fromAddress</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>You can override &quot;from&quot; address subject When sending payment link via email</td>
+</tr>
+<tr>
+<td>isRefund</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>Generate link to Checkout Page to create refund</td>
+</tr>
+<tr>
+<td>redirectUrl</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Url to merchant's web site. Base url should be configured in terminal settings. You can add any details to query string.</td>
+</tr>
+<tr>
+<td>userAmount</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>Consumer can override PaymentRequestAmount</td>
+</tr>
+<tr>
+<td>cardOwnerNationalID</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>extension</td>
+<td>object¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Any advanced payload which will be stored in EasyCard and then can be obtained using &quot;GetTransaction&quot;</td>
+</tr>
+<tr>
+<td>» <strong>additionalProperties</strong></td>
+<td><a href="#schemajtoken">JToken</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_TransactionResponse">TransactionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematransactionresponse"></a>
+<a id="schema_TransactionResponse"></a>
+<a id="tocStransactionresponse"></a>
+<a id="tocstransactionresponse"></a>
+<p>Payment transaction details</p>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>paymentTransactionID</td>
+<td>string(uuid)</td>
+<td>false</td>
+<td>none</td>
+<td>Primary transaction reference (UUId)</td>
+</tr>
+<tr>
+<td>transactionDate</td>
+<td>string(date-time)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Legal transaction day</td>
+</tr>
+<tr>
+<td>transactionTimestamp</td>
+<td>string(date-time)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Date-time when transaction created initially in UTC</td>
+</tr>
+<tr>
+<td>initialTransactionID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Reference to initial billing deal</td>
+</tr>
+<tr>
+<td>currentDeal</td>
+<td>integer(int32)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Current deal number (billing)</td>
+</tr>
+<tr>
+<td>terminalID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>EasyCard terminal UUId</td>
+</tr>
+<tr>
+<td>terminalName</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>EasyCard terminal name</td>
+</tr>
+<tr>
+<td>merchantID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Merchant</td>
+</tr>
+<tr>
+<td>status</td>
+<td><a href="#schematransactionstatusenum">TransactionStatusEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>initial<br><br>confirmedByAggregator<br><br>confirmedByPinpadPreProcessor<br><br>confirmedByProcessor<br><br>awaitingForTransmission<br><br>transmissionInProgress<br><br>transmissionCancelingInProgress<br><br>completed<br><br>awaitingToSelectJ5<br><br>transmissionToProcessorFailed<br><br>failedToCommitByAggregator<br><br>failedToConfirmByProcesor<br><br>failedToConfirmByAggregator<br><br>cancelledByMerchant<br><br>rejectedByProcessor<br><br>rejectedByAggregator</td>
+</tr>
+<tr>
+<td>paymentTypeEnum</td>
+<td><a href="#schemapaymenttypeenum">PaymentTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>card<br><br>cheque<br><br>cash<br><br>bank</td>
+</tr>
+<tr>
+<td>quickStatus</td>
+<td><a href="#schemaquickstatusfiltertypeenum">QuickStatusFilterTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>Pending<br><br>Completed<br><br>Failed<br><br>Canceled<br><br>AwaitingForTransmission</td>
+</tr>
+<tr>
+<td>finalizationStatus</td>
+<td><a href="#schematransactionfinalizationstatusenum">TransactionFinalizationStatusEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>initial<br><br>failedToCancelByAggregator<br><br>canceledByAggregator</td>
+</tr>
+<tr>
+<td>transactionType</td>
+<td><a href="#schematransactiontypeenum">TransactionTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>regularDeal<br><br>installments<br><br>credit<br><br>immediate</td>
+</tr>
+<tr>
+<td>specialTransactionType</td>
+<td><a href="#schemaspecialtransactiontypeenum">SpecialTransactionTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>regularDeal<br><br>initialDeal<br><br>refund</td>
+</tr>
+<tr>
+<td>jDealType</td>
+<td><a href="#schemajdealtypeenum">JDealTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>J4<br><br>J2<br><br>J5</td>
+</tr>
+<tr>
+<td>transactionJ5ExpiredDate</td>
+<td>string(date-time)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Transaction J5 expired date (in gengeral after 1 day)</td>
+</tr>
+<tr>
+<td>rejectionReason</td>
+<td><a href="#schemarejectionreasonenum">RejectionReasonEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>unknown<br><br>creditCardIsMerchantsCard<br><br>nationalIdIsMerchantsId<br><br>singleTransactionAmountExceeded<br><br>dailyAmountExceeded<br><br>creditCardDailyUsageExceeded<br><br>refundNotMatchRegularAmount<br><br>refundExceededCollateral<br><br>cardOwnerNationalIdRequired<br><br>authCodeRequired</td>
+</tr>
+<tr>
+<td>currency</td>
+<td><a href="#schemacurrencyenum">CurrencyEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>ILS<br><br>USD<br><br>EUR</td>
+</tr>
+<tr>
+<td>cardPresence</td>
+<td><a href="#schemacardpresenceenum">CardPresenceEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>cardNotPresent<br><br>regular</td>
+</tr>
+<tr>
+<td>numberOfPayments</td>
+<td>integer(int32)</td>
+<td>false</td>
+<td>none</td>
+<td>Number Of Installments</td>
+</tr>
+<tr>
+<td>transactionAmount</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>This transaction amount</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>initialPaymentAmount</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>Initial installment payment</td>
+</tr>
+<tr>
+<td>totalAmount</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount</td>
+</tr>
+<tr>
+<td>installmentPaymentAmount</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>Amount of one instalment payment</td>
+</tr>
+<tr>
+<td>creditCardDetails</td>
+<td><a href="#schemacreditcarddetails">CreditCardDetails</a></td>
+<td>false</td>
+<td>none</td>
+<td>Does not store full card number. Used 123456****1234 pattern</td>
+</tr>
+<tr>
+<td>creditCardToken</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Stored credit card details token reference</td>
+</tr>
+<tr>
+<td>dealDetails</td>
+<td><a href="#schemadealdetails">DealDetails</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>shvaTransactionDetails</td>
+<td>any</td>
+<td>false</td>
+<td>none</td>
+<td>Shva details</td>
+</tr>
+<tr>
+<td>clearingHouseTransactionDetails</td>
+<td>any</td>
+<td>false</td>
+<td>none</td>
+<td>PayDay details</td>
+</tr>
+<tr>
+<td>upayTransactionDetails</td>
+<td>any</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>updatedDate</td>
+<td>string(date-time)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Date-time when transaction status updated</td>
+</tr>
+<tr>
+<td>updateTimestamp</td>
+<td>string(byte)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Concurrency key</td>
+</tr>
+<tr>
+<td>allowTransmission</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>Transaction can be transmitted manually</td>
+</tr>
+<tr>
+<td>allowTransmissionCancellation</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>Transaction transmission cannot be canceled manually</td>
+</tr>
+<tr>
+<td>billingDealID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Reference to billing schedule which produced this transaction</td>
+</tr>
+<tr>
+<td>rejectionMessage</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Rejection Reason Message (in case of rejected transaction)</td>
+</tr>
+<tr>
+<td>vatRate</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>Deal tax rate</td>
+</tr>
+<tr>
+<td>vatTotal</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>Total deal tax amount. VATTotal = NetTotal * VATRate</td>
+</tr>
+<tr>
+<td>netTotal</td>
+<td>number(double)</td>
+<td>false</td>
+<td>none</td>
+<td>Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal</td>
+</tr>
+<tr>
+<td>consumerIP</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>We can know it from checkout page activity</td>
+</tr>
+<tr>
+<td>merchantIP</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Merchant's IP</td>
+</tr>
+<tr>
+<td>correlationId</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Request ID</td>
+</tr>
+<tr>
+<td>invoiceID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Generated invoice ID</td>
+</tr>
+<tr>
+<td>issueInvoice</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>Create document for transaction</td>
+</tr>
+<tr>
+<td>documentOrigin</td>
+<td><a href="#schemadocumentoriginenum">DocumentOriginEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>Document origin (primarely payment transaction origin)<br><br>UI (Document created manually by merchant user using Merchant's UI)<br><br>API (Document created via API)<br><br>checkout (Document created by consumer using Checkout Page)<br><br>billing (Document generated based on billing schedule)<br><br>device (Transaction created using pinpad device (or other device))<br><br>paymentRequest (Document created by consumer using Checkout Page with a payment link)</td>
+</tr>
+<tr>
+<td>paymentRequestID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Reference to initial payment link creation request</td>
+</tr>
+<tr>
+<td>processorResultCode</td>
+<td>integer(int32)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>extension</td>
+<td>object¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Any advanced payload which will be stored in EasyCard and then can be obtained using &quot;GetTransaction&quot;</td>
+</tr>
+<tr>
+<td>» <strong>additionalProperties</strong></td>
+<td><a href="#schemajtoken">JToken</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_DealDetails">DealDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemadealdetails"></a>
+<a id="schema_DealDetails"></a>
+<a id="tocSdealdetails"></a>
+<a id="tocsdealdetails"></a>
+<p>Additional deal information. All these data are not required and used only for merchant's business purposes.</p>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dealReference</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal identifier in merchant's system</td>
+</tr>
+<tr>
+<td>dealDescription</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal description. In case of generating payment link, these description will be displayed on Checkout Page</td>
+</tr>
+<tr>
+<td>consumerEmail</td>
+<td>string(email)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>End-customer Email</td>
+</tr>
+<tr>
+<td>consumerName</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>End-customer Name</td>
+</tr>
+<tr>
+<td>consumerNationalID</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>End-customer National Id</td>
+</tr>
+<tr>
+<td>consumerPhone</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>End-customer Phone</td>
+</tr>
+<tr>
+<td>consumerID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>End-customer record UUId in EasyCard system</td>
+</tr>
+<tr>
+<td>items</td>
+<td>[<a href="#schemaitem">Item</a>]¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Deal Items<br>ID, Count, Name</td>
+</tr>
+<tr>
+<td>consumerAddress</td>
+<td><a href="#schemaaddress">Address</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>consumerExternalReference</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>External system consumer identifier for example RapidOne customer code</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_InstallmentDetails">InstallmentDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemainstallmentdetails"></a>
+<a id="schema_InstallmentDetails"></a>
+<a id="tocSinstallmentdetails"></a>
+<a id="tocsinstallmentdetails"></a>
+<p>Installment payments details</p>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>numberOfPayments</td>
+<td>integer(int32)</td>
+<td>true</td>
+<td>none</td>
+<td>Number Of Installments</td>
+</tr>
+<tr>
+<td>initialPaymentAmount</td>
+<td>number(currency)</td>
+<td>true</td>
+<td>none</td>
+<td>Initial installment payment</td>
+</tr>
+<tr>
+<td>totalAmount</td>
+<td>number(currency)</td>
+<td>true</td>
+<td>none</td>
+<td>TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount</td>
+</tr>
+<tr>
+<td>installmentPaymentAmount</td>
+<td>number(currency)</td>
+<td>true</td>
+<td>none</td>
+<td>Amount of each additional payments</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_InvoiceDetails">InvoiceDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemainvoicedetails"></a>
+<a id="schema_InvoiceDetails"></a>
+<a id="tocSinvoicedetails"></a>
+<a id="tocsinvoicedetails"></a>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>invoiceType</td>
+<td><a href="#schemainvoicetypeenum">InvoiceTypeEnum</a></td>
+<td>false</td>
+<td>none</td>
+<td>invoice<br><br>invoiceWithPaymentInfo<br><br>creditNote<br><br>paymentInfo<br><br>refundInvoice</td>
+</tr>
+<tr>
+<td>invoiceSubject</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>sendCCTo</td>
+<td>[string]¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_Item">Item</h2>
+<!-- backwards compatibility -->
+<a id="schemaitem"></a>
+<a id="schema_Item"></a>
+<a id="tocSitem"></a>
+<a id="tocsitem"></a>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>itemID</td>
+<td>string(uuid)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>externalReference</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>itemName</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>sku</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>price</td>
+<td>number(double)</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Row amount</td>
+</tr>
+<tr>
+<td>vatRate</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>VAT Rate</td>
+</tr>
+<tr>
+<td>vat</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>VAT amount</td>
+</tr>
+<tr>
+<td>netAmount</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Net amount (before VAT)</td>
+</tr>
+<tr>
+<td>discount</td>
+<td>number(currency)¦null</td>
+<td>false</td>
+<td>none</td>
+<td>Discount</td>
+</tr>
+<tr>
+<td>extension</td>
+<td>object¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>» <strong>additionalProperties</strong></td>
+<td><a href="#schemajtoken">JToken</a></td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_Address">Address</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddress"></a>
+<a id="schema_Address"></a>
+<a id="tocSaddress"></a>
+<a id="tocsaddress"></a>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>countryCode</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>city</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>zip</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>street</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>house</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>apartment</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_CreditCardDetails">CreditCardDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemacreditcarddetails"></a>
+<a id="schema_CreditCardDetails"></a>
+<a id="tocScreditcarddetails"></a>
+<a id="tocscreditcarddetails"></a>
+<p>Does not store full card number. Used 123456****1234 pattern</p>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cardNumber</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardExpiration</td>
+<td><a href="#schemacardexpiration">CardExpiration</a></td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardVendor</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardBrand</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>solek</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardOwnerName</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardOwnerNationalID</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>cardReaderInput</td>
+<td>string¦null</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><br/><br/></p>
+<hr>
+<h2 id="tocS_CardExpiration">CardExpiration</h2>
+<!-- backwards compatibility -->
+<a id="schemacardexpiration"></a>
+<a id="schema_CardExpiration"></a>
+<a id="tocScardexpiration"></a>
+<a id="tocscardexpiration"></a>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>year</td>
+<td>integer(int32)</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>month</td>
+<td>integer(int32)</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>expired</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>

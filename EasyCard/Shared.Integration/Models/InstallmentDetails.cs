@@ -35,7 +35,7 @@ namespace Shared.Integration.Models
         public decimal TotalAmount { get; set; }
 
         /// <summary>
-        /// Amount of one instalment payment
+        /// Amount of each additional payments
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]

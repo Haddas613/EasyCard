@@ -25,6 +25,37 @@
             <param name="ignoreStatus"></param>
             <returns></returns>
         </member>
+        <member name="T:Transactions.Api.Controllers.PaymentIntentController">
+            <summary>
+            Payment link API
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentIntentController.CreatePaymentIntent(Transactions.Api.Models.PaymentRequests.PaymentRequestCreate)">
+            <summary>
+            Create payment link to Checkout Page
+            </summary>
+            <param name="model">Payment parameters</param>
+            <returns>Redirect url</returns>
+        </member>
+        <member name="T:Transactions.Api.Controllers.TransactionsApiController">
+            <summary>
+            Payment transactions API
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.GetTransaction(System.Guid)">
+            <summary>
+            Get payment transaction details
+            </summary>
+            <param name="transactionID">Payment transaction UUId</param>
+            <returns>Transaction details</returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.GetTransactions(Transactions.Api.Models.Transactions.TransactionsFilter)">
+            <summary>
+            Get payment transactions list using filter
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
             <summary>
             Create the charge based on credit card or previously stored credit card token (J4 deal)
@@ -287,6 +318,11 @@
             Create document for transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerName">
+            <summary>
+            Performs search by both consumer name and card owner name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
             <summary>
             End-customer Email
@@ -363,9 +399,9 @@
               Looks up a localized string similar to Card Number.
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardOwnerName">
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerName">
             <summary>
-              Looks up a localized string similar to Card Owner.
+              Looks up a localized string similar to Customer.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
@@ -896,9 +932,14 @@
               Looks up a localized string similar to Terminal.
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate">
+            <summary>
+            Create a link to Checkout Page
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TerminalID">
             <summary>
-            Terminal
+            EasyCard Terminal
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DealDetails">
@@ -911,9 +952,14 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.PaymentRequestAmount">
+            <summary>
+            Deal amount including VAT. This amount will be displayed on Checkout Page. Consumer can override this amount in case if UserAmount flag specified.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DueDate">
             <summary>
-            Due date
+            Due date of payment link
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InstallmentDetails">
@@ -923,27 +969,67 @@
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InvoiceDetails">
             <summary>
-            Invoice details
+            Invoice details. In case if omitted default values will be used. Ignored in case if "IssueInvoice" is false
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.PinPadDetails">
             <summary>
-            pinpad details
+            Pinpad device details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.IssueInvoice">
             <summary>
-            Create document
+            Create document - Invoice, Receipt etc. If omitted, default terminal settings will be used
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.AllowPinPad">
             <summary>
-            Allow PinPad Deal
+            Enables PinPad button on checkout page
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.VATRate">
+            <summary>
+            Deal tax rate. Can be omitted if only PaymentRequestAmount specified - in this case VAT rate from terminal settings will be used
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.VATTotal">
+            <summary>
+            Total deal tax amount. VATTotal = NetTotal * VATRate. Can be omitted if only PaymentRequestAmount specified
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.NetTotal">
+            <summary>
+            Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal. Can be omitted if only PaymentRequestAmount specified
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.RequestSubject">
             <summary>
-            Email subject
+            You can override default email subject When sending payment link via email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.FromAddress">
+            <summary>
+            You can override "from" address subject When sending payment link via email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.IsRefund">
+            <summary>
+            Generate link to Checkout Page to create refund
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.RedirectUrl">
+            <summary>
+            Url to merchant's web site. Base url should be configured in terminal settings. You can add any details to query string.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.UserAmount">
+            <summary>
+            Consumer can override PaymentRequestAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.Extension">
+            <summary>
+            Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
@@ -1465,7 +1551,7 @@
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
-            Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
+            Does not store full card number. Used 123456****1234 pattern
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.InitalBillingDealRequest">
@@ -1665,7 +1751,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.PaymentTransactionID">
             <summary>
-            Primary transaction reference
+            Primary transaction reference (UUId)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionDate">
@@ -1685,12 +1771,12 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CurrentDeal">
             <summary>
-            Current deal (billing)
+            Current deal number (billing)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalID">
             <summary>
-            Terminal
+            EasyCard terminal UUId
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalName">
@@ -1785,7 +1871,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardToken">
             <summary>
-            Stored credit card details token
+            Stored credit card details token reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.DealDetails">
@@ -1813,14 +1899,39 @@
             Concurrency key
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmission">
+            <summary>
+            Transaction can be transmitted manually
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmissionCancellation">
+            <summary>
+            Transaction transmission cannot be canceled manually
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingDealID">
             <summary>
-            Reference to initial billing deal
+            Reference to billing schedule which produced this transaction
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionMessage">
             <summary>
-            Rejection Reason Message
+            Rejection Reason Message (in case of rejected transaction)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.VATRate">
+            <summary>
+            Deal tax rate
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.VATTotal">
+            <summary>
+            Total deal tax amount. VATTotal = NetTotal * VATRate
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.NetTotal">
+            <summary>
+            Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ConsumerIP">
@@ -1846,6 +1957,21 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.IssueInvoice">
             <summary>
             Create document for transaction
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.DocumentOrigin">
+            <summary>
+            Payment transaction origin. For example "Checkout" means that transaction created by consumer via Checkout Page, "Billing" means that transaction generated based on billing schedule etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.PaymentRequestID">
+            <summary>
+            Reference to initial payment link creation request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Extension">
+            <summary>
+            Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">
