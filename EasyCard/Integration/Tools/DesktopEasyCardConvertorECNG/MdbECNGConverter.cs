@@ -20,6 +20,7 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transactions.Api.Client;
 using Transactions.Api.Models.Billing;
 
 namespace DesktopEasyCardConvertorECNG
@@ -576,7 +577,7 @@ namespace DesktopEasyCardConvertorECNG
                     DateTo = startPauseDate.AddMonths(1).AddDays(-1),
                      Reason = pausedBillingDeal.Note
                 };
-                var resPausedBillingDeal = await transactionsService.PauseBillingDeal(res.EntityUID, requestPausedBillingDeal);
+                var resPausedBillingDeal = await transactionsService.PauseBillingDeal(res.EntityUID??Guid.Empty, requestPausedBillingDeal);
                 logger.LogInformation($"Paused billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) for dates {requestPausedBillingDeal.DateFrom} - {requestPausedBillingDeal.DateTo} Reason: {requestPausedBillingDeal.Reason}");
             }
         }
