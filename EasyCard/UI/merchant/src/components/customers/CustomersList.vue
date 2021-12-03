@@ -1,5 +1,32 @@
 <template>
   <div>
+    <v-card class="my-2" width="100%" flat v-if="overview">
+      <v-card-title class="pb-0">
+        <v-row class="py-0" no-gutters>
+          <v-col cols="10">{{$t("Overview")}}</v-col>
+          <v-col cols="2" class="text-end">
+            <v-btn icon @click="refresh()" :loading="loading">
+              <v-icon color="primary">mdi-refresh</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-title>
+      <v-card-text class="body-2">
+        <v-row no-gutters class="py-1">
+          <v-col cols="12" md="3" lg="3" xl="3">
+            <v-row no-gutters>
+              <v-col cols="12">{{$t("Total")}}:</v-col>
+              <v-col cols="12" class="font-weight-bold">
+                {{totalAmount}}
+                <span
+                  v-if="customers.length"
+                >({{$t("@Displayed").replace("@amount", customers.length)}})</span>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
     <div class="white">
       <v-text-field
         class="py-0 px-5 input-simple"
@@ -105,6 +132,10 @@ export default {
     allowShowDeleted: {
       default: false,
       type: Boolean
+    },
+    overview: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -119,7 +150,8 @@ export default {
       paging: {
         take: 100,
         skip: 0
-      }
+      },
+      loading: false
     };
   },
   async mounted() {
@@ -158,38 +190,50 @@ export default {
       }
     },
     async getCustomers(extendData) {
-      let searchApply = this.search && this.search.trim().length >= 3;
-
-      let terminalID = null;
-      if(this.filterByTerminal){
-        terminalID = typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
+      if(this.loading){
+        return;
       }
+      this.loading = true;
+      try{
+        let searchApply = this.search && this.search.trim().length >= 3;
 
-      let customers = await this.$api.consumers.getConsumers({
-        search: searchApply ? this.search : "",
-        ...this.paging,
-        terminalID: terminalID,
-        showDeleted: this.allowShowDeleted ? this.$showDeleted(this.showDeletedCustomers) : false
-      });
-      this.totalAmount = customers.numberOfRecords;
+        let terminalID = null;
+        if(this.filterByTerminal){
+          terminalID = typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
+        }
 
-      if (extendData) {
-        this.customers = [...this.customers, ...customers.data];
-      } else {
-        this.customers = customers.data;
+        let customers = await this.$api.consumers.getConsumers({
+          search: searchApply ? this.search : "",
+          ...this.paging,
+          terminalID: terminalID,
+          showDeleted: this.allowShowDeleted ? this.$showDeleted(this.showDeletedCustomers) : false
+        });
+        this.totalAmount = customers.numberOfRecords;
+
+        if (extendData) {
+          this.customers = [...this.customers, ...customers.data];
+        } else {
+          this.customers = customers.data;
+        }
+        /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
+        if (!searchApply && customers.numberOfRecords <= 100) {
+          this.showGrouped = true;
+          this.groupCustomersAlphabetically(customers.data);
+        } else {
+          this.showGrouped = false;
+          this.groupedCustomers = {};
+        }
       }
-      /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
-      if (!searchApply && customers.numberOfRecords <= 100) {
-        this.showGrouped = true;
-        this.groupCustomersAlphabetically(customers.data);
-      } else {
-        this.showGrouped = false;
-        this.groupedCustomers = {};
+      finally{
+        this.loading = false;
       }
     },
     async loadMore() {
       this.paging.skip += this.paging.take;
       await this.getCustomers(true);
+    },
+    async refresh(){
+      await this.getCustomers(false);
     }
   },
   watch: {

@@ -104,5 +104,14 @@ namespace Merchants.Api.Models.Integrations.Shva {
                 return ResourceManager.GetString("NewPasswordSetSuccessfully", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated parameters successfully.
+        /// </summary>
+        public static string UpdatedParametersSuccessfully {
+            get {
+                return ResourceManager.GetString("UpdatedParametersSuccessfully", resourceCulture);
+            }
+        }
     }
 }

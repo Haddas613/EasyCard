@@ -93,6 +93,26 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route("update-params")]
+        public async Task<ActionResult<OperationResponse>> UpdateParams(UpdateParamsRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var terminalProcessor = EnsureExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
+
+            var correlationId = GetCorrelationID();
+
+            await shvaProcessor.ParamsUpdateTransaction(new ProcessorUpdateParametersRequest
+            {
+                TerminalID = request.TerminalID,
+                ProcessorSettings = terminalProcessor.Settings?.ToObject<ShvaTerminalSettings>(),
+                CorrelationId = correlationId
+            });
+
+            return new OperationResponse(ShvaMessagesResource.NewPasswordSetSuccessfully, StatusEnum.Success);
+        }
+
         private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));

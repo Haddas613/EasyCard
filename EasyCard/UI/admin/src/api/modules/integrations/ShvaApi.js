@@ -12,4 +12,8 @@ export default class ShvaApi {
     async testConnection(data){
         return this.base.post(this.shvaIntegrationUrl + `/test-connection`, data);
     }
+
+    async updateParameters(data){
+        return this.base.post(this.shvaIntegrationUrl + `/update-params`, data);
+    }
 }
