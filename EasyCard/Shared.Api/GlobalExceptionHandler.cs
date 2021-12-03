@@ -17,6 +17,7 @@ using System.Text;
 
 namespace Shared.Api
 {
+    [Obsolete]
     public class GlobalExceptionHandler
     {
         public static void HandleException(IApplicationBuilder applicationBuilder)

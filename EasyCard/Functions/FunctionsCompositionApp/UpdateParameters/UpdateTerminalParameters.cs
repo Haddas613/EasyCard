@@ -16,7 +16,6 @@ namespace FunctionsCompositionApp.UpdateParameters
 {
     public static class UpdateTerminalParameters
     {
-        [FixedDelayRetry(0, "00:01:00")]
         [FunctionName("UpdateTerminalParameters")]
         public static async Task Run([QueueTrigger("updateTerminalSHVAParameters")] string messageBody, ILogger log, ExecutionContext context)
         {
@@ -33,7 +32,6 @@ namespace FunctionsCompositionApp.UpdateParameters
 
             try
             {
-
                 var response = await merchantsApiClient.UpdateTerminalParameters(updateParametersTerminalID);
                 if (response.Status == SharedApi.Models.Enums.StatusEnum.Success)
                 {
@@ -41,14 +39,12 @@ namespace FunctionsCompositionApp.UpdateParameters
                 }
                 else
                 {
-                    log.LogError($"Cannot update terminal parameters for terminal {messageBody}");
-                    throw new ApplicationException($"Cannot update terminal parameters for terminal {messageBody}");
+                    log.LogError($"Cannot update terminal parameters for terminal {messageBody}: {response.Message} ({response.AdditionalData})");
                 }
             }
             catch (Exception ex)
             {
                 log.LogError(ex, $"Cannot update terminal parameters for terminal {messageBody}: {ex.Message}");
-                throw;
             }
         }
     }
