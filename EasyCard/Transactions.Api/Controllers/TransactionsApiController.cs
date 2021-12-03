@@ -359,12 +359,15 @@ namespace Transactions.Api.Controllers
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
 
+                // TODO: what if consumer does not created
+
                 if (model.DealDetails.ConsumerID != null)
                 {
                     var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                     mapper.Map(model, tokenRequest);
 
-                    var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+                    DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
+                    var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
 
                     var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -421,6 +424,7 @@ namespace Transactions.Api.Controllers
                 isPaymentIntent = true;
             }
 
+            // TODO: get from terminal
             var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
             CreateTransactionRequest model = new CreateTransactionRequest();
 
@@ -434,7 +438,10 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
-                EnsureExists(merchantID);
+                if (merchantID == null)
+                {
+                    throw new ApplicationException("MerchantID is empty");
+                }
 
                 if (model.DealDetails.ConsumerID == null)
                 {
@@ -444,7 +451,8 @@ namespace Transactions.Api.Controllers
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
-                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+                DocumentOriginEnum origin = isPaymentIntent ? DocumentOriginEnum.Checkout : DocumentOriginEnum.PaymentRequest;
+                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -546,7 +554,9 @@ namespace Transactions.Api.Controllers
                 var dbData = mapper.Map<CreditCardTokenDetails>(tokenRequest);
                 var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
                 dbData.MerchantID = terminal.MerchantID;
-                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+                DocumentOriginEnum origin = User.IsTerminal() ? DocumentOriginEnum.API : DocumentOriginEnum.UI;
+
+                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
