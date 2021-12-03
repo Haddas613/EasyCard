@@ -180,14 +180,5 @@ namespace Bit
 
             return headers;
         }
-
-        //public async Task<TokenResponse> GetToken()
-        //{
-        //    var tokenResponse = await apiClient.PostRawFormRawResponse(configuration.IdentityApiAddress, "/connect/token",
-        //        new Dictionary<string, string> { { "client_id", "terminal" }, { "grant_type", "terminal_rest_api" }, { "authorizationKey", privateKey } });
-        //    var res = await TokenResponse.FromHttpResponseAsync<TokenResponse>(tokenResponse);
-
-        //    return res;
-        //}
     }
 }

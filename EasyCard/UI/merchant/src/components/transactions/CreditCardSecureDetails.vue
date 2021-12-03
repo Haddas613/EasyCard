@@ -31,16 +31,36 @@
     </ec-dialog>
     <v-card-text class="py-0">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <div class="d-flex justify-center" v-if="includeDevice && availableDevices.length">
-          <v-switch
-            dense
-            hide-details
-            v-model="model.pinPad"
-            :label="$t('UsePinPad')"
-            :disabled="!availableDevices.length">
-          </v-switch>
-        </div>
-        <template v-if="model.pinPad">
+        <v-row no-gutters>
+          <v-col 
+            :cols="(allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)) ? 6 : 12"
+            class="d-flex justify-center"
+            v-if="includeDevice && availableDevices.length">
+            <v-switch
+              dense
+              hide-details
+              v-model="model.pinPad"
+              :label="$t('UsePinPad')"
+              :disabled="!availableDevices.length || model.useBit"
+              @change="model.useBit = false">
+            </v-switch>
+          </v-col>
+          <v-col cols="6" class="d-flex justify-center" v-if="allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)">
+            <v-switch
+              dense
+              hide-details
+              v-model="model.useBit"
+              :label="$t('PayWithBit')"
+              :disabled="!availableDevices.length || model.pinPad"
+              @change="model.pinPad = false">
+            </v-switch>
+          </v-col>
+        </v-row>
+        <template v-if="model.useBit">
+          <bit-payment-component></bit-payment-component>
+        </template>
+        <template v-else>
+          <template v-if="model.pinPad">
             <v-row no-gutters>
               <v-col cols="12" v-if="availableDevices.length > 0">
                 <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
@@ -68,77 +88,78 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+          </template>
+          <template v-if="!model.pinPad">
+            <ec-dialog-invoker
+              v-on:click="handleClick()"
+              v-if="customerTokens"
+              :clickable="(customerTokens.length > 0)"
+              class="py-2"
+            >
+              <template v-slot:prepend>
+                <v-icon>mdi-credit-card-outline</v-icon>
+              </template>
+              <template v-slot:left >
+                <div v-if="!token">
+                  <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+                  <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
+                </div>
+                <div v-if="token">
+                  <span class="primary--text">
+                    <card-token-string :token="token"></card-token-string>
+                  </span>
+                </div>
+              </template>
+              <template v-slot:append>
+                <re-icon>mdi-chevron-right</re-icon>
+              </template>
+            </ec-dialog-invoker>
+              <template v-if="!token">
+                <credit-card-secure-details-fields
+                  :data="model.creditCardSecureDetails"
+                  ref="ccsecuredetailsform"
+                  :tokens="customerTokens"
+                  :show-customer-select-btn="includeCustomer"
+                  v-on:select-customer="onCustomerSelect()"
+                ></credit-card-secure-details-fields>
+                <v-row no-gutters>
+                  <v-col cols="5" md="3">
+                    <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
+                  </v-col>
+                  <v-col cols="7" md="9">
+                    <v-text-field
+                      class="mt-2"
+                      v-model="model.oKNumber"
+                      :label="$t('AuthorizationCode')"
+                      :rules="[vr.primitives.stringLength(1, 50)]">
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </template>
+              <v-text-field
+                v-else
+                v-model="model.oKNumber"
+                :label="$t('AuthorizationCodeOptional')"
+                :rules="[vr.primitives.stringLength(1, 50)]">
+              </v-text-field>
+          </template>
+          <v-select
+            :items="dictionaries.transactionTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.transactionType"
+            :label="$t('TransactionType')"
+            outlined
+          ></v-select>
+          <installment-details
+            ref="instDetails"
+            :data="model.installmentDetails"
+            v-if="isInstallmentTransaction"
+            :total-amount="data.transactionAmount"
+            :key="model.transactionType"
+            :transaction-type="model.transactionType"
+          ></installment-details>
         </template>
-        <template v-if="!model.pinPad">
-          <ec-dialog-invoker
-            v-on:click="handleClick()"
-            v-if="customerTokens"
-            :clickable="(customerTokens.length > 0)"
-            class="py-2"
-          >
-            <template v-slot:prepend>
-              <v-icon>mdi-credit-card-outline</v-icon>
-            </template>
-            <template v-slot:left >
-              <div v-if="!token">
-                <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
-                <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
-              </div>
-              <div v-if="token">
-                <span class="primary--text">
-                  <card-token-string :token="token"></card-token-string>
-                </span>
-              </div>
-            </template>
-            <template v-slot:append>
-              <re-icon>mdi-chevron-right</re-icon>
-            </template>
-          </ec-dialog-invoker>
-            <template v-if="!token">
-              <credit-card-secure-details-fields
-                :data="model.creditCardSecureDetails"
-                ref="ccsecuredetailsform"
-                :tokens="customerTokens"
-                :show-customer-select-btn="includeCustomer"
-                v-on:select-customer="onCustomerSelect()"
-              ></credit-card-secure-details-fields>
-              <v-row no-gutters>
-                <v-col cols="5" md="3">
-                  <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
-                </v-col>
-                <v-col cols="7" md="9">
-                  <v-text-field
-                    class="mt-2"
-                    v-model="model.oKNumber"
-                    :label="$t('AuthorizationCode')"
-                    :rules="[vr.primitives.stringLength(1, 50)]">
-                  </v-text-field>
-                </v-col>
-              </v-row>
-            </template>
-            <v-text-field
-              v-else
-              v-model="model.oKNumber"
-              :label="$t('AuthorizationCodeOptional')"
-              :rules="[vr.primitives.stringLength(1, 50)]">
-            </v-text-field>
-        </template>
-        <v-select
-          :items="dictionaries.transactionTypeEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.transactionType"
-          :label="$t('TransactionType')"
-          outlined
-        ></v-select>
-        <installment-details
-          ref="instDetails"
-          :data="model.installmentDetails"
-          v-if="isInstallmentTransaction"
-          :total-amount="data.transactionAmount"
-          :key="model.transactionType"
-          :transaction-type="model.transactionType"
-        ></installment-details>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4" v-if="btnText">
@@ -165,6 +186,7 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     CardTokenString: () => import("../../components/ctokens/CardTokenString"),
     InstallmentDetails: () => import("./InstallmentDetailsForm"),
+    BitPaymentComponent: () => import("../integrations/BitPaymentComponent"),
   },
   props: {
     data: {
@@ -184,11 +206,18 @@ export default {
     includeCustomer: {
       type: Boolean,
       default: false
+    },
+    allowBit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      model: { ...this.data },
+      model: { 
+        useBit: false,
+        ...this.data
+      },
       tokensDialog: false,
       customerTokens: null,
       selectedToken: null,

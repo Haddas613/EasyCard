@@ -342,6 +342,7 @@
   "SecondPhone": "טלפון שני",
   "Note": "הערה",
   "InvoiceOnly": "חשבונית מס בלבד",
+  "PayWithBit": "PayWithBit",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

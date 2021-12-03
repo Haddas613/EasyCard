@@ -547,5 +547,6 @@
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
-  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
+  "BitProcessorConnectedMessage": "Bit Processor Connected and ready to use."
 }

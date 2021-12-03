@@ -20,6 +20,9 @@ namespace Merchants.Shared.Enums
         Marketer = 4,
 
         [EnumMember(Value = "pinpadProcessor")]
-        PinpadProcessor = 5
+        PinpadProcessor = 5,
+
+        [EnumMember(Value = "virtualWalletProcessor")]
+        VirtualWalletProcessor = 6
     }
 }

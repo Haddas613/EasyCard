@@ -342,6 +342,7 @@
   "SecondPhone": "Second Phone",
   "Note": "Note",
   "InvoiceOnly": "Invoice Only",
+  "PayWithBit": "Pay With Bit",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

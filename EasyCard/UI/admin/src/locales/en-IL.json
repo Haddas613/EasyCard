@@ -542,5 +542,6 @@
   "NullAggregatorConnectedMessage": "NULL Aggregator connected.",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
-  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
+  "BitProcessorConnectedMessage": "Bit Processor Connected and ready to use."
 }
