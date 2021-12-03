@@ -423,7 +423,7 @@ namespace ProfileApi
 
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseStaticFiles();
 
