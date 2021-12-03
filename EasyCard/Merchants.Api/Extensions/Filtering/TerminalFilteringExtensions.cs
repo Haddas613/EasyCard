@@ -2,6 +2,7 @@
 using Merchants.Business.Entities.Terminal;
 using Microsoft.EntityFrameworkCore;
 using Shared.Helpers;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +77,11 @@ namespace Merchants.Api.Extensions.Filtering
             if (!string.IsNullOrWhiteSpace(filter.ProcessorTerminalReference))
             {
                 src = src.Where(t => EF.Functions.Like(t.ProcessorTerminalReference, filter.ProcessorTerminalReference.UseWildCard(true)));
+            }
+
+            if (filter.HasShvaTerminal)
+            {
+                src = src.Where(t => t.Integrations.Any(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
             }
 
             return src;

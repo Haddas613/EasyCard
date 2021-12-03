@@ -34,6 +34,7 @@ namespace FunctionsCompositionApp.UpdateParameters
             var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
             {
                 ActiveOnly = true,
+                HasShvaTerminal = true,
                 Skip = 0,
                 Take = 100
             };
