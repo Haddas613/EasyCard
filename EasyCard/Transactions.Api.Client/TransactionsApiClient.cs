@@ -179,30 +179,6 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue()
-        {
-            try
-            {
-                return await webApiClient.Post<SendTerminalsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/send-to-queue", null, BuildHeaders);
-            }
-            catch (WebApiClientErrorException)
-            {
-                throw;
-            }
-        }
-
-        public async Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID)
-        {
-            try
-            {
-                return await webApiClient.Post<UpdateParametersResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/update-by-terminal/{terminalID}", null, BuildHeaders);
-            }
-            catch (WebApiClientErrorException)
-            {
-                throw;
-            }
-        }
-
         public async Task<OperationResponse> GenerateMasavFile()
         {
             try
