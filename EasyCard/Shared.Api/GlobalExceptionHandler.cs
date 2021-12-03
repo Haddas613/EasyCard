@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Api.Logging;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
+using Shared.Integration.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -61,6 +63,11 @@ namespace Shared.Api
                 else if (ex is WebApiServerErrorException)
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = "Error when calling underlying service", Status = StatusEnum.Error, CorrelationId = correlationId });
+                }
+                else if (ex is IntegrationException integrationException)
+                {
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = integrationException.Message, Status = StatusEnum.Error, CorrelationId = correlationId, AdditionalData = JObject.FromObject(new { IntegrationMessageId = integrationException.MessageId }) });
+                    responseStatusCode = 400;
                 }
                 else
                 {

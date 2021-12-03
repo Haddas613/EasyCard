@@ -205,7 +205,7 @@ namespace ShvaServiceImitation.Controllers
         {
             var response = new GetTerminalDataResponseBody
             {
-                GetTerminalDataResult = 1
+                GetTerminalDataResult = 0
             };
 
             return await Task.FromResult(new Envelope
