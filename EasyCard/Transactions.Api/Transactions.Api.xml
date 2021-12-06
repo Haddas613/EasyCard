@@ -1511,7 +1511,8 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.SaveCreditCard">
             <summary>
-            Save credit card from request
+            Save credit card from request.
+            Requires Feature CreditCardTokens to be enabled.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InitialJ5TransactionID">

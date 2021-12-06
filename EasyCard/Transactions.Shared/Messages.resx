@@ -222,6 +222,9 @@
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>Credit Card Token changed</value>
   </data>
+  <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
+    <value>Feature Credit Card Tokens must be enabled first</value>
+  </data>
   <data name="CvvRequired" xml:space="preserve">
     <value>CVV required</value>
   </data>

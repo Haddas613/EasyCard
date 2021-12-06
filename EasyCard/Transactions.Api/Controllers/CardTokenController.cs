@@ -204,7 +204,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
+            TokenTerminalSettingsValidator.Validate(terminal, model);
 
             if (model.ConsumerID != null)
             {

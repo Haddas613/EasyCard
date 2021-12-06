@@ -106,7 +106,8 @@ namespace Transactions.Api.Models.Transactions
         public string ConsumerIP { get; set; }
 
         /// <summary>
-        /// Save credit card from request
+        /// Save credit card from request.
+        /// Requires Feature CreditCardTokens to be enabled.
         /// </summary>
         public bool? SaveCreditCard { get; set; }
 

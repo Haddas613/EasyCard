@@ -745,6 +745,11 @@
               Looks up a localized string similar to Credit Card Token changed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokensFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CvvRequired">
             <summary>
               Looks up a localized string similar to CVV required.
