@@ -231,6 +231,10 @@ namespace Transactions.Api.Controllers
             {
                 EnsureExists(model.BankDetails);
             }
+            else if(model.PaymentType == PaymentTypeEnum.InvoiceOnly)
+            {
+
+            }
             else
             {
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
