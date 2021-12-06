@@ -40,10 +40,10 @@
     <Compile Include="..\Transactions.Api\Models\UpdateParameters\SendTerminalsToQueueResponse.cs" Link="Models\SendTerminalsToQueueResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\UpdateParameters\UpdateParametersResponse.cs" Link="Models\UpdateParametersResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Currency\CurrencyRateUpdateRequest.cs" Link="Models\CurrencyRateUpdateRequest.cs" />
-    <Compile Include="..\Merchants.Shared\Enums\FeatureEnum.cs" Link="Models\FeatureEnum.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />
