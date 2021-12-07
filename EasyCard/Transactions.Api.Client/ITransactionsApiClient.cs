@@ -21,7 +21,9 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
 
-        Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID);
+        Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
+
+        Task<SummariesResponse<TransmitTransactionResponse>> TransmitTransactions(TransmitTransactionsRequest request);
 
         Task<CreateTransactionFromBillingDealsResponse> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request);
 

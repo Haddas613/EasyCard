@@ -57,7 +57,7 @@ namespace Transactions.Business.Services
 
         public async override Task UpdateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
         {
-            //TODO: audit
+            entity.UpdatedDate = DateTime.UtcNow;
             await base.UpdateEntity(entity, dbTransaction);
         }
     }

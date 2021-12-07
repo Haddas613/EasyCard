@@ -91,16 +91,16 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID)
+        public async Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID)
         {
             try
             {
-                return await webApiClient.Post<SummariesResponse<TransmitTransactionResponse>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert<SummariesResponse<TransmitTransactionResponse>>();
+                return clientError.TryConvert<OperationResponse>();
             }
         }
 
@@ -122,6 +122,18 @@ namespace Transactions.Api.Client
             try
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<SummariesResponse<TransmitTransactionResponse>> TransmitTransactions(TransmitTransactionsRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<SummariesResponse<TransmitTransactionResponse>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmit", request, BuildHeaders);
             }
             catch (WebApiClientErrorException)
             {
@@ -325,5 +337,19 @@ namespace Transactions.Api.Client
 
             return headers;
         }
+
+        public async Task<OperationResponse> CreateInvoiceForTransaction(Guid transactionID)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoicing/transaction/{transactionID}", null, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<SummariesAmountResponse<TransactionSummary>> GetTransactions(TransactionsFilter filter)
+        {
+            return await webApiClient.Get<SummariesAmountResponse<TransactionSummary>>(apiConfiguration.TransactionsApiAddress, $"api/transactions", filter, BuildHeaders);
+        }
+
+
     }
 }

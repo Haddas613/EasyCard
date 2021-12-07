@@ -637,12 +637,13 @@ namespace Transactions.Api.Controllers
             }
 
             var dealsToInactivate = await billingDealService.GetBillingDealsForUpdate().Where(b => billingsToDeactivate.Contains(b.BillingDealID)).ToListAsync();
-            await billingDealService.InactivateBillingDeals(dealsToInactivate);
+            await billingDealService.InactivateBillingDeals(dealsToInactivate); // TODO: add note to jistory that deactivated because of expiration
 
             foreach (var dealEntity in dealsToInactivate)
             {
                 logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
+                // TODO: Add to history
                 await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminal);
             }
 
