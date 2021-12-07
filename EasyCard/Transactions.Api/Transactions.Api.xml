@@ -4,6 +4,11 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="T:Transactions.Api.Controllers.UpdateParametersController">
+            <summary>
+            This controller not in use
+            </summary>
+        </member>
         <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDealInvoice(Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest)">
             <summary>
             Billing deal that only process invoice. Does not produce transaction
@@ -1506,7 +1511,8 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.SaveCreditCard">
             <summary>
-            Save credit card from request
+            Save credit card from request.
+            Requires Feature CreditCardTokens to be enabled.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InitialJ5TransactionID">

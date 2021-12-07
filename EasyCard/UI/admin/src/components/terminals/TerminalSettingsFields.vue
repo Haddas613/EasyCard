@@ -111,13 +111,28 @@
               persistent-hint
             ></v-switch>
           </v-col>
-          <v-col md="6" cols="12">
+          <v-col md="4" cols="12">
+            <v-switch
+              v-model="model.settings.cvvRequired"
+              :label="$t('CvvRequired')"
+              hide-details
+              @change="onCvvRequiredChanged()"
+            ></v-switch>
             <v-switch
               class="pt-0"
               v-model="model.settings.j5Allowed"
               :label="$t('J5Allowed')"
+              :disabled="model.settings.cvvRequired"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.doNotCreateSaveTokenInitialDeal"
+              :label="$t('DoNotCreateSaveTokenInitialDeal')"
+              :disabled="model.settings.cvvRequired"
+              hide-details
+            ></v-switch>
+          </v-col>
+          <v-col md="4" cols="12">
             <v-switch v-model="model.settings.j2Allowed" :label="$t('J2Allowed')" hide-details></v-switch>
             <v-switch
               v-model="model.settings.enableCancellationOfUntransmittedTransactions"
@@ -129,19 +144,8 @@
               :label="$t('UseQuickChargeByDefault')"
               hide-details
             ></v-switch>
-            <v-switch
-              v-model="model.settings.doNotCreateSaveTokenInitialDeal"
-              :label="$t('DoNotCreateSaveTokenInitialDeal')"
-              hide-details
-            ></v-switch>
           </v-col>
-          <v-col md="6" cols="12">
-            <v-switch
-              class="pt-0"
-              v-model="model.settings.cvvRequired"
-              :label="$t('CvvRequired')"
-              hide-details
-            ></v-switch>
+          <v-col md="4" cols="12">
             <v-switch
               v-model="model.settings.nationalIDRequired"
               :label="$t('NationalIDRequired')"
@@ -692,6 +696,10 @@ export default {
     },
     getBlobUrl(resource){
       return `${this.$cfg.VUE_APP_BLOB_BASE_ADDRESS}/${resource}`;
+    },
+    onCvvRequiredChanged(){
+      this.model.settings.j5Allowed = this.model.settings.cvvRequired;
+      this.model.settings.doNotCreateSaveTokenInitialDeal = !this.model.settings.cvvRequired;
     }
   },
 };

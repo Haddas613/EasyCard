@@ -38,6 +38,7 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
+using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api.Controllers
 {
@@ -192,7 +193,7 @@ namespace Transactions.Api.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -203,7 +204,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
+            TokenTerminalSettingsValidator.Validate(terminal, model);
 
             if (model.ConsumerID != null)
             {
@@ -232,6 +233,12 @@ namespace Transactions.Api.Controllers
 
             if (!terminal.Settings.DoNotCreateSaveTokenInitialDeal)
             {
+                if (!(terminal.Settings.J5Allowed == true))
+                {
+                    List<SharedHelpers.Error> errors = new List<SharedHelpers.Error>();
+                    errors.Add(new SharedHelpers.Error($"{nameof(terminal.Settings.J5Allowed)}", Messages.J5NotAllowed));
+                    throw new BusinessException(errors.First().Description, errors);
+                }
 
                 // initial transaction
                 var transaction = new PaymentTransaction();
@@ -242,7 +249,7 @@ namespace Transactions.Api.Controllers
 
                 transaction.CardPresence = CardPresenceEnum.CardNotPresent; // TODO
                 transaction.JDealType = JDealTypeEnum.J5;
-
+                transaction.DocumentOrigin = origin;
                 transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
                 storageData.InitialTransactionID = transaction.PaymentTransactionID;
                 dbData.InitialTransactionID = transaction.PaymentTransactionID;

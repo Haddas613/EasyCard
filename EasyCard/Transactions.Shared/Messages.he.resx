@@ -435,4 +435,7 @@
   <data name="ThisMethodCannotBeUsedForRegularBillings" xml:space="preserve">
     <value>לא ניתן להשתמש בפעולה לבילינג רגיל</value>
   </data>
+  <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
+    <value>האפשרות לטוקנים לכרטיסי אשראי חייבת להיות מאופשרת קודם.</value>
+  </data>
 </root>

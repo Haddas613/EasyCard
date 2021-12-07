@@ -45,6 +45,10 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
+    /// <summary>
+    /// This controller not in use
+    /// </summary>
+    [Obsolete]
     [Route("api/update-parameters")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
@@ -143,20 +147,21 @@ namespace Transactions.Api.Controllers
                 var processorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
                 var pinpadProcessorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = pinpadProcessorSettings, CorrelationId = GetCorrelationID() };
 
-                await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
-
+                ProcessorUpdateParamteresResponse updatedResult = await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
+                bool updatedSuccess = updatedResult.Success;
                 if (terminalPinpadAllow)
                 {
-                    await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
+                    ProcessorUpdateParamteresResponse pinpadUpdatedResult = await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
+                    updatedSuccess = updatedSuccess && pinpadUpdatedResult.Success;
                 }
+
+                return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = updatedSuccess ? UpdateParamsStatusEnum.Updated : UpdateParamsStatusEnum.UpdateFailed };
             }
             catch (Exception e)
             {
                 logger.LogError($"{nameof(UpdateParameters)} ERROR: {e.Message}");
                 return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.UpdateFailed };
             }
-
-            return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.Updated };
         }
     }
 }

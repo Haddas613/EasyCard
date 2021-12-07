@@ -376,6 +376,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
+        /// </summary>
+        public static string CreditCardTokensFeatureMustBeEnabled {
+            get {
+                return ResourceManager.GetString("CreditCardTokensFeatureMustBeEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV required.
         /// </summary>
         public static string CvvRequired {

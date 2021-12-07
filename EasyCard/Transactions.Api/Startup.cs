@@ -631,7 +631,7 @@ namespace Transactions.Api
 
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseStaticFiles();
 

@@ -147,9 +147,8 @@ namespace Shva
         /// Update Parameters in SHVA
         /// </summary>
         /// <param name="updateParamRequest"></param>
-        /// <param name="correlationId"></param>
         /// <returns></returns>
-        public async Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
+        public async Task<ProcessorUpdateParamteresResponse> ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
         {
             var res = new ProcessorCreateTransactionResponse();
             ShvaTerminalSettings shvaParameters = updateParamRequest.ProcessorSettings as ShvaTerminalSettings;
@@ -164,12 +163,14 @@ namespace Shva
 
             if (getTerminalDataResultBody == null)
             {
-                // TODO: error response
+                return new ProcessorUpdateParamteresResponse() { Success = false };
             }
 
-            var code = getTerminalDataResultBody.GetTerminalDataResult;
-
-            // TODO: validate response and return error is required response
+            return new ProcessorUpdateParamteresResponse()
+            {
+                Success = getTerminalDataResultBody.GetTerminalDataResult == 0,
+                Code = getTerminalDataResultBody.GetTerminalDataResult
+            };
         }
 
         public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
@@ -227,7 +228,7 @@ namespace Shva
 
             var changePasswordReq = shvaParameters.GetChangePasswordRequestBody(changePasswordRequest.NewPassword);
 
-            var changePasswordReqResult = await this.DoRequest(changePasswordReq, changePasswordRequest.TerminalID.ToString(), ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
+            var changePasswordReqResult = await this.DoRequest(changePasswordReq, ChangePasswordUrl, changePasswordRequest.TerminalID.ToString(), changePasswordRequest.CorrelationId, HandleIntegrationMessage);
 
             var changePasswordResultBody = changePasswordReqResult?.Body?.Content as ChangePasswordResponseBody;
 
@@ -320,6 +321,8 @@ namespace Shva
         private async Task<NameValueCollection> BuildHeaders(string soapAction)
         {
             NameValueCollection headers = new NameValueCollection();
+
+            headers.Add("SOAPAction", $"http://shva.co.il/xmlwebservices/{soapAction}");
 
             return await Task.FromResult(headers);
         }

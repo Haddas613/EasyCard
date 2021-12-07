@@ -51,7 +51,7 @@
               hide-details
               v-model="model.useBit"
               :label="$t('PayWithBit')"
-              :disabled="!availableDevices.length || model.pinPad"
+              :disabled="true || !availableDevices.length || model.pinPad"
               @change="model.pinPad = false">
             </v-switch>
           </v-col>
@@ -59,107 +59,76 @@
         <template v-if="model.useBit">
           <bit-payment-component></bit-payment-component>
         </template>
-        <template v-else>
-          <template v-if="model.pinPad">
-            <v-row no-gutters>
-              <v-col cols="12" v-if="availableDevices.length > 0">
-                <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
-                  <template v-slot:item="{ item }">
-                    {{item.deviceID + '-' + item.deviceName}}
-                  </template>
-                  <template v-slot:selection="{ item }">
-                    {{item.deviceID + '-' + item.deviceName}}
-                  </template>
-                </v-select>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="model.dealDetails.consumerName"
-                  :label="$t('CustomerName')"
-                  outlined
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="model.cardOwnerNationalID"
-                  :rules="[vr.special.israeliNationalId]"
-                  :label="$t('NationalID')"
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </template>
-          <template v-if="!model.pinPad">
-            <ec-dialog-invoker
-              v-on:click="handleClick()"
-              v-if="customerTokens"
-              :clickable="(customerTokens.length > 0)"
-              class="py-2"
-            >
-              <template v-slot:prepend>
-                <v-icon>mdi-credit-card-outline</v-icon>
-              </template>
-              <template v-slot:left >
-                <div v-if="!token">
-                  <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
-                  <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
-                </div>
-                <div v-if="token">
-                  <span class="primary--text">
-                    <card-token-string :token="token"></card-token-string>
-                  </span>
-                </div>
-              </template>
-              <template v-slot:append>
-                <re-icon>mdi-chevron-right</re-icon>
-              </template>
-            </ec-dialog-invoker>
-              <template v-if="!token">
-                <credit-card-secure-details-fields
-                  :data="model.creditCardSecureDetails"
-                  ref="ccsecuredetailsform"
-                  :tokens="customerTokens"
-                  :show-customer-select-btn="includeCustomer"
-                  v-on:select-customer="onCustomerSelect()"
-                ></credit-card-secure-details-fields>
-                <v-row no-gutters>
-                  <v-col cols="5" md="3">
-                    <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
-                  </v-col>
-                  <v-col cols="7" md="9">
-                    <v-text-field
-                      class="mt-2"
-                      v-model="model.oKNumber"
-                      :label="$t('AuthorizationCode')"
-                      :rules="[vr.primitives.stringLength(1, 50)]">
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-              </template>
-              <v-text-field
-                v-else
-                v-model="model.oKNumber"
-                :label="$t('AuthorizationCodeOptional')"
-                :rules="[vr.primitives.stringLength(1, 50)]">
-              </v-text-field>
-          </template>
-          <v-select
-            :items="dictionaries.transactionTypeEnum"
-            item-text="description"
-            item-value="code"
-            v-model="model.transactionType"
-            :label="$t('TransactionType')"
-            outlined
-          ></v-select>
-          <installment-details
-            ref="instDetails"
-            :data="model.installmentDetails"
-            v-if="isInstallmentTransaction"
-            :total-amount="data.transactionAmount"
-            :key="model.transactionType"
-            :transaction-type="model.transactionType"
-          ></installment-details>
+        <template v-else-if="!model.pinPad">
+          <ec-dialog-invoker
+            v-on:click="handleClick()"
+            v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) && customerTokens"
+            :clickable="(customerTokens.length > 0)"
+            class="py-2"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-credit-card-outline</v-icon>
+            </template>
+            <template v-slot:left >
+              <div v-if="!token">
+                <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+                <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
+              </div>
+              <div v-if="token">
+                <span class="primary--text">
+                  <card-token-string :token="token"></card-token-string>
+                </span>
+              </div>
+            </template>
+            <template v-slot:append>
+              <re-icon>mdi-chevron-right</re-icon>
+            </template>
+          </ec-dialog-invoker>
+            <template v-if="!token">
+              <credit-card-secure-details-fields
+                :data="model.creditCardSecureDetails"
+                ref="ccsecuredetailsform"
+                :tokens="customerTokens"
+                :show-customer-select-btn="includeCustomer"
+                v-on:select-customer="onCustomerSelect()"
+              ></credit-card-secure-details-fields>
+              <v-row no-gutters>
+                <v-col cols="5" md="3" v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens)">
+                  <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
+                </v-col>
+                <v-col cols="12" :md="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) ? 9 : 12">
+                  <v-text-field
+                    class="mt-2"
+                    v-model="model.oKNumber"
+                    :label="$t('AuthorizationCode')"
+                    :rules="[vr.primitives.stringLength(1, 50)]">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </template>
+            <v-text-field
+              v-else
+              v-model="model.oKNumber"
+              :label="$t('AuthorizationCodeOptional')"
+              :rules="[vr.primitives.stringLength(1, 50)]">
+            </v-text-field>
         </template>
+        <v-select
+          :items="dictionaries.transactionTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.transactionType"
+          :label="$t('TransactionType')"
+          outlined
+        ></v-select>
+        <installment-details
+          ref="instDetails"
+          :data="model.installmentDetails"
+          v-if="isInstallmentTransaction"
+          :total-amount="data.transactionAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
+        ></installment-details>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4" v-if="btnText">
@@ -235,7 +204,7 @@ export default {
       this.dictionaries = dictionaries;
       this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     }
-    if (this.model.dealDetails.consumerID) {
+    if (this.model.dealDetails.consumerID && this.$featureEnabled(this.terminalStore, this.appConstants.terminal.features.CreditCardTokens)) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(

@@ -185,6 +185,13 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
+            if (checkoutConfig?.Settings.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.CreditCardTokens) == false
+                && (request.SaveCreditCard))
+            {
+                ModelState.AddModelError(nameof(request.SaveCreditCard), "Saving credit cards is not allowed for this terminal");
+                return await IndexViewResult(checkoutConfig, request);
+            }
+
             // If token is present and correct, credit card validation is removed from model state
             if (request.CreditCardToken.HasValue || request.PinPad)
             {
@@ -211,12 +218,21 @@ namespace CheckoutPortal.Controllers
                     }
                 }
 
-                ModelState[nameof(request.Cvv)].Errors.Clear();
-                ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
-                ModelState[nameof(request.CardNumber)].Errors.Clear();
-                ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
-                ModelState[nameof(request.CardExpiration)].Errors.Clear();
-                ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                if (ModelState[nameof(request.Cvv)] != null)
+                {
+                    ModelState[nameof(request.Cvv)]?.Errors?.Clear();
+                    ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardNumber)] != null)
+                {
+                    ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardExpiration)] != null)
+                {
+                    ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
