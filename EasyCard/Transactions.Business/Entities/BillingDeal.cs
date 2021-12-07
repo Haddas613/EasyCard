@@ -196,8 +196,9 @@ namespace Transactions.Business.Entities
 
         public string Origin { get; set; }
 
-        public void UpdateNextScheduledDate(DateTime? timestamp, DateTime? legalDate)
+        public void UpdateNextScheduledDate(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
+            CurrentTransactionID = paymentTransactionID;
             CurrentTransactionTimestamp = timestamp;
             CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value + 1 : 1;
             HasError = false;

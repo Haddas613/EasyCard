@@ -26,6 +26,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -61,13 +62,14 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IShvaTerminalsService shvaTerminalsService;
+        private readonly IQueue transmissionQueue;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public TransmissionController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
             IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor, IShvaTerminalsService shvaTerminalsService)
+            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor, IShvaTerminalsService shvaTerminalsService, IQueueResolver queueResolver)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -80,6 +82,7 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
             this.httpContextAccessor = httpContextAccessor;
             this.shvaTerminalsService = shvaTerminalsService;
+            this.transmissionQueue = queueResolver.GetQueue(QueueResolver.TransmissionQueue);
         }
 
         /// <summary>
@@ -91,8 +94,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
             var query = transactionsService.GetTransactions()
-                .Filter(filter)
-                .Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
+                .Filter(filter);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -384,27 +386,37 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("transmitByTerminal/{terminalID:guid}")]
-        public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitByTerminal([FromRoute] Guid terminalID)
+        public async Task<ActionResult<OperationResponse>> TransmitByTerminal([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID, Take = appSettings.TransmissionMaxBatchSize });
-
-            var response = actionResult.Result as ObjectResult;
-            var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;
-
-            if (nonTransmittedTransactions == null || nonTransmittedTransactions.NumberOfRecords == 0)
+            if (terminal.Status == Merchants.Shared.Enums.TerminalStatusEnum.Disabled)
             {
-                return new SummariesResponse<TransmitTransactionResponse> { Data = new List<TransmitTransactionResponse>(), NumberOfRecords = 0 };
+                return new OperationResponse
+                {
+                    Status = StatusEnum.Error,
+                    Message = $"Terminal is disabled"
+                };
             }
 
-            var result = await TransmitTransactions(new TransmitTransactionsRequest
-            {
-                TerminalID = terminalID,
-                PaymentTransactionIDs = nonTransmittedTransactions.Data.Select(t => t.PaymentTransactionID)
-            });
+            var trans = await transactionsService.GetTransactions()
+                .Filter(new TransmissionFilter { TerminalID = terminalID })
+                .Select(d => d.PaymentTransactionID).ToListAsync();
 
-            return result;
+            var numberOfRecords = trans.Count();
+
+            for (int i = 0; i < numberOfRecords; i += appSettings.TransmissionMaxBatchSize)
+            {
+                var req = new TransmitTransactionsRequest
+                {
+                    PaymentTransactionIDs = trans.Skip(i).Take(appSettings.BillingDealsMaxBatchSize),
+                    TerminalID = terminalID
+                };
+
+                await transmissionQueue.PushToQueue(req);
+            }
+
+            return Ok(new OperationResponse { Message = $"Terminal {terminalID}: {numberOfRecords} transactions sent to transmission queue" });
         }
     }
 }

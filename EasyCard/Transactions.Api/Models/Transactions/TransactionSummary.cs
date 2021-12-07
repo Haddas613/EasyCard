@@ -84,5 +84,8 @@ namespace Transactions.Api.Models.Transactions
 
         [MetadataOptions(Order = 3)]
         public string ShvaDealID { get; set; }
+
+
+        public Guid? InvoiceID { get; set; }
     }
 }

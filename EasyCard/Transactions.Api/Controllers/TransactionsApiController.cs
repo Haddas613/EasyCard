@@ -684,7 +684,13 @@ namespace Transactions.Api.Controllers
 
             foreach (var billingId in request.BillingDealsID)
             {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
+                var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId);
+                if (billingDeal == null)
+                {
+                    logger.LogError($"Billing deal not found: {billingId}");
+                    response.FailedCount++;
+                    continue;
+                }
 
                 if (!billingDeal.Active)
                 {
@@ -693,7 +699,39 @@ namespace Transactions.Api.Controllers
                     continue;
                 }
 
-                var operationResult = await NextBillingDeal(billingDeal);
+                var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+                var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
+                    (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
+
+                if (!actualDeal)
+                {
+                    logger.LogWarning($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                    response.FailedCount++;
+                    continue;
+                }
+
+                OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
+
+                var token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
+                if (token == null)
+                {
+                    operationResult.Status = StatusEnum.Error;
+                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                }
+                else
+                {
+                    if (token.CardExpiration.Expired == true)
+                    {
+                        operationResult.Status = StatusEnum.Error;
+                        operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                    }
+                }
+
+                if (operationResult.Status == StatusEnum.Success)
+                {
+                    operationResult = await NextBillingDeal(billingDeal, token);
+                }
 
                 if (operationResult.Status == StatusEnum.Success)
                 {

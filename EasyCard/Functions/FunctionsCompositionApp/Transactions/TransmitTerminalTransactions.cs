@@ -7,9 +7,11 @@ using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using Transactions.Api.Models.Transactions;
 using SharedApi = Shared.Api;
 using SharedIntegration = Shared.Integration;
 
@@ -28,11 +30,11 @@ namespace FunctionsCompositionApp.Transactions
                 .AddEnvironmentVariables()
                 .Build();
 
-            var terminalID = Guid.Parse(messageBody);
+            var request = JsonConvert.DeserializeObject<TransmitTransactionsRequest>(messageBody);
 
             var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
 
-            var response = await transactionsApiClient.TransmitTerminalTransactions(terminalID);
+            var response = await transactionsApiClient.TransmitTransactions(request);
 
             var totalCount = response.Data.Count();
             var failedCount = response.Data.Where(t => t.TransmissionStatus != SharedIntegration.Models.TransmissionStatusEnum.Transmitted).Count();
