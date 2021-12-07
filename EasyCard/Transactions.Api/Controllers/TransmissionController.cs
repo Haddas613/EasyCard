@@ -135,6 +135,7 @@ namespace Transactions.Api.Controllers
                     if (terminalSettings.ContainsKey(t))
                     {
                         var schedule = terminalSettings[t]?.TransmissionSchedule;
+                        schedule = null; // Temporary disabled partial schedule
                         if (schedule == null || schedule.Value.ScheduleApply(now))
                         {
                             filteredTransactions.Add(t);
@@ -416,7 +417,7 @@ namespace Transactions.Api.Controllers
                 await transmissionQueue.PushToQueue(req);
             }
 
-            return Ok(new OperationResponse { Message = $"Terminal {terminalID}: {numberOfRecords} transactions sent to transmission queue" });
+            return Ok(new OperationResponse { Message = $"Terminal {terminalID}: {numberOfRecords} transactions sent to transmission queue", Status = StatusEnum.Success });
         }
     }
 }
