@@ -362,6 +362,7 @@
   "FirstName": "שם פרטי",
   "LastName": "שם משפחה",
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+  "SendTransactionSlipEmailToCustomer": "שלח שובר במייל לבית לקוח",
   "IssueInvoice": "הפק חשבונית",
   "CustomerAddress": "כתובת לקוח",
   "ShowInactive": "הצג לא פעילים",

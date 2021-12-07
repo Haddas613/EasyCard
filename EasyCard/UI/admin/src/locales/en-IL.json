@@ -358,6 +358,7 @@
   "FirstName": "First Name",
   "LastName": "Last Name",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "SendTransactionSlipEmailToCustomer": "Send transaction slip email to customer",
   "IssueInvoice": "Issue Invoice",
   "CustomerAddress": "Customer Address",
   "ShowInactive": "Show inactive",

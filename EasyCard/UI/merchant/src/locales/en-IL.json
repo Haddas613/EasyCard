@@ -287,6 +287,7 @@
   "HasInvoice": "Has Invoice",
   "IsPaymentRequest": "Is Payment Request",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "SendTransactionSlipEmailToCustomer": "Send transaction slip email to customer",
   "IssueInvoice": "Issue Invoice",
   "CreditCardLast4Numbers": "Credit Card last 4 numbers",
   "Inactive": "Inactive",

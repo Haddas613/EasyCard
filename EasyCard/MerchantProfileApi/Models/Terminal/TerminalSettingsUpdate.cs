@@ -42,6 +42,8 @@ namespace MerchantProfileApi.Models.Terminal
 
         public bool? SendTransactionSlipEmailToMerchant { get; set; }
 
+        public bool? SendTransactionSlipEmailToConsumer { get; set; }
+
         public bool? UseQuickChargeByDefault { get; set; }
 
         /// <summary>
