@@ -11,12 +11,12 @@ namespace PoalimOnlineBusiness
 
         }
 
-        public TransactionRowWithdraw(int instituteNumber, int bankcode, int branchNumber, string beneficiaryNname, decimal amount)
+        public TransactionRowWithdraw(int instituteNumber, int bankcode, int branchNumber, string beneficiaryNname, decimal amount, int accountNumber)
         {
             this.InstituteNumber = instituteNumber;
             this.Bankcode = bankcode;
             this.BranchNumber = branchNumber;
-            //this.AccountNumber = accountNumber;
+            this.BankAccountNumber = accountNumber;
             this.BeneficiaryNname = beneficiaryNname;
             this.Amount = (int)(amount * 100);
         }
@@ -53,46 +53,53 @@ namespace PoalimOnlineBusiness
         [FixedLengthFile(7, 23, 4, DataType.N)]
         public int AccountType { get; set; } = 0;
 
+        [FixedLengthFile(8, 27, 9, DataType.N)]
+        public int BankAccountNumber { get; set; }
 
-
-
+        //9	36	1	 N Filler	 '0'
+        [FixedLengthFile(9, 36, 1, DataType.N)]
+        public int Filler2 { get; set; } = 0;
 
         //10	37	9	 N National ID Not Required
-        [FixedLengthFile(8, 27, 9, DataType.N)]
+        [FixedLengthFile(10, 37, 9, DataType.N)]
         public int NationalID { get; set; } = 0;
 
         //11	46	16	 X Beneficiary name Right aligned
-        [FixedLengthFile(9, 36, 16, DataType.X, Align = Align.Right)]
+        [FixedLengthFile(11, 46, 16, DataType.X, Align = Align.Right)]//todo can not be hebrew, space instead
         public string BeneficiaryNname { get; set; }
 
         //12	62	13	 N Amount	
-        [FixedLengthFile(10, 52, 13, DataType.N)]
+        [FixedLengthFile(12, 62, 13, DataType.N)]//Agurut todo to do 
         public int Amount { get; set; }
 
 
-        //17	109	18	 N Filler ZEROS 
-        [FixedLengthFile(11, 65, 20, DataType.N)]
+        //13    75	20	 N Filler ZEROS 
+        [FixedLengthFile(13, 75, 20, DataType.N)]
         public int Filler3 { get; set; } = 0;
 
 
 
         //14	95	8	 N Period Payed For       "dd/MM/yy"
-        [FixedLengthFile(12, 85, 8, DataType.X)]
+        [FixedLengthFile(14, 95, 8, DataType.X)]
         public int PeriodPayedFor { get; set; } = 0;
 
 
         //15	103	3	 N Text Code ZEROS
-        [FixedLengthFile(13, 93, 3, DataType.N)]
+        [FixedLengthFile(15, 103, 3, DataType.N)]
         public int TextCode { get; set; } = 0;
 
         //16	106	3	 N Record Type  	556
-        [FixedLengthFile(14, 96, 3, DataType.N)]
+        [FixedLengthFile(16, 106, 3, DataType.N)]
         public int RecordType2 { get; set; } = 504;
 
 
 
-        //18	127	2	 X Filler  BLANK
-        [FixedLengthFile(15, 99, 18, DataType.N)]
+        //17	109	18	 X Filler  BLANK
+        [FixedLengthFile(17, 109, 18, DataType.N)]
         public int Filler4 { get; set; } = 0;
+
+        //18	127	18	 X Filler  
+        [FixedLengthFile(18, 127, 2, DataType.N)]
+        public string Filler5 { get; set; } = string.Empty;
     }
 }
