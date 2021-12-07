@@ -25,6 +25,8 @@ namespace Transactions.Api.Models.Billing
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        public bool? FilterDateByNextScheduledTransaction { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 

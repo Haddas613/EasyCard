@@ -112,6 +112,7 @@ export default {
       billingDealsFilter: {
         take: 100,
         skip: 0,
+        filterDateByNextScheduledTransaction: true,
         ...this.filters
       },
       options: {},

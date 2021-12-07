@@ -10,9 +10,9 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
+          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined :rules="rules" :min="fromToday ? today : null"></v-text-field>
         </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary" :min="fromToday ? today : null">
+        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>

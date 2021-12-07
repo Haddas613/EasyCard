@@ -139,12 +139,16 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction >= filter.DateFrom.Value)
+                            : src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
                 }
 
                 if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction <= filter.DateTo.Value)
+                            : src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
                 }
             }
 

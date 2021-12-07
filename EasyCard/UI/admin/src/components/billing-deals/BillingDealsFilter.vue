@@ -50,7 +50,7 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model"></date-from-to-filter>
+        <date-from-to-filter v-model="model" from-today></date-from-to-filter>
       </v-row>
       <v-row class="d-flex" justify="end">
         <v-col cols="3" md="2">

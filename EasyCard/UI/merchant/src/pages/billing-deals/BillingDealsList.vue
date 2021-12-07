@@ -253,6 +253,7 @@ export default {
         take: 100,
         skip: 0,
         actual: null,
+        filterDateByNextScheduledTransaction: true,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -396,12 +397,12 @@ export default {
               await vm.createTransactions();
             }
           },
-          // {
-          //   text: this.$t("TriggerAll"),
-          //   fn: async () => {
-          //     await vm.createTransactions(true);
-          //   }
-          // }
+          {
+            text: this.$t("TriggerAll"),
+            fn: async () => {
+              await vm.createTransactions(true);
+            }
+          }
         ]
       }
     });
