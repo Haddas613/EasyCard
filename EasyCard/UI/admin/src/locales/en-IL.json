@@ -467,6 +467,8 @@
   "Download": "Download",
   "ConvertToJ4": "Convert to J4",
   "UpdateParameters": "Update Parameters",
+  "TriggerSelected": "Trigger Selected",
+  "TriggerAll": "Trigger All",
 
   "--AUTH--": null,
   "Login": "Login",

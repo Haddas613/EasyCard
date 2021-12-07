@@ -42,7 +42,7 @@
           </v-col>
         </v-row>
         <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch
               v-model="billingDealsFilter.actual"
               @change="switchFilterChanged('actual')"
@@ -54,7 +54,7 @@
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch
               v-model="billingDealsFilter.invoiceOnly"
               @change="getDataFromApi(false)"
@@ -64,28 +64,28 @@
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.showDeleted" @change="switchFilterChanged('showDeleted')" true-value="1" false-value="0">
               <template v-slot:label>
                 <small>{{$t('Inactive')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.paused" @change="switchFilterChanged('paused')">
               <template v-slot:label>
                 <small>{{$t('Paused')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.finished" @change="switchFilterChanged('finished')">
               <template v-slot:label>
                 <small>{{$t('Finished')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.hasError" @change="switchFilterChanged('hasError')">
               <template v-slot:label>
                 <small>{{$t('HasError')}}</small>
@@ -303,7 +303,7 @@ export default {
       this.billingDealsFilter.skip += this.billingDealsFilter.take;
       await this.getDataFromApi(true);
     },
-    async createTransactions() {
+    async createTransactions(triggerAll = false) {
       if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
@@ -385,17 +385,23 @@ export default {
             }
           },
           {
-            text: this.$t("TriggerTransactions"),
-            fn: async () => {
-              await vm.createTransactions();
-            }
-          },
-          {
             text: this.$t("SelectAll"),
             fn: () => {
               vm.switchSelectAll();
             }
-          }
+          },
+          {
+            text: this.$t("TriggerSelected"),
+            fn: async () => {
+              await vm.createTransactions();
+            }
+          },
+          // {
+          //   text: this.$t("TriggerAll"),
+          //   fn: async () => {
+          //     await vm.createTransactions(true);
+          //   }
+          // }
         ]
       }
     });

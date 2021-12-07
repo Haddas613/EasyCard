@@ -398,6 +398,8 @@
   "ShowActive": "Show Active",
   "ShowDeleted": "Show Deleted",
   "Docs": "Docs",
+  "TriggerSelected": "Trigger Selected",
+  "TriggerAll": "Trigger All",
 
   "--AUTH--": null,
   "Login": "Login",

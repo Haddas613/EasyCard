@@ -398,6 +398,8 @@
   "ShowActive": "הצג פעיל",
   "ShowDeleted": "הצג שנמחקו",
   "Docs": "מסמכים",
+  "TriggerSelected": "הגורם המפעיל נבחר",
+  "TriggerAll": "הפעל הכל",
 
   "--AUTH--": null,
   "Login": "כניסה",
