@@ -5,6 +5,10 @@
       :filter="billingDealsFilter"
       v-on:ok="applyFilters($event)"
     ></billing-deals-filter-dialog>
+    <billing-deals-trigger-dialog
+      :show.sync="showTriggerDialog"
+      v-on:ok="refresh()"
+    ></billing-deals-trigger-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -223,6 +227,8 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     BillingDealsFilterDialog: () =>
       import("../../components/billing-deals/BillingDealsFilterDialog"),
+    BillingDealsTriggerDialog: () =>
+      import("../../components/billing-deals/BillingDealsTriggerDialog"),
     BillingScheduleString: () =>
       import("../../components/billing-deals/BillingScheduleString"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
@@ -257,6 +263,7 @@ export default {
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
+      showTriggerDialog: false,
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
@@ -304,7 +311,7 @@ export default {
       this.billingDealsFilter.skip += this.billingDealsFilter.take;
       await this.getDataFromApi(true);
     },
-    async createTransactions(triggerAll = false) {
+    async createTransactions() {
       if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
@@ -400,7 +407,7 @@ export default {
           {
             text: this.$t("TriggerAll"),
             fn: async () => {
-              await vm.createTransactions(true);
+              vm.showTriggerDialog = true;
             }
           }
         ]

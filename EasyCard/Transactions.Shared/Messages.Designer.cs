@@ -916,7 +916,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions queued.
+        ///   Looks up a localized string similar to @count Transactions queued.
         /// </summary>
         public static string TransactionsQueued {
             get {

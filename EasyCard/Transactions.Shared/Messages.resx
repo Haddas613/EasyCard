@@ -403,7 +403,7 @@
     <value>Transactions list for transmission is required</value>
   </data>
   <data name="TransactionsQueued" xml:space="preserve">
-    <value>Transactions queued</value>
+    <value>@count Transactions queued</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>Transaction Status is not valid for this operation</value>

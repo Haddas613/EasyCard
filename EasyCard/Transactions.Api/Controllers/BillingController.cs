@@ -500,7 +500,6 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("due-billings/{terminalID:guid}")]
-        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue(Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -521,7 +520,12 @@ namespace Transactions.Api.Controllers
                     billings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
             }
 
-            return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
+            return new SendBillingDealsToQueueResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued.Replace("@count", numberOfRecords.ToString()),
+                Count = numberOfRecords
+            };
         }
 
         [HttpGet]

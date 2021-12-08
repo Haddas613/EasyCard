@@ -121,6 +121,7 @@
   "TokensTransactions": "Tokens Transactions",
   "ListOfPinpadDevices": "List of PinPad Devices",
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
+  "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

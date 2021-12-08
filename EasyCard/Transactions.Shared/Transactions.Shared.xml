@@ -1047,7 +1047,7 @@
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionsQueued">
             <summary>
-              Looks up a localized string similar to Transactions queued.
+              Looks up a localized string similar to @count Transactions queued.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionStatusIsNotValid">

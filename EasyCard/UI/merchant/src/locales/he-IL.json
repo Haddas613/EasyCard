@@ -94,6 +94,7 @@
   "DeletedItems": "פריטים שנמחקו",
   "DeletedCustomers": "לקוחות שנמחקו",
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
+  "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
