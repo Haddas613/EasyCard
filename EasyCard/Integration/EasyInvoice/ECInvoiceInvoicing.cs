@@ -208,6 +208,38 @@ namespace EasyInvoice
             }
         }
 
+        public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId);
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new SetDocNextNumberModel
+                {
+                    DocumentType = request.DocType.ToString(),
+                    NextDocumentNumber = request.CurrentNum
+                };
+             
+                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/document-types", json, () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "Document Number Changed"
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice Change Document Number request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice Change Document Number request failed", integrationMessageId);
+            }
+        }
+
         public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);

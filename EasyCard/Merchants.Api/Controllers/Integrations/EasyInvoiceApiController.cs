@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EasyInvoice;
+using EasyInvoice.Models;
 using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.EasyInvoice;
 using Merchants.Business.Entities.Terminal;
@@ -117,6 +118,39 @@ namespace Merchants.Api.Controllers.Integrations
                 Data = data,
                 NumberOfRecords = data.Count()
             };
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("set-document-number")]
+        public async Task<ActionResult<OperationResponse>> SetDocumentNumber(SetDocumentNumberRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            var changeDocumentNumberResult = await eCInvoicing.SetDocumentNumber(
+                new EasyInvoice.Models.ECInvoiceSetDocumentNumberRequest
+                {
+                     CurrentNum = request.CurrentNum,
+                      DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType)
+                },
+                GetCorrelationID());
+
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberChangedSuccessfully, StatusEnum.Success);
+
+            if (changeDocumentNumberResult.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = EasyInvoiceMessagesResource.DocumentNumberChangedFailed;
+
+                return BadRequest(response);
+            }
 
             return Ok(response);
         }
