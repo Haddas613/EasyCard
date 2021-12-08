@@ -58,4 +58,8 @@ export default class BillingDealsApi {
     async unpauseBillingDeal(id) {
         return await this.base.post(this.billingUrl + `/${id}/unpause`);
     }
+
+    async sendDueBillingDealsToQueue(terminalID) {
+        return await this.base.post(this.billingUrl + `/due-billings/${terminalID}`);
+    }
 }
