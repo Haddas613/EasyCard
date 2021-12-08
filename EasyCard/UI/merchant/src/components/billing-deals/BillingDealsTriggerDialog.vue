@@ -67,7 +67,7 @@ export default {
         return;
       }
 
-      let opResult = await this.$api.billingDeals.sendDueBillingDealsToQueue(this.selectedTerminal);
+      let opResult = await this.$api.billingDeals.triggerBillingDealsByTerminal(this.selectedTerminal);
 
     //   if(opResult.count > 0){
     //     this.$toasted.show(this.$t("@TransactionsQueuedSuccess").replace("@count", opResult.count), {

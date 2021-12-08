@@ -500,33 +500,14 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("due-billings/{terminalID:guid}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue(Guid terminalID)
-        {
-            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            => await ProcessSendDueBillingDealsToQueue(terminalID, false);
 
-            if (terminal.Status == Merchants.Shared.Enums.TerminalStatusEnum.Disabled || !terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.Billing))
-            {
-                return new SendBillingDealsToQueueResponse { Status = StatusEnum.Error,
-                    Message = $"Terminal does not meet requirements. Status: {terminal.Status} is incorrect or Billing feature is not enabled" };
-            }
-
-            var billings = await GetFilteredQueueBillingDeals(terminal);
-
-            var numberOfRecords = billings.Count();
-
-            for (int i = 0; i < numberOfRecords; i += appSettings.BillingDealsMaxBatchSize)
-            {
-                await billingDealsQueue.PushToQueue(
-                    billings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
-            }
-
-            return new SendBillingDealsToQueueResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued.Replace("@count", numberOfRecords.ToString()),
-                Count = numberOfRecords
-            };
-        }
+        [HttpPost]
+        [Route("trigger-by-terminal/{terminalID:guid}")]
+        public async Task<ActionResult<SendBillingDealsToQueueResponse>> TriggerBillingDealsByTerminal(Guid terminalID)
+            => await ProcessSendDueBillingDealsToQueue(terminalID, true);
 
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -601,10 +582,47 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
+        /// Sends billings to queue by terminal
+        /// </summary>
+        /// <param name="terminalID">Terminal ID</param>
+        /// <param name="manual">If set to true, terminal setting CreateRecurrentPaymentsAutomatically will be ignored</param>
+        /// <returns></returns>
+        private async Task<ActionResult<SendBillingDealsToQueueResponse>> ProcessSendDueBillingDealsToQueue(Guid terminalID, bool manual)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            if (terminal.Status == Merchants.Shared.Enums.TerminalStatusEnum.Disabled || !terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.Billing))
+            {
+                return new SendBillingDealsToQueueResponse
+                {
+                    Status = StatusEnum.Error,
+                    Message = $"Terminal does not meet requirements. Status: {terminal.Status} is incorrect or Billing feature is not enabled"
+                };
+            }
+
+            var billings = await GetFilteredQueueBillingDeals(terminal, manual);
+
+            var numberOfRecords = billings.Count();
+
+            for (int i = 0; i < numberOfRecords; i += appSettings.BillingDealsMaxBatchSize)
+            {
+                await billingDealsQueue.PushToQueue(
+                    billings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
+            }
+
+            return new SendBillingDealsToQueueResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued.Replace("@count", numberOfRecords.ToString()),
+                Count = numberOfRecords
+            };
+        }
+
+        /// <summary>
         /// Retrieves billing deals for queue and sends credit card expired emails to customers if required.
         /// </summary>
         /// <returns></returns>
-        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals(Terminal terminal)
+        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals(Terminal terminal, bool manual)
         {
             var filter = new BillingDealsFilter
             {
@@ -634,7 +652,7 @@ namespace Transactions.Api.Controllers
                 {
                     billingsToDeactivate.Add(billing.BillingDealID);
                 }
-                else if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+                else if (manual || terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
                 {
                     response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
                 }

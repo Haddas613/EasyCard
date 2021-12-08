@@ -59,7 +59,7 @@ export default class BillingDealsApi {
         return await this.base.post(this.billingUrl + `/${id}/unpause`);
     }
 
-    async sendDueBillingDealsToQueue(terminalID) {
-        return await this.base.post(this.billingUrl + `/due-billings/${terminalID}`);
+    async triggerBillingDealsByTerminal(terminalID) {
+        return await this.base.post(this.billingUrl + `/trigger-by-terminal/${terminalID}`);
     }
 }

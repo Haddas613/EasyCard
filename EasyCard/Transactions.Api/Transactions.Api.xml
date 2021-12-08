@@ -16,7 +16,15 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
+        <member name="M:Transactions.Api.Controllers.BillingController.ProcessSendDueBillingDealsToQueue(System.Guid,System.Boolean)">
+            <summary>
+            Sends billings to queue by terminal
+            </summary>
+            <param name="terminalID">Terminal ID</param>
+            <param name="manual">If set to true, terminal setting CreateRecurrentPaymentsAutomatically will be ignored</param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal,System.Boolean)">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>

@@ -62,7 +62,7 @@ export default {
         return;
       }
 
-      let opResult = await this.$api.billingDeals.sendDueBillingDealsToQueue(this.model.terminalID);
+      let opResult = await this.$api.billingDeals.triggerBillingDealsByTerminal(this.model.terminalID);
     
       this.visible = false;
       this.$emit("ok");
