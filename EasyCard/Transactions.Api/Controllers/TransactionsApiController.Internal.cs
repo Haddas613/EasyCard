@@ -885,11 +885,9 @@ namespace Transactions.Api.Controllers
 
         private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Terminal terminal, string emailTo = null)
         {
-            if (transaction.DealDetails?.ConsumerEmail == null)
+            if (terminal.Settings.SendTransactionSlipEmailToConsumer != true && terminal.Settings.SendTransactionSlipEmailToMerchant != true)
             {
                 return;
-
-                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
             }
 
             var settings = terminal.PaymentRequestSettings;
@@ -926,15 +924,18 @@ namespace Transactions.Api.Controllers
             substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
 
-            var email = new Email
+            if (transaction.DealDetails?.ConsumerEmail != null && terminal.Settings.SendTransactionSlipEmailToConsumer == true)
             {
-                EmailTo = transaction.DealDetails.ConsumerEmail,
-                Subject = emailSubject,
-                TemplateCode = emailTemplateCode,
-                Substitutions = substitutions.ToArray()
-            };
+                var email = new Email
+                {
+                    EmailTo = transaction.DealDetails.ConsumerEmail,
+                    Subject = emailSubject,
+                    TemplateCode = emailTemplateCode,
+                    Substitutions = substitutions.ToArray()
+                };
 
-            await emailSender.SendEmail(email);
+                await emailSender.SendEmail(email);
+            }
 
             if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
             {
