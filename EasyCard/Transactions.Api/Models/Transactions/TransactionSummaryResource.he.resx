@@ -150,8 +150,14 @@
   <data name="PaymentTypeEnum" xml:space="preserve">
     <value>סוג תשלום</value>
   </data>
+  <data name="ProcessorResultCode" xml:space="preserve">
+    <value>קוד שב"א</value>
+  </data>
   <data name="QuickStatus" xml:space="preserve">
     <value>סטטוס</value>
+  </data>
+  <data name="RejectionMessage" xml:space="preserve">
+    <value>הודעת שגיאה</value>
   </data>
   <data name="RejectionReason" xml:space="preserve">
     <value>סיבת דחיה</value>

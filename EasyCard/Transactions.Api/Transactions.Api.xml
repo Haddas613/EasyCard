@@ -2035,6 +2035,16 @@
             Processing status
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.CardPresence">
+            <summary>
+            Telephone deal or Regular (megnetic)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionReason">
             <summary>
             Rejection Reason
@@ -2043,6 +2053,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.PaymentTypeEnum">
             <summary>
             Rejection Reason
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionMessage">
+            <summary>
+            Rejection Reason Message (in case of rejected transaction)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionSummaryResource">
@@ -2116,9 +2131,19 @@
               Looks up a localized string similar to Pay type.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ProcessorResultCode">
+            <summary>
+              Looks up a localized string similar to SHVA code.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.QuickStatus">
             <summary>
               Looks up a localized string similar to Quick Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionMessage">
+            <summary>
+              Looks up a localized string similar to Error msg.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionReason">
