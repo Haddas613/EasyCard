@@ -89,7 +89,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, nayaxParameters.TerminalID, integrationMessageId, paymentTransactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
 
                 //Do not expose credit card and cvv numbers in log
                 //requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
