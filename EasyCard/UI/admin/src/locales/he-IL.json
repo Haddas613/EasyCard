@@ -411,6 +411,10 @@
   "EuroRate": "שער יורו",
   "DollarRate": "שער דולר",
   "InvoiceOnly": "חשבונית מס בלבד",
+  "UpdatedDate": "תאריך עדכון",
+  "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
+  "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
+  "InProgress": "בתהליך",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

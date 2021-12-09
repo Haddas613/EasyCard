@@ -2,14 +2,14 @@
   <v-flex>
     <billing-deals-trigger-dialog
       :show.sync="showTriggerDialog"
-      v-on:ok="getDataFromApi()"
+      v-on:ok="onTriggerByTerminal()"
     ></billing-deals-trigger-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-expansion-panels :flat="true">
         <v-expansion-panel>
           <v-expansion-panel-header >{{$t('Filters')}}</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <billing-deals-filter :filter-data="billingDealsFilter" v-on:apply="applyFilter($event)"></billing-deals-filter>
+          <v-expansion-panel-content eager>
+            <billing-deals-filter ref="filter" :filter-data="billingDealsFilter" v-on:apply="applyFilter($event)"></billing-deals-filter>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -173,7 +173,12 @@ export default {
       );
       
       await this.refresh();
-    }
+    },
+    onTriggerByTerminal(){
+      this.$refs.filter.model.inProgress = true;
+      this.$refs.filter.switchFilterChanged('inProgress');
+      this.$refs.filter.apply();
+    },
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {

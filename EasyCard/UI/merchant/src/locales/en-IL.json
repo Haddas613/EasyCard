@@ -344,6 +344,10 @@
   "SecondPhone": "Second Phone",
   "Note": "Note",
   "InvoiceOnly": "Invoice Only",
+  "UpdatedDate": "Updated Date",
+  "NextScheduledDateFrom": "Next Scheduled Date From",
+  "NextScheduledDateTo": "Next Scheduled Date To",
+  "InProgress": "In Progress",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

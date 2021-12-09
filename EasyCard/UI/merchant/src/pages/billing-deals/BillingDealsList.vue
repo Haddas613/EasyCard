@@ -7,7 +7,7 @@
     ></billing-deals-filter-dialog>
     <billing-deals-trigger-dialog
       :show.sync="showTriggerDialog"
-      v-on:ok="refresh()"
+      v-on:ok="onTriggerByTerminal()"
     ></billing-deals-trigger-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
@@ -93,6 +93,13 @@
             <v-switch v-model="billingDealsFilter.hasError" @change="switchFilterChanged('hasError')">
               <template v-slot:label>
                 <small>{{$t('HasError')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="4" md="3">
+            <v-switch v-model="billingDealsFilter.inProgress" @change="switchFilterChanged('inProgress')">
+              <template v-slot:label>
+                <small>{{$t('InProgress')}}</small>
               </template>
             </v-switch>
           </v-col>
@@ -328,7 +335,12 @@ export default {
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
+      this.switchFilterChanged('inProgress');
       await this.refresh();
+    },
+    async onTriggerByTerminal(){
+      this.billingDealsFilter.inProgress = true;
+      await this.switchFilterChanged('inProgress');
     },
     switchSelectAll() {
       if (!this.billingDealsFilter.actual) {
@@ -342,7 +354,7 @@ export default {
       }
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.billingDealsFilter, t, 0);

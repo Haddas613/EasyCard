@@ -14,7 +14,6 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import { mapState } from "vuex";
 
 export default {
   props: {
@@ -41,12 +40,8 @@ export default {
   async mounted() {
     let terminals = await this.$api.terminals.getTerminals();
     this.terminals = terminals ? terminals.data : [];
-    this.selectedTerminal = this.terminalStore.terminalID;
   },
   computed: {
-    ...mapState({
-      terminalStore: state => state.settings.terminal,
-    }),
     visible: {
       get: function() {
         return this.show;
