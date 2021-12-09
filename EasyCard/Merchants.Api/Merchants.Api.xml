@@ -111,6 +111,16 @@
               Looks up a localized string similar to Customer created successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedFailed">
+            <summary>
+              Looks up a localized string similar to Document number changed failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Document number changed successfully.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

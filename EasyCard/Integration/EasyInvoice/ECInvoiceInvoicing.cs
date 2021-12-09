@@ -209,7 +209,7 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
+        /*public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -240,7 +240,7 @@ namespace EasyInvoice
                 throw new IntegrationException("EasyInvoice Change Document Number request failed", integrationMessageId);
             }
         }
-
+        */
         public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);

@@ -122,6 +122,7 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
+        /*
         [HttpPost]
         [Route("set-document-number")]
         public async Task<ActionResult<OperationResponse>> SetDocumentNumber(SetDocumentNumberRequest request)
@@ -154,5 +155,6 @@ namespace Merchants.Api.Controllers.Integrations
 
             return Ok(response);
         }
+        */
     }
 }

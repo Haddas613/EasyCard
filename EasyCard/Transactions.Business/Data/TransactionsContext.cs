@@ -210,8 +210,11 @@ namespace Transactions.Business.Data
                 });
                 builder.OwnsOne(b => b.PinPadTransactionDetails, s =>
                 {
-                    s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(128).IsUnicode(false);
+                    s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
+
+            
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
@@ -262,12 +265,13 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                //builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
 
-                builder.HasIndex(d => d.PinPadTransactionID);
+                //builder.HasIndex(b => new { b.PinPadTransactionDetails.PinPadTransactionID});
+               // builder.HasIndex(b => b.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
             }

@@ -159,8 +159,19 @@ namespace Transactions.Api.Controllers.External
 
                 var transaction = mapper.Map<PaymentTransaction>(model);
 
+                string vuid = model.Vuid;
+                if (string.IsNullOrEmpty(model.Vuid))
+                {
+                    // int tranId = Common.BL.Modularity.GetCountTransactionPerTerminalIDsPerClient(_clientID, requestForValidateDeal.TerminalDetails.ClientToken);
+                    vuid = string.Format("{0}_{1}", model.TerminalDetails.ClientToken, Guid.NewGuid().ToString());
+                }
+
+                transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
+                transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
                 // NOTE: this is security assignment
                 mapper.Map(terminalMakingTransaction, transaction);
+
+
 
                 await transactionsService.CreateEntity(transaction);
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
@@ -218,9 +229,6 @@ namespace Transactions.Api.Controllers.External
 
                 //bool isRavMutav = (client.SapakMotav ?? false) && !String.IsNullOrEmpty(client.SapakMotavNumber); todo
                 //string RavMutav = client.SapakMotavNumber;   todo
-                string transactionID = null; //for ClearingHouse
-                string concurencyToken = null;
-
                 string expDate_YYMM = string.Format("{0}{1}", model.CardExpiry.Substring(2, 2), model.CardExpiry.Substring(0, 2));
                 var cardNumber = NayaxHelper.GetCardNumber(model.MaskedPan);
                 var cardExmp = model.CardExpiry;
@@ -303,17 +311,12 @@ namespace Transactions.Api.Controllers.External
 
 
                 //  EMVRestTransaction NayaxTran = new EMVRestTransaction();
-                string vuid = model.Vuid;
-                if (string.IsNullOrEmpty(model.Vuid))
-                {
-                    // int tranId = Common.BL.Modularity.GetCountTransactionPerTerminalIDsPerClient(_clientID, requestForValidateDeal.TerminalDetails.ClientToken);
-                    vuid = string.Format("{0}_{1}", model.TerminalDetails.ClientToken, Guid.NewGuid().ToString());
-                }
+            
                 //todo save vuid in transaction
                 // setValuesToEMVRestTran(requestForValidateDeal, _clientID, transactionID, concurencyToken, NayaxTran, vuid, RavMutav);
                 //Common.BL.DealInfo.SaveEMVRestAfterValidate(NayaxTran);
                 // string SysTranceNumber = PinPadModularityHelper.GetSysTranceNumber(_clientID);
-                return new NayaxResult(string.Empty, true, vuid, null, GetCorrelationID(), string.Empty /*todo RavMutav*/);
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null,transaction.PinPadTransactionDetails.PinPadCorrelationID , string.Empty /*todo RavMutav*/);
             }
             catch (Exception ex)
             {
@@ -322,7 +325,9 @@ namespace Transactions.Api.Controllers.External
             }
         }
 
-        [HttpPost]
-        [Route("v1/update")]
+        // [HttpPost]
+        //[Route("v1/update")]
 
     }
+
+}

@@ -45,10 +45,8 @@ namespace Transactions.Api.Mapping
                .ForMember(d => d.CreditCardDetails, o => o.Ignore())
                .ForMember(d => d.Currency, s => s.MapFrom(src => CurrencyHelper.GetCurrencyFromNayax(src.OriginalCurrency)))
                .ForMember(d => d.TransactionType, s => s.MapFrom(src => TransactionHelpers.GetTransactionTypeFromNayax(src.CreditTerms)))
-               .ForMember(d => d.SpecialTransactionType, s => s.MapFrom(src => TransactionHelpers.GetSpecialTransactionTypeFromNayax(src.TranType)))
+               .ForMember(d => d.SpecialTransactionType, s => s.MapFrom(src => TransactionHelpers.GetSpecialTransactionTypeFromNayax(src.TranType)));
                
-               s => s.MapFrom(src => src.OwnerIdentityNumber))
-                .
 
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))

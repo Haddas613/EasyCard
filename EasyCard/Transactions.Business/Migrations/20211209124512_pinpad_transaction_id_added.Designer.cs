@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20211209124512_pinpad_transaction_id_added")]
+    partial class pinpad_transaction_id_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1048,6 +1050,13 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("PinPadDeviceID");
 
+                    b.Property<string>("PinPadTransactionID")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTransactionID");
+
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
 
@@ -1106,6 +1115,8 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
+
+                    b.HasIndex("PinPadTransactionID");
 
                     b.HasIndex("MerchantID", "TerminalID");
 
@@ -1897,13 +1908,8 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentTransactionID")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("PinPadCorrelationID")
-                                .HasMaxLength(50)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(50)")
-                                .HasColumnName("PinPadCorrelationID");
-
                             b1.Property<string>("PinPadTransactionID")
+                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(50)")

@@ -267,7 +267,7 @@ namespace Transactions.Business.Entities
 
         // TODO: move pinpad details to separate class
 
-        public string PinPadTransactionID { get; set; }
+        //public string PinPadTransactionID { get; set; }
 
         public string PinPadDeviceID { get; set; }
 
@@ -320,6 +320,5 @@ namespace Transactions.Business.Entities
 
         public JObject Extension { get; set; }
 
-        public string VUID { get; set; }
     }
 }
