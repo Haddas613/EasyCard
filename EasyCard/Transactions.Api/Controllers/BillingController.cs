@@ -585,9 +585,10 @@ namespace Transactions.Api.Controllers
                 Actual = true,
             };
 
-            var billings = billingDealService.GetBillingDeals().Filter(filter);
+            var billings = billingDealService.GetBillingDeals().Filter(filter).Where(b => request.BillingDealsID.Contains(b.BillingDealID));
 
             var allTerminals = await billings.Select(d => d.TerminalID).Distinct().ToListAsync();
+
             foreach (var terminalID in allTerminals)
             {
                 var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
