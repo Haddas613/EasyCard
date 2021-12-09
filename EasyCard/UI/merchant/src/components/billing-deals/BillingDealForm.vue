@@ -52,6 +52,7 @@
               x-small
               :disabled="!model.dealDetails.consumerID"
               @click="ctokenDialog = true;"
+              v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens)"
             >
               <v-icon left small>mdi-plus</v-icon>
               {{$t("AddToken")}}

@@ -589,7 +589,8 @@ namespace Transactions.Api
                 return new QueueResolver()
                     .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName)) // TODO: change cfg to constant in QueueResolver
                     .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName))
-                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue));
+                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue))
+                    .AddQueue(QueueResolver.TransmissionQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.TransmissionQueue));
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
@@ -631,7 +632,7 @@ namespace Transactions.Api
 
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseStaticFiles();
 

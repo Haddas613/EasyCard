@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SharedApi = Shared.Api;
 
 namespace FunctionsCompositionApp.Transactions
 {
@@ -15,8 +16,7 @@ namespace FunctionsCompositionApp.Transactions
         [FunctionName("GetTransmissionTerminals")]
         public static async Task Run([TimerTrigger("%GetTransmissionTerminalsScheduleTriggerTime%")]TimerInfo myTimer, 
             ILogger log, 
-            ExecutionContext context, 
-            [Queue("transmission")]IAsyncCollector<string> outputQueue)
+            ExecutionContext context)
         {
             log.LogInformation($"{nameof(GetTransmissionTerminals)}  at: {DateTime.Now}");
 
@@ -32,7 +32,16 @@ namespace FunctionsCompositionApp.Transactions
 
             foreach (var terminal in terminals)
             {
-                await outputQueue.AddAsync(terminal.ToString());
+                // it sends batches to queue
+                var response = await transactionsApiClient.TransmitTerminalTransactions(terminal);
+                if (response.Status == SharedApi.Models.Enums.StatusEnum.Success)
+                {
+                    log.LogInformation(response.Message);
+                }
+                else
+                {
+                    log.LogError(response.Message);
+                }
             }
 
             log.LogInformation($"Send {terminals.Count()} transmission queue messages");

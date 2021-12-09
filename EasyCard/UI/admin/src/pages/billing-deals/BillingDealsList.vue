@@ -1,11 +1,15 @@
 <template>
   <v-flex>
+    <billing-deals-trigger-dialog
+      :show.sync="showTriggerDialog"
+      v-on:ok="onTriggerByTerminal()"
+    ></billing-deals-trigger-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-expansion-panels :flat="true">
         <v-expansion-panel>
           <v-expansion-panel-header >{{$t('Filters')}}</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <billing-deals-filter :filter-data="billingDealsFilter" v-on:apply="applyFilter($event)"></billing-deals-filter>
+          <v-expansion-panel-content eager>
+            <billing-deals-filter ref="filter" :filter-data="billingDealsFilter" v-on:apply="applyFilter($event)"></billing-deals-filter>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -92,16 +96,13 @@ export default {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     BillingScheduleString: () => import("../../components/billing-deals/BillingScheduleString"),
-    BillingDealsFilter: () => import("../../components/billing-deals/BillingDealsFilter")
+    BillingDealsFilter: () => import("../../components/billing-deals/BillingDealsFilter"),
+    BillingDealsTriggerDialog: () =>
+      import("../../components/billing-deals/BillingDealsTriggerDialog"),
   },
   props: {
     filters: {
       default: null
-    },
-    showFiltersDialog: {
-      type: Boolean,
-      default: false,
-      required: false
     }
   },
   data() {
@@ -112,12 +113,14 @@ export default {
       billingDealsFilter: {
         take: 100,
         skip: 0,
+        filterDateByNextScheduledTransaction: true,
         ...this.filters
       },
       options: {},
       headers: [],
       totalAmount: 0,
       selectAll: false,
+      showTriggerDialog: false,
     };
   },
   watch: {
@@ -165,17 +168,17 @@ export default {
         });
       }
 
-      let opResult = await this.$api.transactions.triggerBillingDeals(
+      let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
-
-      if (true || opResult.status === "success") {
-        this.lodash.forEach(billings, i => {
-          i.selected = false;
-          i.processed = true;
-        });
-      }
-    }
+      
+      await this.refresh();
+    },
+    onTriggerByTerminal(){
+      this.$refs.filter.model.inProgress = true;
+      this.$refs.filter.switchFilterChanged('inProgress');
+      this.$refs.filter.apply();
+    },
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -183,9 +186,15 @@ export default {
         value: {
           threeDotMenu: [
             {
-              text: vm.$t("TriggerTransactions"),
+              text: vm.$t("TriggerSelected"),
               fn: async () => {
                 await vm.createTransactions();
+              }
+            },
+            {
+              text: vm.$t("TriggerAll"),
+              fn: async () => {
+                vm.showTriggerDialog = true;
               }
             }
           ],

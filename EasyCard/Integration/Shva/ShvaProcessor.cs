@@ -147,7 +147,6 @@ namespace Shva
         /// Update Parameters in SHVA
         /// </summary>
         /// <param name="updateParamRequest"></param>
-        /// <param name="correlationId"></param>
         /// <returns></returns>
         public async Task<ProcessorUpdateParamteresResponse> ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
         {

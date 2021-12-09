@@ -10,7 +10,7 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
+          <v-text-field v-model="dateFromRaw" :label="$t(dateFromLabel)" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
         </template>
         <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary" :min="fromToday ? today : null">
           <v-spacer></v-spacer>
@@ -28,7 +28,7 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateToRaw" :label="$t('DateTo')" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
+          <v-text-field v-model="dateToRaw" :label="$t(dateToLabel)" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
         </template>
         <v-date-picker v-model="dateToRaw" no-title scrollable color="primary" :min="dateFromRaw ? dateFromRaw : null">
           <v-spacer></v-spacer>
@@ -64,6 +64,14 @@ export default {
     fromToday: {
       type: Boolean,
       default: false
+    },
+    dateFromLabel: {
+      type: String,
+      default: 'DateFrom'
+    },
+    dateToLabel: {
+      type: String,
+      default: 'DateTo'
     }
   },
   data() {

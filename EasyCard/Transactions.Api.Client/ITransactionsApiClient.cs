@@ -21,7 +21,9 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
 
-        Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID);
+        Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
+
+        Task<SummariesResponse<TransmitTransactionResponse>> TransmitTransactions(TransmitTransactionsRequest request);
 
         Task<CreateTransactionFromBillingDealsResponse> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request);
 
@@ -35,13 +37,10 @@ namespace Transactions.Api.Client
 
         Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID);
 
-        Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue();
-
-        Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID);
-
         Task<OperationResponse> GenerateMasavFile();
 
         Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request);
+
         Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model);
     }
 }

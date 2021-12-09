@@ -105,12 +105,6 @@ export default class TransactionsApi {
         return await this.base.post(this.transactionsUrl + '/refund', data,  { showBadRequestToastr: false });
     }
 
-    async triggerBillingDeals(billingDealsID) {
-      return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', { billingDealsID }, {
-          showSuccessToastr: false
-        });
-    } 
-
     async sendTransactionSlipEmail(data) {
       return await this.base.post(this.transactionsUrl + '/send-transaction-slip-email', data);
     }

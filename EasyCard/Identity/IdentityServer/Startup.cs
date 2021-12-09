@@ -343,7 +343,7 @@ namespace IdentityServer
 
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseMiddleware<ExceptionMiddleware>();
 
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 

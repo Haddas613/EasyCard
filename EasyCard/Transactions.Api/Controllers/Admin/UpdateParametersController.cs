@@ -45,6 +45,10 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
+    /// <summary>
+    /// This controller not in use
+    /// </summary>
+    [Obsolete]
     [Route("api/update-parameters")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
@@ -142,7 +146,7 @@ namespace Transactions.Api.Controllers
 
                 var processorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
                 var pinpadProcessorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = pinpadProcessorSettings, CorrelationId = GetCorrelationID() };
-                
+
                 ProcessorUpdateParamteresResponse updatedResult = await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
                 bool updatedSuccess = updatedResult.Success;
                 if (terminalPinpadAllow)
@@ -158,8 +162,6 @@ namespace Transactions.Api.Controllers
                 logger.LogError($"{nameof(UpdateParameters)} ERROR: {e.Message}");
                 return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.UpdateFailed };
             }
-
-            
         }
     }
 }

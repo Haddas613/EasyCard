@@ -106,6 +106,15 @@ namespace Merchants.Api.Models.Integrations.Shva {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updated parameters request failed.
+        /// </summary>
+        public static string UpdatedParametersFailed {
+            get {
+                return ResourceManager.GetString("UpdatedParametersFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated parameters successfully.
         /// </summary>
         public static string UpdatedParametersSuccessfully {
