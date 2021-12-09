@@ -16,15 +16,28 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.BillingController.ProcessSendDueBillingDealsToQueue(System.Guid,System.Boolean)">
+        <member name="M:Transactions.Api.Controllers.BillingController.SendDueBillingDealsToQueue(System.Guid)">
+            <summary>
+            Used only by job
+            </summary>
+            <param name="terminalID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
+            <summary>
+            Start process of creating transactions from billing deals
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.ProcessSendDueBillingDealsToQueue(System.Guid)">
             <summary>
             Sends billings to queue by terminal
             </summary>
             <param name="terminalID">Terminal ID</param>
-            <param name="manual">If set to true, terminal setting CreateRecurrentPaymentsAutomatically will be ignored</param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal,System.Boolean)">
+        <member name="M:Transactions.Api.Controllers.BillingController.ProcessExpiredCardsBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>
@@ -93,6 +106,13 @@
             <summary>
             Refund request
             </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
+            <summary>
+            Method used internally to generate transactions based on prepared billing deals
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction,System.String)">
             <summary>

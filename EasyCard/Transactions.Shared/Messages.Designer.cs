@@ -196,6 +196,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing deal processing in-progress.
+        /// </summary>
+        public static string BillingInProgress {
+            get {
+                return ResourceManager.GetString("BillingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceled By Aggregator.
         /// </summary>
         public static string CanceledByAggregator {

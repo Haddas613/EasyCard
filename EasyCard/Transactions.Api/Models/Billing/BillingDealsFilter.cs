@@ -75,5 +75,9 @@ namespace Transactions.Api.Models.Billing
         public bool InvoiceOnly { get; set; }
 
         public string Origin { get; set; }
+
+        public bool OnlyActive { get; set; }
+
+        public bool InProgress { get; set; }
     }
 }

@@ -660,8 +660,15 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Method used internally to generate transactions based on prepared billing deals
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Policy = Policy.AnyAdmin)]
         [HttpPost]
-        [Route("trigger-billing-deals")]
+        [Route("process-billing-deals")]
         public async Task<ActionResult<CreateTransactionFromBillingDealsResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
@@ -692,60 +699,96 @@ namespace Transactions.Api.Controllers
                     continue;
                 }
 
-                if (!billingDeal.Active)
+                // Billing should be prepared before
+                if (billingDeal.InProgress != BillingProcessingStatusEnum.Started)
                 {
-                    logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                    logger.LogWarning($"Billing deal transaction generation should be in-progress: {billingDeal.BillingDealID}");
                     response.FailedCount++;
                     continue;
                 }
 
-                var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-                var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
-                    (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
-
-                if (!actualDeal)
+                try
                 {
-                    logger.LogWarning($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                    billingDeal.InProgress = BillingProcessingStatusEnum.InProgress;
+                    await billingDealService.UpdateEntity(billingDeal);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    logger.LogWarning(ex, $"Billing deal transaction generation already be in-progress: {billingDeal.BillingDealID}: {ex.Message}");
                     response.FailedCount++;
                     continue;
                 }
 
-                OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
+                try
+                {
+                    OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
 
-                var token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
-                if (token == null)
-                {
-                    operationResult.Status = StatusEnum.Error;
-                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
-                }
-                else
-                {
-                    if (token.CardExpiration.Expired == true)
+                    if (!billingDeal.Active)
                     {
+                        logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                        operationResult.Message = $"Billing deal is closed";
                         operationResult.Status = StatusEnum.Error;
-                        operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                    }
+
+                    var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+                    var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
+                        (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
+
+                    if (!actualDeal)
+                    {
+                        logger.LogError($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                        operationResult.Message = $"Billing deal is not actual: NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}";
+                        operationResult.Status = StatusEnum.Error;
+                    }
+
+                    CreditCardTokenKeyVault token = null;
+
+                    if (billingDeal.PaymentType == PaymentTypeEnum.Card && billingDeal.InvoiceOnly == false)
+                    {
+                        token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
+                        if (token == null)
+                        {
+                            logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
+                            operationResult.Status = StatusEnum.Error;
+                            operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                        }
+                        else
+                        {
+                            if (token.CardExpiration.Expired == true)
+                            {
+                                logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
+                                operationResult.Status = StatusEnum.Error;
+                                operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+                            }
+                        }
+                    }
+
+                    if (operationResult.Status == StatusEnum.Success)
+                    {
+                        operationResult = await NextBillingDeal(billingDeal, token);
+                    }
+
+                    if (operationResult.Status == StatusEnum.Success)
+                    {
+                        response.SuccessfulCount++;
+                    }
+                    else
+                    {
+                        billingDeal.InProgress = BillingProcessingStatusEnum.Pending;
+                        billingDeal.Active = false;
+                        billingDeal.HasError = true;
+                        billingDeal.LastError = operationResult.Message;
+                        billingDeal.LastErrorCorrelationID = GetCorrelationID();
+                        await billingDealService.UpdateEntity(billingDeal);
+
+                        response.FailedCount++;
                     }
                 }
-
-                if (operationResult.Status == StatusEnum.Success)
+                catch (Exception ex)
                 {
-                    operationResult = await NextBillingDeal(billingDeal, token);
-                }
-
-                if (operationResult.Status == StatusEnum.Success)
-                {
-                    response.SuccessfulCount++;
-                }
-                else
-                {
-                    billingDeal.Active = false;
-                    billingDeal.HasError = true;
-                    billingDeal.LastError = operationResult.Message;
-                    billingDeal.LastErrorCorrelationID = GetCorrelationID();
-                    await billingDealService.UpdateEntity(billingDeal);
-
                     response.FailedCount++;
+                    logger.LogError(ex, $"Failed to create transaction for billing deal {billingDeal.BillingDealID}: {ex.Message}");
                 }
             }
 

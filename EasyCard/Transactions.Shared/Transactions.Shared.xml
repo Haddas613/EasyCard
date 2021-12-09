@@ -645,6 +645,11 @@
               Looks up a localized string similar to Billing Deal Updated.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingInProgress">
+            <summary>
+              Looks up a localized string similar to Billing deal processing in-progress.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">
             <summary>
               Looks up a localized string similar to Canceled By Aggregator.

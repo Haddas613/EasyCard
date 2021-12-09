@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20211208170354_Billing-Inprogress")]
+    partial class BillingInprogress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,8 +71,8 @@ namespace Transactions.Business.Migrations
                     b.Property<bool>("HasError")
                         .HasColumnType("bit");
 
-                    b.Property<short>("InProgress")
-                        .HasColumnType("smallint");
+                    b.Property<bool>("InProgress")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");

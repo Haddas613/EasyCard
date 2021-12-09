@@ -162,6 +162,9 @@
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>
   </data>
+  <data name="BillingInProgress" xml:space="preserve">
+    <value>Billing deal processing in-progress</value>
+  </data>
   <data name="CanceledByAggregator" xml:space="preserve">
     <value>Canceled By Aggregator</value>
   </data>

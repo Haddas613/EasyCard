@@ -108,7 +108,7 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/transactions/trigger-billing-deals", request, BuildHeaders);
+                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/transactions/process-billing-deals", request, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
