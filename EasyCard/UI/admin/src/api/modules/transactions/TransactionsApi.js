@@ -68,12 +68,6 @@ export default class TransactionsApi {
     return await this.base.get(this.transactionsUrl + `/${transactionId}/history`);
   }
 
-  async triggerBillingDeals(billingDealsID) {
-    return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', {
-        billingDealsID
-    });
-  }
-
   async sendTransactionSlipEmail(data) {
     return await this.base.post(this.transactionsUrl + '/send-transaction-slip-email', data);
   }

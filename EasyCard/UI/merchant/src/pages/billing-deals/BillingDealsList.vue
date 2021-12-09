@@ -325,25 +325,10 @@ export default {
         });
       }
 
-      let opResult = await this.$api.transactions.triggerBillingDeals(
+      let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
-
-      this.lodash.forEach(billings, i => {
-        i.selected = false;
-        i.processed = true;
-      });
-
-      if(opResult.failedCount > 0){
-        this.$toasted.show(this.$t("@TransactionsQueuedError").replace("@count", opResult.failedCount), {
-          type: "error"
-        });
-      } 
-      if(opResult.successfulCount > 0){
-        this.$toasted.show(this.$t("@TransactionsQueuedSuccess").replace("@count", opResult.successfulCount), {
-          type: "success"
-        });
-      }
+      await this.refresh();
     },
     switchSelectAll() {
       if (!this.billingDealsFilter.actual) {

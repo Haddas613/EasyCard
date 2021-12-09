@@ -168,16 +168,11 @@ export default {
         });
       }
 
-      let opResult = await this.$api.transactions.triggerBillingDeals(
+      let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
-
-      if (true || opResult.status === "success") {
-        this.lodash.forEach(billings, i => {
-          i.selected = false;
-          i.processed = true;
-        });
-      }
+      
+      await this.refresh();
     }
   },
   beforeRouteEnter(to, from, next) {
