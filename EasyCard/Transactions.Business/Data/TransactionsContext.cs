@@ -205,6 +205,10 @@ namespace Transactions.Business.Data
                     s.Ignore(b => b.SessionID);
                     s.Ignore(b => b.TotalAmount)/*.HasColumnType("decimal(19,4)").IsRequired()*/;
                 });
+                builder.OwnsOne(b => b.PinPadTransactionDetails, s =>
+                {
+                    s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(128).IsUnicode(false);
+                });
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {

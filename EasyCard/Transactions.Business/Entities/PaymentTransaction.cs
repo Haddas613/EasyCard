@@ -24,6 +24,7 @@ namespace Transactions.Business.Entities
             ClearingHouseTransactionDetails = new ClearingHouseTransactionDetails();
             UpayTransactionDetails = new UpayTransactionDetails();
             ShvaTransactionDetails = new ShvaTransactionDetails();
+            PinPadTransactionDetails = new PinPadTransactionsDetails();
             DealDetails = new DealDetails();
         }
 
@@ -204,6 +205,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public ShvaTransactionDetails ShvaTransactionDetails { get; set; }
 
+        public PinPadTransactionsDetails PinPadTransactionDetails { get; set; }
+
         /// <summary>
         /// PayDay details
         /// </summary>
@@ -316,5 +319,7 @@ namespace Transactions.Business.Entities
         }
 
         public JObject Extension { get; set; }
+
+        public string VUID { get; set; }
     }
 }
