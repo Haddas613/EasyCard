@@ -438,4 +438,7 @@
   <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
     <value>האפשרות לטוקנים לכרטיסי אשראי חייבת להיות מאופשרת קודם.</value>
   </data>
+  <data name="InvoiceUpdated" xml:space="preserve">
+    <value>Invoice Updated</value>
+  </data>
 </root>

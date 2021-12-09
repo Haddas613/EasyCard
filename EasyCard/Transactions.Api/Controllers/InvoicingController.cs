@@ -560,6 +560,28 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("{invoiceID}/history")]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        public async Task<ActionResult<SummariesResponse<InvoiceHistoryResponse>>> GetInvoiceHistory([FromRoute] Guid invoiceID)
+        {
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
+
+            var query = invoiceService.GetInvoiceHistory(invoiceID);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var numberOfRecords = query.DeferredCount().FutureValue();
+                var response = new SummariesResponse<InvoiceHistoryResponse>();
+
+                response.Data = await mapper.ProjectTo<InvoiceHistoryResponse>(query.OrderByDescending(t => t.OperationDate)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecords.Value;
+
+                return Ok(response);
+            }
+        }
+
         [NonAction]
         public async Task SendInvoiceEmail(string emailTo, Invoice invoice, Terminal terminal)
         {

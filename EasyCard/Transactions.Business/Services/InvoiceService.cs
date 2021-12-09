@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
+using Shared.Business.AutoHistory;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -11,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
+using Transactions.Shared;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
@@ -28,10 +31,25 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public async override Task CreateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
+        public IQueryable<InvoiceHistory> GetInvoiceHistory(Guid invoiceID)
         {
-            entity.ApplyAuditInfo(httpContextAccessor);
-            await base.CreateEntity(entity, dbTransaction);
+            return GetInvoiceHistories().Where(i => i.InvoiceID == invoiceID);
+        }
+
+        public IQueryable<InvoiceHistory> GetInvoiceHistories()
+        {
+            if (user.IsAdmin())
+            {
+                return context.InvoiceHistories.AsNoTracking();
+            }
+            else if (user.IsTerminal())
+            {
+                return context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.MerchantID == user.GetMerchantID());
+            }
         }
 
         public IQueryable<Invoice> GetInvoices()
@@ -55,10 +73,47 @@ namespace Transactions.Business.Services
             return await context.StartSendingInvoices(terminalID, invoicesIDs, dbTransaction);
         }
 
+        public async override Task CreateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
+        {
+            entity.ApplyAuditInfo(httpContextAccessor);
+            await base.CreateEntity(entity, dbTransaction);
+
+            await AddHistory(entity.InvoiceID, string.Empty, Messages.InvoiceCreated, InvoiceOperationCodesEnum.InvoiceCreated);
+        }
+
         public async override Task UpdateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
         {
             entity.UpdatedDate = DateTime.UtcNow;
             await base.UpdateEntity(entity, dbTransaction);
+
+            List<string> changes = new List<string>();
+
+            // Must ToArray() here for excluding the AutoHistory model.
+            var entries = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+            foreach (var entry in entries)
+            {
+                changes.Add(entry.AutoHistory().Changed);
+            }
+
+            var changesStr = string.Concat("[", string.Join(",", changes), "]");
+
+            await AddHistory(entity.InvoiceID, string.Empty, Messages.InvoiceUpdated, InvoiceOperationCodesEnum.InvoiceUpdated);
+        }
+
+        private async Task AddHistory(Guid invoiceID, string opDescription, string message, InvoiceOperationCodesEnum operationCode)
+        {
+            var historyRecord = new InvoiceHistory
+            {
+                InvoiceID = invoiceID,
+                OperationCode = operationCode,
+                OperationDescription = opDescription,
+                OperationMessage = message,
+            };
+
+            historyRecord.ApplyAuditInfo(httpContextAccessor);
+
+            context.InvoiceHistories.Add(historyRecord);
+            await context.SaveChangesAsync();
         }
     }
 }

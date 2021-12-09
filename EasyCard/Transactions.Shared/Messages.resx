@@ -288,6 +288,9 @@
   <data name="InvoiceStateIsNotValid" xml:space="preserve">
     <value>Invoice State is not valid</value>
   </data>
+  <data name="InvoiceUpdated" xml:space="preserve">
+    <value>Invoice Updated</value>
+  </data>
   <data name="InvoicingNotDefined" xml:space="preserve">
     <value>Invoicing system is not defined</value>
   </data>

@@ -43,6 +43,7 @@ namespace Transactions.Api.Mapping
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
             CreateMap<Invoice, InvoiceResponse>();
+            CreateMap<InvoiceHistory, InvoiceHistoryResponse>();
 
             CreateMap<CreditCardDetails, CreditCardPaymentDetails>()
                 .ForMember(d => d.СardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
