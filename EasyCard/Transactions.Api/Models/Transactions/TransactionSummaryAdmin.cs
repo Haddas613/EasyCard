@@ -42,6 +42,22 @@ namespace Transactions.Api.Models.Transactions
         public new TransactionStatusEnum Status { get; set; }
 
         /// <summary>
+        /// Special transaction type
+        /// </summary>
+        [EnumDataType(typeof(SpecialTransactionTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
+        public new SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
+
+        /// <summary>
+        /// Telephone deal or Regular (megnetic)
+        /// </summary>
+        [EnumDataType(typeof(CardPresenceEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
+        public new CardPresenceEnum CardPresence { get; set; }
+
+        /// <summary>
         /// Rejection Reason
         /// </summary>
         [EnumDataType(typeof(RejectionReasonEnum))]
@@ -56,5 +72,12 @@ namespace Transactions.Api.Models.Transactions
         public new PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         public string CardNumber { get; set; }
+
+        /// <summary>
+        /// Rejection Reason Message (in case of rejected transaction)
+        /// </summary>
+        public string RejectionMessage { get; set; }
+
+        public int? ProcessorResultCode { get; set; }
     }
 }

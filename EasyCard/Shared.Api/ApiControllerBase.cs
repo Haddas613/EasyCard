@@ -29,11 +29,11 @@ namespace Shared.Api
         }
 
         [NonAction]
-        protected T EnsureExists<T>(T src, string entityName = null)
+        protected T EnsureExists<T>(T src, string entityName = null, string entityReference = null)
         {
             if (src == null)
             {
-                throw new EntityNotFoundException(ApiMessages.EntityNotFound, entityName ?? typeof(T).Name, null);
+                throw new EntityNotFoundException(ApiMessages.EntityNotFound, entityName ?? typeof(T).Name, entityReference);
             }
 
             return src;

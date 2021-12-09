@@ -515,7 +515,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -659,7 +659,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -784,7 +784,7 @@ namespace Transactions.Api.Controllers
             //invoiceRequest.MerchantIP = GetIP();
             invoiceRequest.CorrelationId = GetCorrelationID();
 
-            model.UpdateNextScheduledDate(invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
+            model.UpdateNextScheduledDate(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
 
             await billingDealService.UpdateEntity(model);
 
@@ -885,11 +885,9 @@ namespace Transactions.Api.Controllers
 
         private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Terminal terminal, string emailTo = null)
         {
-            if (transaction.DealDetails?.ConsumerEmail == null)
+            if (terminal.Settings.SendTransactionSlipEmailToConsumer != true && terminal.Settings.SendTransactionSlipEmailToMerchant != true)
             {
                 return;
-
-                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
             }
 
             var settings = terminal.PaymentRequestSettings;
@@ -926,15 +924,18 @@ namespace Transactions.Api.Controllers
             substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
 
-            var email = new Email
+            if (transaction.DealDetails?.ConsumerEmail != null && terminal.Settings.SendTransactionSlipEmailToConsumer == true)
             {
-                EmailTo = transaction.DealDetails.ConsumerEmail,
-                Subject = emailSubject,
-                TemplateCode = emailTemplateCode,
-                Substitutions = substitutions.ToArray()
-            };
+                var email = new Email
+                {
+                    EmailTo = transaction.DealDetails.ConsumerEmail,
+                    Subject = emailSubject,
+                    TemplateCode = emailTemplateCode,
+                    Substitutions = substitutions.ToArray()
+                };
 
-            await emailSender.SendEmail(email);
+                await emailSender.SendEmail(email);
+            }
 
             if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
             {
@@ -957,11 +958,9 @@ namespace Transactions.Api.Controllers
 
         private async Task SendBillingInvoiceSuccessEmails(BillingDeal billingDeal, Invoice invoice, Terminal terminal, string emailTo = null)
         {
-            if (billingDeal.DealDetails?.ConsumerEmail == null)
+            if (terminal.Settings.SendTransactionSlipEmailToConsumer != true && terminal.Settings.SendTransactionSlipEmailToMerchant != true)
             {
                 return;
-
-                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
             }
 
             var settings = terminal.PaymentRequestSettings;
@@ -992,15 +991,18 @@ namespace Transactions.Api.Controllers
 
             substitutions.Add(new TextSubstitution(nameof(PaymentTransaction.DocumentOrigin), originStr));
 
-            var email = new Email
+            if (billingDeal.DealDetails?.ConsumerEmail != null && terminal.Settings.SendTransactionSlipEmailToConsumer == true)
             {
-                EmailTo = billingDeal.DealDetails.ConsumerEmail,
-                Subject = emailSubject,
-                TemplateCode = emailTemplateCode,
-                Substitutions = substitutions.ToArray()
-            };
+                var email = new Email
+                {
+                    EmailTo = billingDeal.DealDetails.ConsumerEmail,
+                    Subject = emailSubject,
+                    TemplateCode = emailTemplateCode,
+                    Substitutions = substitutions.ToArray()
+                };
 
-            await emailSender.SendEmail(email);
+                await emailSender.SendEmail(email);
+            }
 
             if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
             {
@@ -1021,7 +1023,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal)
+        private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal, CreditCardTokenKeyVault token)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(billingDeal);
 
@@ -1042,7 +1044,6 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    var token = EnsureExists(await keyValueStorage.Get(billingDeal.CreditCardToken.ToString()), "CreditCardToken");
                     actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
                 }
 

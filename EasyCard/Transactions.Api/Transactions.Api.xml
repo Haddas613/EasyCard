@@ -4,6 +4,11 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="T:Transactions.Api.Controllers.UpdateParametersController">
+            <summary>
+            This controller not in use
+            </summary>
+        </member>
         <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDealInvoice(Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest)">
             <summary>
             Billing deal that only process invoice. Does not produce transaction
@@ -11,7 +16,28 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
+        <member name="M:Transactions.Api.Controllers.BillingController.SendDueBillingDealsToQueue(System.Guid)">
+            <summary>
+            Used only by job
+            </summary>
+            <param name="terminalID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
+            <summary>
+            Start process of creating transactions from billing deals
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.ProcessSendDueBillingDealsToQueue(System.Guid)">
+            <summary>
+            Sends billings to queue by terminal
+            </summary>
+            <param name="terminalID">Terminal ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.ProcessExpiredCardsBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>
@@ -80,6 +106,13 @@
             <summary>
             Refund request
             </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
+            <summary>
+            Method used internally to generate transactions based on prepared billing deals
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction,System.String)">
             <summary>
@@ -1506,7 +1539,8 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.SaveCreditCard">
             <summary>
-            Save credit card from request
+            Save credit card from request.
+            Requires Feature CreditCardTokens to be enabled.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InitialJ5TransactionID">
@@ -2029,6 +2063,16 @@
             Processing status
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.CardPresence">
+            <summary>
+            Telephone deal or Regular (megnetic)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionReason">
             <summary>
             Rejection Reason
@@ -2037,6 +2081,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.PaymentTypeEnum">
             <summary>
             Rejection Reason
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionMessage">
+            <summary>
+            Rejection Reason Message (in case of rejected transaction)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionSummaryResource">
@@ -2110,9 +2159,19 @@
               Looks up a localized string similar to Pay type.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ProcessorResultCode">
+            <summary>
+              Looks up a localized string similar to SHVA code.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.QuickStatus">
             <summary>
               Looks up a localized string similar to Quick Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionMessage">
+            <summary>
+              Looks up a localized string similar to Error msg.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionReason">

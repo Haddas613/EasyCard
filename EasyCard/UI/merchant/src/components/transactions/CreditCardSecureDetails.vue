@@ -72,7 +72,7 @@
         <template v-if="!model.pinPad">
           <ec-dialog-invoker
             v-on:click="handleClick()"
-            v-if="customerTokens"
+            v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) && customerTokens"
             :clickable="(customerTokens.length > 0)"
             class="py-2"
           >
@@ -103,10 +103,10 @@
                 v-on:select-customer="onCustomerSelect()"
               ></credit-card-secure-details-fields>
               <v-row no-gutters>
-                <v-col cols="5" md="3">
+                <v-col cols="5" md="3" v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens)">
                   <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
                 </v-col>
-                <v-col cols="7" md="9">
+                <v-col cols="12" :md="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) ? 9 : 12">
                   <v-text-field
                     class="mt-2"
                     v-model="model.oKNumber"
@@ -206,7 +206,7 @@ export default {
       this.dictionaries = dictionaries;
       this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     }
-    if (this.model.dealDetails.consumerID) {
+    if (this.model.dealDetails.consumerID && this.$featureEnabled(this.terminalStore, this.appConstants.terminal.features.CreditCardTokens)) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(

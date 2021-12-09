@@ -71,4 +71,12 @@ export default class BillingDealsApi {
     async unpauseBillingDeal(id) {
         return await this.base.post(this.billingUrl + `/${id}/unpause`);
     }
+
+    async triggerBillingDealsByTerminal(terminalID) {
+        return await this.base.post(this.billingUrl + `/trigger-by-terminal/${terminalID}`);
+    }
+
+    async triggerBillingDeals(billingDealsID) {
+        return await this.base.post(this.billingUrl + '/trigger-billing-deals', { billingDealsID });
+    } 
 }

@@ -35,7 +35,8 @@ const appConstants = {
             SmsNotification: 'SmsNotification',
             Checkout: 'Checkout',
             Api: 'Api',
-            Billing: 'Billing'
+            Billing: 'Billing',
+            CreditCardTokens: 'CreditCardTokens'
         },
         integrations: {
             processor: "processor",

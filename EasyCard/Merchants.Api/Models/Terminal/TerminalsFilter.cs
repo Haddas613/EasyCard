@@ -36,5 +36,7 @@ namespace Merchants.Api.Models.Terminal
         public bool ActiveOnly { get; set; }
 
         public FeatureEnum? HasFeature { get; set; }
+
+        public bool HasShvaTerminal { get; set; }
     }
 }

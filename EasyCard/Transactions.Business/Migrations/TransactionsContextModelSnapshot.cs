@@ -69,6 +69,9 @@ namespace Transactions.Business.Migrations
                     b.Property<bool>("HasError")
                         .HasColumnType("bit");
 
+                    b.Property<short>("InProgress")
+                        .HasColumnType("smallint");
+
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -539,6 +542,62 @@ namespace Transactions.Business.Migrations
                     b.HasKey("InvoiceID");
 
                     b.ToTable("Invoice");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.InvoiceHistory", b =>
+                {
+                    b.Property<Guid>("InvoiceHistoryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<Guid?>("InvoiceID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<short>("OperationCode")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("OperationDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationDescription")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OperationMessage")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("SourceIP")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("InvoiceHistoryID");
+
+                    b.HasIndex("InvoiceID");
+
+                    b.ToTable("InvoiceHistory");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
@@ -1502,6 +1561,17 @@ namespace Transactions.Business.Migrations
                     b.Navigation("DealDetails");
 
                     b.Navigation("InvoiceDetails");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.InvoiceHistory", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.Invoice", "Invoice")
+                        .WithMany()
+                        .HasForeignKey("InvoiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>

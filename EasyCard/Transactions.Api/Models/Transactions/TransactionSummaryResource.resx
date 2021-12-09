@@ -150,8 +150,14 @@
   <data name="PaymentTypeEnum" xml:space="preserve">
     <value>Pay type</value>
   </data>
+  <data name="ProcessorResultCode" xml:space="preserve">
+    <value>SHVA code</value>
+  </data>
   <data name="QuickStatus" xml:space="preserve">
     <value>Quick Status</value>
+  </data>
+  <data name="RejectionMessage" xml:space="preserve">
+    <value>Error msg</value>
   </data>
   <data name="RejectionReason" xml:space="preserve">
     <value>Rej. Reason</value>

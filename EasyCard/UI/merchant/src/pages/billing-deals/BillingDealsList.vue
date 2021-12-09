@@ -5,6 +5,10 @@
       :filter="billingDealsFilter"
       v-on:ok="applyFilters($event)"
     ></billing-deals-filter-dialog>
+    <billing-deals-trigger-dialog
+      :show.sync="showTriggerDialog"
+      v-on:ok="onTriggerByTerminal()"
+    ></billing-deals-trigger-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -42,7 +46,7 @@
           </v-col>
         </v-row>
         <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch
               v-model="billingDealsFilter.actual"
               @change="switchFilterChanged('actual')"
@@ -54,7 +58,7 @@
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch
               v-model="billingDealsFilter.invoiceOnly"
               @change="getDataFromApi(false)"
@@ -64,31 +68,38 @@
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.showDeleted" @change="switchFilterChanged('showDeleted')" true-value="1" false-value="0">
               <template v-slot:label>
                 <small>{{$t('Inactive')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.paused" @change="switchFilterChanged('paused')">
               <template v-slot:label>
                 <small>{{$t('Paused')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.finished" @change="switchFilterChanged('finished')">
               <template v-slot:label>
                 <small>{{$t('Finished')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4" md="3">
             <v-switch v-model="billingDealsFilter.hasError" @change="switchFilterChanged('hasError')">
               <template v-slot:label>
                 <small>{{$t('HasError')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="4" md="3">
+            <v-switch v-model="billingDealsFilter.inProgress" @change="switchFilterChanged('inProgress')">
+              <template v-slot:label>
+                <small>{{$t('InProgress')}}</small>
               </template>
             </v-switch>
           </v-col>
@@ -223,6 +234,8 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     BillingDealsFilterDialog: () =>
       import("../../components/billing-deals/BillingDealsFilterDialog"),
+    BillingDealsTriggerDialog: () =>
+      import("../../components/billing-deals/BillingDealsTriggerDialog"),
     BillingScheduleString: () =>
       import("../../components/billing-deals/BillingScheduleString"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
@@ -253,9 +266,11 @@ export default {
         take: 100,
         skip: 0,
         actual: null,
+        filterDateByNextScheduledTransaction: true,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
+      showTriggerDialog: false,
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
@@ -317,25 +332,15 @@ export default {
         });
       }
 
-      let opResult = await this.$api.transactions.triggerBillingDeals(
+      let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
-
-      this.lodash.forEach(billings, i => {
-        i.selected = false;
-        i.processed = true;
-      });
-
-      if(opResult.failedCount > 0){
-        this.$toasted.show(this.$t("@TransactionsQueuedError").replace("@count", opResult.failedCount), {
-          type: "error"
-        });
-      } 
-      if(opResult.successfulCount > 0){
-        this.$toasted.show(this.$t("@TransactionsQueuedSuccess").replace("@count", opResult.successfulCount), {
-          type: "success"
-        });
-      }
+      this.switchFilterChanged('inProgress');
+      await this.refresh();
+    },
+    async onTriggerByTerminal(){
+      this.billingDealsFilter.inProgress = true;
+      await this.switchFilterChanged('inProgress');
     },
     switchSelectAll() {
       if (!this.billingDealsFilter.actual) {
@@ -349,7 +354,7 @@ export default {
       }
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.billingDealsFilter, t, 0);
@@ -385,15 +390,21 @@ export default {
             }
           },
           {
-            text: this.$t("TriggerTransactions"),
+            text: this.$t("SelectAll"),
+            fn: () => {
+              vm.switchSelectAll();
+            }
+          },
+          {
+            text: this.$t("TriggerSelected"),
             fn: async () => {
               await vm.createTransactions();
             }
           },
           {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              vm.switchSelectAll();
+            text: this.$t("TriggerAll"),
+            fn: async () => {
+              vm.showTriggerDialog = true;
             }
           }
         ]

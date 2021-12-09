@@ -645,6 +645,11 @@
               Looks up a localized string similar to Billing Deal Updated.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingInProgress">
+            <summary>
+              Looks up a localized string similar to Billing deal processing in-progress.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">
             <summary>
               Looks up a localized string similar to Canceled By Aggregator.
@@ -743,6 +748,11 @@
         <member name="P:Transactions.Shared.Messages.CreditCardTokenChanged">
             <summary>
               Looks up a localized string similar to Credit Card Token changed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokensFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.CvvRequired">
@@ -1042,7 +1052,7 @@
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionsQueued">
             <summary>
-              Looks up a localized string similar to Transactions queued.
+              Looks up a localized string similar to @count Transactions queued.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionStatusIsNotValid">

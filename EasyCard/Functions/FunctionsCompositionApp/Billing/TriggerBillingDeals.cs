@@ -25,7 +25,7 @@ namespace FunctionsCompositionApp.Billing
                 .AddEnvironmentVariables()
                 .Build();
 
-            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<BillingDealQueueEntry>>(messageBody);
+            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<Guid>>(messageBody);
 
             if (billingDealIDs?.Count() > 0)
             {
@@ -33,7 +33,7 @@ namespace FunctionsCompositionApp.Billing
 
                 var request = new TransactionsApi.Models.Billing.CreateTransactionFromBillingDealsRequest
                 {
-                    BillingDealsID = billingDealIDs.Select(d => d.BillingDealID)
+                    BillingDealsID = billingDealIDs
                 };
 
                 var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);

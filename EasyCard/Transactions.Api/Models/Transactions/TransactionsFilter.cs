@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shared.Api.Models;
+﻿using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;

@@ -219,27 +219,30 @@
                                 </div>
                             </div>
 
-                            @if (Model.OnlyAddCard)
+                            @if (Model.EnabledFeatures?.Any(f => f == Merchants.Shared.Enums.FeatureEnum.CreditCardTokens) == true)
                             {
-                                <div class="form-group row">
-                                    <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                                    <div class="col-sm-9">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard" checked disabled >
+                                @if (Model.OnlyAddCard)
+                                {
+                                    <div class="form-group row">
+                                        <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard" checked disabled >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
-                            else if (Model.ConsumerID.HasValue)
-                            {
-                                <div class="form-group row">
-                                    <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                                    <div class="col-sm-9">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
+                                }
+                                else if (Model.ConsumerID.HasValue)
+                                {
+                                    <div class="form-group row">
+                                        <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             }
                         </div>
                     </fieldset>

@@ -51,11 +51,12 @@
                 item-text="description"
                 item-value="code"
                 v-model="model.quickDateFilter"
-                :label="$t('QuickDate')"
+                :label="$t('UpdatedDate')"
                 outlined
                 clearable
               ></v-select>
             </v-col>
+            <date-from-to-filter class="px-3" v-model="model" from-today date-from-label="NextScheduledDateFrom" date-to-label="NextScheduledDateTo"></date-from-to-filter>
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-0">
@@ -94,6 +95,7 @@ export default {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     PaymentType: () => import("../transactions/PaymentType"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter")
   },
   props: {
     show: {
