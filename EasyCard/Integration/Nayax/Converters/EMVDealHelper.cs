@@ -180,7 +180,7 @@ namespace Nayax.Converters
             {
                 CardNumber = resultPhase2Body.cardNumber,
                 ShvaDealID = resultPhase2Body.uid,//resultPhase2Body.sysTraceNumber,
-                AuthNum = resultPhase2Body.issuerAuthNum,
+                AuthNum = resultPhase2Body.issuerAuthNum),
                 Solek = (SolekEnum)resultPhase2Body.solek,
                 ShvaShovarNumber = resultPhase2Body.sysTraceNumber,
                 CreditCardVendor = (CardVendorEnum)resultPhase2Body.manpik,
