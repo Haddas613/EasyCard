@@ -8,7 +8,7 @@ using Shared.Integration.Models;
 
 namespace Nayax.Converters
 {
-    internal static class EMVDealHelper
+    public static class EMVDealHelper
     {
         public static AuthenticateRequestBody GetAuthRequestBody(NayaxGlobalSettings conf, string otp, string TerminalIDDevice)
         {
@@ -195,7 +195,7 @@ namespace Nayax.Converters
             };
         }
 
-        private static string GetFilNSeq(Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal)
+        public static string GetFilNSeq(Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal)
         {
             int fileNo = -1;
             int seqNo = -1;

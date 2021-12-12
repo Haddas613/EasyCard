@@ -162,7 +162,6 @@ namespace Transactions.Api.Controllers.External
                 string vuid = model.Vuid;
                 if (string.IsNullOrEmpty(model.Vuid))
                 {
-                    // int tranId = Common.BL.Modularity.GetCountTransactionPerTerminalIDsPerClient(_clientID, requestForValidateDeal.TerminalDetails.ClientToken);
                     vuid = string.Format("{0}_{1}", model.TerminalDetails.ClientToken, Guid.NewGuid().ToString());
                 }
 
@@ -171,16 +170,9 @@ namespace Transactions.Api.Controllers.External
                 // NOTE: this is security assignment
                 mapper.Map(terminalMakingTransaction, transaction);
 
-
-
                 await transactionsService.CreateEntity(transaction);
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
-                //var clientCode = client.ClientCode;
-                //bool isClearingHouse = TerminalMakingTransaction.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ClearingHouseExternalSystemID) != null;
-
-
-                // bool isUpay = TerminalMakingTransaction.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.UpayExternalSystemID) != null;
-
+            
                 var terminalAggregator = ValidateExists(
               terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
               Transactions.Shared.Messages.AggregatorNotDefined);
@@ -193,7 +185,6 @@ namespace Transactions.Api.Controllers.External
                     {
                         var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(model);
                         aggregatorRequest.TransactionDate = DateTime.Now;
-                        //aggregatorRequest.TransactionID
                         var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
                         aggregatorRequest.AggregatorSettings = aggregatorSettings;
 
@@ -234,89 +225,20 @@ namespace Transactions.Api.Controllers.External
                 var cardExmp = model.CardExpiry;
                 var last4Digits = cardNumber.Substring(cardNumber.Length - 4, 4);
                 var cardBin = cardNumber.Substring(0, 6).Replace('*', '0');
-                #region double_transaction
-                /*to do block double transactions
-                 * bool allowDoubleTransactions = client.AllowDoubleTransactions ?? false;
-
-                 if (!allowDoubleTransactions)
-                 {
-                     string expdate = "0000";
-                     if (!String.IsNullOrEmpty(expDate_YYMM) && expDate_YYMM.Length >= 4)
-                         expdate = string.Format("{0}/{1}", expDate_YYMM.Substring(2, 2), expDate_YYMM.Substring(0, 2));
-
-                     int duplicateTransactionsBlockTimeInMin = client.DuplicateTransactionsBlockTimeInMin;
-
-                     var ddr = Common.BL.DealInfo.CheckDoubleDeal(client.ClientID ?? -1, last4Digits, expdate, (double)requestForValidateDeal.TransactionAmount / 100, duplicateTransactionsBlockTimeInMin);
-                     if (ddr != null)
-                     {
-                         #region fill_Billingmodel
-                         BillingModel billingModel = new BillingModel();
-                         billingModel.CardBin = cardBin;
-                         billingModel.Month = requestForValidateDeal.CardExpiry.Substring(0, 2);
-                         billingModel.Year = requestForValidateDeal.CardExpiry.Substring(2, 2);
-                         billingModel.CardNumber = cardNumber;
-                         switch (requestForValidateDeal.CreditTerms)
-                         {
-
-                             case CreditTermsEnum.regular:
-                                 billingModel.DealType = DealTypeEnum.CREDIT_CARD_REGULAR_CREDIT;
-                                 break;
-                             case CreditTermsEnum.isracredit_sdif_30:
-                                 billingModel.DealType = DealTypeEnum.CREDIT_CARD_PLUS_30;
-                                 break;
-                             case CreditTermsEnum.immediate:
-                                 billingModel.DealType = DealTypeEnum.CREDIT_CARD_INSTANT_BILLING;
-                                 break;
-                             case CreditTermsEnum.credit:
-                                 billingModel.DealType = DealTypeEnum.CREDIT_CARD_CREDITS;
-                                 break;
-                             case CreditTermsEnum.installments:
-                                 billingModel.DealType = DealTypeEnum.CREDIT_CARD_PAYMENTS;
-                                 break;
-                             default:
-                                 break;
-                         }
-
-                         billingModel‎.Opt‎ = requestForValidateDeal.TranType == TranTypeEnum.refund ? 51 : 1;
-                         billingModel‎.ParamJ‎ = ParamJEnum.ביצוע_עסקה;
-
-                         //billingModel.FirstPay;
-                         //		billingModel.OtherPay;
-                         billingModel.Sum = (double)requestForValidateDeal.TransactionAmount / 100;
-                         switch (requestForValidateDeal.OriginalCurrency)
-                         {
-                             case Common.Enums.CommonEnums.CurrencyEnumISO_Code.EUR:
-                                 billingModel.MType = MTypeEnum.EURO;
-                                 break;
-                             case Common.Enums.CommonEnums.CurrencyEnumISO_Code.USD:
-                                 billingModel.MType = MTypeEnum.DOLAR;
-                                 break;
-                             case Common.Enums.CommonEnums.CurrencyEnumISO_Code.ILS:
-                                 billingModel.MType = MTypeEnum.SHEKEL;
-                                 break;
-
-                         }
-
-                         billingModel.DealSource = DealSourceEnum.RestEmv;
-                         #endregion
-                         tblCardRejected card = Common.Helpers.DealHelper.ParseTblCardPreInserted(client.ClientID ?? -1, ddr.ErrorMessage, "-1", "", false, billingModel, "", null, null);
-                         Common.BL.DealInfo.AddTotblCardRejected(card);
-                         //DeleteFile(String.Format("{0}\\{1}_{2}", System.Configuration.ConfigurationManager.AppSettings["DealsInfoDir"], clientID, dealInfoKeyFile.ToString()));
-                         ActivityLogger.Write(string.Format("ValidateDeal result Approval:{0}, Result:{1}", false, ddr.ErrorMessage), client.ClientID ?? -1);
-                         return new NayaxResult(ddr.ErrorMessage, false);
-                     }
-                 }*/
-                #endregion
-
-
 
                 //  EMVRestTransaction NayaxTran = new EMVRestTransaction();
-            
+
                 //todo save vuid in transaction
                 // setValuesToEMVRestTran(requestForValidateDeal, _clientID, transactionID, concurencyToken, NayaxTran, vuid, RavMutav);
                 //Common.BL.DealInfo.SaveEMVRestAfterValidate(NayaxTran);
                 // string SysTranceNumber = PinPadModularityHelper.GetSysTranceNumber(_clientID);
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null,transaction.PinPadTransactionDetails.PinPadCorrelationID , string.Empty /*todo RavMutav*/);
+            //   var terminalProcessor = (terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor));
+            //   Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
+            // var LastDealShvaDetails =  await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber)
+               //.OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
+               //Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(LastDealShvaDetails);
+               //Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal);
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID , string.Empty /*todo RavMutav*/);
             }
             catch (Exception ex)
             {
@@ -325,8 +247,8 @@ namespace Transactions.Api.Controllers.External
             }
         }
 
-        // [HttpPost]
-        //[Route("v1/update")]
+         [HttpPost]
+        [Route("v1/update")]
 
     }
 
