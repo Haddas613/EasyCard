@@ -121,7 +121,7 @@ export default {
       numberOfRecords: 0,
       totalAmount: 0,
       selectAll: false,
-      selectLimit: 1000
+      selectLimit: 1000 // TODO: from config
     };
   },
   methods: {
