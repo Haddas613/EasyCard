@@ -82,6 +82,13 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.GetTransactionsExcel(Transactions.Api.Models.Transactions.TransactionsFilter)">
+            <summary>
+            Get payment transactions list using filter
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
             <summary>
             Create the charge based on credit card or previously stored credit card token (J4 deal)

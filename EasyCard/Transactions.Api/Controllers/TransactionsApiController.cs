@@ -51,6 +51,7 @@ using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
+using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
@@ -90,7 +91,7 @@ namespace Transactions.Api.Controllers
         private readonly IMetricsService metrics;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly InvoicingController invoicingController;
-
+        private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
 
         public TransactionsApiController(
@@ -118,7 +119,8 @@ namespace Transactions.Api.Controllers
             IPaymentIntentService paymentIntentService,
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
             BillingController billingController,
-            InvoicingController invoicingController)
+            InvoicingController invoicingController,
+            BasicServices.Services.IExcelService excelService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -145,6 +147,7 @@ namespace Transactions.Api.Controllers
             this.paymentIntentService = paymentIntentService;
             this.transactionsHubContext = transactionsHubContext;
             this.invoicingController = invoicingController;
+            this.excelService = excelService;
         }
 
         [HttpGet]
@@ -344,6 +347,64 @@ namespace Transactions.Api.Controllers
                     response.NumberOfRecords = numberOfRecords.Value;
                     response.TotalAmount = totalAmount.Value;
                     return Ok(response);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get payment transactions list using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("$excel")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> GetTransactionsExcel([FromQuery] TransactionsFilter filter)
+        {
+            Debug.WriteLine(User);
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
+            TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
+
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc);
+
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
+
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
+                    var res = await excelService.GenerateFile($"Admin/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", summary, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
+                }
+                else
+                {
+                    var data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", data, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
             }
         }

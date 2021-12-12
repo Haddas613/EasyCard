@@ -44,6 +44,7 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
+using SharedApi = Shared.Api;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -71,6 +72,7 @@ namespace Transactions.Api.Controllers
         private readonly IEmailSender emailSender;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IPaymentIntentService paymentIntentService;
+        private readonly BasicServices.Services.IExcelService excelService;
 
         public BillingController(
             ITransactionsService transactionsService,
@@ -88,7 +90,8 @@ namespace Transactions.Api.Controllers
             IOptions<ApiSettings> apiSettings,
             IEmailSender emailSender,
             ICryptoServiceCompact cryptoServiceCompact,
-            IPaymentIntentService paymentIntentService)
+            IPaymentIntentService paymentIntentService,
+            BasicServices.Services.IExcelService excelService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -108,6 +111,7 @@ namespace Transactions.Api.Controllers
 
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.paymentIntentService = paymentIntentService;
+            this.excelService = excelService;
         }
 
         [HttpGet]
@@ -168,6 +172,53 @@ namespace Transactions.Api.Controllers
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                     return Ok(response);
+                }
+            }
+        }
+
+        [HttpGet]
+        [Route("$excel")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> GetBillingDealsExcel([FromQuery] BillingDealsFilter filter)
+        {
+            var query = billingDealService.GetBillingDeals().Filter(filter);
+
+            using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<BillingDealSummaryAdmin>();
+
+                    var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)).ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
+
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealSummaryAdmin>();
+                    var res = await excelService.GenerateFile($"Admin/BillingDeals-{Guid.NewGuid()}.xlsx", "BillingDeals", summary, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
+                }
+                else
+                {
+                    var data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)).ToListAsync();
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealSummary>();
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/BillingDeals-{Guid.NewGuid()}.xlsx", "BillingDeals", data, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
             }
         }
