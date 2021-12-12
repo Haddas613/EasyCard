@@ -211,6 +211,7 @@ namespace Transactions.Business.Data
                 builder.OwnsOne(b => b.PinPadTransactionDetails, s =>
                 {
                     s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.PinPadUpdateReceiptNumber).HasColumnName("PinPadUpdateReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 

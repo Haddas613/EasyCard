@@ -15,13 +15,18 @@ namespace Transactions.Api.Models.Transactions
         public string CorrelationID { get; set; }
         public string UpdateReceiptNumber { get; set; }
 
+        public NayaxResult()
+        {
+
+        }
+
         public NayaxResult(string message, bool approval)
         {
             this.ResultText = message;
             this.Approval = approval;
         }
 
-        public NayaxResult(string resultText, bool approval, string vuid = "-1", string sysTraceNumber = null, string correlationID = null, string mutav = null)
+        public NayaxResult(string resultText, bool approval, string vuid = "-1", string sysTraceNumber = null, string correlationID = null, string mutav = null, string receiptNumber = null)
         {
             this.ResultText = resultText;
             this.Approval = approval;
@@ -29,6 +34,7 @@ namespace Transactions.Api.Models.Transactions
             this.SysTraceNumber = sysTraceNumber;
             this.CorrelationID = correlationID;
             this.Mutav = mutav;
+            this.UpdateReceiptNumber = receiptNumber;
         }
     }
 }

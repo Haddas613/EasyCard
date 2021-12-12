@@ -172,7 +172,7 @@ namespace Transactions.Api.Controllers.External
 
                 await transactionsService.CreateEntity(transaction);
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
-            
+
                 var terminalAggregator = ValidateExists(
               terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
               Transactions.Shared.Messages.AggregatorNotDefined);
@@ -232,13 +232,13 @@ namespace Transactions.Api.Controllers.External
                 // setValuesToEMVRestTran(requestForValidateDeal, _clientID, transactionID, concurencyToken, NayaxTran, vuid, RavMutav);
                 //Common.BL.DealInfo.SaveEMVRestAfterValidate(NayaxTran);
                 // string SysTranceNumber = PinPadModularityHelper.GetSysTranceNumber(_clientID);
-            //   var terminalProcessor = (terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor));
-            //   Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
-            // var LastDealShvaDetails =  await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber)
-               //.OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
-               //Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(LastDealShvaDetails);
-               //Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal);
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID , string.Empty /*todo RavMutav*/);
+                //   var terminalProcessor = (terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor));
+                //   Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
+                // var LastDealShvaDetails =  await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber)
+                //.OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
+                //Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(LastDealShvaDetails);
+                //Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal);
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/);
             }
             catch (Exception ex)
             {
@@ -247,8 +247,173 @@ namespace Transactions.Api.Controllers.External
             }
         }
 
-         [HttpPost]
+        [HttpPost]
+        [ValidateModelState]
         [Route("v1/update")]
+        public async Task<ActionResult<NayaxResult>> Update([FromBody] NayaxUpdateRequest model)
+        {
+            try
+            {
+                var terminals = terminalsService.GetTerminals();
+                bool foundTerminal = false;
+                Terminal terminalMakingTransaction = null;
+                foreach (var terminal in terminals)
+                {
+                    var validterminal = terminalsService.GetTerminal(terminal.TerminalID);
+                    if (validterminal == null)
+                    {
+                        continue;
+                    }
+
+                    var nayaxIntegrationn = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
+                    if (nayaxIntegrationn == null)
+                    {
+                        continue;
+                    }
+
+                    var devicess = nayaxIntegrationn.Settings.ToObject<NayaxTerminalCollection>();
+
+                    var device = devicess.devices.FirstOrDefault(x => x.TerminalID == model.TerminalDetails.ClientToken);
+                    if (device != null)
+                    {
+                        foundTerminal = true;
+                        terminalMakingTransaction = terminal;
+                        break;
+                    }
+                }
+
+                if (!foundTerminal)
+                {
+                    return new NayaxResult("Couldn't find valid terminal details", false);
+                }
+
+
+
+                var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID));
+                if (transaction.ShvaTransactionDetails?.ShvaDealID == model.Uid)
+                {//already updated
+                    return new NayaxResult { Vuid = transaction.PinPadTransactionDetails.PinPadTransactionID, Approval = true, ResultText = "Success", CorrelationID = model.CorrelationID, UpdateReceiptNumber = transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber };
+                }
+
+                Guid updateReceiptNumber = Guid.NewGuid();
+                //todo update transaction with all details from Nayax
+                transaction.ShvaTransactionDetails.ShvaDealID = model.Uid;
+                transaction.ShvaTransactionDetails.Solek = Transactions.Api.Extensions.TransactionHelpers.GetTransactionSolek(model.Aquirer);
+                transaction.CreditCardDetails.CardBrand = model.Brand.ToString();
+                transaction.CreditCardDetails.CardVendor = ((int)model.Issuer).ToString();
+                transaction.ShvaTransactionDetails.ShvaAuthNum = model.Issuer_Auth_Num;
+                transaction.ShvaTransactionDetails.ShvaShovarNumber = model.DealNumber;
+                transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber = updateReceiptNumber.ToString();
+                if (!model.Success)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: model.ResultText/*, rejectionReason: model.ResultCode*/);
+
+                }
+                else
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                }
+
+                var terminalAggregator = ValidateExists(
+           terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+           Transactions.Shared.Messages.AggregatorNotDefined);
+
+                var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+                var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+                mapper.Map(aggregatorSettings, transaction);
+
+                if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+                {
+                    // reject to clearing house in case of shva error
+                    if (!model.Success)
+                    {
+                        try
+                        {
+                            var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                            aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                            aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
+
+                            var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                            mapper.Map(aggregatorResponse, transaction);
+
+                            if (!aggregatorResponse.Success)
+                            {
+                                logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                                await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                            }
+                            else
+                            {
+                                await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
+
+                                return new NayaxResult()
+                                {
+                                    CorrelationID = model.CorrelationID,
+                                    Approval = true,
+                                    ResultText = TransactionFinalizationStatusEnum.CanceledByAggregator.ToString(),
+                                    UpdateReceiptNumber = updateReceiptNumber.ToString()
+                                };
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        }
+                    }
+                    // commit transaction in aggregator (Clearing House or upay)
+                    else
+                    {
+                        try
+                        {
+                            var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
+
+                            commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                            var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
+                            mapper.Map(commitAggregatorResponse, transaction);
+
+                            if (!commitAggregatorResponse.Success)
+                            {
+                                // NOTE: In case of failed commit, transaction should not be transmitted to Shva
+
+                                logger.LogError($"Aggregator Commit Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
+
+                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
+                            }
+                            else
+                            {
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        }
+                    }
+                }
+
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/, updateReceiptNumber.ToString())
+               ;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to update Transaction for PAX deal. Vuid: {model.Vuid}");
+                return new NayaxResult(ex.Message, false /*ResultEnum.ServerError, false*/);
+            }
+        }
 
     }
 
