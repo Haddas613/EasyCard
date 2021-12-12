@@ -367,8 +367,7 @@ namespace Transactions.Api.Controllers.External
                             return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
                         }
                     }
-                    // commit transaction in aggregator (Clearing House or upay)
-                    else
+                    else  // commit transaction in aggregator (Clearing House or upay)
                     {
                         try
                         {
@@ -391,7 +390,7 @@ namespace Transactions.Api.Controllers.External
                             }
                             else
                             {
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
                             }
                         }
                         catch (Exception ex)
