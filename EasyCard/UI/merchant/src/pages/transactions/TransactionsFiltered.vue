@@ -113,7 +113,7 @@ export default {
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
-      selectLimit: 10
+      selectLimit: 1000 // TODO: from config
     };
   },
   methods: {
