@@ -27,6 +27,13 @@ export default class TransactionsApi {
         return data;
     }
 
+    async getExcel(params) {
+
+      let data = await this.base.get(this.transactionsUrl+ '/$excel', params);
+      
+      return data;
+    }
+
     async getTransaction(id){
       if (!this.headers) {
         let data = await this.base.get(this.transactionsUrl + '/$meta')

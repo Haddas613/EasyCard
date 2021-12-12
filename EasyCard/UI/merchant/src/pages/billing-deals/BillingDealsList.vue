@@ -363,6 +363,13 @@ export default {
         }
       }
       await this.getDataFromApi(false);
+    },
+    async exportExcel() {
+          let operation = await this.$api.billingDeals.getExcel({
+            ...this.billingDealsFilter
+          });
+          if(!this.$apiSuccess(operation)) return;
+          window.open(operation.entityReference, "_blank");
     }
   },
   computed: {
@@ -405,6 +412,12 @@ export default {
             text: this.$t("TriggerAll"),
             fn: async () => {
               vm.showTriggerDialog = true;
+            }
+          },
+          {
+            text: this.$t("Excel"),
+            fn: () => {
+              this.exportExcel();
             }
           }
         ]
