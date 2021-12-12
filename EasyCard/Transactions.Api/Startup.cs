@@ -622,6 +622,15 @@ namespace Transactions.Api
                 return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+            services.AddSingleton<BasicServices.Services.IExcelService, BasicServices.Services.ExcelService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BasicServices.Services.ExcelService>>();
+                var blobStorageService = new BasicServices.BlobStorage.BlobStorageService(appCfg.PublicStorageConnectionString, "excel", logger);
+
+                return new BasicServices.Services.ExcelService(blobStorageService);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

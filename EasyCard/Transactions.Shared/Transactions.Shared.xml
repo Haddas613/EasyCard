@@ -855,6 +855,11 @@
               Looks up a localized string similar to Invoice State is not valid.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceUpdated">
+            <summary>
+              Looks up a localized string similar to Invoice Updated.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.InvoicingNotDefined">
             <summary>
               Looks up a localized string similar to Invoicing system is not defined.

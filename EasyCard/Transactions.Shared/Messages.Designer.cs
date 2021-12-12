@@ -574,6 +574,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Updated.
+        /// </summary>
+        public static string InvoiceUpdated {
+            get {
+                return ResourceManager.GetString("InvoiceUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoicing system is not defined.
         /// </summary>
         public static string InvoicingNotDefined {
