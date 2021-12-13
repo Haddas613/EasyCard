@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Enums\Resources\BillingDealEnumsResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

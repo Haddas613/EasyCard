@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +14,12 @@ namespace Transactions.Shared.Models
 
         public StartAtTypeEnum StartAtType { get; set; }
 
+        [JsonConverter(typeof(TrimmingDateTimeConverter))]
         public DateTime? StartAt { get; set; }
 
         public EndAtTypeEnum EndAtType { get; set; }
 
+        [JsonConverter(typeof(TrimmingDateTimeConverter))]
         public DateTime? EndAt { get; set; }
 
         public int? EndAtNumberOfPayments { get; set; }
