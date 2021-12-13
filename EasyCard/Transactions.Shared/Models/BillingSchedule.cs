@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Api.Models.Binding;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -62,7 +63,7 @@ namespace Transactions.Shared.Models
                 date = StartAt.Value;
             }
 
-            return date;
+            return TimeZoneInfo.ConvertTimeFromUtc(date, UserCultureInfo.TimeZone).Date;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Shared.Api.Models.Binding
 
             if (reader.TokenType == JsonToken.Date)
             {
-                asDateTime = reader.Value as DateTime?;
+                asDateTime = reader.Value as DateTime?; // TODO: timezone dates
             }
 
             if (reader.TokenType == JsonToken.String)
