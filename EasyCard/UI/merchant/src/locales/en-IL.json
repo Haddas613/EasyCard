@@ -94,6 +94,7 @@
   "DeletedItems": "Deleted Items",
   "DeletedCustomers": "Deleted Customers",
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
+  "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -287,6 +288,7 @@
   "HasInvoice": "Has Invoice",
   "IsPaymentRequest": "Is Payment Request",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "SendTransactionSlipEmailToCustomer": "Send transaction slip email to customer",
   "IssueInvoice": "Issue Invoice",
   "CreditCardLast4Numbers": "Credit Card last 4 numbers",
   "Inactive": "Inactive",
@@ -342,6 +344,10 @@
   "SecondPhone": "Second Phone",
   "Note": "Note",
   "InvoiceOnly": "Invoice Only",
+  "UpdatedDate": "Updated Date",
+  "NextScheduledDateFrom": "Next Scheduled Date From",
+  "NextScheduledDateTo": "Next Scheduled Date To",
+  "InProgress": "In Progress",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -397,6 +403,9 @@
   "ClearItems": "Clear Items",
   "ShowActive": "Show Active",
   "ShowDeleted": "Show Deleted",
+  "Docs": "Docs",
+  "TriggerSelected": "Trigger Selected",
+  "TriggerAll": "Trigger All",
 
   "--AUTH--": null,
   "Login": "Login",

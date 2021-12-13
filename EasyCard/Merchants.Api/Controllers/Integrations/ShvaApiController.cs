@@ -55,21 +55,30 @@ namespace Merchants.Api.Controllers.Integrations
         [Route("test-connection")]
         public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
-            //TODO: implement
-            return Ok(new OperationResponse(ShvaMessagesResource.ConnectionSuccess, StatusEnum.Success));
+            throw new NotImplementedException();
         }
 
         [HttpPost]
         [Route("new-password")]
         public async Task<ActionResult<OperationResponse>> SetNewPassword(ChangePasswordRequest request)
         {
+            OperationResponse res = null;
             if (request.TerminalTemplateID.HasValue)
             {
-                return await SetNewPasswordForTerminalTemplate(request.TerminalTemplateID.Value, request.NewPassword);
+                res = await SetNewPasswordForTerminalTemplate(request.TerminalTemplateID.Value, request.NewPassword);
             }
             else
             {
-                return await SetNewPasswordForTerminal(request.TerminalID.Value, request.NewPassword);
+                res = await SetNewPasswordForTerminal(request.TerminalID.Value, request.NewPassword);
+            }
+
+            if (res.Status == StatusEnum.Error)
+            {
+                return BadRequest(res);
+            }
+            else
+            {
+                return res;
             }
         }
 
@@ -91,6 +100,33 @@ namespace Merchants.Api.Controllers.Integrations
             };
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("update-params")]
+        public async Task<ActionResult<OperationResponse>> UpdateParams(UpdateParamsRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var terminalProcessor = EnsureExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
+
+            var correlationId = GetCorrelationID();
+
+            var shvaRes = await shvaProcessor.ParamsUpdateTransaction(new ProcessorUpdateParametersRequest
+            {
+                TerminalID = request.TerminalID,
+                ProcessorSettings = terminalProcessor.Settings?.ToObject<ShvaTerminalSettings>(),
+                CorrelationId = correlationId
+            });
+
+            if (shvaRes.Success)
+            {
+                return new OperationResponse(ShvaMessagesResource.UpdatedParametersSuccessfully, StatusEnum.Success);
+            }
+            else
+            {
+                return BadRequest(new OperationResponse($"{ShvaMessagesResource.UpdatedParametersFailed}: {shvaRes.Code}", StatusEnum.Error));
+            }
         }
 
         private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)

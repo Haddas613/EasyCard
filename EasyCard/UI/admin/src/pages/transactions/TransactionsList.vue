@@ -25,7 +25,7 @@
           <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
             {{item.merchantName || item.merchantID}}
           </router-link>
-        </template>    
+        </template>      
         <template v-slot:item.terminalName="{ item }">
           <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
             {{item.terminalName || item.terminalID}}
@@ -33,6 +33,9 @@
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
           <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
+        </template>
+        <template v-slot:item.transactionTimestamp="{ item }">
+         {{item.$transactionTimestamp | ecdate}}
         </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
@@ -61,7 +64,10 @@
             <v-icon v-else-if="item.$transactionType == 'installments'" color="accent">mdi-credit-card-check</v-icon>
             <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
           </span>
-        </template>   
+        </template>
+        <template v-slot:item.paymentTransactionID="{ item }">
+          <small>{{item.paymentTransactionID}}</small>
+        </template> 
       </v-data-table>
     </div>
   </v-card>

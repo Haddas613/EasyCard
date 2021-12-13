@@ -26,6 +26,8 @@ namespace Shared.Helpers
 
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
+
+            HttpClient.Timeout = TimeSpan.FromMinutes(5);
         }
 
         public void Dispose()

@@ -89,6 +89,8 @@ namespace Transactions.Business.Data
 
         public DbSet<BillingDealHistory> BillingDealHistories { get; set; }
 
+        public DbSet<InvoiceHistory> InvoiceHistories { get; set; }
+
         public DbSet<BillingDeal> BillingDeals { get; set; }
 
         public DbSet<Invoice> Invoices { get; set; }
@@ -128,6 +130,7 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
             modelBuilder.ApplyConfiguration(new BillingDealHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
@@ -561,6 +564,35 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
+            }
+        }
+
+        internal class InvoiceHistoryConfiguration : IEntityTypeConfiguration<InvoiceHistory>
+        {
+            public void Configure(EntityTypeBuilder<InvoiceHistory> builder)
+            {
+                builder.ToTable("InvoiceHistory");
+
+                builder.HasKey(b => b.InvoiceHistoryID);
+                builder.Property(b => b.InvoiceHistoryID).ValueGeneratedNever();
+
+                builder.Property(b => b.InvoiceID).IsRequired();
+
+                builder.Property(b => b.OperationDate).IsRequired();
+
+                builder.Property(b => b.OperationCode).IsRequired().HasMaxLength(30).IsUnicode(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 

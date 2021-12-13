@@ -160,11 +160,29 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHVA code.
+        /// </summary>
+        internal static string ProcessorResultCode {
+            get {
+                return ResourceManager.GetString("ProcessorResultCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick Status.
         /// </summary>
         internal static string QuickStatus {
             get {
                 return ResourceManager.GetString("QuickStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error msg.
+        /// </summary>
+        internal static string RejectionMessage {
+            get {
+                return ResourceManager.GetString("RejectionMessage", resourceCulture);
             }
         }
         

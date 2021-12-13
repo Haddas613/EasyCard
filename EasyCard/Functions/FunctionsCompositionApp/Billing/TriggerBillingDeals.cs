@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TransactionsApi = Transactions.Api;
+using SharedHelpers = Shared.Helpers;
 
 namespace FunctionsCompositionApp.Billing
 {
@@ -25,7 +26,7 @@ namespace FunctionsCompositionApp.Billing
                 .AddEnvironmentVariables()
                 .Build();
 
-            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<BillingDealQueueEntry>>(messageBody);
+            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<Guid>>(messageBody);
 
             if (billingDealIDs?.Count() > 0)
             {
@@ -33,22 +34,30 @@ namespace FunctionsCompositionApp.Billing
 
                 var request = new TransactionsApi.Models.Billing.CreateTransactionFromBillingDealsRequest
                 {
-                    BillingDealsID = billingDealIDs.Select(d => d.BillingDealID)
+                    BillingDealsID = billingDealIDs
                 };
 
-                var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);
-
-                if(response.FailedCount > 0)
+                try
                 {
-                    log.LogError($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message};");
+                    var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);
+                
+                    if (response.FailedCount > 0)
+                    {
+                        log.LogError($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message};");
+                    }
+                    else if (response.Errors?.Count() > 0)
+                    {
+                        log.LogError($"Trigger Billing Deals Completed with Errors. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message}; Errors: {string.Join("; ", response.Errors.Select(e => $"{e.Code}:{e.Description}"))}");
+                    }
+                    else
+                    {
+                        log.LogInformation($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: 0; Response {response.Message};");
+                    }
                 }
-                else if (response.Errors?.Count() > 0)
+                catch (SharedHelpers.WebApiServerErrorException ex)
                 {
-                    log.LogError($"Trigger Billing Deals Completed with Errors. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message}; Errors: {string.Join("; ", response.Errors.Select(e => $"{e.Code}:{e.Description}"))}");
-                }
-                else
-                {
-                    log.LogInformation($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: 0; Response {response.Message};");
+                    log.LogError($"Trigger Billing Deals failed: {ex.Response}");
+                    throw;
                 }
             }
             else

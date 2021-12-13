@@ -9,13 +9,7 @@
             :label="$t('BillingDealID')"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4" class="py-0">
-          <v-text-field
-            v-model="model.cardOwnerNationalID"
-            :label="$t('CardOwnerNationalID')"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="4" class="py-0">
+        <v-col cols="12" md="3" class="py-0">
           <v-select
             :items="paymentTypesFiltered"
             item-text="description"
@@ -28,8 +22,14 @@
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field
-            v-model="model.cardOwnerName"
-            :label="$t('CardOwnerName')"
+            v-model="model.cardOwnerNationalID"
+            :label="$t('CardOwnerNationalID')"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.consumerName"
+            :label="$t('CustomerName')"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
@@ -46,11 +46,11 @@
             item-text="description"
             item-value="code"
             v-model="model.quickDateFilter"
-            :label="$t('QuickDate')"
+            :label="$t('UpdatedDate')"
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model"></date-from-to-filter>
+        <date-from-to-filter v-model="model" from-today date-from-label="NextScheduledDateFrom" date-to-label="NextScheduledDateTo"></date-from-to-filter>
       </v-row>
       <v-row class="d-flex" justify="end">
         <v-col cols="3" md="2">
@@ -85,6 +85,13 @@
           <v-switch v-model="model.finished" @change="switchFilterChanged('finished')">
             <template v-slot:label>
               <small>{{$t('Finished')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
+          <v-switch v-model="model.inProgress" @change="switchFilterChanged('inProgress')">
+            <template v-slot:label>
+              <small>{{$t('InProgress')}}</small>
             </template>
           </v-switch>
         </v-col>
@@ -140,7 +147,7 @@ export default {
       });
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.model, t, 0);

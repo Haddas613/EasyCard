@@ -1,0 +1,1134 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Transactions.Shared</name>
+    </assembly>
+    <members>
+        <member name="T:Transactions.Shared.Enums.DocumentOriginEnum">
+            <summary>
+            Document origin (primarely payment transaction origin)
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.UI">
+            <summary>
+            Document created manually by merchant user using Merchant's UI
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.API">
+            <summary>
+            Document created via API
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Checkout">
+            <summary>
+            Document created by consumer using Checkout Page
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Billing">
+            <summary>
+            Document generated based on billing schedule
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Device">
+            <summary>
+            Transaction created using pinpad device (or other device)
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.PaymentRequest">
+            <summary>
+            Document created by consumer using Checkout Page with a payment link
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sending">
+            <summary>
+            Required because of technical reason - to do not send request twice
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sent">
+            <summary>
+            Request sent to user (pending user approval)
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.SendingFailed">
+            <summary>
+            Can be re-sent
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Canceled">
+            <summary>
+            Canceled by merchant
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Viewed">
+            <summary>
+            Viewed by consumer
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Rejected">
+            <summary>
+            Rejected by consumer
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.QuickTypeEnum.Other">
+            <summary>
+            Any other tran type and status
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.QuickTypeEnum.Regular">
+            <summary>
+            Regular J4 successfull transaction (can be not-transmitted, can be installment or credit), finalization status can be failed
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.QuickTypeEnum.Refund">
+            <summary>
+            Regular successfull refund
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Enums.Resources.BillingDealEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.AfterNumberOfPayments">
+            <summary>
+              Looks up a localized string similar to After Number of Payments.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.BiMonthly">
+            <summary>
+              Looks up a localized string similar to Bi-monthly.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Day">
+            <summary>
+              Looks up a localized string similar to Day.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Month">
+            <summary>
+              Looks up a localized string similar to Month.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Monthly">
+            <summary>
+              Looks up a localized string similar to Monthly.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Never">
+            <summary>
+              Looks up a localized string similar to Never.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.OneTime">
+            <summary>
+              Looks up a localized string similar to One time.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Quarter">
+            <summary>
+              Looks up a localized string similar to Quarter.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.SpecifiedDate">
+            <summary>
+              Looks up a localized string similar to Specified Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Test">
+            <summary>
+              Looks up a localized string similar to Test.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Today">
+            <summary>
+              Looks up a localized string similar to Today.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Week">
+            <summary>
+              Looks up a localized string similar to Week.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Year">
+            <summary>
+              Looks up a localized string similar to Year.
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Canceled">
+            <summary>
+              Looks up a localized string similar to Canceled.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Completed">
+            <summary>
+              Looks up a localized string similar to Completed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Failed">
+            <summary>
+              Looks up a localized string similar to Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Initial">
+            <summary>
+              Looks up a localized string similar to Initial.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Overdue">
+            <summary>
+              Looks up a localized string similar to Overdue.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Payed">
+            <summary>
+              Looks up a localized string similar to Payed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.PaymentFailed">
+            <summary>
+              Looks up a localized string similar to Payment Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Pending">
+            <summary>
+              Looks up a localized string similar to Pending.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Rejected">
+            <summary>
+              Looks up a localized string similar to Rejected.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Sending">
+            <summary>
+              Looks up a localized string similar to Sending.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.SendingFailed">
+            <summary>
+              Looks up a localized string similar to Sending Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Sent">
+            <summary>
+              Looks up a localized string similar to Sent.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Test">
+            <summary>
+              Looks up a localized string similar to Test.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentRequestEnumsResource.Viewed">
+            <summary>
+              Looks up a localized string similar to Viewed.
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Enums.Resources.PaymentTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Bank">
+            <summary>
+              Looks up a localized string similar to Bank.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Bitcoin">
+            <summary>
+              Looks up a localized string similar to Bitcoin.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Card">
+            <summary>
+              Looks up a localized string similar to Card.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Cash">
+            <summary>
+              Looks up a localized string similar to Cash.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.PaymentTypeResource.Cheque">
+            <summary>
+              Looks up a localized string similar to Cheque.
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Enums.Resources.TransactionEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.API">
+            <summary>
+              Looks up a localized string similar to API.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Billing">
+            <summary>
+              Looks up a localized string similar to Billing.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.CanceledByAggregator">
+            <summary>
+              Looks up a localized string similar to Canceled by Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Checkout">
+            <summary>
+              Looks up a localized string similar to Checkout.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Device">
+            <summary>
+              Looks up a localized string similar to Device.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.FailedToCancelByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed to cancel by Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Initial">
+            <summary>
+              Looks up a localized string similar to Initial.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.PaymentRequest">
+            <summary>
+              Looks up a localized string similar to Payment Request.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.UI">
+            <summary>
+              Looks up a localized string similar to UI.
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Enums.Resources.TransactionStatusResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.AwaitingForTransmission">
+            <summary>
+              Looks up a localized string similar to Awaiting for Transmission.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.CancelledByMerchant">
+            <summary>
+              Looks up a localized string similar to Cancelled by merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.CommitedByAggregator">
+            <summary>
+              Looks up a localized string similar to Commited by aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.CommitedToAggregator">
+            <summary>
+              Looks up a localized string similar to Commited to aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Completed">
+            <summary>
+              Looks up a localized string similar to Completed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.ConfirmedByAggregator">
+            <summary>
+              Looks up a localized string similar to Confirmed by aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.ConfirmedByProcessor">
+            <summary>
+              Looks up a localized string similar to Confirmed by processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.FailedToCancelToAggregator">
+            <summary>
+              Looks up a localized string similar to Failed to cancel to aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.FailedToCommitByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed to commit by aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.FailedToConfirmByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed to confirm by aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.FailedToConfirmByProcesor">
+            <summary>
+              Looks up a localized string similar to Failed to confirm by procesor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Initial">
+            <summary>
+              Looks up a localized string similar to Initial.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
+            <summary>
+              Looks up a localized string similar to Rejected by aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByProcessor">
+            <summary>
+              Looks up a localized string similar to Rejected by processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedToAggregator">
+            <summary>
+              Looks up a localized string similar to Rejected to aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.TransmissionCancelingInProgress">
+            <summary>
+              Looks up a localized string similar to Transmission canceling in progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.TransmissionInProgress">
+            <summary>
+              Looks up a localized string similar to Transmission in progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.TransmissionToProcessorFailed">
+            <summary>
+              Looks up a localized string similar to Transmission to processor failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.TransmittedByProcessor">
+            <summary>
+              Looks up a localized string similar to Transmitted by processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.TransmittedToProcessor">
+            <summary>
+              Looks up a localized string similar to Transmitted to processor.
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionFinalizationStatusEnum.FailedToCancelByAggregator">
+            <summary>
+            Failed to cancel transaction by Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionFinalizationStatusEnum.CanceledByAggregator">
+            <summary>
+            Transaction cancellation is done to Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.ConfirmedByAggregator">
+            <summary>
+            Clearing House confirmed transaction
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.ConfirmedByPinpadPreProcessor">
+            <summary>
+            Pinpad preprocessing succesfull
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.ConfirmedByProcessor">
+            <summary>
+            Shva confirmed transaction
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.AwaitingForTransmission">
+            <summary>
+            Transaction commited to Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.TransmissionInProgress">
+            <summary>
+            Shva transmision in progress
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.TransmissionCancelingInProgress">
+            <summary>
+            Canceling transmision in progress
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Completed">
+            <summary>
+            Shva transmision is done
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.AwaitingForSelectJ5">
+            <summary>
+            Shva transmision is done
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">
+            <summary>
+            Transaction is rejeced by Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByProcessor">
+            <summary>
+            Transaction is rejected by Shva
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.CancelledByMerchant">
+            <summary>
+            Merchant cancelled transaction before transmitting to Shva
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.FailedToConfirmByAggregator">
+            <summary>
+            Not possible to confirm by Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.FailedToConfirmByProcesor">
+            <summary>
+            Not possible to confirm by Shva
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.FailedToCommitByAggregator">
+            <summary>
+            Failed to commit by Clearing House
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.TransmissionToProcessorFailed">
+            <summary>
+            Shva transmission failed
+            </summary>
+        </member>
+        <member name="T:Transactions.Shared.Messages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.AggregatorNotDefined">
+            <summary>
+              Looks up a localized string similar to Aggregator is not defined.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.AllVatCalculationsMustBeSpecified">
+            <summary>
+              Looks up a localized string similar to In case if at least one of the following parameters is specified: VatRate, NetTotal, VatTotal, each one must be specified as well (or left null correspondingly). These parameters are mutually dependend.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.AmountRequiredForPinpadDeal">
+            <summary>
+              Looks up a localized string similar to Amount required for pinpad deal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ApproveTransactionOnDevice">
+            <summary>
+              Looks up a localized string similar to Approve transaction on device.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.AuthorizationCodeRequired">
+            <summary>
+              Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and try again..
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.AwaitingForTransmission">
+            <summary>
+              Looks up a localized string similar to Awaiting for Transmission.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealCreated">
+            <summary>
+              Looks up a localized string similar to Billing Deal Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealDeactivated">
+            <summary>
+              Looks up a localized string similar to Billing Deal Deactivated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealDeleted">
+            <summary>
+              Looks up a localized string similar to Billing Deal Deleted.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealIsClosed">
+            <summary>
+              Looks up a localized string similar to Billing deal is closed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealPaused">
+            <summary>
+              Looks up a localized string similar to Billing Deal Paused.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsMaxBatchSize">
+            <summary>
+              Looks up a localized string similar to The number of billing deals for transaction batch is limited to {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsRequired">
+            <summary>
+              Looks up a localized string similar to Billing Deals required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealUnpaused">
+            <summary>
+              Looks up a localized string similar to Billing Deal Unpaused.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealUpdated">
+            <summary>
+              Looks up a localized string similar to Billing Deal Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingInProgress">
+            <summary>
+              Looks up a localized string similar to Billing deal processing in-progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CanceledByAggregator">
+            <summary>
+              Looks up a localized string similar to Canceled By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CancelledByMerchant">
+            <summary>
+              Looks up a localized string similar to Cancelled By Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CannotCancelInvoicedTransaction">
+            <summary>
+              Looks up a localized string similar to Cannot cancel invoiced transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CanOnlyIssueInvoiceForILSTransactions">
+            <summary>
+              Looks up a localized string similar to Can only issue invoice for ILS transactions.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CardOwnerNationalIDInvalid">
+            <summary>
+              Looks up a localized string similar to National ID must be valid Israeli National ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CardOwnerNationalIDRequired">
+            <summary>
+              Looks up a localized string similar to Card owner national ID required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CardOwnerNationalIDRequiredButNotPresentInToken">
+            <summary>
+              Looks up a localized string similar to Card owner national ID required, but it is not present in stored credit card token.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CardReaderInputRequired">
+            <summary>
+              Looks up a localized string similar to Card Reader Input Required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CheckoutFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Checkout Feature must be enabled.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CommitedByAggregator">
+            <summary>
+              Looks up a localized string similar to Commited By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.Completed">
+            <summary>
+              Looks up a localized string similar to Completed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ConfirmedByAggregator">
+            <summary>
+              Looks up a localized string similar to Confirmed By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ConfirmedByProcessor">
+            <summary>
+              Looks up a localized string similar to Confirmed By Processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired">
+            <summary>
+              Looks up a localized string similar to Consumer Name and Consumer Email are required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId">
+            <summary>
+              Looks up a localized string similar to Consumer National Id is not equal to credit card National Id.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreateRequestSentToAggregator">
+            <summary>
+              Looks up a localized string similar to Create transaction request sent to {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardExpired">
+            <summary>
+              Looks up a localized string similar to Credit Card expired.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardSecureDetailsRequired">
+            <summary>
+              Looks up a localized string similar to CreditCardSecureDetails required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardSecureDetailsShouldBeOmitted">
+            <summary>
+              Looks up a localized string similar to CreditCardSecureDetails should be omitted in case if credit card token present.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokenChanged">
+            <summary>
+              Looks up a localized string similar to Credit Card Token changed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokensFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CvvRequired">
+            <summary>
+              Looks up a localized string similar to CVV required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.CvvRequiredButStoredTokenCannotUseCvv">
+            <summary>
+              Looks up a localized string similar to CVV required, but stored credit card token cannot use cvv.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.DeviceIsProcessingTransaction">
+            <summary>
+              Looks up a localized string similar to Device is processing transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.EmailRequired">
+            <summary>
+              Looks up a localized string similar to EmailAddressRequired.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.EmailSent">
+            <summary>
+              Looks up a localized string similar to Email sent.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ExpectedValue">
+            <summary>
+              Looks up a localized string similar to Expected @value got @input.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToCancelByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed To Cancel By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToCommitByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed To Commit By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToConfirmByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed To Confirm By Aggregator.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToConfirmByProcesor">
+            <summary>
+              Looks up a localized string similar to Failed To Confirm By Procesor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToCreateCCToken">
+            <summary>
+              Looks up a localized string similar to Failed To Create Credit Card Token.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToCreateInvoice">
+            <summary>
+              Looks up a localized string similar to Failed To Create Invoice.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FailedToProcessTransaction">
+            <summary>
+              Looks up a localized string similar to Failed To Process Transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InstallmentDetailsRequired">
+            <summary>
+              Looks up a localized string similar to InstallmentDetails required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceCreated">
+            <summary>
+              Looks up a localized string similar to Invoice Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceGenerated">
+            <summary>
+              Looks up a localized string similar to Invoice generated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceGenerationFailed">
+            <summary>
+              Looks up a localized string similar to Invoice generation failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoicesForResendRequired">
+            <summary>
+              Looks up a localized string similar to Invoices are required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoicesQueuedForResend">
+            <summary>
+              Looks up a localized string similar to Invoices queued for resend.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceStateIsNotValid">
+            <summary>
+              Looks up a localized string similar to Invoice State is not valid.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceUpdated">
+            <summary>
+              Looks up a localized string similar to Invoice Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.InvoicingNotDefined">
+            <summary>
+              Looks up a localized string similar to Invoicing system is not defined.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.J2NotAllowed">
+            <summary>
+              Looks up a localized string similar to J2 deal is not allowed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.J5ExpirationDate">
+            <summary>
+              Looks up a localized string similar to J5 Expiration date is {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.J5Expired">
+            <summary>
+              Looks up a localized string similar to J5 transaction was expired.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.J5NotAllowed">
+            <summary>
+              Looks up a localized string similar to J5 deal is not allowed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.MasavFileGeneratedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Masav File generated successfully.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.MasavFileWasNotGenerated">
+            <summary>
+              Looks up a localized string similar to Masav File was not generated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.NothingToTransmit">
+            <summary>
+              Looks up a localized string similar to Nothing to transmit.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.NumberOfPaymentsShouldBeGreaterThan">
+            <summary>
+              Looks up a localized string similar to NumberOfPayments should be greater than or equal {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.NumberOfPaymentsShouldBeLessThan">
+            <summary>
+              Looks up a localized string similar to NumberOfPayments should be less than or equal {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.OnlySuccessfulTransactionsAreAllowed">
+            <summary>
+              Looks up a localized string similar to Only successful transactions are allowed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestCanceled">
+            <summary>
+              Looks up a localized string similar to Payment Request canceled.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestCreated">
+            <summary>
+              Looks up a localized string similar to Payment Request created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestPaymentFailed">
+            <summary>
+              Looks up a localized string similar to Payment request payment failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestPaymentSuccessed">
+            <summary>
+              Looks up a localized string similar to Payment Request payed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestStatusIsClosed">
+            <summary>
+              Looks up a localized string similar to Payment Request Is Closed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestUpdated">
+            <summary>
+              Looks up a localized string similar to Payment Request Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentTypeCannotBeChanged">
+            <summary>
+              Looks up a localized string similar to Payment type can not be changed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PleaseCheckValues">
+            <summary>
+              Looks up a localized string similar to Please check specified values.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ProcesingItemsLimit">
+            <summary>
+              Looks up a localized string similar to The number of entities for processing batch is limited to {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ProcessorNotDefined">
+            <summary>
+              Looks up a localized string similar to Processor is not defined.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.RejectedByAggregator">
+            <summary>
+              Looks up a localized string similar to Failed To Process Transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.RejectedByProcessor">
+            <summary>
+              Looks up a localized string similar to Failed To Process Transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.Required">
+            <summary>
+              Looks up a localized string similar to Required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TerminalForUpdateParametersRequired">
+            <summary>
+              Looks up a localized string similar to Terminal for update parameters is required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TerminalMustHaveBankDetailsSpecified">
+            <summary>
+              Looks up a localized string similar to Terminal must have Bank details specified.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ThereAreNoInvoicesToResend">
+            <summary>
+              Looks up a localized string similar to There are no invoices to resend.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ThereAreNoTransactionsToTransmit">
+            <summary>
+              Looks up a localized string similar to There are no transactions to transmit.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ThisMethodCannotBeUsedForInvoiceOnlyBillings">
+            <summary>
+              Looks up a localized string similar to This method cannot be used for invoice-only Billings.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ThisMethodCannotBeUsedForRegularBillings">
+            <summary>
+              Looks up a localized string similar to This method cannot be used for regular Billings.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TokenCreated">
+            <summary>
+              Looks up a localized string similar to Credit Card Token Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TokenDeleted">
+            <summary>
+              Looks up a localized string similar to Credit Card Token Deleted.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TotalAmountIsInvalid">
+            <summary>
+              Looks up a localized string similar to TotalAmount of installment payments is invalid.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionAlreadyHasInvoice">
+            <summary>
+              Looks up a localized string similar to Transaction already has invoice.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionAmountDoesNotMatchInstallmentsAmount">
+            <summary>
+              Looks up a localized string similar to Transaction Amount does not match Installments Total Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionCanceled">
+            <summary>
+              Looks up a localized string similar to Transaction Canceled.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionCreated">
+            <summary>
+              Looks up a localized string similar to Transaction Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionMustBeCompleted">
+            <summary>
+              Looks up a localized string similar to Transaction must be completed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionsForTransmissionRequired">
+            <summary>
+              Looks up a localized string similar to Transactions list for transmission is required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionsQueued">
+            <summary>
+              Looks up a localized string similar to @count Transactions queued.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionStatusIsNotValid">
+            <summary>
+              Looks up a localized string similar to Transaction Status is not valid for this operation.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionsTransmissionFailed">
+            <summary>
+              Looks up a localized string similar to Transactions Transmission Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionsTransmitted">
+            <summary>
+              Looks up a localized string similar to Transactions Transmitted.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransactionUpdated">
+            <summary>
+              Looks up a localized string similar to Transaction Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransmissionCancelingInProgress">
+            <summary>
+              Looks up a localized string similar to Transmission Canceling In Progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransmissionInProgress">
+            <summary>
+              Looks up a localized string similar to Transmission In Progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransmissionLimit">
+            <summary>
+              Looks up a localized string similar to The number of transactions for transmission batch is limited to {0}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransmissionToProcessorFailed">
+            <summary>
+              Looks up a localized string similar to Transmission To Processor Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TransmittedByProcessor">
+            <summary>
+              Looks up a localized string similar to Transmitted By Processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.UserAmountRequiredValidationMessage">
+            <summary>
+              Looks up a localized string similar to User Amount must be set to true when making transaction without amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.UserAmountValidationMessage">
+            <summary>
+              Looks up a localized string similar to User Amount can only be specified if Request Amount is 0.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.Viewed">
+            <summary>
+              Looks up a localized string similar to Payment Request Viewed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted">
+            <summary>
+              Looks up a localized string similar to When saved credit card token specified, credit card details should be omitted.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid">
+            <summary>
+              Looks up a localized string similar to When saved credit card token specified, &quot;Save Credit Card&quot; flag is not valid.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -135,8 +135,8 @@
   <data name="CardNumber" xml:space="preserve">
     <value>Card Number</value>
   </data>
-  <data name="CardOwnerName" xml:space="preserve">
-    <value>Card Owner</value>
+  <data name="ConsumerName" xml:space="preserve">
+    <value>Customer</value>
   </data>
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>

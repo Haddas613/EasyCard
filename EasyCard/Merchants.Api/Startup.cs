@@ -345,7 +345,7 @@ namespace Merchants.Api
 
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseMiddleware<ExceptionMiddleware>();
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 

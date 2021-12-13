@@ -195,7 +195,7 @@ namespace Transactions.Api.Controllers
                     terminalProcessor,
                     shvaTerminalSettings != null ? JObject.FromObject(shvaTerminalSettings) : terminalProcessor.Settings);
 
-                var processorRequest = new ProcessorTransmitTransactionsRequest 
+                var processorRequest = new ProcessorTransmitTransactionsRequest
                 {
                     TransactionIDs = processorIds,
                     ProcessorSettings = processorSettings,
@@ -410,7 +410,7 @@ namespace Transactions.Api.Controllers
             {
                 var req = new TransmitTransactionsRequest
                 {
-                    PaymentTransactionIDs = trans.Skip(i).Take(appSettings.BillingDealsMaxBatchSize),
+                    PaymentTransactionIDs = trans.Skip(i).Take(appSettings.TransmissionMaxBatchSize),
                     TerminalID = terminalID
                 };
 

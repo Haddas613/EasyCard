@@ -338,7 +338,7 @@ namespace Nayax
             }
         }
 
-        public async Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
+        public async Task<ProcessorUpdateParamteresResponse> ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
         {
             var res = new ProcessorCreateTransactionResponse();
             var nayaxParameters = updateParamRequest.ProcessorSettings as NayaxTerminalSettings;
@@ -369,11 +369,19 @@ namespace Nayax
                         responseStr = response;
                         responseStatusStr = responseStatus.ToString();
                     });
+                return new ProcessorUpdateParamteresResponse()
+                {
+                    Code = updateParamResultBody.statusCode,
+                    Success = updateParamResultBody.statusCode == 0
+                };
             }
             catch (Exception ex)
             {
                 this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
-
+               // return new ProcessorUpdateParamteresResponse()
+               // {
+               //     Success = false;
+               // };
                 throw new IntegrationException("Nayax integration request failed", integrationMessageId);
             }
             finally

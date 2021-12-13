@@ -94,6 +94,7 @@
   "DeletedItems": "פריטים שנמחקו",
   "DeletedCustomers": "לקוחות שנמחקו",
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
+  "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -287,6 +288,7 @@
   "HasInvoice": "קיימת חשבונית",
   "IsPaymentRequest": "בקשת תשלום",
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+  "SendTransactionSlipEmailToCustomer": "שלח שובר במייל לבית לקוח",
   "IssueInvoice": "הפק חשבונית",
   "CreditCardLast4Numbers": "4 ספרות אחרונות של כ.א",
   "Inactive": "לא פעיל",
@@ -342,6 +344,10 @@
   "SecondPhone": "טלפון שני",
   "Note": "הערה",
   "InvoiceOnly": "חשבונית מס בלבד",
+  "UpdatedDate": "תאריך עדכון",
+  "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
+  "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
+  "InProgress": "בתהליך",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -397,6 +403,9 @@
   "ClearItems": "למחוק פריט",
   "ShowActive": "הצג פעיל",
   "ShowDeleted": "הצג שנמחקו",
+  "Docs": "מסמכים",
+  "TriggerSelected": "הגורם המפעיל נבחר",
+  "TriggerAll": "הפעל הכל",
 
   "--AUTH--": null,
   "Login": "כניסה",

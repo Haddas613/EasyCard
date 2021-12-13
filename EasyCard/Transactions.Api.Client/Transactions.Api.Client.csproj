@@ -14,6 +14,7 @@
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealsFilter.cs" Link="Models\BillingDealsFilter.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealSummary.cs" Link="Models\BillingDealSummary.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealUpdateRequest.cs" Link="Models\BillingDealUpdateRequest.cs" />
+    <Compile Include="..\Transactions.Api\Models\Billing\PauseBillingDealRequest.cs" Link="Models\PauseBillingDealRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\CheckoutData.cs" Link="Models\CheckoutData.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\ConsumerInfo.cs" Link="Models\ConsumerInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\PinPadDevice.cs" Link="Models\PinPadDevice.cs" />
@@ -45,6 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />

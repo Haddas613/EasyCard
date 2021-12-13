@@ -10,7 +10,7 @@
         return-object
         :label="$t('Merchant')"
         hide-details
-        clearable
+        :clearable="clearable"
       ></v-autocomplete>
     </v-col>
     <v-col cols="12" md="6">
@@ -23,7 +23,7 @@
         return-object
         :label="$t('Terminal')"
         hide-details
-        clearable
+        :clearable="clearable"
       ></v-autocomplete>
     </v-col>
   </v-row>
@@ -43,6 +43,11 @@ export default {
       type: Object,
       default: null,
       required: true
+    },
+    clearable: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   data() {

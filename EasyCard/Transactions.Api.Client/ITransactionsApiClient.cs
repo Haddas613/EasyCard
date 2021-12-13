@@ -37,13 +37,10 @@ namespace Transactions.Api.Client
 
         Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID);
 
-        Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue();
-
-        Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID);
-
         Task<OperationResponse> GenerateMasavFile();
 
         Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request);
 
+        Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model);
     }
 }

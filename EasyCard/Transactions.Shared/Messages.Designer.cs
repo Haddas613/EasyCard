@@ -196,6 +196,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing deal processing in-progress.
+        /// </summary>
+        public static string BillingInProgress {
+            get {
+                return ResourceManager.GetString("BillingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceled By Aggregator.
         /// </summary>
         public static string CanceledByAggregator {
@@ -376,6 +385,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
+        /// </summary>
+        public static string CreditCardTokensFeatureMustBeEnabled {
+            get {
+                return ResourceManager.GetString("CreditCardTokensFeatureMustBeEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV required.
         /// </summary>
         public static string CvvRequired {
@@ -552,6 +570,15 @@ namespace Transactions.Shared {
         public static string InvoiceStateIsNotValid {
             get {
                 return ResourceManager.GetString("InvoiceStateIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoice Updated.
+        /// </summary>
+        public static string InvoiceUpdated {
+            get {
+                return ResourceManager.GetString("InvoiceUpdated", resourceCulture);
             }
         }
         
@@ -907,7 +934,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions queued.
+        ///   Looks up a localized string similar to @count Transactions queued.
         /// </summary>
         public static string TransactionsQueued {
             get {

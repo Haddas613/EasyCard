@@ -18,5 +18,7 @@ namespace Common.Models
         public IEnumerable<ProductPerCustomer> ProductsPerCustomer{get;set;}
 
         public IEnumerable<RowndsProductsPerCustomer> RowndsProductsPerCustomer { get; set; }
+
+        public IEnumerable<PausedDealsPerCustomer> PausedBillingDeal { get; set; }
     }
 }

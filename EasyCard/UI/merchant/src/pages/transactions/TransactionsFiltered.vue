@@ -113,7 +113,7 @@ export default {
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
-      selectLimit: 10
+      selectLimit: 1000 // TODO: from config
     };
   },
   methods: {
@@ -181,6 +181,14 @@ export default {
       for(var i of this.transactions){
           this.$set(i, 'selected', this.selectAll);
       }
+    },
+    async exportExcel() {
+          let operation = await this.$api.transactions.getExcel({
+            ...this.transactionsFilter,
+            ...this.options
+          });
+          if(!this.$apiSuccess(operation)) return;
+          window.open(operation.entityReference, "_blank");
     }
   },
   computed: {
@@ -212,6 +220,12 @@ export default {
             text: this.$t("SelectAll"),
             fn: () => {
               this.switchSelectAll();
+            }
+          },
+          {
+            text: this.$t("Excel"),
+            fn: () => {
+              this.exportExcel();
             }
           }
         ]

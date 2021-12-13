@@ -16,7 +16,7 @@ namespace Transactions.Api.Models.Transactions
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransactionSummary
     {
-        [MetadataOptions(Order = 1)]
+        [MetadataOptions(Order = 1001)]
         public Guid PaymentTransactionID { get; set; }
 
         [MetadataOptions(Order = 2)]
@@ -82,10 +82,10 @@ namespace Transactions.Api.Models.Transactions
 
         public string CardOwnerName { get; set; }
 
-        [MetadataOptions(Order = 3)]
+        [MetadataOptions(Order = 3, Hidden = true)]
         public string ShvaDealID { get; set; }
 
-
+        [MetadataOptions(Hidden = true)]
         public Guid? InvoiceID { get; set; }
     }
 }

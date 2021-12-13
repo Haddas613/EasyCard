@@ -132,8 +132,21 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
+                throw;
                 //logger?.LogError(clientError.Message);
-                return new SummariesResponse<TerminalSummary>();
+                //return new SummariesResponse<TerminalSummary>();
+            }
+        }
+
+        public async Task<OperationResponse> UpdateTerminalParameters(Guid terminalID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, $"api/integrations/shva/update-params", new { TerminalID = terminalID }, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
     }

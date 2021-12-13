@@ -35,6 +35,7 @@
         <v-col cols="12" class="pt-0 text-end pb-4">
           <v-btn small color="success" @click="testConnection()">{{$t("TestConnection")}}</v-btn>
           <v-btn small color="secondary" class="mx-1" @click="openNewPasswordDialog()">{{$t("SetNewPassword")}}</v-btn>
+          <v-btn v-if="apiName == 'terminals'" small color="primary" @click="updateParameters()">{{$t("UpdateParameters")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field v-model="model.settings.userName" :label="$t('SHVATerminalName')"></v-text-field>
@@ -125,6 +126,11 @@ export default {
     },
     async testConnection(){
       await this.$api.integrations.shva.testConnection(this.model);
+    },
+    async updateParameters(){
+      await this.$api.integrations.shva.updateParameters({
+        terminalID: this.terminalId
+      });
     }
   }
 };

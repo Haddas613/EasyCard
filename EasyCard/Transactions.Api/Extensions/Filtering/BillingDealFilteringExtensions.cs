@@ -36,7 +36,7 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.Actual)
             {
                 src = src
-                    .Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
+                    .Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
             }
             else if (filter.Finished == true)
@@ -54,6 +54,15 @@ namespace Transactions.Api.Extensions.Filtering
             else if (filter.HasError == true)
             {
                 src = src.Where(t => t.HasError);
+            }
+            else if (filter.OnlyActive == true)
+            {
+                src = src.Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null);
+            }
+            else if (filter.InProgress)
+            {
+                src = src
+                    .Where(t => t.InProgress != Shared.Enums.BillingProcessingStatusEnum.Pending);
             }
             else
             {
@@ -92,9 +101,10 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
+            if (!string.IsNullOrWhiteSpace(filter.ConsumerName))
             {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
+                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.ConsumerName.UseWildCard(true))
+                    || EF.Functions.Like(t.DealDetails.ConsumerName, filter.ConsumerName.UseWildCard(true)));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))
@@ -138,12 +148,16 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction >= filter.DateFrom.Value)
+                            : src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
                 }
 
                 if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction <= filter.DateTo.Value)
+                            : src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
                 }
             }
 

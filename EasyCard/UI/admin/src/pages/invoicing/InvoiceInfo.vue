@@ -2,6 +2,7 @@
   <v-flex>
     <v-tabs grow color="primary" v-model="tab">
       <v-tab key="info">{{$t("Info")}}</v-tab>
+      <v-tab key="history">{{$t("History")}}</v-tab>
       <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab" class="bg-ecbg">
@@ -100,6 +101,11 @@
           <payment-details v-if="model.paymentDetails" :model="model.paymentDetails"></payment-details>
         </div>
       </v-tab-item>
+      <v-tab-item key="history">
+        <div v-if="model">
+          <invoice-history :invoice-id="model.$invoiceID"></invoice-history>
+        </div>
+      </v-tab-item>
       <v-tab-item key="integrations">
         <div v-if="model">
           <integration-logs-list :entity-id="model.$invoiceID"></integration-logs-list>
@@ -120,7 +126,9 @@ export default {
     PaymentDetails: () => import("../../components/details/PaymentDetails"),
     InstallmentDetails: () => import("../../components/details/InstallmentDetails"),
     IntegrationLogsList: () =>
-      import("../../components/integration-logs/IntegrationLogsList")
+      import("../../components/integration-logs/IntegrationLogsList"),
+    InvoiceHistory: () =>
+      import("../../components/invoicing/InvoiceHistory"),
   },
   data() {
     return {

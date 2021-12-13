@@ -162,6 +162,9 @@
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>
   </data>
+  <data name="BillingInProgress" xml:space="preserve">
+    <value>Billing deal processing in-progress</value>
+  </data>
   <data name="CanceledByAggregator" xml:space="preserve">
     <value>Canceled By Aggregator</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>Credit Card Token changed</value>
   </data>
+  <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
+    <value>Feature Credit Card Tokens must be enabled first</value>
+  </data>
   <data name="CvvRequired" xml:space="preserve">
     <value>CVV required</value>
   </data>
@@ -281,6 +287,9 @@
   </data>
   <data name="InvoiceStateIsNotValid" xml:space="preserve">
     <value>Invoice State is not valid</value>
+  </data>
+  <data name="InvoiceUpdated" xml:space="preserve">
+    <value>Invoice Updated</value>
   </data>
   <data name="InvoicingNotDefined" xml:space="preserve">
     <value>Invoicing system is not defined</value>
@@ -400,7 +409,7 @@
     <value>Transactions list for transmission is required</value>
   </data>
   <data name="TransactionsQueued" xml:space="preserve">
-    <value>Transactions queued</value>
+    <value>@count Transactions queued</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>Transaction Status is not valid for this operation</value>

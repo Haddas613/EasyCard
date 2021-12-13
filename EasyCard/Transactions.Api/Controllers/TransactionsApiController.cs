@@ -51,11 +51,15 @@ using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
+using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
+    /// <summary>
+    /// Payment transactions API
+    /// </summary>
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/transactions")]
@@ -87,7 +91,7 @@ namespace Transactions.Api.Controllers
         private readonly IMetricsService metrics;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly InvoicingController invoicingController;
-
+        private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
 
         public TransactionsApiController(
@@ -115,7 +119,8 @@ namespace Transactions.Api.Controllers
             IPaymentIntentService paymentIntentService,
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
             BillingController billingController,
-            InvoicingController invoicingController)
+            InvoicingController invoicingController,
+            BasicServices.Services.IExcelService excelService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -142,6 +147,7 @@ namespace Transactions.Api.Controllers
             this.paymentIntentService = paymentIntentService;
             this.transactionsHubContext = transactionsHubContext;
             this.invoicingController = invoicingController;
+            this.excelService = excelService;
         }
 
         [HttpGet]
@@ -181,8 +187,15 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment transaction details
+        /// </summary>
+        /// <param name="transactionID">Payment transaction UUId</param>
+        /// <returns>Transaction details</returns>
         [HttpGet]
         [Route("{transactionID}")]
+        [ProducesResponseType(typeof(TransactionResponse), StatusCodes.Status200OK)]
+        [SwaggerResponseExample(201, typeof(GetTransactionResponseExample))]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {
             Debug.WriteLine(User);
@@ -276,6 +289,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment transactions list using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
@@ -329,6 +347,64 @@ namespace Transactions.Api.Controllers
                     response.NumberOfRecords = numberOfRecords.Value;
                     response.TotalAmount = totalAmount.Value;
                     return Ok(response);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get payment transactions list using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("$excel")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> GetTransactionsExcel([FromQuery] TransactionsFilter filter)
+        {
+            Debug.WriteLine(User);
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
+            TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
+
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc);
+
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
+
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
+                    var res = await excelService.GenerateFile($"Admin/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", summary, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
+                }
+                else
+                {
+                    var data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", data, mapping);
+                    return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
             }
         }
@@ -645,8 +721,15 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Method used internally to generate transactions based on prepared billing deals
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Policy = Policy.AnyAdmin)]
         [HttpPost]
-        [Route("trigger-billing-deals")]
+        [Route("process-billing-deals")]
         public async Task<ActionResult<CreateTransactionFromBillingDealsResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
@@ -677,60 +760,96 @@ namespace Transactions.Api.Controllers
                     continue;
                 }
 
-                if (!billingDeal.Active)
+                // Billing should be prepared before
+                if (billingDeal.InProgress != BillingProcessingStatusEnum.Started)
                 {
-                    logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                    logger.LogWarning($"Billing deal transaction generation should be in-progress: {billingDeal.BillingDealID}");
                     response.FailedCount++;
                     continue;
                 }
 
-                var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-                var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
-                    (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
-
-                if (!actualDeal)
+                try
                 {
-                    logger.LogWarning($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                    billingDeal.InProgress = BillingProcessingStatusEnum.InProgress;
+                    await billingDealService.UpdateEntity(billingDeal);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    logger.LogWarning(ex, $"Billing deal transaction generation already be in-progress: {billingDeal.BillingDealID}: {ex.Message}");
                     response.FailedCount++;
                     continue;
                 }
 
-                OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
+                try
+                {
+                    OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
 
-                var token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
-                if (token == null)
-                {
-                    operationResult.Status = StatusEnum.Error;
-                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
-                }
-                else
-                {
-                    if (token.CardExpiration.Expired == true)
+                    if (!billingDeal.Active)
                     {
+                        logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                        operationResult.Message = $"Billing deal is closed";
                         operationResult.Status = StatusEnum.Error;
-                        operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                    }
+
+                    var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+                    var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
+                        (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
+
+                    if (!actualDeal)
+                    {
+                        logger.LogError($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                        operationResult.Message = $"Billing deal is not actual: NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}";
+                        operationResult.Status = StatusEnum.Error;
+                    }
+
+                    CreditCardTokenKeyVault token = null;
+
+                    if (billingDeal.PaymentType == PaymentTypeEnum.Card && billingDeal.InvoiceOnly == false)
+                    {
+                        token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
+                        if (token == null)
+                        {
+                            logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
+                            operationResult.Status = StatusEnum.Error;
+                            operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                        }
+                        else
+                        {
+                            if (token.CardExpiration.Expired == true)
+                            {
+                                logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
+                                operationResult.Status = StatusEnum.Error;
+                                operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+                            }
+                        }
+                    }
+
+                    if (operationResult.Status == StatusEnum.Success)
+                    {
+                        operationResult = await NextBillingDeal(billingDeal, token);
+                    }
+
+                    if (operationResult.Status == StatusEnum.Success)
+                    {
+                        response.SuccessfulCount++;
+                    }
+                    else
+                    {
+                        billingDeal.InProgress = BillingProcessingStatusEnum.Pending;
+                        billingDeal.Active = false;
+                        billingDeal.HasError = true;
+                        billingDeal.LastError = operationResult.Message;
+                        billingDeal.LastErrorCorrelationID = GetCorrelationID();
+                        await billingDealService.UpdateEntity(billingDeal);
+
+                        response.FailedCount++;
                     }
                 }
-
-                if (operationResult.Status == StatusEnum.Success)
+                catch (Exception ex)
                 {
-                    operationResult = await NextBillingDeal(billingDeal, token);
-                }
-
-                if (operationResult.Status == StatusEnum.Success)
-                {
-                    response.SuccessfulCount++;
-                }
-                else
-                {
-                    billingDeal.Active = false;
-                    billingDeal.HasError = true;
-                    billingDeal.LastError = operationResult.Message;
-                    billingDeal.LastErrorCorrelationID = GetCorrelationID();
-                    await billingDealService.UpdateEntity(billingDeal);
-
                     response.FailedCount++;
+                    logger.LogError(ex, $"Failed to create transaction for billing deal {billingDeal.BillingDealID}: {ex.Message}");
                 }
             }
 

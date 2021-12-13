@@ -121,6 +121,7 @@
   "TokensTransactions": "עסקאות אסימונים",
   "ListOfPinpadDevices": "רשימת מכשירי פינפד",
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
+  "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -362,6 +363,7 @@
   "FirstName": "שם פרטי",
   "LastName": "שם משפחה",
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+  "SendTransactionSlipEmailToCustomer": "שלח שובר במייל לבית לקוח",
   "IssueInvoice": "הפק חשבונית",
   "CustomerAddress": "כתובת לקוח",
   "ShowInactive": "הצג לא פעילים",
@@ -409,6 +411,10 @@
   "EuroRate": "שער יורו",
   "DollarRate": "שער דולר",
   "InvoiceOnly": "חשבונית מס בלבד",
+  "UpdatedDate": "תאריך עדכון",
+  "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
+  "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
+  "InProgress": "בתהליך",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -470,6 +476,9 @@
   "RequestLog": "לוג בקשות",
   "Download": "הורד",
   "ConvertToJ4": "המרה ל- J4",
+  "UpdateParameters": "עדכון פרמטרים",
+  "TriggerSelected": "הגורם המפעיל נבחר",
+  "TriggerAll": "הפעל הכל",
 
   "--AUTH--": null,
   "Login": "כניסה",

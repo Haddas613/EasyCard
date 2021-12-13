@@ -62,7 +62,7 @@
                   <router-link
                     class="primary--text"
                     link
-                    :to="{name: 'Invoice', params: {id: model.invoiceID}}"
+                    :to="{name: 'Invoice', params: {id: model.$invoiceID || model.invoiceID}}"
                   >
                     <small>{{(model.invoiceID || '-') | guid}}</small>
                   </router-link>

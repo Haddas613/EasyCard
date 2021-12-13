@@ -132,4 +132,10 @@
   <data name="CouldNotSetNewPassword" xml:space="preserve">
     <value>Could not send new password</value>
   </data>
+  <data name="UpdatedParametersSuccessfully" xml:space="preserve">
+    <value>Updated parameters successfully</value>
+  </data>
+  <data name="UpdatedParametersFailed" xml:space="preserve">
+    <value>Updated parameters request failed</value>
+  </data>
 </root>

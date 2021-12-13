@@ -108,7 +108,7 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/transactions/trigger-billing-deals", request, BuildHeaders);
+                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/transactions/process-billing-deals", request, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -191,30 +191,6 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue()
-        {
-            try
-            {
-                return await webApiClient.Post<SendTerminalsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/send-to-queue", null, BuildHeaders);
-            }
-            catch (WebApiClientErrorException)
-            {
-                throw;
-            }
-        }
-
-        public async Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID)
-        {
-            try
-            {
-                return await webApiClient.Post<UpdateParametersResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/update-by-terminal/{terminalID}", null, BuildHeaders);
-            }
-            catch (WebApiClientErrorException)
-            {
-                throw;
-            }
-        }
-
         public async Task<OperationResponse> GenerateMasavFile()
         {
             try
@@ -272,6 +248,12 @@ namespace Transactions.Api.Client
         {
             var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing", model, BuildHeaders);
 
+            return res;
+        }
+
+        public async Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/pause", model, BuildHeaders);
             return res;
         }
 

@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Shared.Enums;
@@ -18,10 +19,11 @@ namespace Transactions.Api.Models.Transactions
     /// <summary>
     /// Payment transaction details
     /// </summary>
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransactionResponse
     {
         /// <summary>
-        /// Primary transaction reference
+        /// Primary transaction reference (UUId)
         /// </summary>
         public Guid PaymentTransactionID { get; set; }
 
@@ -41,12 +43,12 @@ namespace Transactions.Api.Models.Transactions
         public Guid? InitialTransactionID { get; set; }
 
         /// <summary>
-        /// Current deal (billing)
+        /// Current deal number (billing)
         /// </summary>
         public int? CurrentDeal { get; set; }
 
         /// <summary>
-        /// Terminal
+        /// EasyCard terminal UUId
         /// </summary>
         public Guid? TerminalID { get; set; }
 
@@ -58,6 +60,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Merchant
         /// </summary>
+        [SwaggerExclude]
         public Guid? MerchantID { get; set; }
 
         /// <summary>
@@ -74,6 +77,7 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
+        [SwaggerExclude]
         [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public QuickStatusFilterTypeEnum QuickStatus { get; set; }
@@ -128,6 +132,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public decimal TransactionAmount { get; set; }
 
+        [SwaggerExclude]
         public decimal Amount { get; set; }
 
         /// <summary>
@@ -151,7 +156,7 @@ namespace Transactions.Api.Models.Transactions
         public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
-        /// Stored credit card details token
+        /// Stored credit card details token reference
         /// </summary>
         public string CreditCardToken { get; set; }
 
@@ -168,8 +173,10 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// PayDay details
         /// </summary>
+        [SwaggerExclude]
         public object ClearingHouseTransactionDetails { get; set; }
 
+        [SwaggerExclude]
         public object UpayTransactionDetails { get; set; }
 
         /// <summary>
@@ -180,36 +187,54 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Concurrency key
         /// </summary>
+        [SwaggerExclude]
         public byte[] UpdateTimestamp { get; set; }
 
+        /// <summary>
+        /// Transaction can be transmitted manually
+        /// </summary>
         public bool AllowTransmission { get; set; }
 
+        /// <summary>
+        /// Transaction transmission cannot be canceled manually
+        /// </summary>
         public bool AllowTransmissionCancellation { get; set; }
 
         /// <summary>
-        /// Reference to initial billing deal
+        /// Reference to billing schedule which produced this transaction
         /// </summary>
         public Guid? BillingDealID { get; set; }
 
         /// <summary>
-        /// Rejection Reason Message
+        /// Rejection Reason Message (in case of rejected transaction)
         /// </summary>
         public string RejectionMessage { get; set; }
 
+        /// <summary>
+        /// Deal tax rate
+        /// </summary>
         public decimal VATRate { get; set; }
 
+        /// <summary>
+        /// Total deal tax amount. VATTotal = NetTotal * VATRate
+        /// </summary>
         public decimal VATTotal { get; set; }
 
+        /// <summary>
+        /// Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal
+        /// </summary>
         public decimal NetTotal { get; set; }
 
         /// <summary>
         /// We can know it from checkout page activity
         /// </summary>
+        [SwaggerExclude]
         public string ConsumerIP { get; set; }
 
         /// <summary>
         /// Merchant's IP
         /// </summary>
+        [SwaggerExclude]
         public string MerchantIP { get; set; }
 
         /// <summary>
@@ -227,12 +252,24 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public bool IssueInvoice { get; set; }
 
+        /// <summary>
+        /// Payment transaction origin. For example "Checkout" means that transaction created by consumer via Checkout Page, "Billing" means that transaction generated based on billing schedule etc.
+        /// </summary>
         [EnumDataType(typeof(DocumentOriginEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
+        /// <summary>
+        /// Reference to initial payment link creation request
+        /// </summary>
         public Guid? PaymentRequestID { get; set; }
 
+        [SwaggerExclude]
         public int? ProcessorResultCode { get; set; }
+
+        /// <summary>
+        /// Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
+        /// </summary>
+        public JObject Extension { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TransactionsApi = Transactions.Api;
+using SharedApi = Shared.Api;
 
 namespace FunctionsCompositionApp.UpdateParameters
 {
@@ -26,39 +27,24 @@ namespace FunctionsCompositionApp.UpdateParameters
                 .AddEnvironmentVariables()
                 .Build();
 
-            var updateParametersTerminalIDs = JsonConvert.DeserializeObject<IEnumerable<Guid>>(messageBody);
+            var updateParametersTerminalID = Guid.Parse(messageBody);
+            var merchantsApiClient = MerchantsApiClientHelper.GetMerchantsApiClient(log, config);
 
-            if (updateParametersTerminalIDs?.Count() > 0)
+            try
             {
-                var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
-
-                var result = Enum.GetValues(typeof(UpdateParamsStatusEnum))
-                    .Cast<UpdateParamsStatusEnum>()
-                    .ToDictionary(k => k, v => 0);
-
-                foreach (var terminal in updateParametersTerminalIDs)
+                var response = await merchantsApiClient.UpdateTerminalParameters(updateParametersTerminalID);
+                if (response.Status == SharedApi.Models.Enums.StatusEnum.Success)
                 {
-                    var response = await transactionsApiClient.UpdateTerminalParameters(terminal);
-
-                    if (result.ContainsKey(response.UpdateStatus)) result[response.UpdateStatus]++;
-                }
-
-                if (result[UpdateParamsStatusEnum.Updated] == 0)
-                {
-                    log.LogError($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
-                }
-                else if (result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus] > 0 || result[UpdateParamsStatusEnum.UpdateFailed] > 0)
-                {
-                    log.LogWarning($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
+                    log.LogInformation($"Updated terminal parameters for terminal {messageBody}");
                 }
                 else
                 {
-                    log.LogInformation($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
+                    log.LogError($"Cannot update terminal parameters for terminal {messageBody}: {response.Message} ({response.AdditionalData})");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                log.LogInformation("Update Terminal Parameters Completed. Nothing to process");
+                log.LogError(ex, $"Cannot update terminal parameters for terminal {messageBody}: {ex.Message}");
             }
         }
     }

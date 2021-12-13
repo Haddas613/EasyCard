@@ -39,6 +39,11 @@ namespace Shared.Helpers
 
         public static void CheckRedirectUrls(this IEnumerable<string> baseRedirectUrls, string redirectUrlPartial)
         {
+            if (baseRedirectUrls == null)
+            {
+                throw new BusinessException("Pleas configure redirect urls");
+            }
+
             var baseUrls = baseRedirectUrls.Select(d => d.CheckRedirectUrl());
             var urlPartial = redirectUrlPartial.CheckRedirectUrl();
 

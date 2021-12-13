@@ -9,8 +9,6 @@ namespace Shared.Integration
     {
         Task Save(IntegrationMessage entity);
 
-        Task<IntegrationMessage> Get(DateTime requestDate, string correlationId);
-
         string StorageTableName { get; }
 
         Task<IEnumerable<IntegrationMessage>> GetAll(string entityID);

@@ -121,6 +121,7 @@
   "TokensTransactions": "Tokens Transactions",
   "ListOfPinpadDevices": "List of PinPad Devices",
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
+  "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -358,6 +359,7 @@
   "FirstName": "First Name",
   "LastName": "Last Name",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "SendTransactionSlipEmailToCustomer": "Send transaction slip email to customer",
   "IssueInvoice": "Issue Invoice",
   "CustomerAddress": "Customer Address",
   "ShowInactive": "Show inactive",
@@ -405,6 +407,10 @@
   "EuroRate": "Euro Rate",
   "DollarRate": "Dollar Rate",
   "InvoiceOnly": "Invoice Only",
+  "UpdatedDate": "Updated Date",
+  "NextScheduledDateFrom": "Next Scheduled Date From",
+  "NextScheduledDateTo": "Next Scheduled Date To",
+  "InProgress": "In Progress",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -466,6 +472,9 @@
   "RequestLog": "Request Log",
   "Download": "Download",
   "ConvertToJ4": "Convert to J4",
+  "UpdateParameters": "Update Parameters",
+  "TriggerSelected": "Trigger Selected",
+  "TriggerAll": "Trigger All",
 
   "--AUTH--": null,
   "Login": "Login",

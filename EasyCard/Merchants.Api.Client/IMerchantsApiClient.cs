@@ -23,5 +23,7 @@ namespace Merchants.Api.Client
         Task<OperationResponse> LogUserActivity(UserActivityRequest request);
 
         Task<OperationResponse> AuditResetApiKey(Guid terminalID, Guid merchantID);
+
+        Task<OperationResponse> UpdateTerminalParameters(Guid terminalID);
     }
 }

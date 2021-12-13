@@ -1,4 +1,5 @@
-﻿using Shared.Integration.Models;
+﻿using Merchants.Shared.Enums;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -49,5 +50,7 @@ namespace Transactions.Api.Models.Checkout
         public bool? NationalIDRequired { get; set; }
 
         public bool? CvvRequired { get; set; }
+
+        public ICollection<FeatureEnum> EnabledFeatures { get; set; }
     }
 }

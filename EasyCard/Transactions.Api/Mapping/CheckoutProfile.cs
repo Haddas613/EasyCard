@@ -34,6 +34,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.CvvRequired, o => o.MapFrom(d => d.Settings.CvvRequired))
                 .ForMember(d => d.NationalIDRequired, o => o.MapFrom(d => d.Settings.NationalIDRequired))
+                .ForMember(d => d.EnabledFeatures, o => o.MapFrom(d => d.EnabledFeatures))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Merchants.Business.Entities.Billing.Consumer, ConsumerInfo>();

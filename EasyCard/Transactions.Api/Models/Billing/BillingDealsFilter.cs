@@ -25,6 +25,8 @@ namespace Transactions.Api.Models.Billing
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        public bool? FilterDateByNextScheduledTransaction { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
@@ -39,7 +41,10 @@ namespace Transactions.Api.Models.Billing
 
         public string CardOwnerNationalID { get; set; }
 
-        public string CardOwnerName { get; set; }
+        /// <summary>
+        /// Performs search by both consumer name and card owner name
+        /// </summary>
+        public string ConsumerName { get; set; }
 
         /// <summary>
         /// End-customer Email
@@ -70,5 +75,9 @@ namespace Transactions.Api.Models.Billing
         public bool InvoiceOnly { get; set; }
 
         public string Origin { get; set; }
+
+        public bool OnlyActive { get; set; }
+
+        public bool InProgress { get; set; }
     }
 }
