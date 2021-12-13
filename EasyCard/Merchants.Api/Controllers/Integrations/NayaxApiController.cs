@@ -26,16 +26,19 @@ namespace Merchants.Api.Controllers.Integrations
     {
         private readonly Nayax.NayaxProcessor nayaxProcessor;
         private readonly ITerminalsService terminalsService;
+        private readonly IPinPadDevicesService pinPadDeviceService;
         private readonly IMapper mapper;
 
         public NayaxApiController(
             NayaxProcessor nayaxProcessor,
             ITerminalsService terminalsService,
-            IMapper mapper)
+            IMapper mapper,
+            IPinPadDevicesService pinPadDeviceService)
         {
             this.nayaxProcessor = nayaxProcessor;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
+            this.pinPadDeviceService = pinPadDeviceService;
         }
 
         [HttpPost]
@@ -54,6 +57,13 @@ namespace Merchants.Api.Controllers.Integrations
             if (devices.devices?.Any(d => d.TerminalID == request.terminalID) == false)
             {
                 return BadRequest(new OperationResponse(NayaxMessagesResource.DeviceNotFound, StatusEnum.Error));
+            }
+
+            var dbDevice = await pinPadDeviceService.GetDevice(request.terminalID);
+
+            if (dbDevice != null)
+            {
+                return Ok(new OperationResponse(NayaxMessagesResource.DeviceIsAlreadyPaired, StatusEnum.Error));
             }
 
             var response = new OperationResponse(NayaxMessagesResource.DevicePairedSuccessfully, StatusEnum.Success);
@@ -94,8 +104,9 @@ namespace Merchants.Api.Controllers.Integrations
             var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
 
             var devices = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
+            var device = devices.devices?.FirstOrDefault(d => d.TerminalID == request.terminalID);
 
-            if (devices.devices?.Any(d => d.TerminalID == request.terminalID) == false)
+            if (device is null)
             {
                 return BadRequest(new OperationResponse(NayaxMessagesResource.DeviceNotFound, StatusEnum.Error));
             }
@@ -112,6 +123,17 @@ namespace Merchants.Api.Controllers.Integrations
 
                 return BadRequest(response);
             }
+
+            //TODO: request correlation id
+            var newDevice = new Business.Entities.Integration.PinPadDevice
+            {
+                DeviceTerminalID = request.terminalID,
+                PosName = device.PosName,
+                CorrelationId = GetCorrelationID(),
+                TerminalID = request.ECTerminalID
+            };
+
+            await pinPadDeviceService.AddPinPadDevice(newDevice);
 
             return Ok(response);
         }

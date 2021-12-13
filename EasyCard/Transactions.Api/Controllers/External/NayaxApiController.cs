@@ -13,6 +13,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.Resources;
 using Shared.Helpers.Services;
 using Shared.Integration;
@@ -47,6 +48,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ITransactionsService transactionsService;
         private readonly IMetricsService metrics;
         private readonly ITerminalsService terminalsService;
+        private readonly IPinPadDevicesService pinPadDevicesService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
         private readonly NayaxGlobalSettings configuration;
@@ -60,17 +62,19 @@ namespace Transactions.Api.Controllers.External
              ILogger<TransactionsApiController> logger,
              IMetricsService metrics,
              IHttpContextAccessorWrapper httpContextAccessor,
-             IOptions<NayaxGlobalSettings> configuration)
+             IOptions<NayaxGlobalSettings> configuration,
+             IPinPadDevicesService pinPadDevicesService)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
             this.nayaxTransactionsService = nayaxTransactionsService;
-            this.transactionsService = transactionsService;
+            this.transactionsService = transactionService;
             this.metrics = metrics;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.configuration = configuration.Value;
             this.mapper = mapper;
+            this.pinPadDevicesService = pinPadDevicesService;
         }
 
         [HttpPost]
@@ -111,39 +115,14 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
-                var terminals = terminalsService.GetTerminals();
-                bool foundTerminal = false;
-                Terminal terminalMakingTransaction = null;
-                foreach (var terminal in terminals)
-                {
-                    var validterminal = terminalsService.GetTerminal(terminal.TerminalID);
-                    if (validterminal == null)
-                    {
-                        continue;
-                    }
+                var pinPadDevice = await pinPadDevicesService.GetDevice(model.TerminalDetails.ClientToken);
 
-                    var nayaxIntegrationn = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
-                    if (nayaxIntegrationn == null)
-                    {
-                        continue;
-                    }
-
-                    var devicess = nayaxIntegrationn.Settings.ToObject<NayaxTerminalCollection>();
-
-                    var device = devicess.devices.FirstOrDefault(x => x.TerminalID == model.TerminalDetails.ClientToken);
-                    if (device != null)
-                    {
-                        foundTerminal = true;
-                        terminalMakingTransaction = terminal;
-                        break;
-                    }
-                }
-
-                if (!foundTerminal)
+                if (pinPadDevice is null)
                 {
                     return new NayaxResult("Couldn't find valid terminal details", false);
                 }
 
+                Terminal terminalMakingTransaction = EnsureExists(await terminalsService.GetTerminal(pinPadDevice.TerminalID.Value));
 
                 /*TODO validation for sum
          /// <summary>

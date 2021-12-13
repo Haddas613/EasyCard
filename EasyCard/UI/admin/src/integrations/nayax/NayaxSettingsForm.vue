@@ -108,7 +108,11 @@ export default {
         posName: this.selectedDevice.posName,
       };
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
-      if (!this.$apiSuccess(operation)) return;
+      if (!this.$apiSuccess(operation)){
+        console.log(operation)
+        this.$toasted.show(operation.message, { type: "error" })
+        return;
+      };
 
       this.authenticateDeviceDialog = true;
     },
