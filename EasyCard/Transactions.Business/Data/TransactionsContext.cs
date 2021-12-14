@@ -194,7 +194,7 @@ namespace Transactions.Business.Data
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                    s.Ignore(p => p.ConcurrencyToken);
+                    s.Property(p => p.ConcurrencyToken).IsRequired(false).HasColumnName("ConcurrencyToken");
                 });
 
                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>

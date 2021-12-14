@@ -24,14 +24,20 @@ namespace Transactions.Api.Models.Transactions
         public IssuerAquirEnum Aquirer { get; set; }
 
         public bool Success { get; set; }
+
         public string ResultText { get; set; }
+
         public int ResultCode { get; set; }
 
         [Required]
         public string Vuid { get; set; }
+
         public string Uid { get; set; }
+
         public string DealNumber { get; set; }
+
         public string CorrelationID { get; set; }
+
         public string Issuer_Auth_Num { get; set; }
     }
 }

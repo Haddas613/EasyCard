@@ -87,7 +87,7 @@ namespace Merchants.Business.Services
         {
             IQueryable<TerminalExternalSystem> query;
 
-            if (user.IsAdmin())
+            if (user.IsAdmin() || user.IsNayaxApi())
             {
                 query = context.TerminalExternalSystems.AsNoTracking();
             }
@@ -95,10 +95,10 @@ namespace Merchants.Business.Services
             {
                 query = context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID()).AsNoTracking();
             }
-            else if (user.IsNayaxApi())
-            {
-                query = context.TerminalExternalSystems.Where(t => t.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID).AsNoTracking();
-            }
+            //else if (user.IsNayaxApi())
+            //{
+            //    query = context.TerminalExternalSystems.Where(t => t.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID).AsNoTracking();
+            //}
             else
             {
                 query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID()).AsNoTracking();

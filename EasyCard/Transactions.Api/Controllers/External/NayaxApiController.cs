@@ -31,6 +31,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared.Enums;
 using SharedApi = Shared.Api;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers.External
 {
@@ -124,6 +125,10 @@ namespace Transactions.Api.Controllers.External
 
                 Terminal terminalMakingTransaction = EnsureExists(await terminalsService.GetTerminal(pinPadDevice.TerminalID.Value));
 
+                var terminalAggregator = ValidateExists(
+                  terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+                  Transactions.Shared.Messages.AggregatorNotDefined);
+
                 /*TODO validation for sum
          /// <summary>
          /// In Agorot, with leading zeros
@@ -135,7 +140,6 @@ namespace Transactions.Api.Controllers.External
          public int NextPaymentAmount { get; set; }
                   * */
 
-
                 var transaction = mapper.Map<PaymentTransaction>(model);
 
                 string vuid = model.Vuid;
@@ -146,15 +150,16 @@ namespace Transactions.Api.Controllers.External
 
                 transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
+
                 // NOTE: this is security assignment
                 mapper.Map(terminalMakingTransaction, transaction);
 
+                transaction.VATRate = terminalMakingTransaction.Settings.VATRate.GetValueOrDefault(0);
+                transaction.DealDetails.UpdateDealDetails(null, terminalMakingTransaction.Settings, transaction, transaction.CreditCardDetails);
+                transaction.Calculate();
+
                 await transactionsService.CreateEntity(transaction);
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
-
-                var terminalAggregator = ValidateExists(
-              terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
-              Transactions.Shared.Messages.AggregatorNotDefined);
 
                 var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
 
@@ -162,7 +167,16 @@ namespace Transactions.Api.Controllers.External
                 {
                     try
                     {
-                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(model);
+                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+                        aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
+                        mapper.Map(model, aggregatorRequest.CreditCardDetails);
+
+                        if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
+                        {
+                            //workaround for CH
+                            aggregatorRequest.DealDetails.DealDescription = "-";
+                        }
+
                         aggregatorRequest.TransactionDate = DateTime.Now;
                         var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
                         aggregatorRequest.AggregatorSettings = aggregatorSettings;
@@ -233,44 +247,20 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
-                var terminals = terminalsService.GetTerminals();
-                bool foundTerminal = false;
-                Terminal terminalMakingTransaction = null;
-                foreach (var terminal in terminals)
-                {
-                    var validterminal = terminalsService.GetTerminal(terminal.TerminalID);
-                    if (validterminal == null)
-                    {
-                        continue;
-                    }
+                var pinPadDevice = await pinPadDevicesService.GetDevice(model.TerminalDetails.ClientToken);
 
-                    var nayaxIntegrationn = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
-                    if (nayaxIntegrationn == null)
-                    {
-                        continue;
-                    }
-
-                    var devicess = nayaxIntegrationn.Settings.ToObject<NayaxTerminalCollection>();
-
-                    var device = devicess.devices.FirstOrDefault(x => x.TerminalID == model.TerminalDetails.ClientToken);
-                    if (device != null)
-                    {
-                        foundTerminal = true;
-                        terminalMakingTransaction = terminal;
-                        break;
-                    }
-                }
-
-                if (!foundTerminal)
+                if (pinPadDevice is null)
                 {
                     return new NayaxResult("Couldn't find valid terminal details", false);
                 }
 
-
+                Terminal terminalMakingTransaction = EnsureExists(await terminalsService.GetTerminal(pinPadDevice.TerminalID.Value));
 
                 var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID));
+
+                //already updated
                 if (transaction.ShvaTransactionDetails?.ShvaDealID == model.Uid)
-                {//already updated
+                {
                     return new NayaxResult { Vuid = transaction.PinPadTransactionDetails.PinPadTransactionID, Approval = true, ResultText = "Success", CorrelationID = model.CorrelationID, UpdateReceiptNumber = transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber };
                 }
 
@@ -294,8 +284,8 @@ namespace Transactions.Api.Controllers.External
                 }
 
                 var terminalAggregator = ValidateExists(
-           terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
-           Transactions.Shared.Messages.AggregatorNotDefined);
+                   terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+                   Transactions.Shared.Messages.AggregatorNotDefined);
 
                 var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
 
@@ -383,8 +373,7 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/, updateReceiptNumber.ToString())
-               ;
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/, updateReceiptNumber.ToString());
             }
             catch (Exception ex)
             {

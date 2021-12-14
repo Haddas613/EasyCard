@@ -13,22 +13,27 @@ namespace Transactions.Api.Models.Transactions
     public class NayaxValidateRequest
     {
         public NayaxRequest TerminalDetails { get; set; }
+
         public string OwnerIdentityNumber { get; set; }
-       // public EntryModeEnum EntryMode { get; set; }
+
+        // public EntryModeEnum EntryMode { get; set; }
+
         public string Vuid { get; set; }
 
         [Required]
         [EnumDataType(typeof(TranTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TranTypeEnum TranType { get; set; }
+
         /// <summary>
         /// Total Amount Authorized
         /// </summary>
         [Required]
+        [Range(100, int.MaxValue)]
         public int TransactionAmount { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(NayaxValidateRequestResource), ErrorMessageResourceName = "CardNumber")]
-        [StringLength(int.MaxValue,  MinimumLength = 10)]
+        [StringLength(64, MinimumLength = 10)]
         public string MaskedPan { get; set; }
 
         /// <summary>
@@ -41,17 +46,19 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// ILS = 376,
         /// DOLLAR= 840,
-        //  EURO = 978
+        ///  EURO = 978
         /// </summary>
-         [EnumDataType(typeof(CurrencyEnumISO_Code))]
+        [EnumDataType(typeof(CurrencyEnumISO_Code))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnumISO_Code OriginalCurrency { get; set; }
 
         public int PaymentsNumber { get; set; }
+
         /// <summary>
         /// In Agorot, with leading zeros
         /// </summary>
         public int FirstPaymentAmount { get; set; }
+
         /// <summary>
         /// In Agorot, with leading zeros
         /// </summary>

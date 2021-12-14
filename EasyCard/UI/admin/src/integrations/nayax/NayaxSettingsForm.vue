@@ -109,7 +109,6 @@ export default {
       };
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
       if (!this.$apiSuccess(operation)){
-        console.log(operation)
         this.$toasted.show(operation.message, { type: "error" })
         return;
       };

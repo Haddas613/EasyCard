@@ -37,9 +37,9 @@ namespace ClearingHouse.Converters
             details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalID;
             details.CreditCardVendor = createTransactionRequest.CreditCardDetails.CardVendor;
 
-            details.ConsumerEmail = createTransactionRequest.DealDetails.ConsumerEmail;
-            details.ConsumerPhone = createTransactionRequest.DealDetails.ConsumerPhone;
-            details.DealDescription = createTransactionRequest.DealDetails.DealDescription;
+            details.ConsumerEmail = createTransactionRequest.DealDetails?.ConsumerEmail;
+            details.ConsumerPhone = createTransactionRequest.DealDetails?.ConsumerPhone;
+            details.DealDescription = createTransactionRequest.DealDetails?.DealDescription;
 
             details.DealReference = createTransactionRequest.TransactionID;
 

@@ -1757,6 +1757,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("bigint")
                                 .HasColumnName("ClearingHouseTransactionID");
 
+                            b1.Property<string>("ConcurrencyToken")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ConcurrencyToken");
+
                             b1.Property<Guid?>("MerchantReference")
                                 .HasMaxLength(50)
                                 .HasColumnType("uniqueidentifier")
