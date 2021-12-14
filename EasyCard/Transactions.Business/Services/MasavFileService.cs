@@ -72,9 +72,9 @@ namespace Transactions.Business.Services
             return UpdateEntity(data);
         }
 
-        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, string institueName, int? sendingInstitute, string instituteNumber, DateTime? masavFileDate)
         {
-            return await context.GenerateMasavFile(merchantID, terminalID, bank, bankBranch, bankAccount, masavFileDate);
+            return await context.GenerateMasavFile(merchantID, terminalID, institueName, sendingInstitute, instituteNumber, masavFileDate);
         }
 
         public Task SetMasavFilePayed(long masavFileID, DateTime payedDate)

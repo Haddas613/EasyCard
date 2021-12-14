@@ -32,6 +32,23 @@ namespace Transactions.Api.Mapping
             CreateMap<Business.Entities.CreditCardDetails, Models.Transactions.CreditCardDetails>()
                 .ForMember(m => m.CardNumber, s => s.MapFrom(src => src.CardNumber));
 
+            CreateMap<NayaxValidateRequest, AggregatorCreateTransactionRequest>()
+                .ForMember(m => m.TransactionAmount, s => s.MapFrom(src => src.TransactionAmount))
+                //.ForMember(m => m., s => s.MapFrom(src => src.TerminalDetails.ProcessorTerminal))
+                .ForMember(m => m.InitialPaymentAmount, s => s.MapFrom(src => src.FirstPaymentAmount > 0 ? src.FirstPaymentAmount : src.TransactionAmount))
+                .ForMember(m => m.InstallmentPaymentAmount, s => s.MapFrom(src => src.NextPaymentAmount))
+                .ForMember(m => m.IsPinPad, s => s.MapFrom(src => true))
+                .ForMember(m => m.JDealType, s => s.MapFrom(src => JDealTypeEnum.J4))
+                .ForMember(m => m.NumberOfInstallments, s => s.MapFrom(src => src.PaymentsNumber))
+                .ForMember(m => m.SpecialTransactionType, s => s.MapFrom(src => Transactions.Api.Extensions.TransactionHelpers.GetSpecialTransactionTypeFromNayax(src.TranType)))
+                .ForMember(m => m.TransactionType, s => s.MapFrom(src => Transactions.Api.Extensions.TransactionHelpers.GetTransactionTypeFromNayax(src.CreditTerms)))
+              .ForMember(m => m.TotalAmount, s => s.MapFrom(src => src.TransactionAmount));
+
+            CreateMap<NayaxValidateRequest, SharedIntegration.Models.CreditCardDetails>()
+                .ForMember(m => m.CardLastFourDigits, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.MaskedPan)))
+                .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.MaskedPan)))
+                .ForMember(m => m.CardOwnerNationalID, s => s.MapFrom(src => src.OwnerIdentityNumber));
+
             CreateMap<PaymentTransaction, AggregatorCreateTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID.ToString()))

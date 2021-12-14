@@ -701,6 +701,9 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("InstituteNumber")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
 
@@ -1048,12 +1051,6 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("PinPadDeviceID");
 
-                    b.Property<string>("PinPadTransactionID")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("PinPadTransactionID");
-
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
 
@@ -1112,8 +1109,6 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
-
-                    b.HasIndex("PinPadTransactionID");
 
                     b.HasIndex("MerchantID", "TerminalID");
 
@@ -1765,6 +1760,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("bigint")
                                 .HasColumnName("ClearingHouseTransactionID");
 
+                            b1.Property<string>("ConcurrencyToken")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ConcurrencyToken");
+
                             b1.Property<Guid?>("MerchantReference")
                                 .HasMaxLength(50)
                                 .HasColumnType("uniqueidentifier")
@@ -1900,6 +1899,37 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.OwnsOne("Transactions.Business.Entities.PinPadTransactionsDetails", "PinPadTransactionDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("PinPadCorrelationID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadCorrelationID");
+
+                            b1.Property<string>("PinPadTransactionID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadTransactionID");
+
+                            b1.Property<string>("PinPadUpdateReceiptNumber")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadUpdateReceiptNumber");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.ShvaTransactionDetails", "ShvaTransactionDetails", b1 =>
                         {
                             b1.Property<Guid>("PaymentTransactionID")
@@ -2020,6 +2050,8 @@ namespace Transactions.Business.Migrations
                     b.Navigation("CreditCardDetails");
 
                     b.Navigation("DealDetails");
+
+                    b.Navigation("PinPadTransactionDetails");
 
                     b.Navigation("ShvaTransactionDetails");
 

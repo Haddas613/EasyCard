@@ -1620,6 +1620,74 @@
             Stored credit card details token (should be omitted in case if full credit card details used)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxRequest.ProcessorTerminal">
+            <summary>
+            SHVA Terminal Number
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxRequest.ClientToken">
+            <summary>
+            Aditek Identifier for device  
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.TransactionAmount">
+            <summary>
+            Total Amount Authorized
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.CardExpiry">
+            <summary>
+            MMYY format ex:1216
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.OriginalCurrency">
+            <summary>
+            ILS = 376,
+            DOLLAR= 840,
+             EURO = 978
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.FirstPaymentAmount">
+            <summary>
+            In Agorot, with leading zeros
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.NextPaymentAmount">
+            <summary>
+            In Agorot, with leading zeros
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.NayaxValidateRequestResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequestResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequestResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequestResource.CardExpiry">
+            <summary>
+              Looks up a localized string similar to CardExpiry is improperly formatted, should be mmyy.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequestResource.CardNumber">
+            <summary>
+              Looks up a localized string similar to MaskedPan is improperly formatted, should be CardBin and Card last four digits..
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequestResource.TransactionAmount">
+            <summary>
+              Looks up a localized string similar to .
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.NextBillingDealRequest">
             <summary>
             Billing deal

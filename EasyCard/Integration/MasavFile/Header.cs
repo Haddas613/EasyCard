@@ -61,7 +61,7 @@ namespace PoalimOnlineBusiness
         public int Filler3 { get; set; } = 0;
 
         //11	40	30	 X Institue Name Aligned to right 
-        [FixedLengthFile(11, 40, 30, DataType.X, Align = Align.Right)]
+        [FixedLengthFile(11, 40, 30, DataType.X, Align = Align.Right)]// without hebrew to do  space instead
         public string InstitueName { get; set; }
 
         //12	70	56	 X Filler  BLANK

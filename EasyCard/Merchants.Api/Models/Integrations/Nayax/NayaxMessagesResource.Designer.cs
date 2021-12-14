@@ -79,6 +79,15 @@ namespace Merchants.Api.Models.Integrations.Nayax {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device is already paired.
+        /// </summary>
+        public static string DeviceIsAlreadyPaired {
+            get {
+                return ResourceManager.GetString("DeviceIsAlreadyPaired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device not found.
         /// </summary>
         public static string DeviceNotFound {

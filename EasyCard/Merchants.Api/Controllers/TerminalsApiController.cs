@@ -53,6 +53,7 @@ namespace Merchants.Api.Controllers
         private readonly IFeaturesService featuresService;
         private readonly IBlobStorageService blobStorageService;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IPinPadDevicesService pinPadDevicesService;
         private readonly ILogger logger;
 
         //TODO: temporary, use events to update EC logo
@@ -70,7 +71,8 @@ namespace Merchants.Api.Controllers
             IBlobStorageService blobStorageService,
             ICryptoServiceCompact cryptoServiceCompact,
             ILogger<TerminalsApiController> logger,
-            ECInvoiceInvoicing eCInvoiceInvoicing)
+            ECInvoiceInvoicing eCInvoiceInvoicing,
+            IPinPadDevicesService pinPadDevicesService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -84,6 +86,7 @@ namespace Merchants.Api.Controllers
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.logger = logger;
             this.eCInvoiceInvoicing = eCInvoiceInvoicing;
+            this.pinPadDevicesService = pinPadDevicesService;
         }
 
         [HttpGet]
@@ -249,6 +252,12 @@ namespace Merchants.Api.Controllers
                     texternalSystem = new TerminalExternalSystem();
                 }
 
+                if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+                {
+                    var devices = model.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    await HandlePinPadDevices(texternalSystem, devices);
+                }
+
                 mapper.Map(model, texternalSystem);
                 texternalSystem.TerminalID = terminalID;
                 texternalSystem.Type = externalSystem.Type;
@@ -265,8 +274,17 @@ namespace Merchants.Api.Controllers
                     //TODO: check if mapping exists or add empty mapping for every scenario
                     try
                     {
-                        var settings = texternalSystem.Settings.ToObject(settingsType);
-                        mapper.Map(settings, terminal, settingsType, typeof(Terminal));
+                        if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+                        {
+                            var devices = texternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                            mapper.Map(devices, terminal, typeof(Nayax.NayaxTerminalCollection), typeof(Terminal));
+                        }
+                        else
+                        {
+                            var settings = texternalSystem.Settings.ToObject(settingsType);
+                            mapper.Map(settings, terminal, settingsType, typeof(Terminal));
+                        }
+
                         await terminalsService.UpdateEntity(terminal, dbTransaction);
                     }
                     catch (AutoMapperMappingException)
@@ -562,6 +580,25 @@ namespace Merchants.Api.Controllers
                 }
 
                 terminal.EnabledFeatures.Add(feature.FeatureID);
+            }
+        }
+
+        /// <summary>
+        /// Removes every PinPadDevice from PinPadDevices table that are no longer present in the latest data.
+        /// </summary>
+        /// <param name="terminalExternalSystem">Original data</param>
+        /// <param name="data">New data</param>
+        /// <returns></returns>
+        private async Task HandlePinPadDevices(TerminalExternalSystem terminalExternalSystem, Nayax.NayaxTerminalCollection data)
+        {
+            var old = terminalExternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+
+            foreach (var o in old.devices)
+            {
+                if (!data.devices.Any(d => d.TerminalID == o.TerminalID))
+                {
+                    await pinPadDevicesService.DeletePinPadDevice(o.TerminalID);
+                }
             }
         }
     }

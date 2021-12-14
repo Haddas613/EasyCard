@@ -20,6 +20,7 @@ using Shared.Business.Audit;
 using Shared.Integration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharedIntegrations = Shared.Integration;
 
 namespace Merchants.Api.Mapping
@@ -150,8 +151,8 @@ namespace Merchants.Api.Mapping
                .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.MerchantNumber))
                .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<Nayax.NayaxTerminalSettings, Terminal>()
-             .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.TerminalID))
+            CreateMap<Nayax.NayaxTerminalCollection, Terminal>()
+             .ForMember(m => m.PinPadProcessorTerminalReference, s => s.MapFrom(src => string.Join(",", src.devices.Select(e => e.TerminalID))))
              .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()

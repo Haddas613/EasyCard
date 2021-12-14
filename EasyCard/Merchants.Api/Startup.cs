@@ -211,6 +211,7 @@ namespace Merchants.Api
             services.AddScoped<IPlansService, PlansService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
+            services.AddScoped<IPinPadDevicesService, PinPadDevicesService>();
             services.AddAutoMapper(typeof(Startup));
 
             // DI: identity client

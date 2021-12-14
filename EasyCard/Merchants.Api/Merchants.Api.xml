@@ -19,6 +19,14 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Merchants.Api.Controllers.TerminalsApiController.HandlePinPadDevices(Merchants.Business.Entities.Terminal.TerminalExternalSystem,Nayax.NayaxTerminalCollection)">
+            <summary>
+            Removes every PinPadDevice from PinPadDevices table that are no longer present in the latest data.
+            </summary>
+            <param name="terminalExternalSystem">Original data</param>
+            <param name="data">New data</param>
+            <returns></returns>
+        </member>
         <member name="M:Merchants.Api.Controllers.TerminalTemplatesApiController.CreateTerminalTemplate(Merchants.Api.Models.TerminalTemplate.TerminalTemplateRequest)">
             <summary>
             Add terminal template basic information
@@ -109,6 +117,16 @@
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerCreatedSuccessfully">
             <summary>
               Looks up a localized string similar to Customer created successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedFailed">
+            <summary>
+              Looks up a localized string similar to Document number changed failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Document number changed successfully.
             </summary>
         </member>
         <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
@@ -206,6 +224,11 @@
         <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DeviceAuthenticatedSuccessfully">
             <summary>
               Looks up a localized string similar to Device authenticated successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DeviceIsAlreadyPaired">
+            <summary>
+              Looks up a localized string similar to Device is already paired.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DeviceNotFound">
