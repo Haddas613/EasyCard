@@ -22,7 +22,7 @@ namespace Merchants.Shared.Models
         public string InstituteNum { get; set; }
 
         [StringLength(5, MinimumLength = 5)]
-        public string InstituteServiceNum { get; set; }
+        public int InstituteServiceNum { get; set; }
 
         [StringLength(30)]
         public string InstituteName { get; set; }

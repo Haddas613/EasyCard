@@ -220,7 +220,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             }
         }
 
-        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, string institueName, int? sendingInstitute, string instituteNumber, DateTime? masavFileDate)
         {
             var connection = this.Database.GetDbConnection();
             bool connectionOpened = connection.State == ConnectionState.Open;
@@ -233,7 +233,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 var query = "[dbo].[PR_GenerateMasavFile]";
 
-                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = bank.ToString(), InstituteNumber = bankAccount, SendingInstitute = bankBranch, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.AwaitingForTransmission });
+                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = institueName, InstituteNumber = instituteNumber, SendingInstitute = sendingInstitute, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.AwaitingForTransmission });
 
                 args.Add("@Error", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
                 args.Add("@MasavFileID", dbType: DbType.Int64, direction: ParameterDirection.Output, size: -1);

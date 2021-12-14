@@ -24,7 +24,7 @@ namespace Transactions.Business.Services
 
         Task UpdateMasavFile(MasavFile data);
 
-        Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate);
+        Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, string institueName, int? sendingInstitute, string instituteNumber, DateTime? masavFileDate);
 
         Task SetMasavFilePayed(long masavFileID, DateTime payedDate);
     }
