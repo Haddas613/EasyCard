@@ -40,7 +40,7 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<MasavFileRow, TransactionRowWithdraw>()
-                .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.InstituteNumber))
                 .ForMember(d => d.Bankcode, o => o.MapFrom(d => d.Bankcode))
                 .ForMember(d => d.BranchNumber, o => o.MapFrom(d => d.BranchNumber))
                 .ForMember(d => d.BeneficiaryNname, o => o.MapFrom(d => d.ConsumerName))

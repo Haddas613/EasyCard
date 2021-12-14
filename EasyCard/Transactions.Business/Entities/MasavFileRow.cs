@@ -15,6 +15,8 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
+        public int? InstituteNumber { get; set; }
+
         public int? Bankcode { get; set; }
 
         public int? BranchNumber { get; set; }

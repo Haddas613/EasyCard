@@ -803,6 +803,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.MasavFileID);
                 builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.InstituteNumber);
                 builder.Property(b => b.ConsumerID);
                 builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Bankcode);
