@@ -21,7 +21,6 @@ namespace Merchants.Shared.Models
         [StringLength(8, MinimumLength = 8)]
         public string InstituteNum { get; set; }
 
-        [StringLength(5, MinimumLength = 5)]
         public int InstituteServiceNum { get; set; }
 
         [StringLength(30)]

@@ -200,6 +200,16 @@
             ></v-text-field>
           </v-col>
         </v-row>
+        <v-row no-gutters>
+          <v-col md="4" cols="12">
+            <v-text-field
+              v-model="model.settings.ravMutavNumber"
+              :label="$t('RavMutavNumber')"
+              type="text"
+              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(9, 9)]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
 

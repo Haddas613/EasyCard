@@ -132,6 +132,7 @@
   "@InRange": "חייב להיות בטווח בין @min ל @max",
   "@MaxLength": "חייב להיות פחות מ @max תווים",
   "@StringLength": "חייב להיות יותר מ @min ופחות מ @max תווים",
+  "@StringLengthExact": "חייב להיות בדיוק @val תווים",
   "@BiggerThan": "חייב להיות גדול מ @min",
   "@LessThan": "חייב להיות קטן מ @max",
   "@ItemsSelected": "@amount פריטים נבחרו",
@@ -415,7 +416,8 @@
   "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
   "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
   "InProgress": "בתהליך",
-  
+  "RavMutavNumber": "מספר ספק רב מוטב",
+
   "--BUTTONS--": null,
   "Cancel": "בטל",
   "Ok": "אשר",
