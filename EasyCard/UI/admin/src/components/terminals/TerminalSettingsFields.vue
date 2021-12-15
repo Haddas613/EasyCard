@@ -523,10 +523,10 @@
           <v-col cols="12" md="4">
             <v-text-field
               :label="$t('InstitutionNumber')"
-              :counter="8"
+              :counter="9"
               v-model="model.bankDetails.instituteNum"
               :disabled="!editBankDetails"
-              :rules="editBankDetails ? [vr.primitives.stringLength(8, 8)] : []"
+              :rules="editBankDetails ? [vr.primitives.stringLength(3, 9)] : []"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
