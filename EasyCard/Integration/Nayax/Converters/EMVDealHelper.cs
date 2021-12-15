@@ -145,7 +145,7 @@ namespace Nayax.Converters
 
             inputObj.vuid = req.PinPadTransactionID;
             inputObj.creditTerms = creditTerms.GetNayaxCreditTerms();
-
+            inputObj.mutav = req.SapakMutavNo.GetNayaxSapakMutav();
 
             if (creditTerms == NayaxCreditTermsEnum.Payments && req.NumberOfPayments > 1)
             {
