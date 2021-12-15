@@ -413,6 +413,9 @@
   "NextScheduledDateTo": "Next Scheduled Date To",
   "InProgress": "In Progress",
   "RavMutavNumber": "Rav Mutav Number",
+  "InstitutionName": "Institution Name",
+  "InstitutionNumber": "Institution Number",
+  "InstitutionServiceProvider": "Institution Service Provider",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

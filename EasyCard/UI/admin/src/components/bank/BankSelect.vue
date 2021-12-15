@@ -9,6 +9,7 @@
     :rules="required ? [vr.primitives.required] : []"
     @change="ok()"
     outlined
+    :disabled="disabled"
     ></v-autocomplete>
 </template>
 
@@ -27,6 +28,10 @@ export default {
     required: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -41,7 +46,7 @@ export default {
 
       if(this.data){
           this.model = this.lodash.find(this.banks, e => e.value == this.data) || this.banks[0];
-      }else{
+      }else if(!this.disabled){
           this.model = this.banks[0];
       }
   },
