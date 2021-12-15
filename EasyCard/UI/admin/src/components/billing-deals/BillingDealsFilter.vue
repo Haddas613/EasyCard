@@ -9,7 +9,7 @@
             :label="$t('BillingDealID')"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" class="py-0">
+        <v-col cols="12" md="4" class="py-0">
           <v-select
             :items="paymentTypesFiltered"
             item-text="description"
@@ -38,8 +38,6 @@
             :label="$t('CustomerEmail')"
           ></v-text-field>
         </v-col>
-      </v-row>
-      <v-row>
         <v-col cols="12" md="4" class="py-0">
           <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
@@ -50,7 +48,18 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model" from-today date-from-label="NextScheduledDateFrom" date-to-label="NextScheduledDateTo"></date-from-to-filter>
+      </v-row>
+      <v-row>
+        <v-col class="pb-0 mb-0" cols="4" md="12">
+          <v-switch v-model="model.filterDateByNextScheduledTransaction" hide-details>
+            <template v-slot:label>
+              <small>{{$t('FilterDateByNextScheduledTransaction')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <date-from-to-filter v-model="model" from-today 
+          :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
+          :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
       </v-row>
       <v-row class="d-flex" justify="end">
         <v-col cols="3" md="2">

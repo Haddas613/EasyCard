@@ -212,7 +212,7 @@
           </template>
         </ec-list>
         <p
-          class="ecgray--text text-center"
+          class="ecgray--text text-center pt-4"
           v-if="billingDeals && billingDeals.length === 0"
         >{{$t("NothingToShow")}}</p>
 

@@ -352,6 +352,9 @@
   "InstitutionName": "Institution Name",
   "InstitutionNumber": "Institution Number",
   "InstitutionServiceProvider": "Institution Service Provider",
+  "FilterDateByNextScheduledTransaction": "Filter Date by Next Scheduled Transaction",
+  "CreatedFrom": "Created From",
+  "CreatedTo": "Created To",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
