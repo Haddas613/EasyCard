@@ -514,7 +514,6 @@
             <v-text-field
               :label="$t('InstitutionName')"
               :counter="30"
-              outlined
               v-model="model.bankDetails.instituteName"
               :disabled="!editBankDetails"
               :rules="editBankDetails ? [vr.primitives.maxLength(30)] : []"
@@ -525,7 +524,6 @@
             <v-text-field
               :label="$t('InstitutionNumber')"
               :counter="8"
-              outlined
               v-model="model.bankDetails.instituteNum"
               :disabled="!editBankDetails"
               :rules="editBankDetails ? [vr.primitives.stringLength(8, 8)] : []"
@@ -535,7 +533,6 @@
           <v-col cols="12" md="4">
             <v-text-field
               :label="$t('InstitutionServiceProvider')"
-              outlined
               type="number"
               v-model="model.bankDetails.instituteServiceNum"
               :disabled="!editBankDetails"
@@ -555,7 +552,6 @@
             <v-text-field
               :label="$t('BankBranch')"
               :counter="7"
-              outlined
               v-model="model.bankDetails.bankBranch"
               max="7"
               type="number"
@@ -568,7 +564,6 @@
             <v-text-field
               :label="$t('BankAccount')"
               :counter="12"
-              outlined
               v-model="model.bankDetails.bankAccount"
               max="12"
               type="number"

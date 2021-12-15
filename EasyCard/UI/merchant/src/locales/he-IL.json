@@ -348,6 +348,10 @@
   "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
   "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
   "InProgress": "בתהליך",
+  "RavMutavNumber": "מספר ספק רב מוטב",
+  "InstitutionName": "שם מוסד",
+  "InstitutionNumber": "מס' מוסד",
+  "InstitutionServiceProvider": "מס' מוסד נותן שירות",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

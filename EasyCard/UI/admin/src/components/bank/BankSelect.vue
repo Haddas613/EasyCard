@@ -8,7 +8,6 @@
     hide-details
     :rules="required ? [vr.primitives.required] : []"
     @change="ok()"
-    outlined
     :disabled="disabled"
     ></v-autocomplete>
 </template>
