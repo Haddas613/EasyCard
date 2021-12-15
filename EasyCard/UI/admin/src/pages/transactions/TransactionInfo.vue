@@ -39,6 +39,10 @@
                   <p>{{model.transactionType}}</p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
+                  <p v-if="dictionaries">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum]}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
                   <p
                     v-bind:class="quickStatusesColors[model.quickStatus]"
@@ -235,7 +239,8 @@ export default {
         Canceled: "accent--text"
       },
       tab: "info",
-      transactionSlipDialog: false
+      transactionSlipDialog: false,
+      dictionaries: null,
     };
   },
   async mounted() {
@@ -246,7 +251,7 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
-
+    this.dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
     await this.initThreeDotMenu();
   },
   methods: {
