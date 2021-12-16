@@ -152,7 +152,9 @@ namespace Transactions.Api.Controllers.External
 
                 transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
-
+                transaction.CardPresence = CardPresenceEnum.Regular; //todo with panentrymode from validate request
+                transaction.PinPadDeviceID = model.TerminalDetails.ClientToken;
+                transaction.DocumentOrigin = DocumentOriginEnum.Device;
                 // NOTE: this is security assignment
                 mapper.Map(terminalMakingTransaction, transaction);
 
