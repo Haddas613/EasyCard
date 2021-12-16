@@ -355,6 +355,7 @@
   "FilterDateByNextScheduledTransaction": "סינון לפי תאריך הבא לביצוע עסקה",
   "CreatedFrom": "נוצר מ",
   "CreatedTo": "נוצר ל",
+  "PriceWithDiscount": "מחיר פריט לאחר הנחה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

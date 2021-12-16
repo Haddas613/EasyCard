@@ -355,6 +355,7 @@
   "FilterDateByNextScheduledTransaction": "Filter Date by Next Scheduled Transaction",
   "CreatedFrom": "Created From",
   "CreatedTo": "Created To",
+  "PriceWithDiscount": "Price with discount",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
