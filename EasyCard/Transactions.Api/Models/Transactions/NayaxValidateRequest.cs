@@ -16,7 +16,7 @@ namespace Transactions.Api.Models.Transactions
 
         public string OwnerIdentityNumber { get; set; }
 
-        // public EntryModeEnum EntryMode { get; set; }
+        // public EntryModeEnum EntryMode { get; set; } //todo!!
 
         public string Vuid { get; set; }
 
