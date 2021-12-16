@@ -238,6 +238,50 @@ namespace Nayax.Converters
             return string.Format("{0};{1}", fileNo, seqNo);
         }
 
+
+        public static string GetFilNSeq(string ShvaShovarNumber,DateTime? TransmissionDate )
+        {
+            int fileNo = -1;
+            int seqNo = -1;
+            bool firstDeal = String.IsNullOrEmpty(ShvaShovarNumber);
+            if (firstDeal)
+            {
+                fileNo = seqNo = 1;
+
+            }
+            else
+            {
+                string dealnumber = ShvaShovarNumber;
+
+                int.TryParse(dealnumber.Substring(0, 2), out fileNo);
+
+                int.TryParse(dealnumber.Substring(5, 3), out seqNo);
+                bool lastDealWasTransmit = TransmissionDate != null;
+                if (lastDealWasTransmit)
+                {
+                    seqNo = 1;
+                    fileNo++;
+                }
+
+                if (seqNo > 999)
+                {
+                    seqNo = 1;
+                    fileNo++;
+                }
+                else
+                {
+                    seqNo++;
+                }
+
+                if (fileNo == 100)
+                {
+                    fileNo = seqNo = 1;
+                }
+            }
+
+            return string.Format("{0};{1}", fileNo, seqNo);
+        }
+
         private static string GetPinPadTransactionID(NayaxTerminalSettings settings)
         {
             return string.Format("{0}_{1}", settings?.TerminalID, Guid.NewGuid().ToString());
