@@ -593,9 +593,14 @@ namespace Merchants.Api.Controllers
         {
             var old = terminalExternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
 
+            if (old is null || old.devices is null)
+            {
+                return;
+            }
+
             foreach (var o in old.devices)
             {
-                if (!data.devices.Any(d => d.TerminalID == o.TerminalID))
+                if ((data is null || data.devices is null) || data.devices.Any(d => d.TerminalID == o.TerminalID) == false)
                 {
                     await pinPadDevicesService.DeletePinPadDevice(o.TerminalID);
                 }

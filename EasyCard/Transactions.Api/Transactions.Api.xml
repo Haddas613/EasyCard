@@ -1978,6 +1978,11 @@
             Credit card information
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BankTransferDetails">
+            <summary>
+            Bank transfer information
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardToken">
             <summary>
             Stored credit card details token reference

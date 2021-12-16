@@ -502,22 +502,61 @@
             {{$t("BankAccountDetails")}}
             <v-divider class="pt-1"></v-divider>
           </v-col>
+          <v-col cols="12" class="pt-0 mt-0 d-flex justify-center">
+            <v-switch
+              dense
+              hide-details
+              v-model="editBankDetails"
+              :label="$t('Edit')">
+            </v-switch>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('InstitutionName')"
+              :counter="30"
+              v-model="model.bankDetails.instituteName"
+              :disabled="!editBankDetails"
+              :rules="editBankDetails ? [vr.primitives.maxLength(30)] : []"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('InstitutionNumber')"
+              :counter="9"
+              v-model="model.bankDetails.instituteNum"
+              :disabled="!editBankDetails"
+              :rules="editBankDetails ? [vr.primitives.stringLength(3, 9)] : []"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('InstitutionServiceProvider')"
+              type="number"
+              v-model="model.bankDetails.instituteServiceNum"
+              :disabled="!editBankDetails"
+              :rules="editBankDetails ? [vr.primitives.numeric()] : []"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
           <v-col cols="12" md="4">
             <bank-select 
               v-model="model.bankDetails.bank"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-              required
+              :disabled="!editBankDetails"
+              :required="editBankDetails"
             ></bank-select>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
               :label="$t('BankBranch')"
               :counter="7"
-              outlined
               v-model="model.bankDetails.bankBranch"
               max="7"
               type="number"
-              :rules="[vr.primitives.required, vr.primitives.numeric()]"
+              :disabled="!editBankDetails"
+              :rules="editBankDetails ? [vr.primitives.required, vr.primitives.numeric()] : []"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
@@ -525,11 +564,11 @@
             <v-text-field
               :label="$t('BankAccount')"
               :counter="12"
-              outlined
               v-model="model.bankDetails.bankAccount"
               max="12"
               type="number"
-              :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+              :disabled="!editBankDetails"
+              :rules="editBankDetails ? [vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)] : []"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
@@ -566,7 +605,8 @@ export default {
       privateApiKey: null,
       showSharedApiKey: false,
       appConstants: appConstants,
-      changed: false
+      changed: false,
+      editBankDetails: false
     };
   },
   async mounted() {
@@ -624,7 +664,7 @@ export default {
 
       // TODO: should be implemented something like "touchet" ot bank details component
       if (result.bankDetails) {
-        if (!result.bankDetails.bank && !result.bankDetails.bankBranch && !result.bankDetails.bankAccount) {
+        if (!this.editBankDetails || !result.bankDetails.bank && !result.bankDetails.bankBranch && !result.bankDetails.bankAccount) {
           result.bankDetails = null;
         }
       }  

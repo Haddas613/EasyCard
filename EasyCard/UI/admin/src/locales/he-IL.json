@@ -417,6 +417,12 @@
   "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
   "InProgress": "בתהליך",
   "RavMutavNumber": "מספר ספק רב מוטב",
+  "InstitutionName": "שם מוסד",
+  "InstitutionNumber": "מס' מוסד",
+  "InstitutionServiceProvider": "מס' מוסד נותן שירות",
+  "FilterDateByNextScheduledTransaction": "סינון לפי תאריך הבא לביצוע עסקה",
+  "CreatedFrom": "נוצר מ",
+  "CreatedTo": "נוצר ל",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

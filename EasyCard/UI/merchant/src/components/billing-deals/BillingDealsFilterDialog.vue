@@ -43,6 +43,7 @@
                 :label="$t('Currency')"
                 outlined
                 clearable
+                hide-details
               ></v-select>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
@@ -54,9 +55,19 @@
                 :label="$t('UpdatedDate')"
                 outlined
                 clearable
+                hide-details
               ></v-select>
             </v-col>
-            <date-from-to-filter class="px-3" v-model="model" from-today date-from-label="NextScheduledDateFrom" date-to-label="NextScheduledDateTo"></date-from-to-filter>
+            <v-col class="pb-0 mb-0" cols="6" md="12">
+              <v-switch v-model="model.filterDateByNextScheduledTransaction" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('FilterDateByNextScheduledTransaction')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <date-from-to-filter class="px-3" v-model="model" from-today 
+              :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
+              :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-0">
