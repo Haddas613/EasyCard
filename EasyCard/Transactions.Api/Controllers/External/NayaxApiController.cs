@@ -213,7 +213,7 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                string sysTranceNumber = getSysTranceNumber(terminalMakingTransaction);
+                string sysTranceNumber =  getSysTranceNumber(terminalMakingTransaction);
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
             }
             catch (Exception ex)
@@ -227,9 +227,8 @@ namespace Transactions.Api.Controllers.External
         {
             var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
             Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
-            var lastDealShvaDetails = transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
-            ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(lastDealShvaDetails);
-            var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal.ShvaShovarNumber, lastDeal.TransmissionDate);
+            ShvaTransactionDetails lastDealShvaDetails = transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber && x.ShvaTransactionDetails != null && x.ShvaTransactionDetails.ShvaShovarNumber != null).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync().Result;
+            var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDealShvaDetails.ShvaShovarNumber, lastDealShvaDetails.TransmissionDate);
             return sysTranceNumber;
         }
 
