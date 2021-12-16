@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Nayax;
 using Nayax.Configuration;
 using Shared.Api;
+using Shared.Api.Attributes;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
@@ -41,6 +42,7 @@ namespace Transactions.Api.Controllers.External
     [Consumes("application/json")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [PascalCaseOutput]
     public class NayaxApiController : ApiControllerBase
     {
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
