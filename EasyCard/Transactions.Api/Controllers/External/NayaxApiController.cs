@@ -213,33 +213,24 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                //bool isRavMutav = (client.SapakMotav ?? false) && !String.IsNullOrEmpty(client.SapakMotavNumber); todo
-                //string RavMutav = client.SapakMotavNumber;   todo
-                string expDate_YYMM = string.Format("{0}{1}", model.CardExpiry.Substring(2, 2), model.CardExpiry.Substring(0, 2));
-                var cardNumber = NayaxHelper.GetCardNumber(model.MaskedPan);
-                var cardExmp = model.CardExpiry;
-                var last4Digits = cardNumber.Substring(cardNumber.Length - 4, 4);
-                var cardBin = cardNumber.Substring(0, 6).Replace('*', '0');
-
-                //  EMVRestTransaction NayaxTran = new EMVRestTransaction();
-
-                //todo save vuid in transaction
-                // setValuesToEMVRestTran(requestForValidateDeal, _clientID, transactionID, concurencyToken, NayaxTran, vuid, RavMutav);
-                //Common.BL.DealInfo.SaveEMVRestAfterValidate(NayaxTran);
-                // string SysTranceNumber = PinPadModularityHelper.GetSysTranceNumber(_clientID);
-                //   var terminalProcessor = (terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor));
-                //   Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
-                // var LastDealShvaDetails =  await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber)
-                //.OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
-                //Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(LastDealShvaDetails);
-                //Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal);
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
+                string sysTranceNumber = getSysTranceNumber(terminalMakingTransaction);
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
                 return new NayaxResult(ex.Message, false /*ResultEnum.ServerError, false*/);
             }
+        }
+
+        private string getSysTranceNumber(Terminal terminalMakingTransaction)
+        {
+            var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
+            Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
+            var lastDealShvaDetails = transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
+            ShvaTransactionDetails lastDeal = mapper.Map<ShvaTransactionDetails>(lastDealShvaDetails);
+            var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDeal.ShvaShovarNumber, lastDeal.TransmissionDate);
+            return sysTranceNumber;
         }
 
         [HttpPost]
