@@ -32,7 +32,7 @@
           ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
-        <payment-type :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash'] : ['cash', 'cheque']"></payment-type>
+        <payment-type :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only']"></payment-type>
       </v-col>
       <template v-if="model.invoiceOnly">
         <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
