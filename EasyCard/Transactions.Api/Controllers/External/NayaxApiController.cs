@@ -151,12 +151,12 @@ namespace Transactions.Api.Controllers.External
                     vuid = string.Format("{0}_{1}", model.TerminalDetails.ClientToken, Guid.NewGuid().ToString());
                 }
 
+                SetCardDetails(model, transaction); 
                 transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
                 transaction.CardPresence = getCardPresence(model.EntryMode);
                 transaction.PinPadDeviceID = model.TerminalDetails.ClientToken;
                 transaction.DocumentOrigin = DocumentOriginEnum.Device;
-                // NOTE: this is security assignment
                 mapper.Map(terminalMakingTransaction, transaction);
 
                 transaction.VATRate = terminalMakingTransaction.Settings.VATRate.GetValueOrDefault(0);
@@ -226,6 +226,19 @@ namespace Transactions.Api.Controllers.External
             }
         }
 
+        private static void SetCardDetails(NayaxValidateRequest model, PaymentTransaction transaction)
+        {
+            var cardNumber = NayaxHelper.GetCardNumber(model.MaskedPan);
+            var cardExmp = model.CardExpiry;
+            int month = -1;
+            int.TryParse(cardExmp.Substring(0, 2), out month);
+            int year = -1;
+            int.TryParse(cardExmp.Substring(2, 2), out year);
+
+            var cardBin = cardNumber.Substring(0, 6).Replace('*', '0');
+            transaction.CreditCardDetails = new Business.Entities.CreditCardDetails { CardExpiration = new CardExpiration { Month = month, Year = year }, CardBin = cardBin, CardNumber = cardNumber };
+        }
+
         private string getSysTranceNumber(Terminal terminalMakingTransaction)
         {
             var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
@@ -264,7 +277,6 @@ namespace Transactions.Api.Controllers.External
                 }
 
                 Guid updateReceiptNumber = Guid.NewGuid();
-                //todo update transaction with all details from Nayax
                 transaction.ShvaTransactionDetails.ShvaDealID = model.Uid;
                 transaction.ShvaTransactionDetails.Solek = Transactions.Api.Extensions.TransactionHelpers.GetTransactionSolek(model.Aquirer);
                 transaction.CreditCardDetails.CardBrand = model.Brand.ToString();
