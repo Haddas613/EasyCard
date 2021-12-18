@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
 using Transactions.Api.Models.Transactions;
+using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
@@ -152,7 +153,7 @@ namespace Transactions.Api.Controllers.External
 
                 transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
-                transaction.CardPresence = CardPresenceEnum.Regular; //todo with panentrymode from validate request
+                transaction.CardPresence = getCardPresence(model.EntryMode);
                 transaction.PinPadDeviceID = model.TerminalDetails.ClientToken;
                 transaction.DocumentOrigin = DocumentOriginEnum.Device;
                 // NOTE: this is security assignment
@@ -215,7 +216,7 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                string sysTranceNumber =  getSysTranceNumber(terminalMakingTransaction);
+                string sysTranceNumber = getSysTranceNumber(terminalMakingTransaction);
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
             }
             catch (Exception ex)
@@ -232,6 +233,10 @@ namespace Transactions.Api.Controllers.External
             ShvaTransactionDetails lastDealShvaDetails = transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber && x.ShvaTransactionDetails != null && x.ShvaTransactionDetails.ShvaShovarNumber != null).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync().Result;
             var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDealShvaDetails.ShvaShovarNumber, lastDealShvaDetails.TransmissionDate);
             return sysTranceNumber;
+        }
+        private CardPresenceEnum getCardPresence(EntryModeEnum entryMode)
+        {
+            return entryMode.IsIn(EntryModeEnum.CellularPhoneNum, EntryModeEnum.PhoneTran)? CardPresenceEnum.CardNotPresent : CardPresenceEnum.Regular;
         }
 
         [HttpPost]
