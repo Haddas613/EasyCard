@@ -1640,7 +1640,13 @@
             MMYY format ex:1216
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Transactions.Api.Models.Transactions.NayaxValidateRequest.OriginalCurrency" -->
+        <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.OriginalCurrency">
+            <summary>
+            ILS = 376,
+            DOLLAR= 840,
+             EURO = 978
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.NayaxValidateRequest.FirstPaymentAmount">
             <summary>
             In Agorot, with leading zeros
@@ -1970,6 +1976,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardDetails">
             <summary>
             Credit card information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BankTransferDetails">
+            <summary>
+            Bank transfer information
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardToken">

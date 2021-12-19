@@ -132,6 +132,7 @@
   "@InRange": "חייב להיות בטווח בין @min ל @max",
   "@MaxLength": "חייב להיות פחות מ @max תווים",
   "@StringLength": "חייב להיות יותר מ @min ופחות מ @max תווים",
+  "@StringLengthExact": "חייב להיות בדיוק @val תווים",
   "@BiggerThan": "חייב להיות גדול מ @min",
   "@LessThan": "חייב להיות קטן מ @max",
   "@ItemsSelected": "@amount פריטים נבחרו",
@@ -415,7 +416,14 @@
   "NextScheduledDateFrom": "התאריך המתוכנן הבא מ",
   "NextScheduledDateTo": "התאריך המתוכנן הבא עד",
   "InProgress": "בתהליך",
-  
+  "RavMutavNumber": "מספר ספק רב מוטב",
+  "InstitutionName": "שם מוסד",
+  "InstitutionNumber": "מס' מוסד",
+  "InstitutionServiceProvider": "מס' מוסד נותן שירות",
+  "FilterDateByNextScheduledTransaction": "סינון לפי תאריך הבא לביצוע עסקה",
+  "CreatedFrom": "נוצר מ",
+  "CreatedTo": "נוצר ל",
+
   "--BUTTONS--": null,
   "Cancel": "בטל",
   "Ok": "אשר",

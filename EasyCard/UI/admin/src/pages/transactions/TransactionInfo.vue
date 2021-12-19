@@ -39,6 +39,10 @@
                   <p>{{model.transactionType}}</p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
+                  <p v-if="dictionaries">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum]}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
                   <p
                     v-bind:class="quickStatusesColors[model.quickStatus]"
@@ -120,7 +124,9 @@
             :model="model.dealDetails"
             :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
           ></deal-details>
-          <credit-card-details :model="model.creditCardDetails"></credit-card-details>
+
+          <credit-card-details :model="model.creditCardDetails" v-if="model.paymentTypeEnum == appConstants.transaction.paymentTypes.card"></credit-card-details>
+          <bank-transfer-payment-details card :model="model.bankTransferDetails" v-else-if="model.paymentTypeEnum == appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
 
           <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
           <v-card flat class="my-2">
@@ -199,6 +205,8 @@
 </template>
 
 <script>
+import appConstants from "../../helpers/app-constants";
+
 export default {
   components: {
     TransactionItemsList: () =>
@@ -222,7 +230,9 @@ export default {
     ClearingHouseTransactionDetails: () =>
       import("../../components/details/ClearingHouseTransactionDetails"),
     IntegrationLogsList: () =>
-      import("../../components/integration-logs/IntegrationLogsList")
+      import("../../components/integration-logs/IntegrationLogsList"),
+    BankTransferPaymentDetails: () =>
+      import("../../components/details/BankTransferPaymentDetails"),
   },
   data() {
     return {
@@ -235,7 +245,9 @@ export default {
         Canceled: "accent--text"
       },
       tab: "info",
-      transactionSlipDialog: false
+      transactionSlipDialog: false,
+      dictionaries: null,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -246,7 +258,7 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
-
+    this.dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
     await this.initThreeDotMenu();
   },
   methods: {

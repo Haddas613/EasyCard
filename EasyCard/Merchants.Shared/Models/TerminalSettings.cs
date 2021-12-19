@@ -83,5 +83,7 @@ namespace Merchants.Shared.Models
         }
 
         public bool DoNotCreateSaveTokenInitialDeal { get; set; }
+
+        public string RavMutavNumber { get; set; }
     }
 }

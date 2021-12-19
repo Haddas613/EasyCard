@@ -48,7 +48,20 @@ namespace Transactions.Api.Extensions
                 CreditTermsEnum.immediate => TransactionTypeEnum.Immediate,
                 CreditTermsEnum.regular => TransactionTypeEnum.RegularDeal,
                 CreditTermsEnum.installments => TransactionTypeEnum.Installments,
-                 _ => TransactionTypeEnum.RegularDeal,
+                _ => TransactionTypeEnum.RegularDeal,
+            };
+        }
+
+        public static SolekEnum GetTransactionSolek(this IssuerAquirEnum issuerAquirEnum)
+        {
+            return issuerAquirEnum switch
+            {
+                IssuerAquirEnum.Cal => SolekEnum.VISA,
+                IssuerAquirEnum.Isracard => SolekEnum.ISRACARD,
+                IssuerAquirEnum.LeumiCard => SolekEnum.LEUMI_CARD,
+                IssuerAquirEnum.Tourist => SolekEnum.UNKNOWN,
+                IssuerAquirEnum.RFU07 => SolekEnum.OTHER,
+                _ => SolekEnum.UNKNOWN,
             };
         }
 

@@ -128,6 +128,7 @@ namespace Shva.Conveters
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
             var oKNumber = req.OKNumber;
+            inputObj.sapakMutavNo = req.SapakMutavNo;
             inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
 
             inputObj.parameterJ = parameterJValue.ToString();

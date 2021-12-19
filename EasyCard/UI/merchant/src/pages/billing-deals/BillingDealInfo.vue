@@ -85,7 +85,7 @@
             :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
           ></deal-details>
 
-          <payment-details v-if="model.paymentDetails" :model="model.paymentDetails"></payment-details>
+          <payment-details v-if="model.paymentDetails && model.paymentDetails.length > 0" :model="model.paymentDetails"></payment-details>
           <credit-card-details v-if="model.creditCardDetails" :model="model.creditCardDetails"></credit-card-details>
           <bank-payment-details card v-if="model.bankDetails" :model="model.bankDetails"></bank-payment-details>
 

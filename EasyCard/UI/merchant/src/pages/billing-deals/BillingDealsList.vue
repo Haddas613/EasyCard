@@ -212,7 +212,7 @@
           </template>
         </ec-list>
         <p
-          class="ecgray--text text-center"
+          class="ecgray--text text-center pt-4"
           v-if="billingDeals && billingDeals.length === 0"
         >{{$t("NothingToShow")}}</p>
 
@@ -363,6 +363,13 @@ export default {
         }
       }
       await this.getDataFromApi(false);
+    },
+    async exportExcel() {
+          let operation = await this.$api.billingDeals.getExcel({
+            ...this.billingDealsFilter
+          });
+          if(!this.$apiSuccess(operation)) return;
+          window.open(operation.entityReference, "_blank");
     }
   },
   computed: {
@@ -405,6 +412,12 @@ export default {
             text: this.$t("TriggerAll"),
             fn: async () => {
               vm.showTriggerDialog = true;
+            }
+          },
+          {
+            text: this.$t("Excel"),
+            fn: () => {
+              this.exportExcel();
             }
           }
         ]

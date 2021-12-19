@@ -91,6 +91,8 @@ namespace Merchants.Business.Data
 
         public DbSet<ShvaTerminal> ShvaTerminals { get; set; }
 
+        public DbSet<PinPadDevice> PinPadDevices { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -122,6 +124,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
             modelBuilder.ApplyConfiguration(new ShvaTerminalConfiguration());
+            modelBuilder.ApplyConfiguration(new PinPadDeviceConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -480,6 +483,22 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.MerchantNumber).HasMaxLength(64).ValueGeneratedNever();
                 builder.Property(b => b.UserName).HasMaxLength(64);
                 builder.Property(b => b.Password).IsUnicode(true).HasMaxLength(64);
+            }
+        }
+
+        internal class PinPadDeviceConfiguration : IEntityTypeConfiguration<PinPadDevice>
+        {
+            public void Configure(EntityTypeBuilder<PinPadDevice> builder)
+            {
+                builder.ToTable("PinPadDevice");
+
+                builder.HasKey(b => b.PinPadDeviceID);
+                builder.Property(b => b.PinPadDeviceID).ValueGeneratedNever();
+
+                builder.Property(b => b.DeviceTerminalID).HasMaxLength(64);
+                builder.Property(b => b.PosName).HasMaxLength(64);
+                builder.Property(b => b.TerminalID).IsRequired(true);
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
             }
         }
     }

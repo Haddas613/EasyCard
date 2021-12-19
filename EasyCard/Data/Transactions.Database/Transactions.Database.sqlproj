@@ -79,5 +79,6 @@
     <Build Include="dbo\Tables\MasavFileRow.sql" />
     <Build Include="dbo\Tables\MasavFile.sql" />
     <Build Include="dbo\Stored Procedures\PR_GenerateMasavFile.sql" />
+    <Build Include="dbo\Tables\InvoiceHistory.sql" />
   </ItemGroup>
 </Project>

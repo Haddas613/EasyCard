@@ -194,7 +194,7 @@ namespace Transactions.Business.Data
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                    s.Ignore(p => p.ConcurrencyToken);
+                    s.Property(p => p.ConcurrencyToken).IsRequired(false).HasColumnName("ConcurrencyToken");
                 });
 
                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
@@ -211,6 +211,7 @@ namespace Transactions.Business.Data
                 builder.OwnsOne(b => b.PinPadTransactionDetails, s =>
                 {
                     s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.PinPadUpdateReceiptNumber).HasColumnName("PinPadUpdateReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
@@ -802,6 +803,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.MasavFileID);
                 builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.InstituteNumber);
                 builder.Property(b => b.ConsumerID);
                 builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Bankcode);

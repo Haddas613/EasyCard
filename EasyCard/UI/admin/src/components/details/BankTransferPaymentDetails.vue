@@ -1,12 +1,12 @@
 <template>
-  <!-- <v-card flat class="my-2">
+  <v-card flat class="my-2">
     <template v-if="card">
       <v-card-title
         class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
       >{{$t("BankAccountDetails")}}</v-card-title>
       <v-divider></v-divider>
     </template>
-    <v-card-text> -->
+    <v-card-text>
       <v-row class="info-container body-1 black--text">
         <v-col cols="6" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Bank')}}</p>
@@ -34,8 +34,8 @@
           </p>
         </v-col>
       </v-row>
-    <!-- </v-card-text>
-  </v-card> -->
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

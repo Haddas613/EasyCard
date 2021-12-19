@@ -19,9 +19,9 @@ namespace PoalimOnlineBusiness
             this.TotalAmount = totalAmount;
         }
 
-        //1	1	1	 X Record Type	 'S'
+        //1	1	1	 X Record Type	 '5'
         [FixedLengthFile(1, 1, 1, DataType.X)]
-        public string RecordType { get; set; } = "S";
+        public string RecordType { get; set; } = "5";
 
         //2	2	8	 N Institute   Same as header
         [FixedLengthFile(2, 2, 8, DataType.N)]
@@ -43,21 +43,25 @@ namespace PoalimOnlineBusiness
         [FixedLengthFile(6, 19, 3, DataType.N)]
         public int SerialNumber { get; set; } = 001;
 
-        //7	22	15	 N Total Amount	13 digits followed by two additional digits(for after decimal point)
+        //7	22	15	 N Filler ZEROS 
         [FixedLengthFile(7, 22, 15, DataType.N)]
+        public int Filler2 { get; set; } = 0; 
+
+        //8	37	15	 N Total Amount	13 digits followed by two additional digits(for after decimal point)
+        [FixedLengthFile(8, 37, 15, DataType.N)]
         public int TotalAmount { get; set; }
 
-        //8	37	15	 N Filler ZEROS 
-        [FixedLengthFile(8, 37, 15, DataType.N)]
-        public int Filler2 { get; set; } = 0; //5 ?
-
-        //9	52	7	 N Transactions Count	
+        //9	52	7	 N Filler ZEROS 
         [FixedLengthFile(9, 52, 7, DataType.N)]
+        public int Filler3 { get; set; } = 0; //5 ?
+
+        //10	59	7	 N Transactions Count	
+        [FixedLengthFile(10, 59, 7, DataType.N)]
         public int TransactionsCount { get; set; }
 
         //10	59	7	 N Filler ZEROS
-        [FixedLengthFile(10, 59, 7, DataType.N)]
-        public int Filler3 { get; set; } = 0;
+       // [FixedLengthFile(10, 59, 7, DataType.N)]
+        //public int Filler4 { get; set; } = 0;
 
         //11	66	63	 X Filler  BLANK
         [FixedLengthFile(11, 66, 63, DataType.X)]

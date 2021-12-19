@@ -156,6 +156,14 @@ export default {
         .format();
 
       return { dateFrom, dateTo };
+    },
+    async exportExcel() {
+          let operation = await this.$api.transactions.getExcel({
+            ...this.transactionsFilter,
+            ...this.options
+          });
+          if(!this.$apiSuccess(operation)) return;
+          window.open(operation.entityReference, "_blank");
     }
   },
   async mounted() {
@@ -174,6 +182,12 @@ export default {
             text: this.$t("Refund"),
             fn: () => {
               this.$router.push({ name: "Refund" });
+            }
+          },
+          {
+            text: this.$t("Excel"),
+            fn: () => {
+              this.exportExcel();
             }
           }
         ]

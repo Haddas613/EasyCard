@@ -28,6 +28,13 @@ export default class BillingDealsApi {
         return data;
     }
 
+    async getExcel(params) {
+
+        let data = await this.base.get(this.billingUrl+ '/$excel', params);
+        
+        return data;
+      }
+
     async getBillingDeal(id, doNotFormatData = false) {
         if (!this.headers) {
             let data = await this.base.get(this.billingUrl + '/$meta')

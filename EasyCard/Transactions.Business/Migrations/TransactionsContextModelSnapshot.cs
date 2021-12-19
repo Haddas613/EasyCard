@@ -701,6 +701,9 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("InstituteNumber")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
 
@@ -1757,6 +1760,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("bigint")
                                 .HasColumnName("ClearingHouseTransactionID");
 
+                            b1.Property<string>("ConcurrencyToken")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ConcurrencyToken");
+
                             b1.Property<Guid?>("MerchantReference")
                                 .HasMaxLength(50)
                                 .HasColumnType("uniqueidentifier")
@@ -1908,6 +1915,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("PinPadTransactionID");
+
+                            b1.Property<string>("PinPadUpdateReceiptNumber")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadUpdateReceiptNumber");
 
                             b1.HasKey("PaymentTransactionID");
 
