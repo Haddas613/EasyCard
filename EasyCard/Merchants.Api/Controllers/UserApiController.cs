@@ -237,8 +237,14 @@ namespace Merchants.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Used only from Merchants.Api.Client from Identity server during registration
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("linkToMerchant")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> LinkUserToMerchant(LinkUserToMerchantRequest request)
         {
             _ = EnsureExists(await userManagementClient.GetUserByID(request.UserID));

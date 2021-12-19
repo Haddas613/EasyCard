@@ -34,11 +34,19 @@ namespace Merchants.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.Consumers.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.Consumers.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.Consumers.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                var consumers = context.Consumers.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                if (terminals?.Count() > 0)
+                {
+                    consumers = consumers.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return consumers;
             }
         }
     }

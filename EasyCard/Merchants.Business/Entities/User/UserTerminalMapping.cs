@@ -30,5 +30,7 @@ namespace Merchants.Business.Entities.User
         public UserStatusEnum Status { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
+
+        public IEnumerable<Guid?> Terminals { get; set; }
     }
 }

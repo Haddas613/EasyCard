@@ -128,6 +128,13 @@ namespace IdentityServer.Controllers
                 var allClaims = await userManager.GetClaimsAsync(user);
 
                 await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                if (model.Terminals?.Count() > 0)
+                {
+                    foreach (var terminalID in model.Terminals)
+                    {
+                        await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, terminalID.ToString());
+                    }
+                }
 
                 if (model.Roles == null)
                 {

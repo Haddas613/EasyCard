@@ -51,11 +51,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.BillingDeals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.BillingDeals.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.BillingDeals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.BillingDeals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -67,11 +75,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.BillingDeals.Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.BillingDeals.Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.BillingDeals.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.BillingDeals.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -122,11 +138,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.FutureBillings.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.FutureBillings.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
