@@ -24,7 +24,7 @@ namespace Shared.Api.Attributes
                         ContractResolver = new DefaultContractResolver
                         {
                             NamingStrategy = new DefaultNamingStrategy()
-                        }
+                        },
                     },
                     ctx.HttpContext.RequestServices.GetRequiredService<ArrayPool<char>>(),
                     ctx.HttpContext.RequestServices.GetRequiredService<IOptions<MvcOptions>>().Value));

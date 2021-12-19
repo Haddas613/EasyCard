@@ -17,8 +17,8 @@
         </v-row>
         </v-form>
         <div class="d-flex justify-end">
-          <v-btn @click="newCustomerDialog = false" :loading="loading">{{$t("Cancel")}}</v-btn>
-          <v-btn class="mx-1" color="primary" @click="createNewCustomer()" :loading="loading">{{$t("Save")}}</v-btn>
+          <v-btn @click="newCustomerDialog = false" :disabled="loading">{{$t("Cancel")}}</v-btn>
+          <v-btn class="mx-1" color="primary" @click="createNewCustomer()" :disabled="loading">{{$t("Save")}}</v-btn>
         </div>
       </template>
     </ec-dialog>
