@@ -156,6 +156,7 @@ namespace Transactions.Api.Controllers.External
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
                 transaction.CardPresence = getCardPresence(model.EntryMode);
                 transaction.PinPadDeviceID = model.TerminalDetails.ClientToken;
+                transaction.ShvaTransactionDetails.ShvaTerminalID = GetShvaTerminal(terminalMakingTransaction);
                 transaction.DocumentOrigin = DocumentOriginEnum.Device;
                 mapper.Map(terminalMakingTransaction, transaction);
 
@@ -239,6 +240,12 @@ namespace Transactions.Api.Controllers.External
             transaction.CreditCardDetails = new Business.Entities.CreditCardDetails { CardExpiration = new CardExpiration { Month = month, Year = year }, CardBin = cardBin, CardNumber = cardNumber };
         }
 
+        private static string GetShvaTerminal(Terminal terminalMakingTransaction)
+        {
+            var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
+            Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
+            return terminalSettings.MerchantNumber;
+        }
         private string getSysTranceNumber(Terminal terminalMakingTransaction)
         {
             var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
