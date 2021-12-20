@@ -100,15 +100,20 @@ namespace Transactions.Api.Controllers.External
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} ");
+                logger.LogWarning(ex, $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} ");
 
-                return BadRequest(new NayaxUpdateTranRecordResponse
+                //return BadRequest(new NayaxUpdateTranRecordResponse
+                //{
+                //    StatusCode = 14,
+                //    ErrorMsg = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
+                //    Status = "error",
+                //    CorrelationID = GetCorrelationID()
+                //});
+
+                return new NayaxUpdateTranRecordResponse
                 {
-                    StatusCode = 14,
-                    ErrorMsg = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
-                    Status = "error",
-                    CorrelationID = GetCorrelationID()
-                });
+                    Status = "0"
+                };
             }
         }
 
@@ -156,6 +161,12 @@ namespace Transactions.Api.Controllers.External
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
                 transaction.CardPresence = getCardPresence(model.EntryMode);
                 transaction.PinPadDeviceID = model.TerminalDetails.ClientToken;
+
+                if (transaction.ShvaTransactionDetails == null)
+                {
+                    transaction.ShvaTransactionDetails = new ShvaTransactionDetails();
+                }
+
                 transaction.ShvaTransactionDetails.ShvaTerminalID = GetShvaTerminal(terminalMakingTransaction);
                 transaction.DocumentOrigin = DocumentOriginEnum.Device;
                 mapper.Map(terminalMakingTransaction, transaction);
@@ -246,6 +257,7 @@ namespace Transactions.Api.Controllers.External
             Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
             return terminalSettings.MerchantNumber;
         }
+
         private string getSysTranceNumber(Terminal terminalMakingTransaction)
         {
             var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
@@ -254,6 +266,7 @@ namespace Transactions.Api.Controllers.External
             var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDealShvaDetails.ShvaShovarNumber, lastDealShvaDetails.TransmissionDate);
             return sysTranceNumber;
         }
+
         private CardPresenceEnum getCardPresence(EntryModeEnum entryMode)
         {
             return entryMode.IsIn(EntryModeEnum.CellularPhoneNum, EntryModeEnum.PhoneTran) ? CardPresenceEnum.CardNotPresent : CardPresenceEnum.Regular;
