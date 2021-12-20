@@ -151,7 +151,7 @@ namespace Transactions.Api.Controllers.External
                     vuid = string.Format("{0}_{1}", model.TerminalDetails.ClientToken, Guid.NewGuid().ToString());
                 }
 
-                SetCardDetails(model, transaction); 
+                SetCardDetails(model, transaction);
                 transaction.PinPadTransactionDetails.PinPadTransactionID = vuid;
                 transaction.PinPadTransactionDetails.PinPadCorrelationID = GetCorrelationID();
                 transaction.CardPresence = getCardPresence(model.EntryMode);
@@ -249,7 +249,7 @@ namespace Transactions.Api.Controllers.External
         }
         private CardPresenceEnum getCardPresence(EntryModeEnum entryMode)
         {
-            return entryMode.IsIn(EntryModeEnum.CellularPhoneNum, EntryModeEnum.PhoneTran)? CardPresenceEnum.CardNotPresent : CardPresenceEnum.Regular;
+            return entryMode.IsIn(EntryModeEnum.CellularPhoneNum, EntryModeEnum.PhoneTran) ? CardPresenceEnum.CardNotPresent : CardPresenceEnum.Regular;
         }
 
         [HttpPost]
@@ -370,7 +370,7 @@ namespace Transactions.Api.Controllers.External
                             }
                             else
                             {
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
                             }
                         }
                         catch (Exception ex)
@@ -382,6 +382,11 @@ namespace Transactions.Api.Controllers.External
                             return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
                         }
                     }
+                }
+                else
+                {
+                    //If aggregator is not required transaction is eligible for transmission
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
                 }
 
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/, updateReceiptNumber.ToString());
