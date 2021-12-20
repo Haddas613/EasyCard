@@ -58,6 +58,13 @@ namespace Nayax.Converters
             return (NayaxCurrencyEnum)Enum.Parse(typeof(NayaxCurrencyEnum), currency.ToString());
         }
 
+        public static int? GetNayaxSapakMutav(this string sapakMutav)
+        {
+            int SapakMutav = -1;
+            Int32.TryParse(sapakMutav, out SapakMutav);
+            return SapakMutav > 0 ? SapakMutav :  new Nullable<int>(); 
+        }
+
         public static string GetNayaxCurrencyStr(this NayaxCurrencyEnum currency)
         {
             return ((int)currency).ToString();

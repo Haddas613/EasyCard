@@ -886,6 +886,7 @@ namespace Transactions.Api.Controllers
 
             // replace the data with required parameters for one time use, do not save
             transaction.DealDetails.ConsumerEmail = request.Email;
+            terminal.Settings.SendTransactionSlipEmailToConsumer = true;
             terminal.Settings.SendTransactionSlipEmailToMerchant = false;
 
             await SendTransactionSuccessEmails(transaction, terminal);

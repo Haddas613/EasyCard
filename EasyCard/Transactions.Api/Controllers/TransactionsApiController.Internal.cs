@@ -276,6 +276,7 @@ namespace Transactions.Api.Controllers
 
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+            processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
             if (pinpadDeal)
             {
                 try

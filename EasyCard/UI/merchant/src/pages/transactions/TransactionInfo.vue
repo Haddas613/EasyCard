@@ -28,6 +28,10 @@
               <p>{{model.transactionType}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
+              <p>{{model.paymentTypeEnum}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
               <p
                 v-bind:class="quickStatusesColors[model.quickStatus]"
@@ -104,7 +108,8 @@
         :model="model.dealDetails"
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
-      <credit-card-details :model="model.creditCardDetails"></credit-card-details>
+      <credit-card-details :model="model.creditCardDetails" v-if="model.$paymentTypeEnum == appConstants.transaction.paymentTypes.card"></credit-card-details>
+      <bank-transfer-payment-details card :model="model.bankTransferDetails" v-else-if="model.$paymentTypeEnum == appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
 
       <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2">
@@ -190,6 +195,8 @@ export default {
       import("../../components/details/UpayTransactionDetails"),
     ClearingHouseTransactionDetails: () =>
       import("../../components/details/ClearingHouseTransactionDetails"),
+    BankTransferPaymentDetails: () =>
+      import("../../components/details/BankTransferPaymentDetails"),
   },
   data() {
     return {
@@ -203,7 +210,7 @@ export default {
         Canceled: "accent--text"
       },
       transactionSlipDialog: false,
-      appConstants: appConstants
+      appConstants: appConstants,
     };
   },
   async mounted() {

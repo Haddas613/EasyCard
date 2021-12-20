@@ -469,6 +469,31 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field
+          :label="$t('InstitutionName')"
+          v-model="model.bankDetails.instituteName"
+          disabled
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('InstitutionNumber')"
+          v-model="model.bankDetails.instituteNum"
+          disabled
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('InstitutionServiceProvider')"
+          type="number"
+          v-model="model.bankDetails.instituteServiceNum"
+          disabled
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
           :label="$t('Bank')"
           outlined
           v-bind:value="model.bankDetails.bank"

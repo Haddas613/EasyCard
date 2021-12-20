@@ -23,5 +23,6 @@ namespace Nayax.Models
         public int? payments { get; set; }
         public int? firstPaymentAmount { get; set; }
         public int? otherPaymentAmount { get; set; }
+        public int? mutav { get; set; }
     }
 }
