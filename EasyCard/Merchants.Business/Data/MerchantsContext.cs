@@ -61,6 +61,15 @@ namespace Merchants.Business.Data
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (ICollection<FeatureEnum>)c.ToHashSet());
 
+        private static readonly ValueConverter GuidArrayConverter = new ValueConverter<IEnumerable<Guid>, string>(
+           v => string.Join(",", v),
+           v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(d => Guid.Parse(d)) : null);
+
+        private static readonly ValueComparer GuidArrayComparer = new ValueComparer<IEnumerable<Guid>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => (IEnumerable<Guid>)c.ToHashSet());
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -310,6 +319,9 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.DisplayName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Email).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.Terminals).IsRequired(false).IsUnicode(false).HasConversion(GuidArrayConverter)
+                   .Metadata.SetValueComparer(GuidArrayComparer);
             }
         }
 
