@@ -93,27 +93,31 @@ namespace Merchants.Business.Services
 
         public async Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID)
         {
-            IQueryable<TerminalExternalSystem> query;
+            IQueryable<TerminalExternalSystem> query = context.TerminalExternalSystems.AsNoTracking();
 
             if (user.IsAdmin() || user.IsNayaxApi())
             {
-                query = context.TerminalExternalSystems.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
                 var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
-                query = context.TerminalExternalSystems.Where(t => t.TerminalID == userTerminalID).AsNoTracking();
+                if (terminalID != userTerminalID)
+                {
+                    throw new SecurityException("User has no access to requested data");
+                }
             }
             else
             {
                 query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID()).AsNoTracking();
+
                 var terminals = user.GetTerminalID();
                 if (terminals?.Count() > 0)
                 {
-                    query = query.Where(d => terminals.Contains(d.TerminalID));
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
                 }
-
-                return query;
             }
 
             var externalSystems = await query.Where(t => t.TerminalID == terminalID).ToListAsync();

@@ -160,9 +160,10 @@ namespace Merchants.Api.Controllers
 
             if (request.Roles == null)
             {
-                request.Roles = new HashSet<string>();
+                request.Roles = new List<string>();
             }
 
+            // TODO: check that specified role exist
             if (!request.Roles.Any(r => r != Roles.Merchant))
             {
                 request.Roles.Add(Roles.Merchant);

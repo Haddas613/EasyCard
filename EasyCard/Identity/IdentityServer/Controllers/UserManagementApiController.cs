@@ -146,6 +146,7 @@ namespace IdentityServer.Controllers
                     model.Roles.Add(Roles.Merchant);
                 }
 
+                // TODO: add validation that role exists before trying to assign it
                 foreach (var role in model.Roles.Distinct())
                 {
                     await userManager.AddToRoleAsync(user, role);
