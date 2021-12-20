@@ -22,6 +22,6 @@ namespace Merchants.Api.Models.User
 
         public IEnumerable<string> Roles { get; set; }
 
-        public IEnumerable<Guid?> Terminals { get; set; }
+        public IEnumerable<Guid> Terminals { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Merchants.Api.Models.Terminal;
 using Newtonsoft.Json.Linq;
+using Shared.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,8 @@ namespace Merchants.Api.Models.User
 
         public IEnumerable<string> Roles { get; set; }
 
-        // TODO: enable it when user-terminal mappings will be enabled
-        //public IEnumerable<TerminalSummary> Terminals { get; set; }
+        public IEnumerable<DictionarySummary<Guid>> Terminals { get; set; }
 
-        // TODO: remove?
-        //public JObject Settings { get; set; }
+        public JObject Settings { get; set; }
     }
 }

@@ -532,6 +532,8 @@ namespace IdentityServer.Controllers
 
             result.DisplayName = userHelpers.GetUserFullName(result.FirstName, result.LastName);
 
+            result.Terminals = claims.Where(d => d.Type == Claims.TerminalIDClaim).Select(d => Guid.Parse(d.Value)).ToList();
+
             return Ok(result);
         }
     }

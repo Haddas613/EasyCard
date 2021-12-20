@@ -83,6 +83,11 @@ namespace Merchants.Api.Controllers
 
             var userData = mapper.Map<UserResponse>(userEntity);
 
+            if (userEntity.Terminals?.Count() > 0)
+            {
+                userData.Terminals = terminalsService.GetTerminals().Where(d => userEntity.Terminals.Contains(d.TerminalID)).Select(d => new DictionarySummary<Guid>(d.TerminalID, d.Label));
+            }
+
             return Ok(userData);
         }
 
