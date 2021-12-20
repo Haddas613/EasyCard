@@ -35,8 +35,8 @@ namespace Shared.Api.Extensions.Filtering
 
             return typeEnum switch
             {
-                QuickDateFilterTypeEnum.Today => new DateRange(today, today),
-                QuickDateFilterTypeEnum.Yesterday => new DateRange(yesterday, yesterday),
+                QuickDateFilterTypeEnum.Today => new DateRange(today, today.AddDays(1)),
+                QuickDateFilterTypeEnum.Yesterday => new DateRange(yesterday, today),
                 QuickDateFilterTypeEnum.ThisWeek => new DateRange(thisSunday, thisSunday.AddDays(6)),
                 QuickDateFilterTypeEnum.LastWeek => new DateRange(prevSunday, prevSunday.AddDays(6)),
                 QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-29), today),

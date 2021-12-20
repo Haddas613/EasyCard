@@ -389,7 +389,7 @@ namespace Transactions.Api.Controllers.External
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
                 }
 
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, string.Empty /*todo RavMutav*/, updateReceiptNumber.ToString());
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber, updateReceiptNumber.ToString());
             }
             catch (Exception ex)
             {
