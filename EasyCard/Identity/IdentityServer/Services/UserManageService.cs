@@ -51,7 +51,7 @@ namespace IdentityServer.Services
                 await userManager.AddToRoleAsync(user, role);
             }
 
-            await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
+            await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
 
             logger.LogInformation("User created a new account");
             return result;
@@ -140,11 +140,11 @@ namespace IdentityServer.Services
 
             if (model.Terminals?.Count() > 0)
             {
-                foreach (var terminal in model.Terminals)
+                foreach (var terminal in model.Terminals.Distinct())
                 {
                     if (!allTerminalsIds.Contains(terminal))
                     {
-                        await userManager.AddClaim(claims, user, Claims.TerminalIDClaim, terminal.ToString());
+                        await userManager.AddClaimAsync(user, new Claim(Claims.TerminalIDClaim, terminal.ToString()));
                     }
                 }
             }

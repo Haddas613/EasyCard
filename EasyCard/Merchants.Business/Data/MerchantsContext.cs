@@ -63,7 +63,7 @@ namespace Merchants.Business.Data
 
         private static readonly ValueConverter GuidArrayConverter = new ValueConverter<IEnumerable<Guid>, string>(
            v => string.Join(",", v),
-           v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(d => Guid.Parse(d)) : null);
+           v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(d => Guid.Parse(d)).ToList() : null);
 
         private static readonly ValueComparer GuidArrayComparer = new ValueComparer<IEnumerable<Guid>>(
             (c1, c2) => c1.SequenceEqual(c2),
