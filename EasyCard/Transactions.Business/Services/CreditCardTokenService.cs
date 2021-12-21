@@ -50,11 +50,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return tokens.Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return tokens.Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return tokens.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID.GetValueOrDefault()));
+                }
+
+                return response;
             }
         }
 

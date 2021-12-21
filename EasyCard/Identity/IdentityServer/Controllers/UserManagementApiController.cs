@@ -128,6 +128,13 @@ namespace IdentityServer.Controllers
                 var allClaims = await userManager.GetClaimsAsync(user);
 
                 await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                if (model.Terminals?.Count() > 0)
+                {
+                    foreach (var terminalID in model.Terminals)
+                    {
+                        await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, terminalID.ToString());
+                    }
+                }
 
                 if (model.Roles == null)
                 {
@@ -139,6 +146,7 @@ namespace IdentityServer.Controllers
                     model.Roles.Add(Roles.Merchant);
                 }
 
+                // TODO: add validation that role exists before trying to assign it
                 foreach (var role in model.Roles.Distinct())
                 {
                     await userManager.AddToRoleAsync(user, role);
@@ -523,6 +531,8 @@ namespace IdentityServer.Controllers
             result.LastName = claims.FirstOrDefault(c => c.Type == Claims.LastNameClaim)?.Value;
 
             result.DisplayName = userHelpers.GetUserFullName(result.FirstName, result.LastName);
+
+            result.Terminals = claims.Where(d => d.Type == Claims.TerminalIDClaim).Select(d => Guid.Parse(d.Value)).ToList();
 
             return Ok(result);
         }

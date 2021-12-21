@@ -6,7 +6,7 @@ namespace IdentityServerClient
 {
     public class CreateUserRequestModel
     {
-        public string TerminalID { get; set; }
+        public IEnumerable<Guid> Terminals { get; set; }
 
         public string MerchantID { get; set; }
 

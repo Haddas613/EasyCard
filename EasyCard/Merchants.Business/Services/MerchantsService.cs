@@ -137,7 +137,7 @@ namespace Merchants.Business.Services
                 existingMapping.Roles = userInfo.Roles;
                 existingMapping.Email = userInfo.Email;
                 existingMapping.DisplayName = userInfo.DisplayName;
-
+                existingMapping.Terminals = userInfo.Terminals;
                 List<string> changes = new List<string>();
 
                 // Must ToArray() here for excluding the AutoHistory model.
@@ -161,7 +161,8 @@ namespace Merchants.Business.Services
                     UserID = userInfo.UserID,
                     Roles = userInfo.Roles,
                     Email = userInfo.Email,
-                    DisplayName = userInfo.DisplayName
+                    DisplayName = userInfo.DisplayName,
+                    Terminals = userInfo.Terminals
                 });
             }
 
@@ -317,6 +318,7 @@ namespace Merchants.Business.Services
                 }
 
                 user.Roles = data.Roles;
+                user.Terminals = data.Terminals;
 
                 await context.SaveChangesAsync();
             }

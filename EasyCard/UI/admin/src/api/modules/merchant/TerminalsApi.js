@@ -28,7 +28,7 @@ export default class TerminalsApi {
     }
 
     async getTerminals(params, refreshCache = false) {
-        if(!refreshCache && this.$terminals){
+        if(!refreshCache && this.$terminals && !params){
             return this.$terminals;
         }
         this.$terminals = await this.base.get(this.terminalsUrl, params);

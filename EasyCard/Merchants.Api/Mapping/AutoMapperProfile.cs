@@ -121,7 +121,8 @@ namespace Merchants.Api.Mapping
 
         private void RegisterUserMappings()
         {
-            CreateMap<UserProfileDataResponse, UserResponse>();
+            CreateMap<UserProfileDataResponse, UserResponse>()
+                .ForMember(d => d.Terminals, o => o.Ignore());
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
             CreateMap<UserTerminalMapping, UserSummary>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
@@ -136,6 +137,7 @@ namespace Merchants.Api.Mapping
                 .ForMember(src => src.DisplayName, o => o.MapFrom(d => d.DisplayName))
                 .ForMember(src => src.Email, o => o.MapFrom(d => d.Email))
                 .ForMember(src => src.Roles, o => o.MapFrom(d => d.Roles))
+                .ForMember(src => src.Terminals, o => o.MapFrom(d => d.Terminals))
                 .ForAllOtherMembers(o => o.Ignore());
         }
 

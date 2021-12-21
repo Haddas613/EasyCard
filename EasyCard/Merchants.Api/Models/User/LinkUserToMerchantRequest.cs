@@ -21,5 +21,7 @@ namespace Merchants.Api.Models.User
         public string Email { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
+
+        public IEnumerable<Guid> Terminals { get; set; }
     }
 }

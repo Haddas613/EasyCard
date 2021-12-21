@@ -120,13 +120,23 @@ WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @Terminal
             }
             else if (user.IsTerminal())
             {
-                if (terminalID != user.GetTerminalID())
+                var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (terminalID != userTerminalID)
                 {
                     throw new SecurityException("User has no access to requested data");
                 }
             }
             else if (user.IsMerchant())
             {
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
+                }
+
                 query += " AND [MerchantID] = @MerchantID";
             }
             else
@@ -180,13 +190,23 @@ WHERE [InvoiceID] in @InvoicesIDs AND [TerminalID] = @TerminalID AND [Status]<>@
             }
             else if (user.IsTerminal())
             {
-                if (terminalID != user.GetTerminalID())
+                var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (terminalID != userTerminalID)
                 {
                     throw new SecurityException("User has no access to requested data");
                 }
             }
             else if (user.IsMerchant())
             {
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
+                }
+
                 query += " AND [MerchantID] = @MerchantID";
             }
             else

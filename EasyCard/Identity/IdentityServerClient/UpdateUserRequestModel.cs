@@ -19,5 +19,7 @@ namespace IdentityServerClient
         public string PhoneNumber { get; set; }
 
         public ICollection<string> Roles { get; set; }
+
+        public ICollection<Guid> Terminals { get; set; }
     }
 }

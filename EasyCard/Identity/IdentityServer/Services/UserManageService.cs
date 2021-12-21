@@ -70,7 +70,7 @@ namespace IdentityServer.Services
 
             if (model.Roles == null)
             {
-                model.Roles = new HashSet<string>();
+                model.Roles = new List<string>();
             }
 
             if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
@@ -78,10 +78,10 @@ namespace IdentityServer.Services
                 user.PhoneNumber = model.PhoneNumber;
             }
 
+            var claims = await userManager.GetClaimsAsync(user);
+
             if (!string.IsNullOrWhiteSpace(model.FirstName) || !string.IsNullOrWhiteSpace(model.LastName))
             {
-                var claims = await userManager.GetClaimsAsync(user);
-
                 if (!string.IsNullOrWhiteSpace(model.FirstName))
                 {
                     var fnClaim = claims.FirstOrDefault(c => c.Type == Claims.FirstNameClaim);
@@ -111,14 +111,53 @@ namespace IdentityServer.Services
                 }
             }
 
-            if (!model.Roles.Any(r => r != Roles.Merchant))
+            var allUserRoles = await userManager.GetRolesAsync(user);
+            List<string> rolesToRemove = new List<string>();
+            List<string> rolesToAdd = new List<string>();
+
+            foreach (var oldRole in allUserRoles)
             {
-                model.Roles.Add(Roles.Merchant);
+                if (!model.Roles.Any(d => oldRole.Equals(d, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    rolesToRemove.Add(oldRole);
+                }
             }
 
-            foreach (var role in model.Roles.Distinct())
+            foreach (var role in model.Roles)
             {
-                await userManager.AddToRoleAsync(user, role);
+                if (!allUserRoles.Any(d => role.Equals(d, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    rolesToAdd.Add(role);
+                }
+            }
+
+            await userManager.AddToRolesAsync(user, rolesToAdd);
+
+            await userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+            var allTerminalsClaims = claims.Where(c => c.Type == Claims.TerminalIDClaim).ToList();
+            var allTerminalsIds = allTerminalsClaims.Select(d => Guid.Parse(d.Value)).ToList();
+
+            if (model.Terminals?.Count() > 0)
+            {
+                foreach (var terminal in model.Terminals)
+                {
+                    if (!allTerminalsIds.Contains(terminal))
+                    {
+                        await userManager.AddClaim(claims, user, Claims.TerminalIDClaim, terminal.ToString());
+                    }
+                }
+            }
+
+            if (allTerminalsClaims.Count > 0)
+            {
+                foreach (var oldTerminal in allTerminalsClaims)
+                {
+                    if (!(model.Terminals?.Contains(Guid.Parse(oldTerminal.Value)) == true))
+                    {
+                        await userManager.RemoveClaimAsync(user, oldTerminal);
+                    }
+                }
             }
 
             await userManager.UpdateAsync(user);

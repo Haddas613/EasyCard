@@ -83,6 +83,11 @@ namespace Merchants.Api.Controllers
 
             var userData = mapper.Map<UserResponse>(userEntity);
 
+            if (userEntity.Terminals?.Count() > 0)
+            {
+                userData.Terminals = terminalsService.GetTerminals().Where(d => userEntity.Terminals.Contains(d.TerminalID)).Select(d => new DictionarySummary<Guid>(d.TerminalID, d.Label));
+            }
+
             return Ok(userData);
         }
 
@@ -160,9 +165,10 @@ namespace Merchants.Api.Controllers
 
             if (request.Roles == null)
             {
-                request.Roles = new HashSet<string>();
+                request.Roles = new List<string>();
             }
 
+            // TODO: check that specified role exist
             if (!request.Roles.Any(r => r != Roles.Merchant))
             {
                 request.Roles.Add(Roles.Merchant);
@@ -237,8 +243,14 @@ namespace Merchants.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Used only from Merchants.Api.Client from Identity server during registration
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("linkToMerchant")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> LinkUserToMerchant(LinkUserToMerchantRequest request)
         {
             _ = EnsureExists(await userManagementClient.GetUserByID(request.UserID));

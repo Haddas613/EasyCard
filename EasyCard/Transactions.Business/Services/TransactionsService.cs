@@ -46,11 +46,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.CreditCardTokenDetails.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID.GetValueOrDefault()));
+                }
+
+                return response;
             }
         }
 
@@ -62,11 +70,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.PaymentTransactions.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.PaymentTransactions.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.PaymentTransactions.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.PaymentTransactions.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -80,11 +96,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.PaymentTransactions.Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -96,11 +120,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.TerminalID == terminalID);
             }
             else
             {
-                return context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.MerchantID == user.GetMerchantID());
+                var response = context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.PaymentTransaction.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -108,9 +140,29 @@ namespace Transactions.Business.Services
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            if ((user.IsTerminal() && entity.TerminalID != user.GetTerminalID()) || (user.IsMerchant() && entity.MerchantID != user.GetMerchantID()))
+            if (user.IsTerminal())
             {
-                throw new SecurityException(Messages.PleaseCheckValues);
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (entity.TerminalID != terminalID)
+                {
+                    throw new SecurityException(Messages.PleaseCheckValues);
+                }
+            }
+            else if (user.IsMerchant())
+            {
+                if (entity.MerchantID != user.GetMerchantID())
+                {
+                    throw new SecurityException(Messages.PleaseCheckValues);
+                }
+
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(entity.TerminalID))
+                    {
+                        throw new SecurityException(Messages.PleaseCheckValues);
+                    }
+                }
             }
 
             entity.UpdatedDate = DateTime.UtcNow;
