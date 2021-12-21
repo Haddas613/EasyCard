@@ -1,6 +1,5 @@
 <template>
   <ec-dialog :dialog.sync="visible">
-    {{model}}
     <template v-slot:title>{{$t('EditUser')}}</template>
     <template>
       <v-form class="pt-2" ref="form" v-model="valid" lazy-validation v-if="model">
