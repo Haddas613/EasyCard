@@ -808,6 +808,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal has no transactions to generate Masav file.
+        /// </summary>
+        public static string TerminalHasNoTransactionsToGenerateMasavFile {
+            get {
+                return ResourceManager.GetString("TerminalHasNoTransactionsToGenerateMasavFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal must have Bank details specified.
         /// </summary>
         public static string TerminalMustHaveBankDetailsSpecified {

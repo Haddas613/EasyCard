@@ -366,6 +366,9 @@
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>
   </data>
+  <data name="TerminalHasNoTransactionsToGenerateMasavFile" xml:space="preserve">
+    <value>Terminal has no transactions to generate Masav file</value>
+  </data>
   <data name="TerminalMustHaveBankDetailsSpecified" xml:space="preserve">
     <value>Terminal must have Bank details specified</value>
   </data>

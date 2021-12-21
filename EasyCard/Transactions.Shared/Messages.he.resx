@@ -441,4 +441,7 @@
   <data name="InvoiceUpdated" xml:space="preserve">
     <value>Invoice Updated</value>
   </data>
+  <data name="TerminalHasNoTransactionsToGenerateMasavFile" xml:space="preserve">
+    <value>אין עסקאות לייצור קובץ מסב</value>
+  </data>
 </root>

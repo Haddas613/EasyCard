@@ -26,6 +26,7 @@ using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging.Debug;
 using Shared.Integration.Models.PaymentDetails;
+using Transactions.Shared;
 
 namespace Transactions.Business.Data
 {
@@ -267,9 +268,14 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     throw new ApplicationException(error);
                 }
 
-                var res = args.Get<long>("@MasavFileID");
+                var res = args.Get<long?>("@MasavFileID");
 
-                return res;
+                if (!res.HasValue)
+                {
+                    throw new BusinessException(Messages.TerminalHasNoTransactionsToGenerateMasavFile);
+                }
+
+                return res.Value;
             }
             catch (Exception)
             {

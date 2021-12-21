@@ -985,6 +985,11 @@
               Looks up a localized string similar to Terminal for update parameters is required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.TerminalHasNoTransactionsToGenerateMasavFile">
+            <summary>
+              Looks up a localized string similar to Terminal has no transactions to generate Masav file.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.TerminalMustHaveBankDetailsSpecified">
             <summary>
               Looks up a localized string similar to Terminal must have Bank details specified.
