@@ -59,12 +59,12 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentTransaction, TransactionResponse>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
                 .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<PaymentTransaction, TransactionResponseAdmin>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
                 .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
