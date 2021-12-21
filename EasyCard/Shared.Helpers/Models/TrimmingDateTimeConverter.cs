@@ -24,7 +24,7 @@ namespace Shared.Api.Models.Binding
 
             if (reader.TokenType == JsonToken.Date)
             {
-                asDateTime = reader.Value as DateTime?; // TODO: timezone dates
+                asDateTime = reader.Value as DateTime?;
             }
 
             if (reader.TokenType == JsonToken.String)
@@ -37,7 +37,9 @@ namespace Shared.Api.Models.Binding
 
             if (asDateTime.HasValue)
             {
-                return TimeZoneInfo.ConvertTimeFromUtc(asDateTime.Value, UserCultureInfo.TimeZone).Date;
+                // TODO: timezone dates
+                var converted = DateTime.SpecifyKind(asDateTime.Value, DateTimeKind.Unspecified);
+                return TimeZoneInfo.ConvertTimeFromUtc(converted, UserCultureInfo.TimeZone).Date;
             }
 
             return reader.Value;
