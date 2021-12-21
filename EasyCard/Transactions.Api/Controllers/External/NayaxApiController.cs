@@ -303,9 +303,11 @@ namespace Transactions.Api.Controllers.External
                 transaction.CreditCardDetails.CardVendor = ((int)model.Issuer).ToString();
                 transaction.ShvaTransactionDetails.ShvaAuthNum = model.Issuer_Auth_Num;
                 transaction.ShvaTransactionDetails.ShvaShovarNumber = model.DealNumber;
+                transaction.ProcessorResultCode = model.ResultCode;
                 transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber = updateReceiptNumber.ToString();
                 if (!model.Success)
                 {
+                    transaction.RejectionMessage = model.ResultText;
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: model.ResultText/*, rejectionReason: model.ResultCode*/);
 
                 }
