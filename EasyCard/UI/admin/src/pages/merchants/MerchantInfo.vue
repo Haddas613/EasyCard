@@ -5,6 +5,7 @@
       :show.sync="editUserDialog"
       :key="selectedUser.userID"
       :user="selectedUser"
+      :merchant-id="$route.params.id"
       v-on:ok="closeEditRolesDialog()"
     ></edit-user-dialog>
     <v-card class="mx-2 my-2">
