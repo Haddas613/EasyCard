@@ -122,6 +122,7 @@
   "ListOfPinpadDevices": "List of PinPad Devices",
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
+  "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -484,6 +485,8 @@
   "UpdateParameters": "Update Parameters",
   "TriggerSelected": "Trigger Selected",
   "TriggerAll": "Trigger All",
+  "TransmitSelected": "Transmit Selected",
+  "TransmitAll": "Transmit All",
 
   "--AUTH--": null,
   "Login": "Login",

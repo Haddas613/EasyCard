@@ -6,6 +6,10 @@
       :key="transactionsFilter.notTransmitted"
       v-on:ok="applyFilters($event)"
     ></transactions-filter-dialog>
+    <transactions-transmit-dialog
+      :show.sync="showTransmitDialog"
+      v-on:ok="refresh()"
+    ></transactions-transmit-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -79,7 +83,9 @@ export default {
     TransactionsList: () => import("../../components/transactions/TransactionsList"),
     TransactionsFilterDialog: () =>
       import("../../components/transactions/TransactionsFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    TransactionsTransmitDialog: () =>
+      import("../../components/transactions/TransactionsTransmitDialog"),
   },
   props: {
     filters: {
@@ -110,6 +116,7 @@ export default {
         jDealType: "J4"
       },
       showDialog: this.showFiltersDialog,
+      showTransmitDialog: false,
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
@@ -213,8 +220,12 @@ export default {
             }
           },
           {
-            text: this.$t("Transmit"),
+            text: this.$t("TransmitSelected"),
             fn: async () => await this.transmitSelected()
+          },
+          {
+            text: this.$t("TransmitAll"),
+            fn: () => this.showTransmitDialog = true
           },
           {
             text: this.$t("SelectAll"),

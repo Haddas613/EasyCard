@@ -95,6 +95,7 @@
   "DeletedCustomers": "לקוחות שנמחקו",
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
   "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
+  "TransmitTransactionsByTerminal": "שידור עסקאות מאת מסוף",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -414,6 +415,8 @@
   "Docs": "מסמכים",
   "TriggerSelected": "הגורם המפעיל נבחר",
   "TriggerAll": "הפעל הכל",
+  "TransmitSelected": "שידור נבחר",
+  "TransmitAll": "שידר הכל",
 
   "--AUTH--": null,
   "Login": "כניסה",

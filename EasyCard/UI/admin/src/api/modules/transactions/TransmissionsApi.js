@@ -8,6 +8,11 @@ export default class TransmissionsApi {
     transmit(data){
         return this.base.post(this.transmissionsUrl + '/transmit', data);
     }
+
+    transmitByTerminal(terminalID) {
+        return this.base.post(this.transmissionsUrl + `/transmitByTerminal/${terminalID}`);
+    }
+    
     cancelTransmission(data){
         return this.base.post(this.transmissionsUrl + '/cancel', data);
     }
