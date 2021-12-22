@@ -135,9 +135,10 @@
         </div>
       </v-tab-item>
 
-      <v-tab key="transactions">{{$t("Transactions")}}</v-tab>
-      <v-tab-item key="transactions">
-        <transactions-list v-if="transactions" :transactions="transactions" class="pt-4 pb-2"></transactions-list>
+      <v-tab key="financialItems">{{model && model.invoiceOnly ? $t("Invoices") : $t("Transactions")}}</v-tab>
+      <v-tab-item key="financialItems">
+        <invoices-list v-if="model && model.invoiceOnly && financialItems" :invoices="financialItems" class="pt-4 pb-2"></invoices-list>
+        <transactions-list v-else-if="model && financialItems" :transactions="financialItems" class="pt-4 pb-2"></transactions-list>
       </v-tab-item>
 
       <v-tab key="history">{{$t("History")}}</v-tab>
@@ -165,12 +166,14 @@ export default {
       import("../../components/details/CreditCardDetails"),
     BankPaymentDetails: () => import("../../components/details/BankPaymentDetails"),
     PaymentDetails: () => import("../../components/details/PaymentDetails"),
+    InvoicesList: () =>
+      import("../../components/invoicing/InvoicesList"),
   },
   data() {
     return {
       model: null,
-      transactions: null,
-      transactionsFilter: {
+      financialItems: null,
+      financialItemsFilter: {
         take: 100,
         skip: 0,
         billingDealID: this.$route.params.id
@@ -198,9 +201,11 @@ export default {
       return this.$router.push({name: "BillingDeals"});
     }
 
-    let data =
-      (await this.$api.transactions.get(this.transactionsFilter)) || {};
-    this.transactions = data.data || [];
+    let data = this.model.invoiceOnly ? (await this.$api.invoicing.get(this.financialItemsFilter)) 
+      : (await this.$api.transactions.get(this.financialItemsFilter));
+
+    data = data || {};
+    this.financialItems = data.data || [];
     this.numberOfRecords = data.numberOfRecords || 0;
 
     if (

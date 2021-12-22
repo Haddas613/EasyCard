@@ -48,47 +48,7 @@
         <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
           <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
         </v-flex>-->
-        <ec-list :items="invoices">
-          <template v-slot:prepend="{ item }">
-            <v-checkbox v-model="item.selected" :disabled="item.$status == 'sending'"></v-checkbox>
-          </template>
-          <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">
-              {{item.$invoiceDate | ecdate('DD/MM/YYYY')}}
-              <v-chip color="primary" v-if="item.invoiceNumber" x-small>{{item.invoiceNumber}}</v-chip>
-            </v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
-          </template>
-
-          <template v-slot:right="{ item }">
-            <v-col cols="12" md="6" lg="6" class="text-end body-2">
-              <v-btn outlined color="success" x-small v-if="item.$status == 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">
-                {{$t(item.status)}}
-                <v-icon right color="red" size="1rem">mdi-file-pdf-outline</v-icon>
-              </v-btn>
-              <span
-                v-bind:class="statusColors[item.$status]"
-                v-else
-              >{{$t(item.status || 'None')}}</span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end font-weight-bold button"
-            >{{item.invoiceAmount | currency(item.$currency)}}</v-col>
-          </template>
-
-          <template v-slot:append="{ item }">
-            <v-btn icon :to="{ name: 'Invoice', params: { id: item.$invoiceID } }">
-              <re-icon>mdi-chevron-right</re-icon>
-            </v-btn>
-          </template>
-        </ec-list>
-        <p
-          class="ecgray--text text-center"
-          v-if="invoices && invoices.length === 0"
-        >{{$t("NothingToShow")}}</p>
+        <invoices-list selectable :invoices="invoices"></invoices-list>
 
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
@@ -109,7 +69,9 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     InvoicesFilterDialog: () =>
       import("../../components/invoicing/InvoicesFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    InvoicesList: () =>
+      import("../../components/invoicing/InvoicesList"),
   },
   props: {
     filters: {
@@ -124,13 +86,6 @@ export default {
   data() {
     return {
       invoices: null,
-      statusColors: {
-        pending: "gray--text",
-        none: "",
-        sent: "success--text",
-        sending: "primary--text",
-        sendingFailed: "error--text"
-      },
       customerInfo: null,
       moment: moment,
       loading: false,
@@ -217,15 +172,6 @@ export default {
       for (var i of this.invoices) {
         if (i.$status == "initial") {
           this.$set(i, "selected", this.selectAll);
-        }
-      }
-    },
-    async downloadInvoicePDF(invoiceID){
-      let opResult = await this.$api.invoicing.downloadPDF(invoiceID);
-
-      if(opResult.status === "success" && opResult.downloadLinks){
-        for(var link of opResult.downloadLinks){
-          window.open(link, '_blank');
         }
       }
     }

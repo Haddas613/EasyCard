@@ -390,6 +390,9 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("InvoiceID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BillingDealID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CardBrand")
                         .HasMaxLength(20)
                         .IsUnicode(false)
