@@ -20,13 +20,13 @@
         :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
-        <template v-slot:item.merchantID="{ item }">
+        <template v-slot:item.merchantName="{ item }">
           <router-link
             class="text-decoration-none"
             link
-            :to="{name: 'Merchant', params: {id: item.$merchantID}}"
+            :to="{name: 'Merchant', params: {id: item.merchantID}}"
           >
-            {{item.merchantID}}
+            {{item.merchantName}}
           </router-link>
         </template>
         <template v-slot:item.status="{ item }">

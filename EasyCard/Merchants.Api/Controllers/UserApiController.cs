@@ -72,6 +72,20 @@ namespace Merchants.Api.Controllers
                 NumberOfRecords = numberOfRecordsFuture.Value
             };
 
+            if (response.NumberOfRecords > 0)
+            {
+                var allMerchantsID = response.Data.Select(t => t.MerchantID).Distinct();
+                var merchants = await merchantsService.GetMerchants().Where(m => allMerchantsID.Contains(m.MerchantID)).ToDictionaryAsync(k => k.MerchantID, v => v.BusinessName);
+
+                foreach (var user in response.Data)
+                {
+                    if (merchants.ContainsKey(user.MerchantID))
+                    {
+                        user.MerchantName = merchants[user.MerchantID];
+                    }
+                }
+            }
+
             return Ok(response);
         }
 

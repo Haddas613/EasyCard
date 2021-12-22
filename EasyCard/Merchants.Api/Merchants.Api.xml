@@ -718,6 +718,11 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.User.UserSummaryResource.Roles">
             <summary>
               Looks up a localized string similar to Roles.
