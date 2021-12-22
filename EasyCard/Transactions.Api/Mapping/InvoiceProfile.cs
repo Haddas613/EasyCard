@@ -35,10 +35,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
 
             CreateMap<Invoice, InvoiceSummary>()
+                  .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
                   .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
             CreateMap<Invoice, InvoiceSummaryAdmin>()
+                  .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
                   .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
