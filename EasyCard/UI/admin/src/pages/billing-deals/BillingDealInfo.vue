@@ -31,7 +31,11 @@
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-                  <p>{{model.terminalName}}</p>
+                  <p>
+                    <router-link link :to="{name: 'EditTerminal', params: {id: model.$terminalID || model.terminalID}}">
+                      {{model.terminalName}}
+                    </router-link>
+                  </p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Created')}}</p>
