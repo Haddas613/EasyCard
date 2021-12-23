@@ -48,7 +48,7 @@
         <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
           <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
         </v-flex>-->
-        <invoices-list selectable :invoices="invoices"></invoices-list>
+        <invoices-list :key="loadCount" selectable :invoices="invoices"></invoices-list>
 
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
@@ -89,6 +89,7 @@ export default {
       customerInfo: null,
       moment: moment,
       loading: false,
+      loadCount: 0,
       invoicesFilter: {
         take: 100,
         skip: 0,
@@ -125,6 +126,7 @@ export default {
       }
       this.selectAll = false;
       this.loading = false;
+      this.loadCount++;
     },
     async applyFilters(data) {
       this.invoicesFilter = {
