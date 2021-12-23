@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace EasyInvoice.Models
@@ -8,5 +9,9 @@ namespace EasyInvoice.Models
     {
         public ECInvoiceDocumentType DocType { get; set; }
         public int CurrentNum { get; set; }
+
+        [DataMember(Name = "email")]
+        public string Email { get; set; }
+
     }
 }

@@ -209,15 +209,15 @@ namespace EasyInvoice
             }
         }
 
-        /*public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
+        public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId);
+            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, request.Email);
 
             try
             {
-                headers.Add("Accept-language", "he"); // TODO: get language from options
+               // headers.Add("Accept-language", "he"); // TODO: get language from options
 
                 var json = new SetDocNextNumberModel
                 {
@@ -240,7 +240,40 @@ namespace EasyInvoice
                 throw new IntegrationException("EasyInvoice Change Document Number request failed", integrationMessageId);
             }
         }
-        */
+
+
+        public async Task<OperationResponse> GetDocumentNumber(ECInvoiceGetDocumentNumberRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, "");
+
+            try
+            {
+                // headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new GetDocNumberModel
+                {
+                    DocumentType = request.DocType.ToString(),
+                };
+
+                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/user/document-settings", json, () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    //EntityID = result
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "Get Document Number"
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice Get Document Number request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice Get Document Number request failed", integrationMessageId);
+            }
+        }
+
         public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
