@@ -63,7 +63,7 @@ export default {
     },
     merchantId: {
       type: String,
-      required: true
+      required: false
     },
     show: {
       type: Boolean,
@@ -106,7 +106,9 @@ export default {
     async getUser(){
       this.loading = true;
       this.model = await this.$api.users.getUser(this.user.$userID || this.user.userID);
-      this.model.merchantID = this.merchantId;
+      if(!this.model.merchantID){
+        this.model.merchantID = this.merchantId;
+      }
       this.loading = false;
     },
     async ok() {
