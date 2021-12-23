@@ -88,7 +88,7 @@
         <ec-list :items="terminals" v-if="terminals && terminals.length > 0">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.terminalID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.label}}</v-col>
+            <v-col v-bind:class="{ 'text-decoration-line-through' : item.$status == 'disabled' }" cols="12" md="6" lg="6">{{item.label}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
