@@ -62,11 +62,28 @@ namespace ClearingHouse
 
         public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest)
         {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
             try
             {
                 var request = transactionRequest.GetCreateTransactionRequest(configuration);
 
-                var result = await webApiClient.Post<Models.OperationResponse>(configuration.ApiBaseAddress, CreateTransactionRequest, request, BuildHeaders);
+                var result = await webApiClient.Post<Models.OperationResponse>(configuration.ApiBaseAddress, CreateTransactionRequest, request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
 
                 return result.GetAggregatorCreateTransactionResponse();
             }
@@ -87,15 +104,44 @@ namespace ClearingHouse
 
                 return result.GetAggregatorCreateTransactionResponse();
             }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await HandleIntegrationMessage(integrationMessage);
+            }
         }
 
         public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest)
         {
+
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
             try
             {
                 var request = transactionRequest.GetCommitTransactionRequest(configuration, mapper);
 
-                var result = await webApiClient.Put<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CommitTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders);
+                var result = await webApiClient.Put<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CommitTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
 
                 return result.GetAggregatorCommitTransactionResponse();
             }
@@ -104,6 +150,17 @@ namespace ClearingHouse
                 logger.LogError(clientError.Message);
                 var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
                 return result.GetAggregatorCommitTransactionResponse();
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await HandleIntegrationMessage(integrationMessage);
             }
         }
 
