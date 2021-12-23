@@ -2,7 +2,6 @@
   <v-card class="mx-auto" outlined>
     <edit-user-dialog 
       v-if="selectedUser"
-      :merchant-id="selectedUser.merchantID"
       :show.sync="editUserDialog"
       :key="selectedUser.userID"
       :user="selectedUser"
