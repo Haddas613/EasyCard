@@ -635,6 +635,11 @@
               Looks up a localized string similar to Billing Deals required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsWereDisabled">
+            <summary>
+              Looks up a localized string similar to {0} Billing Deals were disabled.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.BillingDealUnpaused">
             <summary>
               Looks up a localized string similar to Billing Deal Unpaused.

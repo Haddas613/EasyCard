@@ -178,6 +178,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} Billing Deals were disabled.
+        /// </summary>
+        public static string BillingDealsWereDisabled {
+            get {
+                return ResourceManager.GetString("BillingDealsWereDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Unpaused.
         /// </summary>
         public static string BillingDealUnpaused {

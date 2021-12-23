@@ -43,7 +43,7 @@
                 :label="$t('Currency')"
                 outlined
                 clearable
-                hide-details
+                :hide-details="$vuetify.breakpoint.mdAndUp"
               ></v-select>
             </v-col>
             <v-col cols="12" md="6" class="py-0">

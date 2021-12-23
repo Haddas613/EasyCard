@@ -444,4 +444,7 @@
   <data name="TerminalHasNoTransactionsToGenerateMasavFile" xml:space="preserve">
     <value>אין עסקאות לייצור קובץ מסב</value>
   </data>
+  <data name="BillingDealsWereDisabled" xml:space="preserve">
+    <value>עסקאות בילינג נחסמו {0}</value>
+  </data>
 </root>

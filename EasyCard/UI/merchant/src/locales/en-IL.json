@@ -417,6 +417,7 @@
   "TriggerAll": "Trigger All",
   "TransmitSelected": "Transmit Selected",
   "TransmitAll": "Transmit All",
+  "DisableSelected": "Disable Selected",
 
   "--AUTH--": null,
   "Login": "Login",
