@@ -13,5 +13,7 @@ namespace EasyInvoice.Models
         [DataMember(Name = "email")]
         public string Email { get; set; }
 
+        public EasyInvoiceTerminalSettings Terminal { get; set; }
+
     }
 }

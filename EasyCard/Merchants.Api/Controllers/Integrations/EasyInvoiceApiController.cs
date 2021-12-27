@@ -141,7 +141,8 @@ namespace Merchants.Api.Controllers.Integrations
                 {
                     CurrentNum = request.CurrentNum,
                     DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
-                    Email = terminalSettings.UserName
+                    Email = terminalSettings.UserName,
+                    Terminal = terminalSettings
                 },
                 GetCorrelationID());
 
@@ -177,12 +178,12 @@ namespace Merchants.Api.Controllers.Integrations
                 new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
                 {
                     DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
-                     Terminal = terminalSettings
+                    Terminal = terminalSettings
                 },
                 GetCorrelationID());
 
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString()); 
-            
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString());
+
             if (response.Status != StatusEnum.Success)
             {
                 response.Status = StatusEnum.Error;

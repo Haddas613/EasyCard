@@ -213,7 +213,7 @@ namespace EasyInvoice
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, request.Email);
+            var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, request.Email);
 
             try
             {
@@ -224,8 +224,8 @@ namespace EasyInvoice
                     DocumentType = request.DocType.ToString(),
                     NextDocumentNumber = request.CurrentNum
                 };
-             
-                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/document-types", json, () => Task.FromResult(headers));
+
+                var result = await this.apiClient.Post<Object>(this.configuration.BaseUrl, "/api/v1/user/document-settings", json, () => Task.FromResult(headers));
 
                 return new OperationResponse
                 {
