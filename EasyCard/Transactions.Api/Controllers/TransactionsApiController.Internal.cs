@@ -1113,6 +1113,7 @@ namespace Transactions.Api.Controllers
             consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
             consumer.TerminalID = transaction.TerminalID;
             consumer.MerchantID = merchantID;
+            consumer.Active = true;
             consumer.ApplyAuditInfo(httpContextAccessor);
 
             if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
