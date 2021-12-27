@@ -129,4 +129,10 @@
   <data name="DocumentNumberChangedSuccessfully" xml:space="preserve">
     <value>Document number changed successfully</value>
   </data>
+  <data name="DocumentNumberGetFailed" xml:space="preserve">
+    <value>Get document number failed</value>
+  </data>
+  <data name="DocumentNumberGetSuccessfully" xml:space="preserve">
+    <value>Get document number success</value>
+  </data>
 </root>

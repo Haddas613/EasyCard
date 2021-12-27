@@ -177,18 +177,19 @@ namespace Merchants.Api.Controllers.Integrations
                 new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
                 {
                     DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
+                     Terminal = terminalSettings
                 },
                 GetCorrelationID());
 
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberChangedSuccessfully, StatusEnum.Success); //todo 
-            /*
-            if (getchangeDocumentNumberResult.Status != StatusEnum.Success)
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString()); 
+            
+            if (response.Status != StatusEnum.Success)
             {
                 response.Status = StatusEnum.Error;
-                response.Message = EasyInvoiceMessagesResource.DocumentNumberChangedFailed;//todo
+                response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
 
                 return BadRequest(response);
-            }*/
+            }
 
             return Ok(response);
         }

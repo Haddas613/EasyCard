@@ -242,11 +242,11 @@ namespace EasyInvoice
         }
 
 
-        public async Task<OperationResponse> GetDocumentNumber(ECInvoiceGetDocumentNumberRequest request, string correlationId)
+        public async Task<DocumentNextNumberModel> GetDocumentNumber(ECInvoiceGetDocumentNumberRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, "");
+            var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, "");
 
             try
             {
@@ -257,14 +257,15 @@ namespace EasyInvoice
                     DocumentType = request.DocType.ToString(),
                 };
 
-                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/user/document-settings", json, () => Task.FromResult(headers));
-
-                return new OperationResponse
-                {
-                    //EntityID = result
-                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
-                    Message = "Get Document Number"
-                };
+                var result = await this.apiClient.Get<DocumentNextNumberModel>(this.configuration.BaseUrl, "/api/v1/user/document-settings", json, () => Task.FromResult(headers));
+                return result;
+           //    return new OperationResponse
+           //    {
+           //        //EntityID = result
+           //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
+           //        Message = "Get Document Number",
+           //         
+           //    };
             }
             catch (Exception ex)
             {
