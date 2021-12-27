@@ -38,11 +38,13 @@ namespace Transactions.Business.Entities
         /// </summary>
         public DateTime? DueDate { get; set; }
 
+        // TODO: make non-nullable
         /// <summary>
         /// Terminal
         /// </summary>
         public Guid? TerminalID { get; set; }
 
+        // TODO: make non-nullable
         /// <summary>
         /// Merchant
         /// </summary>

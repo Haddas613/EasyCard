@@ -20,8 +20,10 @@ namespace Transactions.Business.Entities
 
         public DateTime? PayedDate { get; set; }
 
+        // TODO: make non-nullable
         public Guid? TerminalID { get; set; }
 
+        // TODO: make non-nullable
         public Guid? MerchantID { get; set; }
 
         public decimal? TotalAmount { get; set; }

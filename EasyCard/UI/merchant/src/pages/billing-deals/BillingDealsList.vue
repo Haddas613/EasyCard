@@ -354,7 +354,7 @@ export default {
       if(!selected) { return; }
 
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
-        this.lodash.map(billings, i => i.$billingDealID)
+        this.lodash.map(selected, i => i.$billingDealID)
       );
       this.switchFilterChanged('inProgress');
       await this.refresh();

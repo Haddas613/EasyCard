@@ -38,30 +38,6 @@ namespace Transactions.Business.Services
             return context.PaymentTransactions.FirstOrDefaultAsync(predicate);
         }
 
-        public IQueryable<CreditCardTokenDetails> GetTokens()
-        {
-            if (user.IsAdmin())
-            {
-                return context.CreditCardTokenDetails.AsNoTracking();
-            }
-            else if (user.IsTerminal())
-            {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.TerminalID == terminalID);
-            }
-            else
-            {
-                var response = context.CreditCardTokenDetails.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID();
-                if (terminals?.Count() > 0)
-                {
-                    response = response.Where(d => terminals.Contains(d.TerminalID.GetValueOrDefault()));
-                }
-
-                return response;
-            }
-        }
-
         public IQueryable<PaymentTransaction> GetTransactions()
         {
             if (user.IsAdmin() || user.IsUpayApi() || user.IsNayaxApi())
