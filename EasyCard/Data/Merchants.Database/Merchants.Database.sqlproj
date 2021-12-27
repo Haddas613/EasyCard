@@ -77,5 +77,6 @@
     <Build Include="dbo\Tables\TerminalTemplate.sql" />
     <Build Include="dbo\Tables\TerminalTemplateExternalSystem.sql" />
     <Build Include="dbo\Tables\ShvaTerminal.sql" />
+    <Build Include="dbo\Tables\PinPadDevice.sql" />
   </ItemGroup>
 </Project>

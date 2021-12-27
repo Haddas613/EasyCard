@@ -51,8 +51,11 @@
     [ConsumerName]              NVARCHAR (50)    NULL,
     [ConsumerNationalID]        VARCHAR (20)     NULL,
     [Extension]                 NVARCHAR (MAX)   NULL,
+    [BillingDealID]             UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 

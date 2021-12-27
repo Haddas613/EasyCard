@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20211227145130_ClearingHouseConcurrencyToken")]
+    partial class ClearingHouseConcurrencyToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
