@@ -218,35 +218,37 @@ namespace CheckoutPortal.Controllers
                     }
                 }
 
-                if (ModelState[nameof(request.Cvv)] != null)
+                //if (ModelState[nameof(request.Cvv)] != null)
                 {
                     ModelState[nameof(request.Cvv)]?.Errors?.Clear();
                     ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
                 }
-                if (ModelState[nameof(request.CardNumber)] != null)
+                //if (ModelState[nameof(request.CardNumber)] != null)
                 {
                     ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
                     ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
                 }
-                if (ModelState[nameof(request.CardExpiration)] != null)
+                //if (ModelState[nameof(request.CardExpiration)] != null)
                 {
                     ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
                     ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
                 }
             }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
+                }
 
-            if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
-            {
-                ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
-            {
-                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-            } 
-            else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
-            {
-                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
+                else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
             }
 
             InstallmentDetails installmentDetails = null;
