@@ -194,5 +194,39 @@ namespace Merchants.Api.Controllers.Integrations
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("get-document-types")]
+        public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            //terminalSettings.Password = request.Password;
+            var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
+                new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
+                {
+                    Terminal = terminalSettings
+                },
+                GetCorrelationID());
+
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
+
+            if (response.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
+
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }
