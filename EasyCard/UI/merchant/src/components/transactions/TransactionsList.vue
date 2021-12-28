@@ -60,7 +60,7 @@
           lg="6"
           class="text-end font-weight-bold button"
           v-bind:class="{'red--text': item.$specialTransactionType == 'refund'}"
-        >{{item.transactionAmount | currency(item.$currency)}}</v-col>
+        >{{item.transactionAmount | currency(item.currency)}}</v-col>
       </template>
 
       <template v-slot:append="{ item }">
