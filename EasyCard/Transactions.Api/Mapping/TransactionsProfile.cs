@@ -36,12 +36,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
             CreateMap<NayaxValidateRequest, PaymentTransaction>()
-                .ForMember(d => d.TransactionAmount, s => s.MapFrom(src => src.TransactionAmount / 100))
+                .ForMember(d => d.TransactionAmount, s => s.MapFrom(src => src.TransactionAmount / (decimal)100))
                // .ForMember(d => d., s => s.MapFrom(src => src.Vuid)) to do add 
                 .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.PaymentsNumber))
                 .ForMember(d => d.JDealType, s => s.MapFrom(src => JDealTypeEnum.J4))
-                .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.NextPaymentAmount / 100))
-                .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.FirstPaymentAmount / 100))
+                .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.NextPaymentAmount / (decimal)100))
+                .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.FirstPaymentAmount / (decimal)100))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore())
                 .ForMember(d => d.Currency, s => s.MapFrom(src => CurrencyHelper.GetCurrencyFromNayax(src.OriginalCurrency)))
                 .ForMember(d => d.TransactionType, s => s.MapFrom(src => TransactionHelpers.GetTransactionTypeFromNayax(src.CreditTerms)))
