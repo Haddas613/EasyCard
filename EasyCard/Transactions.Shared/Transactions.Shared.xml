@@ -635,6 +635,11 @@
               Looks up a localized string similar to Billing Deals required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsWereDisabled">
+            <summary>
+              Looks up a localized string similar to {0} Billing Deals were disabled.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.BillingDealUnpaused">
             <summary>
               Looks up a localized string similar to Billing Deal Unpaused.
@@ -983,6 +988,11 @@
         <member name="P:Transactions.Shared.Messages.TerminalForUpdateParametersRequired">
             <summary>
               Looks up a localized string similar to Terminal for update parameters is required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TerminalHasNoTransactionsToGenerateMasavFile">
+            <summary>
+              Looks up a localized string similar to Terminal has no transactions to generate Masav file.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TerminalMustHaveBankDetailsSpecified">

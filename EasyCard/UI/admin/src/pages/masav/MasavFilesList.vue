@@ -34,7 +34,7 @@
           </router-link>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn outlined color="success" small :disabled="!item.storageReference" :title="$t('ClickToDownload')" @click="downloadMasavFile(item.storageReference)">
+          <v-btn outlined color="success" small :title="$t('ClickToDownload')" @click="downloadMasavFile(item.masavFileID)">
             <v-icon color="red" size="1.25rem">mdi-file-outline</v-icon>
           </v-btn>
           <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'MasavFileRows', params: {id: item.masavFileID}}">
@@ -108,9 +108,11 @@ export default {
       this.masavFilesFilter = filter;
       await this.getDataFromApi();
     },
-    async downloadMasavFile(link){
-      window.open(link, '_blank');
-    }
+    async downloadMasavFile(fileID) {
+        var operation = await this.$api.masavFiles.downloadMasavFile(fileID);
+        if(!this.$apiSuccess(operation)) return;
+        window.open(operation.entityReference, "_blank");
+    },
   }
 };
 </script>

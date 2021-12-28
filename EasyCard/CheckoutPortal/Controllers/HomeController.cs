@@ -234,19 +234,21 @@ namespace CheckoutPortal.Controllers
                     ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
                 }
             }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
+                }
 
-            if (string.IsNullOrWhiteSpace(request.Cvv) && checkoutConfig.Settings.CvvRequired == true)
-            {
-                ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
-            {
-                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-            } 
-            else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
-            {
-                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
+                else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
             }
 
             InstallmentDetails installmentDetails = null;

@@ -390,6 +390,9 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("InvoiceID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BillingDealID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CardBrand")
                         .HasMaxLength(20)
                         .IsUnicode(false)
@@ -1761,8 +1764,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("ClearingHouseTransactionID");
 
                             b1.Property<string>("ConcurrencyToken")
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("ConcurrencyToken");
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ClearingHouseConcurrencyToken");
 
                             b1.Property<Guid?>("MerchantReference")
                                 .HasMaxLength(50)

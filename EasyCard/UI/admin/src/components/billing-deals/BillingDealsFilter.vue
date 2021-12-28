@@ -57,7 +57,7 @@
             </template>
           </v-switch>
         </v-col>
-        <date-from-to-filter v-model="model" from-today 
+        <date-from-to-filter v-model="model" :from-today="model.filterDateByNextScheduledTransaction "
           :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
           :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
       </v-row>

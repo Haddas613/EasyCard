@@ -90,8 +90,13 @@
     [PaymentIntentID]                UNIQUEIDENTIFIER NULL,
     [PinPadCorrelationID]            VARCHAR (50)     NULL,
     [PinPadUpdateReceiptNumber]      VARCHAR (50)     NULL,
+    [ClearingHouseConcurrencyToken]  NVARCHAR (50)    NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
+
+
 
 
 

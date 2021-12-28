@@ -83,6 +83,10 @@ export default class BillingDealsApi {
         return await this.base.post(this.billingUrl + `/trigger-by-terminal/${terminalID}`);
     }
 
+    async disableBillingDeals(billingDealsID) {
+        return await this.base.post(this.billingUrl + '/disable-billing-deals', { billingDealsID });
+    } 
+
     async triggerBillingDeals(billingDealsID) {
         return await this.base.post(this.billingUrl + '/trigger-billing-deals', { billingDealsID });
     } 

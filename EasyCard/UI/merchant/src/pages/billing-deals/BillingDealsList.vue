@@ -116,18 +116,25 @@
             </div>
           </template>
           <template v-slot:prepend="{ item }" v-else>
-            <v-tooltip top v-if="item.billingSchedule">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark icon v-bind="attrs" v-on="on">
-                  <v-icon>mdi-calendar</v-icon>
-                </v-btn>
-              </template>
-              <billing-schedule-string
-                :schedule="item.billingSchedule"
-                replacement-text="ScheduleIsNotDefined"
-              ></billing-schedule-string>
-            </v-tooltip>
-            <v-icon v-else>mdi-calendar</v-icon>
+            <div class="mx-2 mb-1 pb-1px">
+              <v-checkbox hide-details dense v-model="item.selected" v-if="!item.processed"></v-checkbox>
+              <v-icon v-else color="success">mdi-check-circle</v-icon>
+            </div>
+            
+            <template v-if="$vuetify.breakpoint.mdAndUp">
+              <v-tooltip top v-if="item.billingSchedule">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="primary" dark icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-calendar</v-icon>
+                  </v-btn>
+                </template>
+                <billing-schedule-string
+                  :schedule="item.billingSchedule"
+                  replacement-text="ScheduleIsNotDefined"
+                ></billing-schedule-string>
+              </v-tooltip>
+              <v-icon v-else>mdi-calendar</v-icon>
+            </template>
 
             <v-tooltip top v-if="item.cardExpired">
               <template v-slot:activator="{ on, attrs }">
@@ -168,7 +175,7 @@
               cols="12"
               md="6"
               lg="6"
-              class="pt-1 caption ecgray--text"
+              class="caption ecgray--text"
             >
             <b v-if="item.$nextScheduledTransaction" 
               v-bind:class="{'error--text': (item.$nextScheduledTransaction > now)}">
@@ -176,7 +183,7 @@
             </b>
             <span v-else>-</span>
             </v-col>
-            <v-col cols="12" md="6" lg="6">{{item.consumerName || '-'}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="d-flex align-center">{{item.consumerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
@@ -318,22 +325,36 @@ export default {
       this.billingDealsFilter.skip += this.billingDealsFilter.take;
       await this.getDataFromApi(true);
     },
+    getSelected(){
+      let billings = this.lodash.filter(this.billingDeals, i => i.selected);
+      if (billings.length === 0) {
+        this.$toasted.show(this.$t("SelectDealsFirst"), {
+          type: "error"
+        });
+        return null;
+      }
+      return billings;
+    },
+    async disableBillingDeals() {
+      let selected = this.getSelected();
+      if(!selected) { return; }
+      let opResult = await this.$api.billingDeals.disableBillingDeals(
+        this.lodash.map(selected, i => i.$billingDealID)
+      );
+      
+      await this.refresh();
+    },
     async createTransactions() {
       if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
         });
       }
-
-      let billings = this.lodash.filter(this.billingDeals, i => i.selected);
-      if (billings.length === 0) {
-        return this.$toasted.show(this.$t("SelectDealsFirst"), {
-          type: "error"
-        });
-      }
+      let selected = this.getSelected();
+      if(!selected) { return; }
 
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
-        this.lodash.map(billings, i => i.$billingDealID)
+        this.lodash.map(selected, i => i.$billingDealID)
       );
       this.switchFilterChanged('inProgress');
       await this.refresh();
@@ -343,11 +364,11 @@ export default {
       await this.switchFilterChanged('inProgress');
     },
     switchSelectAll() {
-      if (!this.billingDealsFilter.actual) {
-        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
-          type: "error"
-        });
-      }
+      // if (!this.billingDealsFilter.actual) {
+      //   return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
+      //     type: "error"
+      //   });
+      // }
       this.selectAll = !this.selectAll;
       for (var i of this.billingDeals) {
         this.$set(i, "selected", this.selectAll);
@@ -409,6 +430,12 @@ export default {
             }
           },
           {
+            text: this.$t("DisableSelected"),
+            fn: async () => {
+              await vm.disableBillingDeals();
+            }
+          },
+          {
             text: this.$t("TriggerAll"),
             fn: async () => {
               vm.showTriggerDialog = true;
@@ -426,3 +453,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.pb-1px{
+  padding-bottom: 1px;
+}
+</style>

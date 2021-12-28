@@ -126,7 +126,7 @@
           ></deal-details>
 
           <credit-card-details :model="model.creditCardDetails" v-if="model.paymentTypeEnum == appConstants.transaction.paymentTypes.card"></credit-card-details>
-          <bank-transfer-payment-details card :model="model.bankTransferDetails" v-else-if="model.paymentTypeEnum == appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
+          <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.paymentTypeEnum == appConstants.transaction.paymentTypes.bank"></bank-payment-details>
 
           <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
           <v-card flat class="my-2">
@@ -231,8 +231,8 @@ export default {
       import("../../components/details/ClearingHouseTransactionDetails"),
     IntegrationLogsList: () =>
       import("../../components/integration-logs/IntegrationLogsList"),
-    BankTransferPaymentDetails: () =>
-      import("../../components/details/BankTransferPaymentDetails"),
+    BankPaymentDetails: () =>
+      import("../../components/details/BankPaymentDetails"),
   },
   data() {
     return {

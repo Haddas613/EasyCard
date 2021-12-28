@@ -44,11 +44,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.TerminalID == terminalID);
             }
             else
             {
-                return context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.MerchantID == user.GetMerchantID());
+                var response = context.InvoiceHistories.AsNoTracking().Where(t => t.Invoice.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.Invoice.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -60,11 +68,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.Invoices.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.Invoices.AsNoTracking().Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.Invoices.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.Invoices.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 

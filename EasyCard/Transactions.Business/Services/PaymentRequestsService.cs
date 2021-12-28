@@ -40,23 +40,52 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.PaymentRequests.Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.PaymentRequests.Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.PaymentRequests.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.PaymentRequests.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID().Cast<Guid?>();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
+        // TODO: security check. For the moment not needed because used only inside GetPaymentRequest
         public IQueryable<PaymentRequestHistory> GetPaymentRequestHistory(Guid paymentRequestID) => context.PaymentRequestHistories.Where(d => d.PaymentRequestID == paymentRequestID);
 
         public async override Task CreateEntity(PaymentRequest entity, IDbContextTransaction dbTransaction = null)
         {
             entity.ApplyAuditInfo(httpContextAccessor);
 
-            if ((user.IsTerminal() && entity.TerminalID != user.GetTerminalID()) || (user.IsMerchant() && entity.MerchantID != user.GetMerchantID()))
+            if (user.IsTerminal())
             {
-                throw new SecurityException(Messages.PleaseCheckValues);
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (entity.TerminalID != terminalID)
+                {
+                    throw new SecurityException(Messages.PleaseCheckValues);
+                }
+            }
+            else if (user.IsMerchant())
+            {
+                if (entity.MerchantID != user.GetMerchantID())
+                {
+                    throw new SecurityException(Messages.PleaseCheckValues);
+                }
+
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(entity.TerminalID.GetValueOrDefault()))
+                    {
+                        throw new SecurityException(Messages.PleaseCheckValues);
+                    }
+                }
             }
 
             entity.UpdatedDate = DateTime.UtcNow;

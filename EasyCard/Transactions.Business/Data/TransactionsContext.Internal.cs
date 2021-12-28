@@ -26,6 +26,7 @@ using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging.Debug;
 using Shared.Integration.Models.PaymentDetails;
+using Transactions.Shared;
 
 namespace Transactions.Business.Data
 {
@@ -120,13 +121,23 @@ WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @Terminal
             }
             else if (user.IsTerminal())
             {
-                if (terminalID != user.GetTerminalID())
+                var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (terminalID != userTerminalID)
                 {
                     throw new SecurityException("User has no access to requested data");
                 }
             }
             else if (user.IsMerchant())
             {
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
+                }
+
                 query += " AND [MerchantID] = @MerchantID";
             }
             else
@@ -180,13 +191,23 @@ WHERE [InvoiceID] in @InvoicesIDs AND [TerminalID] = @TerminalID AND [Status]<>@
             }
             else if (user.IsTerminal())
             {
-                if (terminalID != user.GetTerminalID())
+                var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (terminalID != userTerminalID)
                 {
                     throw new SecurityException("User has no access to requested data");
                 }
             }
             else if (user.IsMerchant())
             {
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
+                }
+
                 query += " AND [MerchantID] = @MerchantID";
             }
             else
@@ -233,7 +254,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 var query = "[dbo].[PR_GenerateMasavFile]";
 
-                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = institueName, InstituteNumber = instituteNumber, SendingInstitute = sendingInstitute, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.AwaitingForTransmission });
+                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = institueName, InstituteNumber = instituteNumber, SendingInstitute = sendingInstitute, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.Completed });
 
                 args.Add("@Error", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
                 args.Add("@MasavFileID", dbType: DbType.Int64, direction: ParameterDirection.Output, size: -1);
@@ -247,9 +268,14 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     throw new ApplicationException(error);
                 }
 
-                var res = args.Get<long>("@MasavFileID");
+                var res = args.Get<long?>("@MasavFileID");
 
-                return res;
+                if (!res.HasValue)
+                {
+                    throw new BusinessException(Messages.TerminalHasNoTransactionsToGenerateMasavFile);
+                }
+
+                return res.Value;
             }
             catch (Exception)
             {

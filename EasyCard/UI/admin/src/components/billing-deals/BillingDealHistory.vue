@@ -18,6 +18,34 @@
         </div>
       </template>
     </ec-dialog>
+    <ec-dialog :dialog.sync="showRequestLogDialog" paddings="1">
+      <template v-slot:title>{{$t('RequestLog')}}</template>
+      <template>
+        <div v-if="requestLog" class="body-1 black--text">
+          <h3>
+            {{requestLog.requestDate | ecdate}}
+          </h3>
+          <p class="pt-1">{{$t('CorrelationID')}}: <b>{{requestLog.correlationId}}</b></p>
+          <p class="pt-1">{{$t('URL')}}: <b>{{requestLog.requestUrl}}</b></p>
+          <div class="py-2 body-2">
+            <v-row no-gutters>
+              <v-col cols="12" md="6">
+                <p>{{$t("Request")}}</p>
+                <code>
+                  <pre v-if="requestLog.requestBody">{{requestLog.requestBody | pretty}}</pre>
+                </code>
+              </v-col>
+              <v-col cols="12" md="6">
+                <p>{{$t("Response")}} {{requestLog.responseStatus}}</p>
+                <code>
+                  <pre>{{requestLog.responseBody | pretty}}</pre>
+                </code>
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+      </template>
+    </ec-dialog>
     <v-simple-table>
       <template v-slot:default>
         <thead>
@@ -27,6 +55,7 @@
             <th class="text-left">{{$t("OperationCode")}}</th>
             <th class="text-left">{{$t("Description")}}</th>
             <th class="text-left">{{$t("Message")}}</th>
+            <th class="text-left">{{$t("Actions")}}</th>
           </tr>
         </thead>
         <tbody>
@@ -40,6 +69,9 @@
               </span>
             </td>
             <td>{{ item.operationMessage }}</td>
+            <td>
+              <v-btn color="primary" @click="loadRequestLog(item)" small>{{$t("RequestLog")}}</v-btn>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -62,6 +94,7 @@ export default {
   data() {
       return {
         showDetailsDialog: false,
+        showRequestLogDialog: false,
         selectedHistory: null,
         preMode: true,
         items: []
@@ -77,6 +110,10 @@ export default {
     showDialog(transactionHistory) {
       this.selectedHistory = transactionHistory;
       this.showDetailsDialog = true;
+    },
+    async loadRequestLog(item){
+      this.requestLog = await this.$api.transactionsSystem.getCorrelationLog(this.$formatDate(item.operationDate), item.correlationId);
+      this.showRequestLogDialog = true;
     }
   },
 };

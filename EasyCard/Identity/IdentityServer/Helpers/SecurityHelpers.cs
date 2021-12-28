@@ -10,40 +10,21 @@ namespace IdentityServer.Helpers
 {
     public static class SecurityHelpers
     {
-        public static async Task AddClaim(this UserManager<ApplicationUser> userManager, IList<Claim> allClaims, ApplicationUser user, string type, string value, bool additionalValue = false)
+        [Obsolete]
+        public static async Task AddClaim(this UserManager<ApplicationUser> userManager, IList<Claim> allClaims, ApplicationUser user, string type, string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                if (additionalValue)
+                var claim = allClaims.FirstOrDefault(c => c.Type == type);
+                if (claim == null)
                 {
-                    var claim = allClaims.FirstOrDefault(c => c.Type == type && c.Value == value);
-                    if (claim == null)
-                    {
-                        await userManager.AddClaimAsync(user, new Claim(type, value));
-                    }
+                    await userManager.AddClaimAsync(user, new Claim(type, value));
                 }
-                else
+                else if (claim.Value != value)
                 {
-                    var claim = allClaims.FirstOrDefault(c => c.Type == type);
-                    if (claim == null)
-                    {
-                        await userManager.AddClaimAsync(user, new Claim(type, value));
-                    }
-                    else if (claim.Value != value)
-                    {
-                        await userManager.RemoveClaimAsync(user, claim);
-                        await userManager.AddClaimAsync(user, new Claim(type, value));
-                    }
+                    await userManager.RemoveClaimAsync(user, claim);
+                    await userManager.AddClaimAsync(user, new Claim(type, value));
                 }
-            }
-        }
-
-        public static async Task RemoveClaim(this UserManager<ApplicationUser> userManager, IList<Claim> allClaims, ApplicationUser user, string type)
-        {
-            var claims = allClaims.Where(c => c.Type == type).ToList();
-            if (claims?.Count() > 0)
-            {
-                await userManager.RemoveClaimsAsync(user, claims);
             }
         }
     }

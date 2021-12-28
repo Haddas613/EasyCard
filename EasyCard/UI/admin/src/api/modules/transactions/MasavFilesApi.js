@@ -31,6 +31,16 @@ export default class MasavFilesApi {
         return data;
     }
 
+    async generateMasavFile(terminalId) {
+        let data = await this.base.post(this.masavUrl + '/generate/' + terminalId);
+        return data;
+    }
+
+    async downloadMasavFile(masavFileId) {
+        let data = await this.base.post(this.masavUrl + '/download/' + masavFileId);
+        return data;
+    }
+
     async getRows(params) {
         if (!this.rowheaders) {
             let data = await this.base.get(this.masavUrl + '/$meta-row')

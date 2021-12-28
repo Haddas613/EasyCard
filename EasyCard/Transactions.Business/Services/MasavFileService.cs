@@ -90,11 +90,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == terminalID);
             }
             else
             {
-                return context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
+                var response = context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.MasavFile.TerminalID.GetValueOrDefault()));
+                }
+
+                return response;
             }
         }
 
@@ -106,11 +114,19 @@ namespace Transactions.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.MasavFiles.Where(t => t.TerminalID == user.GetTerminalID());
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.MasavFiles.Where(t => t.TerminalID == terminalID);
             }
             else
             {
-                return context.MasavFiles.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.MasavFiles.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID().Cast<Guid?>();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
     }

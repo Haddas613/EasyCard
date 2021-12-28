@@ -6,6 +6,10 @@
       :key="transactionsFilter.notTransmitted"
       v-on:ok="applyFilters($event)"
     ></transactions-filter-dialog>
+    <transactions-transmit-dialog
+      :show.sync="showTransmitDialog"
+      v-on:ok="refresh()"
+    ></transactions-transmit-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -60,10 +64,64 @@
     </v-card>
     <v-card width="100%" flat :loading="!transactions">
       <v-card-text class="px-0">
-        <transactions-list :key="loading" :transactions="transactions" :select-limit="selectLimit" :selectable="transactionsFilter.notTransmitted" ref="transactionsList"></transactions-list>
-        <v-flex class="text-center" v-if="canLoadMore">
-          <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
-        </v-flex>
+        <template v-if="$vuetify.breakpoint.mdAndDown">
+          <transactions-list :key="loading" :transactions="transactions" :select-limit="selectLimit" :selectable="transactionsFilter.notTransmitted" ref="transactionsList"></transactions-list>
+          <v-flex class="text-center" v-if="canLoadMore">
+            <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
+          </v-flex>
+        </template>
+        <template v-else>
+          <v-data-table 
+            :headers="headers"
+            :items="transactions"
+            :options.sync="options"
+            :server-items-length="numberOfRecords"
+            :items-per-page="defaultFilter.take"
+            :loading="loading"
+            :header-props="{ sortIcon: null }"
+            class="elevation-1">     
+          <template v-slot:item.terminalName="{ item }">
+            {{item.terminalName || item.terminalID}}
+          </template> 
+          <template v-slot:item.transactionAmount="{ item }">
+            <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
+          </template>
+          <template v-slot:item.transactionTimestamp="{ item }">
+          {{item.$transactionTimestamp | ecdate('DT')}}
+          </template>
+          <template v-slot:item.quickStatus="{ item }">
+            <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
+              <re-icon small>mdi-arrow-right</re-icon>
+            </v-btn>
+            <v-btn v-if="(item.status == 'completed' || item.status == 'awaitingForTransmission') && item.$jDealType == 'J4'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
+              <v-icon small>mdi-checkbook</v-icon>
+            </v-btn>
+          </template>    
+          <template v-slot:item.cardPresence="{ item }">
+            <v-icon :title="$t('Bank')" v-if="item.paymentTypeEnum == 'bank'" color="secondary">mdi-bank</v-icon>
+            <span v-else :title="item.cardPresence">
+              <v-icon v-if="item.$cardPresence == 'regular'" color="success">mdi-credit-card-check</v-icon>
+              <v-icon v-else>mdi-credit-card-off-outline</v-icon>
+            </span>
+          </template>
+          <template v-slot:item.cardNumber="{ item }">
+            <span dir="ltr">{{item.cardNumber}}</span>
+          </template>   
+          <template v-slot:item.transactionType="{ item }">
+            <span :title="item.transactionType">
+              <v-icon v-if="item.$transactionType == 'regularDeal'" color="primary">mdi-cash</v-icon>
+              <v-icon v-else-if="item.$transactionType == 'installments'" color="accent">mdi-credit-card-check</v-icon>
+              <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
+            </span>
+          </template>
+          <template v-slot:item.paymentTransactionID="{ item }">
+            <small>{{item.paymentTransactionID}}</small>
+          </template> 
+        </v-data-table>
+        </template>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -79,7 +137,9 @@ export default {
     TransactionsList: () => import("../../components/transactions/TransactionsList"),
     TransactionsFilterDialog: () =>
       import("../../components/transactions/TransactionsFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    TransactionsTransmitDialog: () =>
+      import("../../components/transactions/TransactionsTransmitDialog"),
   },
   props: {
     filters: {
@@ -97,24 +157,40 @@ export default {
   },
   data() {
     return {
-      transactions: null,
+      transactions: [],
       customerInfo: null,
       moment: moment,
       loading: false,
       transactionsFilter: {
         ...this.filters
       },
+      headers: [],
       defaultFilter: {
         take: 100,
         skip: 0,
         jDealType: "J4"
       },
       showDialog: this.showFiltersDialog,
+      showTransmitDialog: false,
       datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
-      selectLimit: 1000 // TODO: from config
+      selectLimit: 1000, // TODO: from config
+      options: {},
+      quickStatusesColors: {
+        Pending: "primary--text",
+        None: "ecgray--text",
+        Completed: "success--text",
+        Failed: "error--text",
+        Canceled: "accent--text"
+      },
     };
+  },
+  watch: {
+    options: {
+      handler: async function(){ await this.getDataFromApi() },
+      deep: true
+    }
   },
   methods: {
     async getDataFromApi(extendData) {
@@ -124,6 +200,9 @@ export default {
         ...this.transactionsFilter
       });
       if (data) {
+        if(!this.headers || this.headers.length === 0){
+          this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        }
         let transactions = data.data || [];
         this.transactions = extendData ? [...this.transactions, ...transactions] : transactions;
         this.numberOfRecords = data.numberOfRecords || 0;
@@ -213,8 +292,12 @@ export default {
             }
           },
           {
-            text: this.$t("Transmit"),
+            text: this.$t("TransmitSelected"),
             fn: async () => await this.transmitSelected()
+          },
+          {
+            text: this.$t("TransmitAll"),
+            fn: () => this.showTransmitDialog = true
           },
           {
             text: this.$t("SelectAll"),

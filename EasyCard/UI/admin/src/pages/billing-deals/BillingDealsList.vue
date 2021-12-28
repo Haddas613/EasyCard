@@ -161,18 +161,32 @@ export default {
       await this.getDataFromApi();
     },
     async createTransactions() {
-      let billings = this.lodash.filter(this.billingDeals, i => i.selected);
-      if (billings.length === 0) {
-        return this.$toasted.show(this.$t("SelectDealsFirst"), {
-          type: "error"
-        });
-      }
-
+      let selected = this.getSelected();
+      if(!selected) { return; }
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
-        this.lodash.map(billings, i => i.$billingDealID)
+        this.lodash.map(selected, i => i.$billingDealID)
       );
       
-      await this.refresh();
+      await this.getDataFromApi();
+    },
+    async disableBillingDeals() {
+      let selected = this.getSelected();
+      if(!selected) { return; }
+      let opResult = await this.$api.billingDeals.disableBillingDeals(
+        this.lodash.map(selected, i => i.$billingDealID)
+      );
+      
+      await this.getDataFromApi();
+    },
+    getSelected(){
+      let billings = this.lodash.filter(this.billingDeals, i => i.selected);
+      if (billings.length === 0) {
+        this.$toasted.show(this.$t("SelectDealsFirst"), {
+          type: "error"
+        });
+        return null;
+      }
+      return billings;
     },
     onTriggerByTerminal(){
       this.$refs.filter.model.inProgress = true;
@@ -189,6 +203,12 @@ export default {
               text: vm.$t("TriggerSelected"),
               fn: async () => {
                 await vm.createTransactions();
+              }
+            },
+            {
+              text: vm.$t("DisableSelected"),
+              fn: async () => {
+                await vm.disableBillingDeals();
               }
             },
             {

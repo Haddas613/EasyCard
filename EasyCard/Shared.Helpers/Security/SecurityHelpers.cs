@@ -1,5 +1,6 @@
 using IdentityModel;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Security.Claims;
@@ -82,10 +83,10 @@ namespace Shared.Helpers.Security
                 return;
             }
 
-            if (user.IsTerminal() && terminalID != user.GetTerminalID())
-            {
-                throw new SecurityException("User has no access to requiested data");
-            }
+            //if (user.IsTerminal() && terminalID != user.GetTerminalID())
+            //{
+            //    throw new SecurityException("User has no access to requiested data");
+            //}
         }
 
         /// <summary>
@@ -112,20 +113,11 @@ namespace Shared.Helpers.Security
             return null;
         }
 
-        public static Guid? GetTerminalID(this ClaimsPrincipal user)
+        public static IEnumerable<Guid> GetTerminalID(this ClaimsPrincipal user)
         {
-            var terminalID = user?.FindFirst(Claims.TerminalIDClaim)?.Value;
-            if (string.IsNullOrWhiteSpace(terminalID))
-            {
-                return null;
-            }
+            var terminals = user?.FindAll(Claims.TerminalIDClaim).Select(d => Guid.Parse(d.Value));
 
-            if (Guid.TryParse(terminalID, out var guid))
-            {
-                return guid;
-            }
-
-            return null;
+            return terminals;
         }
 
         public static string GetDoneBy(this ClaimsPrincipal user)

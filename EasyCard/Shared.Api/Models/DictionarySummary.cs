@@ -7,6 +7,7 @@ namespace Shared.Api.Models
     /// <summary>
     /// Lookup element summary
     /// </summary>
+    /// <typeparam name="T">Entity key type</typeparam>
     public class DictionarySummary<T>
     {
         public DictionarySummary()

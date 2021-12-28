@@ -769,6 +769,10 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid?>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Terminals")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
+
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 

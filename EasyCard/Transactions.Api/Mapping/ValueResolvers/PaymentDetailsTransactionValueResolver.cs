@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Mapping.ValueResolvers
 {
@@ -14,12 +15,22 @@ namespace Transactions.Api.Mapping.ValueResolvers
         {
             var pd = new List<PaymentDetails>();
 
-            if (source.CreditCardDetails != null)
+            if (source.PaymentTypeEnum == SharedIntegration.Models.PaymentTypeEnum.Bank)
             {
-                var ccd = context.Mapper.Map<CreditCardPaymentDetails>(source.CreditCardDetails);
-                ccd.ShovarNumber = source.ShvaTransactionDetails?.ShvaShovarNumber;
+                if (source.BankTransferDetails != null)
+                {
+                    pd.Add(source.BankTransferDetails);
+                }
+            }
+            else if (source.PaymentTypeEnum == SharedIntegration.Models.PaymentTypeEnum.Card)
+            {
+                if (source.CreditCardDetails != null)
+                {
+                    var ccd = context.Mapper.Map<CreditCardPaymentDetails>(source.CreditCardDetails);
+                    ccd.ShovarNumber = source.ShvaTransactionDetails?.ShvaShovarNumber;
 
-                pd.Add(ccd);
+                    pd.Add(ccd);
+                }
             }
 
             return pd;

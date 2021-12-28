@@ -17,7 +17,7 @@ namespace Transactions.Api.Models.Transactions
         public string OwnerIdentityNumber { get; set; }
 
         [EnumDataType(typeof(EntryModeEnum))]
-        public EntryModeEnum EntryMode { get; set; } 
+        public EntryModeEnum EntryMode { get; set; }
 
         public string Vuid { get; set; }
 
@@ -31,7 +31,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [Required]
         [Range(100, int.MaxValue)]
-        public int TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(NayaxValidateRequestResource), ErrorMessageResourceName = "CardNumber")]
         [StringLength(64, MinimumLength = 10)]
@@ -42,7 +42,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [Required(ErrorMessageResourceType = typeof(NayaxValidateRequestResource), ErrorMessageResourceName = "CardExpiry")]
         [StringLength(4, MinimumLength = 4)]
-        public  string CardExpiry { get; set; }
+        public string CardExpiry { get; set; }
 
         /// <summary>
         /// ILS = 376,
@@ -58,17 +58,16 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// In Agorot, with leading zeros
         /// </summary>
-        public int FirstPaymentAmount { get; set; }
+        public decimal FirstPaymentAmount { get; set; }
 
         /// <summary>
         /// In Agorot, with leading zeros
         /// </summary>
-        public int NextPaymentAmount { get; set; }
+        public decimal NextPaymentAmount { get; set; }
 
         [Required]
         [EnumDataType(typeof(CreditTermsEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CreditTermsEnum CreditTerms { get; set; }
-
     }
 }

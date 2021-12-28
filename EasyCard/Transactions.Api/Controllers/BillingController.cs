@@ -542,7 +542,7 @@ namespace Transactions.Api.Controllers
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -561,6 +561,43 @@ namespace Transactions.Api.Controllers
             await billingDealService.UpdateEntity(billingDeal);
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
+        }
+
+        [HttpPost]
+        [Route("disable-billing-deals")]
+        public async Task<ActionResult<OperationResponse>> DisableBillingDeals([FromBody] DisableBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
+            }
+
+            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+            }
+
+            int successfulCount = 0;
+
+            foreach (var billingDealID in request.BillingDealsID)
+            {
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+
+                if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
+                {
+                    continue;
+                }
+
+                billingDeal.Active = !billingDeal.Active;
+
+                billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+                await billingDealService.UpdateEntity(billingDeal);
+
+                successfulCount++;
+            }
+
+            return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereDisabled, successfulCount), StatusEnum.Success));
         }
 
         /// <summary>

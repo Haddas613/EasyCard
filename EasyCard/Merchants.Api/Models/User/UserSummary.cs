@@ -15,7 +15,10 @@ namespace Merchants.Api.Models.User
     {
         public Guid UserID { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid MerchantID { get; set; }
+
+        public string MerchantName { get; set; }
 
         public string DisplayName { get; set; }
 

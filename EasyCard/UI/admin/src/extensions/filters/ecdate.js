@@ -4,6 +4,10 @@ import store from '../../store/index';
 export default function(value, format = null){
     if(!value) return;
     
+    if(format == "DT"){
+        format = "DD/MM/YYYY HH:mm";
+    }
+
     if(!format){
         format = "DD/MM/YYYY HH:mm";
         /**Default locale format LLLL can not be used due to time present in the output*/

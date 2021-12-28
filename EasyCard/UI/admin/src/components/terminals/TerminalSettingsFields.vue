@@ -206,7 +206,8 @@
               v-model="model.settings.ravMutavNumber"
               :label="$t('RavMutavNumber')"
               type="text"
-              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(9, 9)]"
+              :counter="9"
+              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(3, 9)]"
             ></v-text-field>
           </v-col>
         </v-row>

@@ -417,7 +417,7 @@ namespace Transactions.Api.Controllers
                 await transmissionQueue.PushToQueue(req);
             }
 
-            return Ok(new OperationResponse { Message = $"Terminal {terminalID}: {numberOfRecords} transactions sent to transmission queue", Status = StatusEnum.Success });
+            return Ok(new OperationResponse { Message = Messages.TransactionsQueued.Replace("@count", numberOfRecords.ToString()), Status = StatusEnum.Success });
         }
     }
 }

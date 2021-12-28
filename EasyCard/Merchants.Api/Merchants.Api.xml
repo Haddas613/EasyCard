@@ -42,6 +42,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Merchants.Api.Controllers.UserApiController.LinkUserToMerchant(Merchants.Api.Models.User.LinkUserToMerchantRequest)">
+            <summary>
+            Used only from Merchants.Api.Client from Identity server during registration
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="P:Merchants.Api.Models.Audit.AuditFilter.UserID">
             <summary>
             MerchantHistory.OperationDoneByID
@@ -719,6 +726,11 @@
         <member name="P:Merchants.Api.Models.User.UserSummaryResource.MerchantID">
             <summary>
               Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.User.UserSummaryResource.Roles">
