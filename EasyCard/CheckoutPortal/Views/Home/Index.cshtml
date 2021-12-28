@@ -301,6 +301,7 @@
                         {
                             <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
                         }
+                        <div class="px-1" id="bitcom-button-container"></div>
                     </div>
                 </form>
             </div>
@@ -310,6 +311,19 @@
 </div>
 
 @section Scripts {
+<script nws-csp-add-nonce="true">
+$(document).ready(function () {
+    BitPayment.Buttons({
+     onCreate: function(openBitPaymentPage){
+         var transaction = {
+             transactionSerialId: '111',
+             paymentInitiationId: '222'
+         };
+        openBitPaymentPage(transaction);
+     }
+    }).render('#bitcom-button-container'); 
+});
+</script>
 
 @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
 {

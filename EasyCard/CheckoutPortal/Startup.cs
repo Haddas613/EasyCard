@@ -90,6 +90,7 @@ namespace CheckoutPortal
             services.AddAutoMapper(typeof(Startup));
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+            services.Configure<BitGlobalSettings>(Configuration.GetSection("BitGlobalSettings"));
 
             services.AddSingleton<IWebApiClient, WebApiClient>();
             services.AddSingleton<IWebApiClientTokenService, WebApiClientTokenService>(serviceProvider =>
@@ -160,7 +161,7 @@ namespace CheckoutPortal
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net")
+                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il")
                 )
                 //.FrameAncestors(s => s.Self())
                 //.FormActions(s => s.Self())
