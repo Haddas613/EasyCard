@@ -251,7 +251,7 @@ namespace MerchantsApi.Tests
                merchantsFixture.Mapper,
                merchantsFixture.ExternalSystemsService,
                userManagementClientMock.MockObj.Object,
-               null, null, null, null, null, null, null);
+               null, null, null, null, null, null, null, null);
         }
     }
 }

@@ -6,42 +6,42 @@ namespace Transactions.Shared.Enums
 {
     public enum TransactionOperationCodesEnum : short
     {
-        TransactionCreated,
+        TransactionCreated = 0,
 
-        TransactionUpdated,
+        TransactionUpdated = 1,
 
-        ConfirmedByAggregator,
+        ConfirmedByAggregator = 2,
 
-        ConfirmedByProcessor,
+        ConfirmedByProcessor = 3,
 
-        CommitedByAggregator,
+        CommitedByAggregator = 4,
 
-        TransmissionInProgress,
+        TransmissionInProgress = 5,
 
-        TransmissionCancelingInProgress,
+        TransmissionCancelingInProgress = 6,
 
-        TransmittedByProcessor,
+        TransmittedByProcessor = 7,
 
-        RejectedByAggregator,
+        RejectedByAggregator = 8,
 
-        RejectedByProcessor,
+        RejectedByProcessor = 9,
 
-        CancelledByMerchant,
+        CancelledByMerchant = 10,
 
-        FailedToConfirmByAggregator,
+        FailedToConfirmByAggregator = 11,
 
-        FailedToConfirmByProcesor,
+        FailedToConfirmByProcesor = 12,
 
-        FailedToCommitByAggregator,
+        FailedToCommitByAggregator = 13,
 
-        TransmissionToProcessorFailed,
+        TransmissionToProcessorFailed = 14,
 
-        FailedToCancelByAggregator,
+        FailedToCancelByAggregator = 15,
 
-        CanceledByAggregator,
+        CanceledByAggregator = 16,
 
-        InvoiceCreated,
+        InvoiceCreated = 17,
 
-        ProcessorPreTransmissionCommited
+        ProcessorPreTransmissionCommited = 18
     }
 }

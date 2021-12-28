@@ -423,7 +423,7 @@ export default {
           }
           else if (result && result.errors && result.errors.length > 0) {
             result.errors.forEach(e => {
-              this.$toasted.show(`${e.code}: ${e.description}`, { type: "error" });
+              this.$toasted.show(e.description, { type: "error" });
             })
             this.errors = result.errors;
           }else{

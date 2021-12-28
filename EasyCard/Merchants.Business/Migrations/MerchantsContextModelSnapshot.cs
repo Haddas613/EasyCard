@@ -229,6 +229,37 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Item");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Integration.PinPadDevice", b =>
+                {
+                    b.Property<Guid?>("PinPadDeviceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceTerminalID")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("PosName")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid?>("TerminalID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PinPadDeviceID");
+
+                    b.ToTable("PinPadDevice");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Integration.ShvaTerminal", b =>
                 {
                     b.Property<string>("MerchantNumber")
@@ -529,6 +560,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PaymentRequestSettings");
 
+                    b.Property<string>("PinPadProcessorTerminalReference")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProcessorTerminalReference")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -734,6 +768,10 @@ namespace Merchants.Business.Migrations
 
                     b.Property<Guid?>("TerminalID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Terminals")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");

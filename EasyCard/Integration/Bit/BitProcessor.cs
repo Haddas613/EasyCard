@@ -180,5 +180,10 @@ namespace Bit
 
             return headers;
         }
+
+        Task<ProcessorUpdateParamteresResponse> IProcessor.ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParametersRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

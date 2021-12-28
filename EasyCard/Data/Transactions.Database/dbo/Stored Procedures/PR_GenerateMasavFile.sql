@@ -43,7 +43,7 @@ BEGIN TRANSACTION
 
 
 insert into @MasavFileRows ([ConsumerID],[PaymentTransactionID],[Amount],[NationalID],[Bankcode],[BranchNumber],[AccountNumber],[ConsumerName])
-select t.[ConsumerID], t.[PaymentTransactionID], t.[TransactionAmount] as [Amount], t.[CardOwnerNationalID] as [NationalID], t.BankTransferBank as [Bankcode], t.BankTransferBankBranch as [BranchNumber], TRY_CAST(t.BankTransferBankAccount as int) as [AccountNumber], t.[CardOwnerName]
+select t.[ConsumerID], t.[PaymentTransactionID], t.[TransactionAmount] as [Amount], t.[CardOwnerNationalID] as [NationalID], t.BankTransferBank as [Bankcode], t.BankTransferBankBranch as [BranchNumber], TRY_CAST(t.BankTransferBankAccount as int) as [AccountNumber], t.[ConsumerName]
 from [dbo].[PaymentTransaction] as t
 where t.TerminalID = @TerminalID and t.PaymentTypeEnum = @PaymentTypeEnum and t.MasavFileID is null and t.[Status] = @TransactionStatusOld
 
@@ -80,8 +80,9 @@ INSERT INTO [dbo].[MasavFileRow]
            ,[NationalID]
            ,[Amount]
            ,[ConsumerName]
-		   ,[SmsSent])
-select @MasavFileID,[PaymentTransactionID],[ConsumerID],[Bankcode],[BranchNumber],[AccountNumber],[NationalID],[Amount],[ConsumerName],0 from @MasavFileRows as prows order by [PaymentTransactionID]
+		   ,[SmsSent]
+		   ,[InstituteNumber])
+select @MasavFileID,[PaymentTransactionID],[ConsumerID],[Bankcode],[BranchNumber],[AccountNumber],[NationalID],[Amount],[ConsumerName],0,@InstituteNumber from @MasavFileRows as prows order by [PaymentTransactionID]
 
 update [dbo].[PaymentTransaction] set [dbo].[PaymentTransaction].[MasavFileID] = @MasavFileID, [dbo].[PaymentTransaction].[Status] = @TransactionStatusNew
 from [dbo].[PaymentTransaction] INNER JOIN  [dbo].[MasavFileRow] on [dbo].[PaymentTransaction].[PaymentTransactionID] = [dbo].[MasavFileRow].[PaymentTransactionID] and [dbo].[MasavFileRow].[MasavFileID] = @MasavFileID

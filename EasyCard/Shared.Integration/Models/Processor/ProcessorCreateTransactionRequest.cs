@@ -46,6 +46,8 @@ namespace Shared.Integration.Models
         /// </summary>
         public string EasyCardTerminalID { get; set; }
 
+        public string SapakMutavNo { get; set; }
+
         /// <summary>
         /// Legal transaction day
         /// </summary>

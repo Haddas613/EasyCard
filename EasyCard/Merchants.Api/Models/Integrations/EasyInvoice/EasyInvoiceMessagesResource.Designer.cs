@@ -77,5 +77,23 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
                 return ResourceManager.GetString("CustomerCreatedSuccessfully", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document number changed failed.
+        /// </summary>
+        public static string DocumentNumberChangedFailed {
+            get {
+                return ResourceManager.GetString("DocumentNumberChangedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document number changed successfully.
+        /// </summary>
+        public static string DocumentNumberChangedSuccessfully {
+            get {
+                return ResourceManager.GetString("DocumentNumberChangedSuccessfully", resourceCulture);
+            }
+        }
     }
 }

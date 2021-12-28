@@ -635,6 +635,11 @@
               Looks up a localized string similar to Billing Deals required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsWereDisabled">
+            <summary>
+              Looks up a localized string similar to {0} Billing Deals were disabled.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.BillingDealUnpaused">
             <summary>
               Looks up a localized string similar to Billing Deal Unpaused.
@@ -643,6 +648,11 @@
         <member name="P:Transactions.Shared.Messages.BillingDealUpdated">
             <summary>
               Looks up a localized string similar to Billing Deal Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingInProgress">
+            <summary>
+              Looks up a localized string similar to Billing deal processing in-progress.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">
@@ -850,6 +860,11 @@
               Looks up a localized string similar to Invoice State is not valid.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceUpdated">
+            <summary>
+              Looks up a localized string similar to Invoice Updated.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.InvoicingNotDefined">
             <summary>
               Looks up a localized string similar to Invoicing system is not defined.
@@ -975,6 +990,11 @@
               Looks up a localized string similar to Terminal for update parameters is required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.TerminalHasNoTransactionsToGenerateMasavFile">
+            <summary>
+              Looks up a localized string similar to Terminal has no transactions to generate Masav file.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.TerminalMustHaveBankDetailsSpecified">
             <summary>
               Looks up a localized string similar to Terminal must have Bank details specified.
@@ -1047,7 +1067,7 @@
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionsQueued">
             <summary>
-              Looks up a localized string similar to Transactions queued.
+              Looks up a localized string similar to @count Transactions queued.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TransactionStatusIsNotValid">

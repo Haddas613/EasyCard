@@ -443,6 +443,7 @@ namespace Transactions.Api
             services.AddScoped<IItemsService, ItemsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
+            services.AddScoped<IPinPadDevicesService, PinPadDevicesService>();
             services.AddScoped<IMasavFileService, MasavFileService>();
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
@@ -589,7 +590,8 @@ namespace Transactions.Api
                 return new QueueResolver()
                     .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName)) // TODO: change cfg to constant in QueueResolver
                     .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName))
-                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue));
+                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue))
+                    .AddQueue(QueueResolver.TransmissionQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.TransmissionQueue));
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
@@ -621,6 +623,15 @@ namespace Transactions.Api
                 return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+            services.AddSingleton<BasicServices.Services.IExcelService, BasicServices.Services.ExcelService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BasicServices.Services.ExcelService>>();
+                var blobStorageService = new BasicServices.BlobStorage.BlobStorageService(appCfg.PublicStorageConnectionString, "excel", logger);
+
+                return new BasicServices.Services.ExcelService(blobStorageService);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

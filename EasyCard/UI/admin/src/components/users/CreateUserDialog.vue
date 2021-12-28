@@ -24,6 +24,10 @@
             <p class="subtitle-1">{{$t("Roles")}}</p>
             <user-roles-fields :user="model" ref="userRolesRef"></user-roles-fields>
           </v-col>
+          <v-col cols="12" class="py-0">
+            <p class="subtitle-1">{{$t("Terminals")}}</p>
+            <user-terminals-fields :user="model" ref="userTerminalsRef"></user-terminals-fields>
+          </v-col>
         </v-row>
       </v-form>
       <div class="d-flex px-2 pt-4 justify-end">
@@ -57,7 +61,8 @@ export default {
   },
   components: {
     EcDialog: () => import("../../components/ec/EcDialog"),
-    UserRolesFields: () => import("./UserRolesFIelds")
+    UserRolesFields: () => import("./UserRolesFields"),
+    UserTerminalsFields: () => import("./UserTerminalsFields"),
   },
   data() {
     return {
@@ -89,6 +94,7 @@ export default {
       }
 
       this.model.roles = this.$refs.userRolesRef.getData().roles;
+      this.model.terminals = this.$refs.userTerminalsRef.getData();
 
       this.loading = true;
       let operationResult = await this.$api.users.inviteUser(this.model);

@@ -20,6 +20,7 @@ using Shared.Business.Audit;
 using Shared.Integration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharedIntegrations = Shared.Integration;
 
 namespace Merchants.Api.Mapping
@@ -120,7 +121,8 @@ namespace Merchants.Api.Mapping
 
         private void RegisterUserMappings()
         {
-            CreateMap<UserProfileDataResponse, UserResponse>();
+            CreateMap<UserProfileDataResponse, UserResponse>()
+                .ForMember(d => d.Terminals, o => o.Ignore());
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
             CreateMap<UserTerminalMapping, UserSummary>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
@@ -135,6 +137,7 @@ namespace Merchants.Api.Mapping
                 .ForMember(src => src.DisplayName, o => o.MapFrom(d => d.DisplayName))
                 .ForMember(src => src.Email, o => o.MapFrom(d => d.Email))
                 .ForMember(src => src.Roles, o => o.MapFrom(d => d.Roles))
+                .ForMember(src => src.Terminals, o => o.MapFrom(d => d.Terminals))
                 .ForAllOtherMembers(o => o.Ignore());
         }
 
@@ -150,8 +153,8 @@ namespace Merchants.Api.Mapping
                .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.MerchantNumber))
                .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<Nayax.NayaxTerminalSettings, Terminal>()
-             .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.TerminalID))
+            CreateMap<Nayax.NayaxTerminalCollection, Terminal>()
+             .ForMember(m => m.PinPadProcessorTerminalReference, s => s.MapFrom(src => string.Join(",", src.devices.Select(e => e.TerminalID))))
              .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()

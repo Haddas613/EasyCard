@@ -480,12 +480,6 @@ namespace DesktopEasyCardConvertorECNG
                 return;
             }
 
-            if (paymentType != PaymentTypeEnum.Card)
-            {
-                logger.LogError($"Skipped TODO: payment type {paymentType} billing for {customerInFile.DealID}");
-                return;
-            }
-
             var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter
             { 
                  PaymentType = paymentType,
@@ -526,11 +520,43 @@ namespace DesktopEasyCardConvertorECNG
                     VATRate = RateVat
                 });
             }
+            BillingDealInvoiceOnlyRequest requestForInvoiceOnlyBilling = new BillingDealInvoiceOnlyRequest()
+            {
+                BillingSchedule = new Transactions.Shared.Models.BillingSchedule()
+                {
+                    RepeatPeriodType = Models.Helper.EnumConvertor.ConvertToBillingType(customerInFile.BillingTypeID),
+                    StartAt = CalculateDate.GetStartPayDate(customerInFile.BillingDay, customerInFile.StartDate ?? DateTime.Today),
+                    EndAt = customerInFile.finishDate,
+                    EndAtType = customerInFile.finishDate == null ? Transactions.Shared.Enums.EndAtTypeEnum.Never : Transactions.Shared.Enums.EndAtTypeEnum.SpecifiedDate,
+                    StartAtType = Transactions.Shared.Enums.StartAtTypeEnum.SpecifiedDate,
+                },
+                Currency = Models.Helper.EnumConvertor.ConvertToCurrecy(customerInFile.MTypeID),
+                //InvoiceDetails = new Shared.Integration.Models.Invoicing.InvoiceDetails() { }
+                PaymentType = paymentType,
+                TransactionAmount = customerInFile.TotalSum,
+                TerminalID = ecngTerminal.TerminalID,
+                DealDetails = new Shared.Integration.Models.DealDetails()
+                {
+                    ConsumerAddress = consumer.ConsumerAddress,
+                    ConsumerEmail = consumer.ConsumerEmail,
+                    ConsumerExternalReference = consumer.ExternalReference,
+                    ConsumerID = consumer.ConsumerID,
+                    ConsumerName = consumer.ConsumerName,
+                    ConsumerNationalID = consumer.ConsumerNationalID,
+                    ConsumerPhone = consumer.ConsumerPhone,
+                    Items = items,
+
+                    DealDescription = "Export from MDB", // TODO
+                    DealReference = customerInFile.DealID
+                },
+                Origin = config.Origin
+                
+            };
 
             var request = new Transactions.Api.Models.Billing.BillingDealRequest()
             {
                 // TODO: bank billings
-                //BankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch },
+                BankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch },
                 BillingSchedule = new Transactions.Shared.Models.BillingSchedule()
                 {
                     RepeatPeriodType = Models.Helper.EnumConvertor.ConvertToBillingType(customerInFile.BillingTypeID),
@@ -561,8 +587,21 @@ namespace DesktopEasyCardConvertorECNG
                 },
                 Origin = config.Origin
             };
+            OperationResponse res = null;
+            switch (request.PaymentType)
+            {
 
-            var res = await transactionsService.CreateBillingDeal(request);
+                case PaymentTypeEnum.Card:
+                case PaymentTypeEnum.Bank:
+                    res = await transactionsService.CreateBillingDeal(request);
+                    break;
+                case PaymentTypeEnum.InvoiceOnly:
+                    res = await transactionsService.CreateBillingDealInvoiceOnly(requestForInvoiceOnlyBilling);
+                    break;
+                default:
+                    break;
+            }
+            
 
             logger.LogInformation($"Created billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) {customerInFile.TotalSum} {request.Currency}");
 

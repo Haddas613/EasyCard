@@ -27,11 +27,16 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<NayaxCreateTransactionResponse, PaymentTransaction>()
-                .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
+                .ForMember(m => m.PinPadTransactionDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.ProcessorResultCode, s => s.MapFrom(src => src.ResultCode))
                 .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<NayaxCreateTransactionResponse, PinPadTransactionsDetails>()
+                .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
+                .ForAllOtherMembers(d => d.Ignore())
+                ;
 
             CreateMap<NayaxCreateTransactionResponse, CreditCardDetails>()
                 .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration))

@@ -20,6 +20,8 @@ namespace Transactions.Api.Models.Invoicing
 
         public Guid? InvoiceID { get; set; }
 
+        public Guid? BillingDealID { get; set; }
+
         public CurrencyEnum? Currency { get; set; }
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }

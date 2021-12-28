@@ -28,6 +28,13 @@ export default class BillingDealsApi {
         return data;
     }
 
+    async getExcel(params) {
+
+        let data = await this.base.get(this.billingUrl+ '/$excel', params);
+        
+        return data;
+      }
+
     async getBillingDeal(id, doNotFormatData = false) {
         if (!this.headers) {
             let data = await this.base.get(this.billingUrl + '/$meta')
@@ -71,4 +78,16 @@ export default class BillingDealsApi {
     async unpauseBillingDeal(id) {
         return await this.base.post(this.billingUrl + `/${id}/unpause`);
     }
+
+    async triggerBillingDealsByTerminal(terminalID) {
+        return await this.base.post(this.billingUrl + `/trigger-by-terminal/${terminalID}`);
+    }
+
+    async disableBillingDeals(billingDealsID) {
+        return await this.base.post(this.billingUrl + '/disable-billing-deals', { billingDealsID });
+    } 
+
+    async triggerBillingDeals(billingDealsID) {
+        return await this.base.post(this.billingUrl + '/trigger-billing-deals', { billingDealsID });
+    } 
 }

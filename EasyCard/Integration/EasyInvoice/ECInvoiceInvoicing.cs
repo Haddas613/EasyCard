@@ -52,7 +52,8 @@ namespace EasyInvoice
 
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            NameValueCollection headers = GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, documentCreationRequest.CorrelationId);
+            NameValueCollection headers = await
+                GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, documentCreationRequest.CorrelationId, documentCreationRequest.InvoiceID);
 
             ECInvoiceDocumentResponse svcRes = null;
             string requestUrl = null;
@@ -115,7 +116,7 @@ namespace EasyInvoice
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId);
+            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, request.Email);
 
             try
             {
@@ -158,7 +159,7 @@ namespace EasyInvoice
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            NameValueCollection headers = GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, correlationId);
+            NameValueCollection headers = await GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, correlationId, terminal.UserName);
 
             string requestUrl = null;
             string requestStr = null;
@@ -208,11 +209,43 @@ namespace EasyInvoice
             }
         }
 
+        /*public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId);
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new SetDocNextNumberModel
+                {
+                    DocumentType = request.DocType.ToString(),
+                    NextDocumentNumber = request.CurrentNum
+                };
+             
+                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/document-types", json, () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "Document Number Changed"
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice Change Document Number request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice Change Document Number request failed", integrationMessageId);
+            }
+        }
+        */
         public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = GetAuthorizedHeaders(settings.UserName, settings.Password, integrationMessageId, correlationId);
+            var headers = await GetAuthorizedHeaders(settings.UserName, settings.Password, integrationMessageId, correlationId, settings.UserName);
 
             var extension = Path.GetExtension(fileName);
 
@@ -266,13 +299,28 @@ namespace EasyInvoice
             return storageService.GetAll(entityID);
         }
 
-        private NameValueCollection GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId)
+        private async Task<NameValueCollection> GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId, string entityId)
         {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
             try
             {
                 var loginRequest = new { email = username, password = password };
 
-                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
+                var loginres = await apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json", null,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
 
                 var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
 
@@ -284,6 +332,16 @@ namespace EasyInvoice
             catch (Exception ex)
             {
                 this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, entityId, integrationMessageId, correlationId)
+                {
+                    Request = requestStr,
+                    Response = responseStr,
+                    ResponseStatus = responseStatusStr,
+                    Address = requestUrl
+                };
+
+                await storageService.Save(integrationMessage);
 
                 throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
             }

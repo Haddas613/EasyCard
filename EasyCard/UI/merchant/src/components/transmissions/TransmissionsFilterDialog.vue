@@ -15,7 +15,7 @@
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
-          <v-row>
+          <v-row class="px-3">
             <!-- <v-col cols="12" md="12" class="pb-2 pt-0">
               <customer-dialog-invoker 
               :key="model.consumerID" 
@@ -34,7 +34,8 @@
                 clearable
               ></v-select>
             </v-col> -->
-            <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
+            <date-from-to-filter v-model="model"></date-from-to-filter>
+            <terminal-select v-model="model.terminalID" clearable></terminal-select>
           </v-row>
         </v-form>
       </div>
@@ -43,7 +44,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   components: {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
@@ -81,6 +84,10 @@ export default {
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.paymentTypesFiltered = this.lodash.filter(this.dictionaries.paymentTypeEnum, e => e.code == "bank" || e.code == "card");
+
+    if(!this.model.terminalID){
+      this.model.terminalID = this.terminalStore.terminalID;
+    }
   },
   computed: {
     visible: {
@@ -90,7 +97,10 @@ export default {
       set: function(val) {
         this.$emit("update:show", val);
       }
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    }),
   },
   methods: {
     apply() {

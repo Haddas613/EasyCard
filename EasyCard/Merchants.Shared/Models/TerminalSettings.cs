@@ -37,6 +37,8 @@ namespace Merchants.Shared.Models
 
         public bool? SendTransactionSlipEmailToMerchant { get; set; }
 
+        public bool? SendTransactionSlipEmailToConsumer { get; set; }
+
         [StringLength(250)]
         public string DefaultChargeDescription { get; set; }
 
@@ -81,5 +83,7 @@ namespace Merchants.Shared.Models
         }
 
         public bool DoNotCreateSaveTokenInitialDeal { get; set; }
+
+        public string RavMutavNumber { get; set; }
     }
 }

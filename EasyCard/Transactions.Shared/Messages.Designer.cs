@@ -178,6 +178,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} Billing Deals were disabled.
+        /// </summary>
+        public static string BillingDealsWereDisabled {
+            get {
+                return ResourceManager.GetString("BillingDealsWereDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Unpaused.
         /// </summary>
         public static string BillingDealUnpaused {
@@ -192,6 +201,15 @@ namespace Transactions.Shared {
         public static string BillingDealUpdated {
             get {
                 return ResourceManager.GetString("BillingDealUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing deal processing in-progress.
+        /// </summary>
+        public static string BillingInProgress {
+            get {
+                return ResourceManager.GetString("BillingInProgress", resourceCulture);
             }
         }
         
@@ -565,6 +583,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Updated.
+        /// </summary>
+        public static string InvoiceUpdated {
+            get {
+                return ResourceManager.GetString("InvoiceUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoicing system is not defined.
         /// </summary>
         public static string InvoicingNotDefined {
@@ -790,6 +817,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal has no transactions to generate Masav file.
+        /// </summary>
+        public static string TerminalHasNoTransactionsToGenerateMasavFile {
+            get {
+                return ResourceManager.GetString("TerminalHasNoTransactionsToGenerateMasavFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal must have Bank details specified.
         /// </summary>
         public static string TerminalMustHaveBankDetailsSpecified {
@@ -916,7 +952,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions queued.
+        ///   Looks up a localized string similar to @count Transactions queued.
         /// </summary>
         public static string TransactionsQueued {
             get {

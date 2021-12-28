@@ -27,6 +27,13 @@ export default class TransactionsApi {
         return data;
     }
 
+    async getExcel(params) {
+
+      let data = await this.base.get(this.transactionsUrl+ '/$excel', params);
+      
+      return data;
+    }
+
     async getTransaction(id){
       if (!this.headers) {
         let data = await this.base.get(this.transactionsUrl + '/$meta')
@@ -104,12 +111,6 @@ export default class TransactionsApi {
         //refund no jdeal type
         return await this.base.post(this.transactionsUrl + '/refund', data,  { showBadRequestToastr: false });
     }
-
-    async triggerBillingDeals(billingDealsID) {
-      return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', { billingDealsID }, {
-          showSuccessToastr: false
-        });
-    } 
 
     async sendTransactionSlipEmail(data) {
       return await this.base.post(this.transactionsUrl + '/send-transaction-slip-email', data);

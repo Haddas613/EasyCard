@@ -142,6 +142,8 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
+        public Guid? BillingDealID { get; set; }
+
         public string DownloadUrl { get; set; }
 
         public string CopyDonwnloadUrl { get; set; }

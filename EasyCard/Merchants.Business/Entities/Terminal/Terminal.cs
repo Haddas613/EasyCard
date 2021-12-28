@@ -73,6 +73,12 @@ namespace Merchants.Business.Entities.Terminal
         /// </summary>
         public string AggregatorTerminalReference { get; set; }
 
+        /// <summary>
+        /// Copy of the corresponding <see cref="TerminalExternalSystem"/> pin pad integration settings terminal reference.
+        /// For search purposes.
+        /// </summary>
+        public string PinPadProcessorTerminalReference { get; set; }
+
         public long? TerminalTemplateID { get; set; }
 
         public TerminalBankDetails BankDetails { get; set; }

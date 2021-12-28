@@ -36,7 +36,7 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.Actual)
             {
                 src = src
-                    .Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
+                    .Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
             }
             else if (filter.Finished == true)
@@ -54,6 +54,15 @@ namespace Transactions.Api.Extensions.Filtering
             else if (filter.HasError == true)
             {
                 src = src.Where(t => t.HasError);
+            }
+            else if (filter.OnlyActive == true)
+            {
+                src = src.Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null);
+            }
+            else if (filter.InProgress)
+            {
+                src = src
+                    .Where(t => t.InProgress != Shared.Enums.BillingProcessingStatusEnum.Pending);
             }
             else
             {
@@ -139,12 +148,16 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction >= filter.DateFrom.Value)
+                            : src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
                 }
 
                 if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
+                    src = filter.FilterDateByNextScheduledTransaction == true
+                            ? src.Where(t => t.NextScheduledTransaction <= filter.DateTo.Value)
+                            : src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
                 }
             }
 

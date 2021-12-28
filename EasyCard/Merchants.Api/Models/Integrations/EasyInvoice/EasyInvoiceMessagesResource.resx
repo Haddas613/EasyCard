@@ -123,4 +123,10 @@
   <data name="CustomerCreatedSuccessfully" xml:space="preserve">
     <value>Customer created successfully</value>
   </data>
+  <data name="DocumentNumberChangedFailed" xml:space="preserve">
+    <value>Document number changed failed</value>
+  </data>
+  <data name="DocumentNumberChangedSuccessfully" xml:space="preserve">
+    <value>Document number changed successfully</value>
+  </data>
 </root>

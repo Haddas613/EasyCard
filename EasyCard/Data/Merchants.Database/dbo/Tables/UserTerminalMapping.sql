@@ -10,9 +10,12 @@
     [Roles]                 VARCHAR (MAX)    NULL,
     [MerchantID]            UNIQUEIDENTIFIER DEFAULT ('00000000-0000-0000-0000-000000000000') NOT NULL,
     [Status]                SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [Terminals]             VARCHAR (MAX)    NULL,
     CONSTRAINT [PK_UserTerminalMapping] PRIMARY KEY CLUSTERED ([UserTerminalMappingID] ASC),
     CONSTRAINT [FK_UserTerminalMapping_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID])
 );
+
+
 
 
 

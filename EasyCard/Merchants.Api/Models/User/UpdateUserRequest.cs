@@ -19,6 +19,8 @@ namespace Merchants.Api.Models.User
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
-        public HashSet<string> Roles { get; set; }
+        public ICollection<string> Roles { get; set; }
+
+        public ICollection<Guid> Terminals { get; set; }
     }
 }

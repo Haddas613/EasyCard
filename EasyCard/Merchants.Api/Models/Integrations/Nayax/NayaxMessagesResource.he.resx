@@ -129,4 +129,7 @@
   <data name="DeviceNotFound" xml:space="preserve">
     <value>מכשיר לא נמצא</value>
   </data>
+  <data name="DeviceIsAlreadyPaired" xml:space="preserve">
+    <value>Device is already paired</value>
+  </data>
 </root>

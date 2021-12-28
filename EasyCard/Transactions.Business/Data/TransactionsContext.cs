@@ -89,6 +89,8 @@ namespace Transactions.Business.Data
 
         public DbSet<BillingDealHistory> BillingDealHistories { get; set; }
 
+        public DbSet<InvoiceHistory> InvoiceHistories { get; set; }
+
         public DbSet<BillingDeal> BillingDeals { get; set; }
 
         public DbSet<Invoice> Invoices { get; set; }
@@ -128,6 +130,7 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
             modelBuilder.ApplyConfiguration(new BillingDealHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
@@ -191,7 +194,7 @@ namespace Transactions.Business.Data
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                    s.Ignore(p => p.ConcurrencyToken);
+                    s.Property(p => p.ConcurrencyToken).IsRequired(false).HasColumnName("ClearingHouseConcurrencyToken").HasMaxLength(50);
                 });
 
                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
@@ -205,6 +208,14 @@ namespace Transactions.Business.Data
                     s.Ignore(b => b.SessionID);
                     s.Ignore(b => b.TotalAmount)/*.HasColumnType("decimal(19,4)").IsRequired()*/;
                 });
+                builder.OwnsOne(b => b.PinPadTransactionDetails, s =>
+                {
+                    s.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.PinPadUpdateReceiptNumber).HasColumnName("PinPadUpdateReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                });
+
+            
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
@@ -255,7 +266,7 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                //builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(p => p.BitPaymentInitiationId).HasColumnName("BitPaymentInitiationId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
                 builder.Property(p => p.BitTransactionSerialId).HasColumnName("BitTransactionSerialId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
@@ -263,7 +274,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
 
-                builder.HasIndex(d => d.PinPadTransactionID);
+                //builder.HasIndex(b => new { b.PinPadTransactionDetails.PinPadTransactionID});
+               // builder.HasIndex(b => b.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
             }
@@ -567,6 +579,35 @@ namespace Transactions.Business.Data
             }
         }
 
+        internal class InvoiceHistoryConfiguration : IEntityTypeConfiguration<InvoiceHistory>
+        {
+            public void Configure(EntityTypeBuilder<InvoiceHistory> builder)
+            {
+                builder.ToTable("InvoiceHistory");
+
+                builder.HasKey(b => b.InvoiceHistoryID);
+                builder.Property(b => b.InvoiceHistoryID).ValueGeneratedNever();
+
+                builder.Property(b => b.InvoiceID).IsRequired();
+
+                builder.Property(b => b.OperationDate).IsRequired();
+
+                builder.Property(b => b.OperationCode).IsRequired().HasMaxLength(30).IsUnicode(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
         internal class PaymentRequestConfiguration : IEntityTypeConfiguration<PaymentRequest>
         {
             public void Configure(EntityTypeBuilder<PaymentRequest> builder)
@@ -765,6 +806,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.MasavFileID);
                 builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.InstituteNumber);
                 builder.Property(b => b.ConsumerID);
                 builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Bankcode);

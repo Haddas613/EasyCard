@@ -69,6 +69,9 @@ namespace Transactions.Business.Migrations
                     b.Property<bool>("HasError")
                         .HasColumnType("bit");
 
+                    b.Property<short>("InProgress")
+                        .HasColumnType("smallint");
+
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -387,6 +390,9 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("InvoiceID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BillingDealID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CardBrand")
                         .HasMaxLength(20)
                         .IsUnicode(false)
@@ -541,6 +547,62 @@ namespace Transactions.Business.Migrations
                     b.ToTable("Invoice");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.InvoiceHistory", b =>
+                {
+                    b.Property<Guid>("InvoiceHistoryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<Guid?>("InvoiceID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<short>("OperationCode")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("OperationDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationDescription")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OperationMessage")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("SourceIP")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("InvoiceHistoryID");
+
+                    b.HasIndex("InvoiceID");
+
+                    b.ToTable("InvoiceHistory");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
                 {
                     b.Property<long>("MasavFileID")
@@ -641,6 +703,9 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("InstituteNumber")
+                        .HasColumnType("int");
 
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
@@ -989,12 +1054,6 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("PinPadDeviceID");
 
-                    b.Property<string>("PinPadTransactionID")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("PinPadTransactionID");
-
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
 
@@ -1053,8 +1112,6 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
-
-                    b.HasIndex("PinPadTransactionID");
 
                     b.HasIndex("MerchantID", "TerminalID");
 
@@ -1504,6 +1561,17 @@ namespace Transactions.Business.Migrations
                     b.Navigation("InvoiceDetails");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.InvoiceHistory", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.Invoice", "Invoice")
+                        .WithMany()
+                        .HasForeignKey("InvoiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>
                 {
                     b.HasOne("Transactions.Business.Entities.MasavFile", "MasavFile")
@@ -1695,6 +1763,11 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("bigint")
                                 .HasColumnName("ClearingHouseTransactionID");
 
+                            b1.Property<string>("ConcurrencyToken")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ClearingHouseConcurrencyToken");
+
                             b1.Property<Guid?>("MerchantReference")
                                 .HasMaxLength(50)
                                 .HasColumnType("uniqueidentifier")
@@ -1830,6 +1903,37 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.OwnsOne("Transactions.Business.Entities.PinPadTransactionsDetails", "PinPadTransactionDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("PinPadCorrelationID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadCorrelationID");
+
+                            b1.Property<string>("PinPadTransactionID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadTransactionID");
+
+                            b1.Property<string>("PinPadUpdateReceiptNumber")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("PinPadUpdateReceiptNumber");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.ShvaTransactionDetails", "ShvaTransactionDetails", b1 =>
                         {
                             b1.Property<Guid>("PaymentTransactionID")
@@ -1950,6 +2054,8 @@ namespace Transactions.Business.Migrations
                     b.Navigation("CreditCardDetails");
 
                     b.Navigation("DealDetails");
+
+                    b.Navigation("PinPadTransactionDetails");
 
                     b.Navigation("ShvaTransactionDetails");
 

@@ -1,5 +1,9 @@
 <template>
   <v-card class="mx-auto" outlined>
+    <transactions-transmit-dialog
+      :show.sync="showTransmitDialog"
+      v-on:ok="refresh()"
+    ></transactions-transmit-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header>
@@ -25,7 +29,7 @@
           <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
             {{item.merchantName || item.merchantID}}
           </router-link>
-        </template>    
+        </template>      
         <template v-slot:item.terminalName="{ item }">
           <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
             {{item.terminalName || item.terminalID}}
@@ -33,6 +37,9 @@
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
           <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
+        </template>
+        <template v-slot:item.transactionTimestamp="{ item }">
+         {{item.$transactionTimestamp | ecdate}}
         </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
@@ -61,7 +68,10 @@
             <v-icon v-else-if="item.$transactionType == 'installments'" color="accent">mdi-credit-card-check</v-icon>
             <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
           </span>
-        </template>   
+        </template>
+        <template v-slot:item.paymentTransactionID="{ item }">
+          <small>{{item.paymentTransactionID}}</small>
+        </template> 
       </v-data-table>
     </div>
   </v-card>
@@ -74,7 +84,9 @@ export default {
     TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     TransactionSlipDialog: () =>
-      import("../../components/transactions/TransactionSlipDialog")
+      import("../../components/transactions/TransactionSlipDialog"),
+    TransactionsTransmitDialog: () =>
+      import("../../components/transactions/TransactionsTransmitDialog")
   },
   props: {
     filters: {
@@ -104,6 +116,7 @@ export default {
       selectedTransaction: null,
       transactionSlipDialog: false,
       loadingTransaction: false,
+      showTransmitDialog: false,
     }
   },
   watch: {
@@ -149,6 +162,25 @@ export default {
       this.loadingTransaction = false;
       this.transactionSlipDialog = true;
     }
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: vm.$t("TransmitAll"),
+              fn: async () => {
+                vm.showTransmitDialog = true;
+              }
+            }
+          ],
+          refresh: async () => {
+            await vm.getDataFromApi();
+          }
+        }
+      });
+    });
+  },
 };
 </script>

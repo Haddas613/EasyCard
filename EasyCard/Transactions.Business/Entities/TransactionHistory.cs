@@ -27,6 +27,9 @@ namespace Transactions.Business.Entities
 
         public TransactionOperationCodesEnum OperationCode { get; set; }
 
+        /// <summary>
+        /// This is states json (before-after)
+        /// </summary>
         public string OperationDescription { get; set; }
 
         public string OperationMessage { get; set; }

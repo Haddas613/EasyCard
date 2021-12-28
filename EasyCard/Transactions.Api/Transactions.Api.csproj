@@ -110,6 +110,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CreditCardSummaryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Transactions\NayaxValidateRequestResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NayaxValidateRequestResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Transactions\TransactionSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -166,6 +171,10 @@
     <EmbeddedResource Update="Models\Tokens\CreditCardSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CreditCardSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Transactions\NayaxValidateRequestResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>NayaxValidateRequestResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Transactions\TransactionSummaryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

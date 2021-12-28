@@ -12,9 +12,12 @@
     [SmsSent]              BIT              NOT NULL,
     [SmsSentDate]          DATETIME2 (7)    NULL,
     [ConsumerName]         NVARCHAR (50)    NULL,
+    [InstituteNumber]      INT              NULL,
     CONSTRAINT [PK_MasavFileRow] PRIMARY KEY CLUSTERED ([MasavFileRowID] ASC),
     CONSTRAINT [FK_MasavFileRow_MasavFile_MasavFileID] FOREIGN KEY ([MasavFileID]) REFERENCES [dbo].[MasavFile] ([MasavFileID])
 );
+
+
 
 
 

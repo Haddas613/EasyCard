@@ -126,6 +126,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantProfileApi.Client",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bit", "Integration\Bit\Bit.csproj", "{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAdminApiClient", "Tests\TestAdminApiClient\TestAdminApiClient.csproj", "{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -326,6 +328,10 @@ Global
 		{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -377,6 +383,7 @@ Global
 		{D96F37E8-6E7E-4998-AA4A-1F0EB1A707E6} = {984AA7D6-E076-465D-B708-4816ECD25AC5}
 		{5D92154F-F872-421E-97D7-FD9AC951F479} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
 		{3E63538E-7B11-4577-BAAC-E7EBC5FC200B} = {68126764-B9A1-45D9-9C33-E84873A9124E}
+		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

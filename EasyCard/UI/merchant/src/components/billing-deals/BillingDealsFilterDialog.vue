@@ -43,6 +43,7 @@
                 :label="$t('Currency')"
                 outlined
                 clearable
+                :hide-details="$vuetify.breakpoint.mdAndUp"
               ></v-select>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
@@ -51,11 +52,22 @@
                 item-text="description"
                 item-value="code"
                 v-model="model.quickDateFilter"
-                :label="$t('QuickDate')"
+                :label="$t('UpdatedDate')"
                 outlined
                 clearable
+                hide-details
               ></v-select>
             </v-col>
+            <v-col class="pb-0 mb-0" cols="6" md="12">
+              <v-switch v-model="model.filterDateByNextScheduledTransaction" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('FilterDateByNextScheduledTransaction')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <date-from-to-filter class="px-3" v-model="model" :from-today="model.filterDateByNextScheduledTransaction"
+              :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
+              :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-0">
@@ -94,6 +106,7 @@ export default {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     PaymentType: () => import("../transactions/PaymentType"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter")
   },
   props: {
     show: {

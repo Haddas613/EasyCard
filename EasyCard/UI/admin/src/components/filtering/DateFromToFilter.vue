@@ -10,9 +10,9 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable></v-text-field>
+          <v-text-field v-model="dateFromRaw" :label="$t(dateFromLabel)" readonly v-on="on" clearable></v-text-field>
         </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable>
+        <v-date-picker v-model="dateFromRaw" no-title scrollable :min="fromToday ? today : null">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>
@@ -28,7 +28,7 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateToRaw" :label="$t('DateTo')" readonly v-on="on" clearable></v-text-field>
+          <v-text-field v-model="dateToRaw" :label="$t(dateToLabel)" readonly v-on="on" clearable></v-text-field>
         </template>
         <v-date-picker v-model="dateToRaw" no-title scrollable>
           <v-spacer></v-spacer>
@@ -52,6 +52,18 @@ export default {
       type: Object,
       default: null,
       required: true
+    },
+    fromToday: {
+      type: Boolean,
+      default: false
+    },
+    dateFromLabel: {
+      type: String,
+      default: 'DateFrom'
+    },
+    dateToLabel: {
+      type: String,
+      default: 'DateTo'
     }
   },
   data() {
@@ -60,7 +72,8 @@ export default {
       dateFromMenu: false,
       dateToMenu: false,
       dateFromRaw: this.data.dateFrom,
-      dateToRaw: this.data.dateTo
+      dateToRaw: this.data.dateTo,
+      today: new Date().toISOString()
     };
   },
   watch: {

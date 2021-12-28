@@ -131,8 +131,10 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse("TerminalID required", StatusEnum.Error, correlationId: httpContextAccessor.TraceIdentifier));
             }
 
+            var terminalID = model.TerminalID ?? User.GetTerminalID()?.FirstOrDefault();
+
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal((model.TerminalID ?? User.GetTerminalID()).GetValueOrDefault()));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID.GetValueOrDefault()));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {

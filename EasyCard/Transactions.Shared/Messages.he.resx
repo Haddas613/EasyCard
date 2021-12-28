@@ -310,7 +310,7 @@
     <value>נדרשת רשימת עסקאות לשידור</value>
   </data>
   <data name="TransactionsQueued" xml:space="preserve">
-    <value>עסקאות בתור</value>
+    <value>עסקאות בתור @count</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>סטטוס עסקה לא תואם לפעולה</value>
@@ -437,5 +437,14 @@
   </data>
   <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
     <value>האפשרות לטוקנים לכרטיסי אשראי חייבת להיות מאופשרת קודם.</value>
+  </data>
+  <data name="InvoiceUpdated" xml:space="preserve">
+    <value>Invoice Updated</value>
+  </data>
+  <data name="TerminalHasNoTransactionsToGenerateMasavFile" xml:space="preserve">
+    <value>אין עסקאות לייצור קובץ מסב</value>
+  </data>
+  <data name="BillingDealsWereDisabled" xml:space="preserve">
+    <value>עסקאות בילינג נחסמו {0}</value>
   </data>
 </root>

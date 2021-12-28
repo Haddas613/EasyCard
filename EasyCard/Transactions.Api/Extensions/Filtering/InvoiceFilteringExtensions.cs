@@ -21,6 +21,11 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
+            if (filter.BillingDealID != null)
+            {
+                src = src.Where(t => t.BillingDealID == filter.BillingDealID);
+            }
+
             if (filter.TerminalID != null)
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);

@@ -130,6 +130,11 @@ export default {
         return;
       }
       let data = this.$refs.terminalSettingsRef.getData();
+
+      if(!data.bankDetails){
+        data.bankDetails = this.terminal.bankDetails;
+      }
+      
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       this.$refs.terminalSettingsRef.watchModel();
       if (operaionResult.status === "success") {

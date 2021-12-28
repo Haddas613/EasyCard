@@ -6,6 +6,7 @@ using System.Linq;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions.Filtering
 {
@@ -211,6 +212,9 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);
             }
+
+            src = src.Where(d => d.PaymentTypeEnum == SharedIntegration.Models.PaymentTypeEnum.Card);
+            src = src.Where(d => d.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission);
 
             return src;
         }

@@ -165,6 +165,11 @@
           :label="$t('SendTransactionSlipEmailToMerchant')"
           hide-details
         ></v-switch>
+        <v-switch
+          v-model="model.settings.sendTransactionSlipEmailToConsumer"
+          :label="$t('SendTransactionSlipEmailToCustomer')"
+          hide-details
+        ></v-switch>
       </v-col>
       <v-col cols="12">
         <v-spacer class="py-4"></v-spacer>
@@ -461,6 +466,31 @@
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("BankAccountDetails")}}
         <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('InstitutionName')"
+          v-model="model.bankDetails.instituteName"
+          disabled
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('InstitutionNumber')"
+          v-model="model.bankDetails.instituteNum"
+          disabled
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('InstitutionServiceProvider')"
+          type="number"
+          v-model="model.bankDetails.instituteServiceNum"
+          disabled
+          outlined
+        ></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field

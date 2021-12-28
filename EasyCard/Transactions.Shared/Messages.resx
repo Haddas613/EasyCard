@@ -156,11 +156,17 @@
   <data name="BillingDealsRequired" xml:space="preserve">
     <value>Billing Deals required</value>
   </data>
+  <data name="BillingDealsWereDisabled" xml:space="preserve">
+    <value>{0} Billing Deals were disabled</value>
+  </data>
   <data name="BillingDealUnpaused" xml:space="preserve">
     <value>Billing Deal Unpaused</value>
   </data>
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>
+  </data>
+  <data name="BillingInProgress" xml:space="preserve">
+    <value>Billing deal processing in-progress</value>
   </data>
   <data name="CanceledByAggregator" xml:space="preserve">
     <value>Canceled By Aggregator</value>
@@ -285,6 +291,9 @@
   <data name="InvoiceStateIsNotValid" xml:space="preserve">
     <value>Invoice State is not valid</value>
   </data>
+  <data name="InvoiceUpdated" xml:space="preserve">
+    <value>Invoice Updated</value>
+  </data>
   <data name="InvoicingNotDefined" xml:space="preserve">
     <value>Invoicing system is not defined</value>
   </data>
@@ -360,6 +369,9 @@
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>
   </data>
+  <data name="TerminalHasNoTransactionsToGenerateMasavFile" xml:space="preserve">
+    <value>Terminal has no transactions to generate Masav file</value>
+  </data>
   <data name="TerminalMustHaveBankDetailsSpecified" xml:space="preserve">
     <value>Terminal must have Bank details specified</value>
   </data>
@@ -403,7 +415,7 @@
     <value>Transactions list for transmission is required</value>
   </data>
   <data name="TransactionsQueued" xml:space="preserve">
-    <value>Transactions queued</value>
+    <value>@count Transactions queued</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>Transaction Status is not valid for this operation</value>

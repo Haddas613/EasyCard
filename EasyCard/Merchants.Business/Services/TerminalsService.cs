@@ -48,11 +48,23 @@ namespace Merchants.Business.Services
             }
             else if (user.IsTerminal())
             {
-                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID()).AsNoTracking();
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.Terminals.Where(t => t.TerminalID == terminalID).AsNoTracking();
+            }
+            else if (user.IsNayaxApi())
+            {
+                return context.Terminals.Where(t => t.Integrations.Any(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)).AsNoTracking();
             }
             else
             {
-                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID()).AsNoTracking();
+                var response = context.Terminals.Where(t => t.MerchantID == user.GetMerchantID()).AsNoTracking();
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
             }
         }
 
@@ -81,19 +93,31 @@ namespace Merchants.Business.Services
 
         public async Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID)
         {
-            IQueryable<TerminalExternalSystem> query;
+            IQueryable<TerminalExternalSystem> query = context.TerminalExternalSystems.AsNoTracking();
 
-            if (user.IsAdmin())
+            if (user.IsAdmin() || user.IsNayaxApi())
             {
-                query = context.TerminalExternalSystems.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                query = context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID()).AsNoTracking();
+                var userTerminalID = user.GetTerminalID()?.FirstOrDefault();
+                if (terminalID != userTerminalID)
+                {
+                    throw new SecurityException("User has no access to requested data");
+                }
             }
             else
             {
                 query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID()).AsNoTracking();
+
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    if (!terminals.Contains(terminalID))
+                    {
+                        throw new SecurityException("User has no access to requested data");
+                    }
+                }
             }
 
             var externalSystems = await query.Where(t => t.TerminalID == terminalID).ToListAsync();

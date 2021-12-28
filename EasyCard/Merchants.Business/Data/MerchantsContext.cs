@@ -61,6 +61,15 @@ namespace Merchants.Business.Data
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (ICollection<FeatureEnum>)c.ToHashSet());
 
+        private static readonly ValueConverter GuidArrayConverter = new ValueConverter<IEnumerable<Guid>, string>(
+           v => string.Join(",", v),
+           v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(d => Guid.Parse(d)).ToList() : null);
+
+        private static readonly ValueComparer GuidArrayComparer = new ValueComparer<IEnumerable<Guid>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => (IEnumerable<Guid>)c.ToHashSet());
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -90,6 +99,8 @@ namespace Merchants.Business.Data
         public DbSet<Impersonation> Impersonations { get; set; }
 
         public DbSet<ShvaTerminal> ShvaTerminals { get; set; }
+
+        public DbSet<PinPadDevice> PinPadDevices { get; set; }
 
         private readonly ClaimsPrincipal user;
 
@@ -122,6 +133,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
             modelBuilder.ApplyConfiguration(new ShvaTerminalConfiguration());
+            modelBuilder.ApplyConfiguration(new PinPadDeviceConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -307,6 +319,9 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.DisplayName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Email).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.Terminals).IsRequired(false).IsUnicode(false).HasConversion(GuidArrayConverter)
+                   .Metadata.SetValueComparer(GuidArrayComparer);
             }
         }
 
@@ -480,6 +495,22 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.MerchantNumber).HasMaxLength(64).ValueGeneratedNever();
                 builder.Property(b => b.UserName).HasMaxLength(64);
                 builder.Property(b => b.Password).IsUnicode(true).HasMaxLength(64);
+            }
+        }
+
+        internal class PinPadDeviceConfiguration : IEntityTypeConfiguration<PinPadDevice>
+        {
+            public void Configure(EntityTypeBuilder<PinPadDevice> builder)
+            {
+                builder.ToTable("PinPadDevice");
+
+                builder.HasKey(b => b.PinPadDeviceID);
+                builder.Property(b => b.PinPadDeviceID).ValueGeneratedNever();
+
+                builder.Property(b => b.DeviceTerminalID).HasMaxLength(64);
+                builder.Property(b => b.PosName).HasMaxLength(64);
+                builder.Property(b => b.TerminalID).IsRequired(true);
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
             }
         }
     }

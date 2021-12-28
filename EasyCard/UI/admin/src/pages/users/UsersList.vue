@@ -1,6 +1,11 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <edit-user-dialog v-if="selectedUser" :show.sync="editUserDialog" :key="selectedUser.userID" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-dialog>
+    <edit-user-dialog 
+      v-if="selectedUser"
+      :show.sync="editUserDialog"
+      :key="selectedUser.userID"
+      :user="selectedUser"
+      v-on:ok="closeEditRolesDialog()"></edit-user-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
@@ -20,13 +25,13 @@
         :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
-        <template v-slot:item.merchantID="{ item }">
+        <template v-slot:item.merchantName="{ item }">
           <router-link
             class="text-decoration-none"
             link
-            :to="{name: 'Merchant', params: {id: item.$merchantID}}"
+            :to="{name: 'Merchant', params: {id: item.merchantID}}"
           >
-            {{item.merchantID}}
+            {{item.merchantName}}
           </router-link>
         </template>
         <template v-slot:item.status="{ item }">

@@ -42,13 +42,24 @@ export default {
       type: Object
     }
   },
+  mounted () {
+    window.addEventListener("keydown", this.handleKeyPress);
+  },
+  destroyed () {
+    window.removeEventListener("keydown", this.handleKeyPress);
+  },
   methods: {
     apply() {
       if(!this.$refs.form.validate()){
         return;
       }
       this.$emit("apply", this.model);
-    }
+    },
+    handleKeyPress($event){
+      if($event.key === "Enter"){
+        this.apply();
+      }
+    },
   }
 };
 </script>

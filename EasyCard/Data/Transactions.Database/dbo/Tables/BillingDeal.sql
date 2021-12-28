@@ -59,8 +59,11 @@
     [InvoiceOnly]                 BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [PaymentDetails]              NVARCHAR (MAX)   NULL,
     [Origin]                      NVARCHAR (50)    NULL,
+    [InProgress]                  SMALLINT         NOT NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

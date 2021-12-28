@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -154,6 +155,11 @@ namespace Transactions.Api.Models.Transactions
         /// Credit card information
         /// </summary>
         public CreditCardDetails CreditCardDetails { get; set; }
+
+        /// <summary>
+        /// Bank transfer information
+        /// </summary>
+        public BankTransferDetails BankTransferDetails { get; set; }
 
         /// <summary>
         /// Stored credit card details token reference
