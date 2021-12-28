@@ -18,7 +18,7 @@ namespace Merchants.Shared.Models
         [Required(AllowEmptyStrings = false)]
         public string BankAccount { get; set; }
 
-        [StringLength(8, MinimumLength = 8)]
+        [StringLength(9, MinimumLength = 3)]
         public string InstituteNum { get; set; }
 
         public int? InstituteServiceNum { get; set; }
