@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Masav;
 using Transactions.Business.Entities;
 
 namespace Transactions.Api.Mapping
@@ -44,9 +45,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.Bankcode, o => o.MapFrom(d => d.Bankcode))
                 .ForMember(d => d.BranchNumber, o => o.MapFrom(d => d.BranchNumber))
                 .ForMember(d => d.BeneficiaryNname, o => o.MapFrom(d => d.ConsumerName))
-                .ForMember(d=>d.BankAccountNumber, o => o.MapFrom(d => d.AccountNumber))
+                .ForMember(d => d.BankAccountNumber, o => o.MapFrom(d => d.AccountNumber))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
                 .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
+            CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
         }
     }
 }
