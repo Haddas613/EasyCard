@@ -126,6 +126,16 @@
               Looks up a localized string similar to Customer created successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentCancelledFailed">
+            <summary>
+              Looks up a localized string similar to Document Cancelled Failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentCancelledSuccessfully">
+            <summary>
+              Looks up a localized string similar to Document Cancelled Successfully.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedFailed">
             <summary>
               Looks up a localized string similar to Document number changed failed.
@@ -144,6 +154,16 @@
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully">
             <summary>
               Looks up a localized string similar to Get document number success.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentTypesGetFailed">
+            <summary>
+              Looks up a localized string similar to Document Types Get Failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully">
+            <summary>
+              Looks up a localized string similar to Document Types Get Successfully.
             </summary>
         </member>
         <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
