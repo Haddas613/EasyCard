@@ -5,6 +5,7 @@ using Shared.Helpers;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace DesktopEasyCardConvertorECNG
             this.configuration = configuration;
         }
 
-        public async Task<TokenResponse> GetToken()
+        public async Task<TokenResponse> GetToken(NameValueCollection headers = null)
         {
             var tokenResponse = await webApiClient.PostRawFormRawResponse(configuration.IdentityApiAddress, "/connect/token",
                 new Dictionary<string, string> { { "client_id", "terminal" }, { "grant_type", "terminal_rest_api" }, { "authorizationKey", privateKey } });

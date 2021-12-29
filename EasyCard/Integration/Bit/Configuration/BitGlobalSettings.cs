@@ -10,5 +10,7 @@ namespace Bit.Configuration
         public string BaseUrl { get; set; }
 
         public string OcpApimSubscriptionKey { get; set; }
+
+        public string CertificateThumbprint { get; set; }
     }
 }

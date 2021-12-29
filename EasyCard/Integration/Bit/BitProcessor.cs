@@ -43,21 +43,47 @@ namespace Bit
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
+            var createRequest = new BitCreateRequest
+            {
+                RequestAmount = paymentTransactionRequest.TotalAmount,
+                CurrencyTypeCode = 1,
+                DebitMethodCode = 1,
+                ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID,
+                RequestSubjectDescription = "Bit payment", //TODO
+                FranchisingId = 0, //TODO
+                UrlReturnAddress = null,
+            };
+
+            var createResponse = await CreateBitTransaction(createRequest, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
+
+            return createResponse.GetBitCreateTransactionResponse();
+        }
+
+        /// <summary>
+        /// Should be called after Create Transaction. Transforms J4 bit transaction to J5
+        /// </summary>
+        /// <param name="captureRequest">ECNG & Bit Transaction data</param>
+        /// <returns></returns>
+        public async Task<BitCaptureResponse> CaptureTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
             var bitTransaction = await GetBitTransaction(paymentTransactionRequest.BitPaymentInitiationId, integrationMessageId);
 
             ValidateAgainstBitTransaction(paymentTransactionRequest, bitTransaction, integrationMessageId);
 
-            var captureRequest = new BitCaptureRequest
+            var bitCaptureRequest = new BitCaptureRequest
             {
                 RequestAmount = bitTransaction.RequestAmount,
                 PaymentInitiationId = bitTransaction.PaymentInitiationId,
                 SourceTransactionId = bitTransaction.SourceTransactionId,
-                IssuerTransactionId =  bitTransaction.IssuerTransactionId
+                IssuerTransactionId = bitTransaction.IssuerTransactionId,
+                ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID
             };
 
-            var captureResponse = await CaptureBitTransaction(captureRequest, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
+            var captureResponse = await CaptureBitTransaction(bitCaptureRequest, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
 
-            return captureResponse.GetBitCreateTransactionResponse();
+            return captureResponse;
         }
 
         public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
@@ -113,6 +139,50 @@ namespace Bit
                 logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
 
                 throw new IntegrationException("Bit integration request failed", integrationMessageId);
+            }
+        }
+
+        private async Task<BitCreateResponse> CreateBitTransaction(BitCreateRequest request, string paymentTransactionID, string integrationMessageId, string correlationID)
+        {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            try
+            {
+                var response = await apiClient.Post<BitCreateResponse>(configuration.BaseUrl, $"{GetBitTransactionUrl(null)}", request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+
+                //TODO: throw if responseStatus == 203 || 207
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Bit integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
             }
         }
 

@@ -1,11 +1,10 @@
-﻿using Shared.Integration.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Bit.Models
 {
-    public class BitCreateTransactionResponse : ProcessorCreateTransactionResponse
+    public class BitCreateResponse
     {
         public decimal RequestAmount { get; set; }
 

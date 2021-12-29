@@ -90,7 +90,6 @@ namespace CheckoutPortal
             services.AddAutoMapper(typeof(Startup));
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
-            services.Configure<BitGlobalSettings>(Configuration.GetSection("BitGlobalSettings"));
 
             services.AddSingleton<IWebApiClient, WebApiClient>();
             services.AddSingleton<IWebApiClientTokenService, WebApiClientTokenService>(serviceProvider =>
