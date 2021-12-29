@@ -122,7 +122,6 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
-        /*
         [HttpPost]
         [Route("set-document-number")]
         public async Task<ActionResult<OperationResponse>> SetDocumentNumber(SetDocumentNumberRequest request)
@@ -135,11 +134,15 @@ namespace Merchants.Api.Controllers.Integrations
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            //terminalSettings.Password = request.Password;
             var changeDocumentNumberResult = await eCInvoicing.SetDocumentNumber(
                 new EasyInvoice.Models.ECInvoiceSetDocumentNumberRequest
                 {
-                     CurrentNum = request.CurrentNum,
-                      DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType)
+                    CurrentNum = request.CurrentNum,
+                    DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
+                    Email = terminalSettings.UserName,
+                    Terminal = terminalSettings
                 },
                 GetCorrelationID());
 
@@ -155,6 +158,75 @@ namespace Merchants.Api.Controllers.Integrations
 
             return Ok(response);
         }
-        */
+
+
+        [HttpGet]
+        [Route("get-document-number")]
+        public async Task<ActionResult<OperationResponse>> GetDocumentNumber(GetDocumentNumberRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            //terminalSettings.Password = request.Password;
+            var getDocumentNumberResult = await eCInvoicing.GetDocumentNumber(
+                new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
+                {
+                    DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
+                    Terminal = terminalSettings
+                },
+                GetCorrelationID());
+
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString());
+
+            if (response.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
+
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("get-document-types")]
+        public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            //terminalSettings.Password = request.Password;
+            var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
+                new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
+                {
+                    Terminal = terminalSettings
+                },
+                GetCorrelationID());
+
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
+
+            if (response.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
+
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }

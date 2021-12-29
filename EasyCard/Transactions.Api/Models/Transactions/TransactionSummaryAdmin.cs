@@ -21,17 +21,11 @@ namespace Transactions.Api.Models.Transactions
         [MetadataOptions(Hidden = true)]
         public Guid MerchantID { get; set; }
 
-        public string TerminalName { get; set; }
-
         [MetadataOptions(Hidden = true)]
         public new Guid TerminalID { get; set; }
 
         [MetadataOptions(Hidden = true)]
         public new CurrencyEnum Currency { get; set; }
-
-        [EnumDataType(typeof(DocumentOriginEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public DocumentOriginEnum DocumentOrigin { get; set; }
 
         /// <summary>
         /// Processing status
@@ -70,14 +64,5 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [MetadataOptions(Hidden = true)]
         public new PaymentTypeEnum PaymentTypeEnum { get; set; }
-
-        public string CardNumber { get; set; }
-
-        /// <summary>
-        /// Rejection Reason Message (in case of rejected transaction)
-        /// </summary>
-        public string RejectionMessage { get; set; }
-
-        public int? ProcessorResultCode { get; set; }
     }
 }

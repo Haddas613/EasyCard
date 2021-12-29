@@ -79,19 +79,12 @@
             :items-per-page="defaultFilter.take"
             :loading="loading"
             :header-props="{ sortIcon: null }"
-            class="elevation-1">
-          <template v-slot:item.merchantName="{ item }">
-            <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
-              {{item.merchantName || item.merchantID}}
-            </router-link>
-          </template>      
+            class="elevation-1">     
           <template v-slot:item.terminalName="{ item }">
-            <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
-              {{item.terminalName || item.terminalID}}
-            </router-link>
+            {{item.terminalName || item.terminalID}}
           </template> 
           <template v-slot:item.transactionAmount="{ item }">
-            <b class="justify-currency">{{item.transactionAmount | currency(item.$currency)}}</b>
+            <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.transactionTimestamp="{ item }">
           {{item.$transactionTimestamp | ecdate('DT')}}

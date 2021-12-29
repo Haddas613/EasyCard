@@ -136,6 +136,16 @@
               Looks up a localized string similar to Document number changed successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberGetFailed">
+            <summary>
+              Looks up a localized string similar to Get document number failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully">
+            <summary>
+              Looks up a localized string similar to Get document number success.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

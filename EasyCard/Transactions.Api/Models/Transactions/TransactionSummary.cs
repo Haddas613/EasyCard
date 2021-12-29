@@ -19,8 +19,23 @@ namespace Transactions.Api.Models.Transactions
         [MetadataOptions(Order = 1001)]
         public Guid PaymentTransactionID { get; set; }
 
-        [MetadataOptions(Order = 2)]
+        public string TerminalName { get; set; }
+
+        [MetadataOptions(Hidden = true)]
         public Guid TerminalID { get; set; }
+
+        [EnumDataType(typeof(DocumentOriginEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        public string CardNumber { get; set; }
+
+        /// <summary>
+        /// Rejection Reason Message (in case of rejected transaction)
+        /// </summary>
+        public string RejectionMessage { get; set; }
+
+        public int? ProcessorResultCode { get; set; }
 
         public decimal TransactionAmount { get; set; }
 
@@ -30,6 +45,7 @@ namespace Transactions.Api.Models.Transactions
 
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public CurrencyEnum Currency { get; set; }
 
         public DateTime? TransactionTimestamp { get; set; }
@@ -39,6 +55,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [EnumDataType(typeof(TransactionStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public TransactionStatusEnum Status { get; set; }
 
         /// <summary>
@@ -46,6 +63,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [EnumDataType(typeof(PaymentTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
@@ -57,6 +75,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [EnumDataType(typeof(SpecialTransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
 
         /// <summary>
@@ -71,6 +90,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [EnumDataType(typeof(RejectionReasonEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public RejectionReasonEnum? RejectionReason { get; set; }
 
         /// <summary>
@@ -78,6 +98,7 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [EnumDataType(typeof(CardPresenceEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public CardPresenceEnum CardPresence { get; set; }
 
         public string CardOwnerName { get; set; }

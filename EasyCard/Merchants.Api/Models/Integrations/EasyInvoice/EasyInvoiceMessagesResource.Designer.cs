@@ -95,5 +95,41 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
                 return ResourceManager.GetString("DocumentNumberChangedSuccessfully", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get document number failed.
+        /// </summary>
+        public static string DocumentNumberGetFailed {
+            get {
+                return ResourceManager.GetString("DocumentNumberGetFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get document number success.
+        /// </summary>
+        public static string DocumentNumberGetSuccessfully {
+            get {
+                return ResourceManager.GetString("DocumentNumberGetSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Types Get Failed.
+        /// </summary>
+        public static string DocumentTypesGetFailed {
+            get {
+                return ResourceManager.GetString("DocumentTypesGetFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Types Get Successfully.
+        /// </summary>
+        public static string DocumentTypesGetSuccessfully {
+            get {
+                return ResourceManager.GetString("DocumentTypesGetSuccessfully", resourceCulture);
+            }
+        }
     }
 }

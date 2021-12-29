@@ -343,7 +343,24 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     // TODO: try to remove ProjectTo
-                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
+                    var summary = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                        }
+                    });
+                    response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
                     response.TotalAmount = totalAmount.Value;
                     return Ok(response);

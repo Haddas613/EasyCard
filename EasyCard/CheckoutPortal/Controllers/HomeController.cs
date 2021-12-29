@@ -218,17 +218,17 @@ namespace CheckoutPortal.Controllers
                     }
                 }
 
-                //if (ModelState[nameof(request.Cvv)] != null)
+                if (ModelState[nameof(request.Cvv)] != null)
                 {
                     ModelState[nameof(request.Cvv)]?.Errors?.Clear();
                     ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
                 }
-                //if (ModelState[nameof(request.CardNumber)] != null)
+                if (ModelState[nameof(request.CardNumber)] != null)
                 {
                     ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
                     ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
                 }
-                //if (ModelState[nameof(request.CardExpiration)] != null)
+                if (ModelState[nameof(request.CardExpiration)] != null)
                 {
                     ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
                     ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;

@@ -2128,6 +2128,11 @@
             Merchant deal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.RejectionMessage">
+            <summary>
+            Rejection Reason Message (in case of rejected transaction)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">
             <summary>
             Processing status
@@ -2181,11 +2186,6 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.PaymentTypeEnum">
             <summary>
             Rejection Reason
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionMessage">
-            <summary>
-            Rejection Reason Message (in case of rejected transaction)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionSummaryResource">

@@ -99,7 +99,8 @@ const routes = [
                 name: 'Transactions',
                 path: 'transactions/list',
                 component: () =>
-                    import ('../pages/transactions/TransactionsList.vue'),
+                    import ('../pages/transactions/TransactionsFiltered.vue'),
+                    //import ('../pages/transactions/TransactionsList.vue'),
             },
             {
                 name: 'Transmissions',
@@ -120,7 +121,7 @@ const routes = [
                 name: 'TransactionsFiltered',
                 path: 'transactions/filter/',
                 meta: {
-                    backBtn: 'Transactions'
+                    backBtn: 'Dashboard'
                 },
                 props: true,
                 component: () =>

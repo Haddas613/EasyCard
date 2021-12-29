@@ -129,4 +129,16 @@
   <data name="DocumentNumberChangedSuccessfully" xml:space="preserve">
     <value>מספר מסמך שונה בהצלחה</value>
   </data>
+  <data name="DocumentNumberGetFailed" xml:space="preserve">
+    <value>נכשלה בקשה לקבלת מספר מסמך</value>
+  </data>
+  <data name="DocumentNumberGetSuccessfully" xml:space="preserve">
+    <value>בקשה לקבלת מספר מסמך הצליחה</value>
+  </data>
+  <data name="DocumentTypesGetFailed" xml:space="preserve">
+    <value>נכשל בקבלת סוגי מסמכים</value>
+  </data>
+  <data name="DocumentTypesGetSuccessfully" xml:space="preserve">
+    <value>הצליח לקבל סוגי מסמכים</value>
+  </data>
 </root>
