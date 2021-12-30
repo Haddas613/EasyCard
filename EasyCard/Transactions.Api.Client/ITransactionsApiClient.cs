@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Currency;
+using Transactions.Api.Models.External.Bit;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.UpdateParameters;
 
@@ -14,6 +15,8 @@ namespace Transactions.Api.Client
     public interface ITransactionsApiClient
     {
         Task<OperationResponse> CreateTransaction(CreateTransactionRequest model);
+
+        Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model);
 
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 

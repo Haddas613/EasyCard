@@ -182,17 +182,5 @@ namespace Transactions.Api.Models.Transactions
 
         [SwaggerExclude]
         public JObject Extension { get; set; }
-
-        /// <summary>
-        /// For Bit Processor only
-        /// </summary>
-        [SwaggerExclude]
-        public string BitPaymentInitiationId { get; set; }
-
-        /// <summary>
-        /// For Bit Processor only
-        /// </summary>
-        [SwaggerExclude]
-        public string BitTransactionSerialId { get; set; }
     }
 }

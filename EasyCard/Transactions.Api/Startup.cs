@@ -671,7 +671,7 @@ namespace Transactions.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.BitRequestsLogStorageTable, cfg.BitRequestsLogStorageTable);
 
                 var bitOptionsConfig = serviceProvider.GetRequiredService<IOptions<BitGlobalSettings>>();
-                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, bitOptionsConfig);
+                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, bitOptionsConfig, true);
 
                 return new Bit.BitProcessor(bitOptionsConfig, webApiClient, logger, storageService, tokenSvc);
             });

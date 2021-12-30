@@ -66,6 +66,7 @@
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="IssueInvoice" />
                     <input type="hidden" asp-for="AllowPinPad" />
+                    <input type="hidden" asp-for="PayWithBit" />
 
                     @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
                     {
@@ -301,7 +302,11 @@
                         {
                             <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
                         }
-                        <div class="px-1" id="bitcom-button-container"></div>
+                        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+                            <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
+                            PayWithBit
+                        </button>
+                        @*<input class="btn btn-secondary mx-1" type="button" id="submitbtn" value="PayWithBit" />*@
                     </div>
                 </form>
             </div>
@@ -445,6 +450,14 @@ $(document).ready(function () {
                 })
             </text>
             }
+
+            $("#paywithbit").on("click", function () {
+                if (!$("#checkout-form").valid()) {
+                    return;
+                }
+                $("#PayWithBit").val(true);
+                $("#checkout-form").submit();
+            })
 
             //$("#Amount").on("focus", function () {
             //    if ($("#SaveCreditCard").is(":checked")) {

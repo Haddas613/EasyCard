@@ -23,10 +23,22 @@ namespace Shared.Helpers.Security
 
         private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public WebApiClientTokenService(HttpClient httpClient, IOptions<IdentityServerClientSettings> configuration)
+        /// <summary>
+        /// When set to true, only configuration string without /connect/token will be used as Address for get token request.
+        /// </summary>
+        private readonly bool customCredentialsTokenURi = false;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebApiClientTokenService"/> class.
+        /// </summary>
+        /// <param name="httpClient">http client</param>
+        /// <param name="configuration">Configuration</param>
+        /// <param name="customCredentialsTokenURi">When set to true, only configuration string without /connect/token will be used as Address for get token request.</param>
+        public WebApiClientTokenService(HttpClient httpClient, IOptions<IdentityServerClientSettings> configuration, bool customCredentialsTokenURi = false)
         {
             this.configuration = configuration.Value;
             this.httpClient = httpClient;
+            this.customCredentialsTokenURi = customCredentialsTokenURi;
         }
 
         public virtual async Task<TokenResponse> GetToken(NameValueCollection headers = null)
@@ -42,11 +54,11 @@ namespace Shared.Helpers.Security
 
             var request = new ClientCredentialsTokenRequest
             {
-                Address = $"{configuration.Authority}/connect/token",
+                Address = customCredentialsTokenURi ? configuration.Authority : $"{configuration.Authority}/connect/token",
 
                 ClientId = configuration.ClientID,
                 ClientSecret = configuration.ClientSecret,
-                Scope = configuration.Scope
+                Scope = configuration.Scope,
             };
 
             if (headers != null)

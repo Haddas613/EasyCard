@@ -38,7 +38,7 @@ using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers.External
 {
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.CheckoutPortal)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     [Route("api/external/bit")]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -81,8 +81,8 @@ namespace Transactions.Api.Controllers.External
 
         [HttpPost]
         [ValidateModelState]
-        [Route("v1/initial")]
-        public async Task<ActionResult<OperationResponse>> Initial([FromBody] CreateTransactionRequest model)
+        [Route("initial")]
+        public async Task<ActionResult<InitialBitOperationResponse>> Initial([FromBody] CreateTransactionRequest model)
         {
             try
             {
@@ -98,13 +98,13 @@ namespace Transactions.Api.Controllers.External
                   terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
                   Transactions.Shared.Messages.AggregatorNotDefined);
 
-                var transaction = mapper.Map<PaymentTransaction>(model);
-
                 //TODO: map terminal to model?
                 if (model.VATRate == null)
                 {
                     model.VATRate = terminal.Settings.VATRate;
                 }
+
+                var transaction = mapper.Map<PaymentTransaction>(model);
 
                 transaction.SpecialTransactionType = SpecialTransactionTypeEnum.RegularDeal;
                 transaction.JDealType = JDealTypeEnum.J4;
@@ -148,8 +148,8 @@ namespace Transactions.Api.Controllers.External
                     try
                     {
                         var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-                        aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
-                        mapper.Map(model, aggregatorRequest.CreditCardDetails);
+                        //aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
+                        //mapper.Map(model, aggregatorRequest.CreditCardDetails);
 
                         if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
                         {
@@ -191,12 +191,18 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                return new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
+                var response = new InitialBitOperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID)
+                {
+                    BitPaymentInitiationId = transaction.BitPaymentInitiationId,
+                    BitTransactionSerialId = transaction.BitTransactionSerialId
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to initiate Transaction for Bit. TerminalID: {model.TerminalID}");
-                return new OperationResponse(ex.Message, StatusEnum.Error);
+                return Ok(new OperationResponse(ex.Message, StatusEnum.Error));
             }
         }
 

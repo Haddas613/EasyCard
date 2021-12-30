@@ -958,6 +958,18 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("BillingDealID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("BitPaymentInitiationId")
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("BitPaymentInitiationId");
+
+                    b.Property<string>("BitTransactionSerialId")
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("BitTransactionSerialId");
+
                     b.Property<string>("CardExpiration")
                         .HasMaxLength(5)
                         .IsUnicode(false)

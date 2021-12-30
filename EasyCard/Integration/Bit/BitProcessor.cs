@@ -47,10 +47,10 @@ namespace Bit
             {
                 RequestAmount = paymentTransactionRequest.TotalAmount,
                 CurrencyTypeCode = 1,
-                DebitMethodCode = 1,
+                DebitMethodCode = 2,
                 ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID,
                 RequestSubjectDescription = "Bit payment", //TODO
-                FranchisingId = 0, //TODO
+                FranchisingId = 176, //TODO
                 UrlReturnAddress = null,
             };
 
@@ -109,9 +109,10 @@ namespace Bit
             throw new NotImplementedException();
         }
 
-        private string GetBitTransactionUrl(string paymentInitiationId)
+        private string GetBitTransactionUrl(string paymentInitiationId = null)
         {
-            return $"/payments/bit/v2/single-payments/{paymentInitiationId}";
+            return paymentInitiationId is null ?
+                $"/payments/bit/v2/single-payments" : $"/payments/bit/v2/single-payments/{paymentInitiationId}";
         }
 
         private async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string integrationMessageId)
@@ -151,7 +152,7 @@ namespace Bit
 
             try
             {
-                var response = await apiClient.Post<BitCreateResponse>(configuration.BaseUrl, $"{GetBitTransactionUrl(null)}", request, BuildHeaders,
+                var response = await apiClient.Post<BitCreateResponse>(configuration.BaseUrl, $"{GetBitTransactionUrl()}", request, BuildHeaders,
                     (url, request) =>
                     {
                         requestStr = request;
@@ -236,16 +237,56 @@ namespace Bit
             }
         }
 
+        //TODO: temporary
+        private async Task<string> GetAccessToken()
+        {
+            NameValueCollection headers = new NameValueCollection();
+            headers.Add("Ocp-Apim-Subscription-Key", configuration.OcpApimSubscriptionKey);
+
+            var request = new
+            {
+                client_id = configuration.ClientID,
+                client_secret = configuration.ClientSecret,
+                response_type = "token",
+                scope = "bit_payment"
+            };
+
+            IdentityModel.Client.TokenResponse tokenResponse;
+
+            try
+            {
+                var res = await apiClient.PostRawFormRawResponse(configuration.Authority, string.Empty,
+                new Dictionary<string, string> {
+                    { "client_id", configuration.ClientID },
+                    { "client_secret", configuration.ClientSecret },
+                    { "response_type", "token" },
+                    { "scope", "bit_payment" },
+                }, async () => headers);
+
+                tokenResponse = await IdentityModel.Client.ProtocolResponse.FromHttpResponseAsync<IdentityModel.Client.TokenResponse>(res);
+            }
+            catch
+            {
+                throw;
+            }
+
+
+            return tokenResponse?.AccessToken;
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             NameValueCollection headers = new NameValueCollection();
             headers.Add("Ocp-Apim-Subscription-Key", configuration.OcpApimSubscriptionKey);
 
-            var apiToken = await tokenService.GetToken(headers);
+            var accessToken = await GetAccessToken();
 
-            if (apiToken != null)
+            //not compatible with Bit
+            //var apiToken = await tokenService.GetToken(headers);
+
+            if (accessToken != null)
             {
-                headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", apiToken.AccessToken).ToString());
+                headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", accessToken).ToString());
             }
 
             return headers;
