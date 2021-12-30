@@ -344,6 +344,76 @@ namespace EasyInvoice
             }
         }
 
+        
+        public async Task<Object> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, "");
+
+            try
+            {
+                // headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new GetDocumentTaxReportModel
+                {
+                    endDate = request.EndDate,
+                    startDate = request.StartDate,
+                };
+
+                var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
+                return result;
+                //    return new OperationResponse
+                //    {
+                //        //EntityID = result
+                //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                //        Message = "Get Document Number",
+                //         
+                //    };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice Get Tax Report request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice Get Tax Report request failed", integrationMessageId);
+            }
+        }
+
+
+         public async Task<Object> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, "");
+
+            try
+            {
+                // headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new GetDocumentTaxReportModel
+                {
+                    endDate = request.EndDate,
+                    startDate = request.StartDate,
+                };
+
+                var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
+                return result;
+                //    return new OperationResponse
+                //    {
+                //        //EntityID = result
+                //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                //        Message = "Get Document Number",
+                //         
+                //    };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice Get Hash Report request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice Get Hash Report request failed", integrationMessageId);
+            }
+        }
+
 
         public async Task<OperationResponse> GetDocumentTypes(ECInvoiceGetDocumentNumberRequest request, string correlationId)
         {

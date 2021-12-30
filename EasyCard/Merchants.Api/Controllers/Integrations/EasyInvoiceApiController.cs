@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -257,6 +258,86 @@ namespace Merchants.Api.Controllers.Integrations
                     EndDate = request.EndAt.ToString("yyyy-MM-dd")
                 },
                 GetCorrelationID());
+            return Ok(getDocumentReportResult);
+            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
+
+            // if (response.Status != StatusEnum.Success)
+            // {
+            //     response.Status = StatusEnum.Error;
+            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
+            //
+            //     return BadRequest(response);
+            // }
+            //
+            // return Ok(response);
+        }
+
+
+        [HttpGet]
+        [Route("get-document-tax-report")]
+        public async Task<Object> GetDocumentTaxReport(GetDocumentTaxReportRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            var getDocumentReportResult = await eCInvoicing.GetTaxReport(
+                new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
+                {
+                    Terminal = terminalSettings,
+                    StartDate = request.StartAt.ToString("yyyy-MM-dd"),
+                    EndDate = request.EndAt.ToString("yyyy-MM-dd")
+                },
+                GetCorrelationID());
+
+            //RestClient clientRestSharop;
+           //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
+            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
+            return Ok(getDocumentReportResult);
+            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
+
+            // if (response.Status != StatusEnum.Success)
+            // {
+            //     response.Status = StatusEnum.Error;
+            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
+            //
+            //     return BadRequest(response);
+            // }
+            //
+            // return Ok(response);
+        }
+
+
+        [HttpGet]
+        [Route("get-document-hash-report")]
+        public async Task<Object> GetDocumentHashReport(GetDocumentTaxReportRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            var getDocumentReportResult = await eCInvoicing.GetHashReport(
+                new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
+                {
+                    Terminal = terminalSettings,
+                    StartDate = request.StartAt.ToString("yyyy-MM-dd"),
+                    EndDate = request.EndAt.ToString("yyyy-MM-dd")
+                },
+                GetCorrelationID());
+
+            //RestClient clientRestSharop;
+            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
+            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
             return Ok(getDocumentReportResult);
             // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
 
