@@ -35,14 +35,6 @@ namespace Bit.Services
                 }
             }
 
-            var request = new
-            {
-                client_id = configuration.ClientID,
-                client_secret = configuration.ClientSecret,
-                response_type = "token",
-                scope = "bit_payment"
-            };
-
             var res = await webApiClient.PostRawFormRawResponse(configuration.Authority, string.Empty,
                 new Dictionary<string, string> {
                     { "client_id", configuration.ClientID },
