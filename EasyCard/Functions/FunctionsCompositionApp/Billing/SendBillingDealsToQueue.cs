@@ -3,6 +3,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,12 +60,27 @@ namespace FunctionsCompositionApp.Billing
 
                 foreach (var terminal in terminals.Data)
                 {
-                    var response = await transactionsApiClient.SendBillingDealsToQueue(terminal.TerminalID);
-                    totalBillingDeals += response.Count;
-                    
-                    if (response.Count > 0)
+                    try
                     {
-                        log.LogInformation($"Sent {response.Count} billing deals for terminal #{terminal.TerminalID}:{terminal.Label}");
+                        var response = await transactionsApiClient.SendBillingDealsToQueue(terminal.TerminalID);
+                        totalBillingDeals += response.Count;
+
+                        if (response.Count > 0)
+                        {
+                            log.LogInformation($"Sent {response.Count} billing deals for terminal #{terminal.TerminalID}:{terminal.Label}");
+                        }
+                    }
+                    catch (WebApiClientErrorException ex)
+                    {
+                        log.LogError(ex, $"Failed to trigger billing deals for terminal {terminal.TerminalID}: {ex.Response}");
+                    }
+                    catch (WebApiServerErrorException ex)
+                    {
+                        log.LogError(ex, $"Failed to trigger billing deals for terminal {terminal.TerminalID}: {ex.Response}");
+                    }
+                    catch (Exception ex)
+                    {
+                        log.LogError(ex, $"Failed to trigger billing deals for terminal {terminal.TerminalID}: {ex.Message}");
                     }
                 }
 
