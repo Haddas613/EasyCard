@@ -625,7 +625,7 @@ namespace Transactions.Api.Controllers
             // send expiration emails
             await ProcessExpiredCardsBillingDeals(terminal);
 
-            if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+            if (terminal.BillingSettings?.CreateRecurrentPaymentsAutomatically == true)
             {
                 return await ProcessSendDueBillingDealsToQueue(terminalID);
             }
