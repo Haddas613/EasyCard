@@ -131,9 +131,9 @@ export default {
       }
       let data = this.$refs.terminalSettingsRef.getData();
 
-      if(!data.bankDetails){
-        data.bankDetails = this.terminal.bankDetails;
-      }
+      // if(!data.bankDetails){
+      //   data.bankDetails = this.terminal.bankDetails;
+      // }
       
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       this.$refs.terminalSettingsRef.watchModel();
@@ -148,7 +148,7 @@ export default {
       }
 
       if (!terminal.bankDetails) {
-        terminal.bankDetails = {};
+        //terminal.bankDetails = {};
       }
 
       this.terminal = terminal;
