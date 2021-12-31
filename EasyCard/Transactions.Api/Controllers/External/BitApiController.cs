@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api;
 using Shared.Api.Attributes;
+using Shared.Api.Configuration;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
@@ -56,6 +57,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ILogger logger;
         private readonly BitProcessor bitProcessor;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly ApiSettings apiSettings;
 
         public BitApiController(
              IAggregatorResolver aggregatorResolver,
@@ -66,7 +68,8 @@ namespace Transactions.Api.Controllers.External
              IMetricsService metrics,
              IHttpContextAccessorWrapper httpContextAccessor,
              BitProcessor bitProcessor,
-             ISystemSettingsService systemSettingsService)
+             ISystemSettingsService systemSettingsService,
+             IOptions<ApiSettings> apiSettings)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
@@ -77,6 +80,7 @@ namespace Transactions.Api.Controllers.External
             this.mapper = mapper;
             this.bitProcessor = bitProcessor;
             this.systemSettingsService = systemSettingsService;
+            this.apiSettings = apiSettings.Value;
         }
 
         [HttpPost]
@@ -128,6 +132,7 @@ namespace Transactions.Api.Controllers.External
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+                processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
                 var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
                 var bitResponse = processorResponse as BitCreateTransactionResponse;
@@ -194,7 +199,8 @@ namespace Transactions.Api.Controllers.External
                 var response = new InitialBitOperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID)
                 {
                     BitPaymentInitiationId = transaction.BitPaymentInitiationId,
-                    BitTransactionSerialId = transaction.BitTransactionSerialId
+                    BitTransactionSerialId = transaction.BitTransactionSerialId,
+                    RedirectURL = bitResponse.PaymentPageUrlAddress
                 };
 
                 return Ok(response);

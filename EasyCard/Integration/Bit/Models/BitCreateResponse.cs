@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Bit.Models
 {
-    public class BitCreateResponse
+    public class BitCreateResponse : BitBaseResponse
     {
         public decimal RequestAmount { get; set; }
 

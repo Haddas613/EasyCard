@@ -551,6 +551,11 @@
             For Bit Processor only
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.RedirectURL">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
         <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorCreateTransactionResponse"/> class.

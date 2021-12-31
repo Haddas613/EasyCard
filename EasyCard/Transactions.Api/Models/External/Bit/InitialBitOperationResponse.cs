@@ -10,6 +10,8 @@ namespace Transactions.Api.Models.External.Bit
 
         public string BitTransactionSerialId { get; set; }
 
+        public string RedirectURL { get; set; }
+
         public InitialBitOperationResponse()
         {
         }

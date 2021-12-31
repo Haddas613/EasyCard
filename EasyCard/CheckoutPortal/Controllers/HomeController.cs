@@ -456,8 +456,11 @@ namespace CheckoutPortal.Controllers
 
             if (request.PayWithBit)
             {
-                //TODO: bit parameters to initialize payment
-                return RedirectToAction(nameof(BitPayment));
+                var bitResult = result as Transactions.Api.Models.External.Bit.InitialBitOperationResponse;
+
+                //TODO: temporary, redirect to bit result when ready
+                var redirectToBitURL = $"https://public.bankhapoalim.co.il/bitcom/2.2.1/payment-modal?transactionSerialId={bitResult.BitTransactionSerialId}&eventSerialId={bitResult.BitPaymentInitiationId}";
+                return Redirect(redirectToBitURL);
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
@@ -549,9 +552,10 @@ namespace CheckoutPortal.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult BitPayment()
+        [Route("bit")]
+        public IActionResult BitPayment([FromQuery] BitPaymentQueryModel request)
         {
             return View();
         }

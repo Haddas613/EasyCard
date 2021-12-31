@@ -134,5 +134,10 @@ namespace Shared.Integration.Models
         /// For Bit Processor only
         /// </summary>
         public string BitTransactionSerialId { get; set; }
+
+        /// <summary>
+        /// For Bit Processor only
+        /// </summary>
+        public string RedirectURL { get; set; }
     }
 }

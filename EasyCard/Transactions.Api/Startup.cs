@@ -12,6 +12,7 @@ using AutoMapper;
 using BasicServices;
 using BasicServices.KeyValueStorage;
 using Bit.Configuration;
+using Bit.Services;
 using IdentityServer4.AccessTokenValidation;
 using InforU;
 using Merchants.Business.Services;
@@ -671,7 +672,7 @@ namespace Transactions.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.BitRequestsLogStorageTable, cfg.BitRequestsLogStorageTable);
 
                 var bitOptionsConfig = serviceProvider.GetRequiredService<IOptions<BitGlobalSettings>>();
-                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, bitOptionsConfig, true);
+                var tokenSvc = new BitTokensService(webApiClient, bitOptionsConfig.Value);
 
                 return new Bit.BitProcessor(bitOptionsConfig, webApiClient, logger, storageService, tokenSvc);
             });
