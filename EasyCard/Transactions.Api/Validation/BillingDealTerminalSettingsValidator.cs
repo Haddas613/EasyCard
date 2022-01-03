@@ -55,22 +55,7 @@ namespace Transactions.Api.Validation
             else
             {
                 // no transactions yet generated from billing
-
-                if (billingSchedule?.StartAtType == StartAtTypeEnum.SpecifiedDate && billingSchedule?.StartAt.HasValue == true)
-                {
-                    if (billingSchedule?.StartAt >= today)
-                    {
-                        return billingSchedule.GetInitialScheduleDate();
-                    }
-                    else
-                    {
-                        throw new BusinessException($"{nameof(billingSchedule.StartAt)} must be bigger than (or equal) {today}");
-                    }
-                }
-                else
-                {
-                    return billingSchedule.GetInitialScheduleDate();
-                }
+                return billingSchedule.GetInitialScheduleDate();
             }
         }
 
