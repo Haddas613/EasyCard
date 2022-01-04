@@ -6,7 +6,7 @@ export default class NayaxApi {
     }
     
     async pairDevice(data){
-        return this.base.post(this.easyInvoiceIntegrationUrl + '/pair-device', data, false);
+        return this.base.post(this.easyInvoiceIntegrationUrl + '/pair-device', data, { showSuccessToastr: false });
     }
 
     async authenticateDevice(data){

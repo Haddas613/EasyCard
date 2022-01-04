@@ -140,6 +140,11 @@ export default {
       if (operaionResult.status === "success") {
         return this.$router.push({ name: "Merchant", params: {id: this.terminal.merchantID} });
       }
+      else if (operaionResult.errors && operaionResult.errors.length > 0) {
+        operaionResult.errors.forEach(e => {
+          this.$toasted.show(e.description, { type: "error" });
+        })
+      }
     },
     async refreshTerminal() {
       let terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
