@@ -15,7 +15,7 @@
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
-          <v-row class="px-3">
+          <v-row>
             <!-- <v-col cols="12" md="12" class="pb-2 pt-0">
               <customer-dialog-invoker 
               :key="model.consumerID" 
@@ -34,8 +34,10 @@
                 clearable
               ></v-select>
             </v-col> -->
-            <date-from-to-filter v-model="model"></date-from-to-filter>
-            <terminal-select v-model="model.terminalID" clearable></terminal-select>
+            <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
+            <v-col cols="12">
+              <terminal-select v-model="model.terminalID" clearable></terminal-select>
+            </v-col>
           </v-row>
         </v-form>
       </div>
