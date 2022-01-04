@@ -40,24 +40,26 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Terminal> GetTerminals()
+        public IQueryable<Terminal> GetTerminals() => GetTerminalsQuery().AsNoTracking();
+
+        public IQueryable<Terminal> GetTerminalsQuery()
         {
             if (user.IsAdmin())
             {
-                return context.Terminals.AsNoTracking();
+                return context.Terminals;
             }
             else if (user.IsTerminal())
             {
                 var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.Terminals.Where(t => t.TerminalID == terminalID).AsNoTracking();
+                return context.Terminals.Where(t => t.TerminalID == terminalID);
             }
             else if (user.IsNayaxApi())
             {
-                return context.Terminals.Where(t => t.Integrations.Any(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)).AsNoTracking();
+                return context.Terminals.Where(t => t.Integrations.Any(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
             else
             {
-                var response = context.Terminals.Where(t => t.MerchantID == user.GetMerchantID()).AsNoTracking();
+                var response = context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
                 var terminals = user.GetTerminalID();
                 if (terminals?.Count() > 0)
                 {
@@ -70,7 +72,7 @@ namespace Merchants.Business.Services
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminalQuery = GetTerminals()
+            var terminalQuery = GetTerminalsQuery()
                     .Include(t => t.Merchant)
                     .Where(m => m.TerminalID == terminalID);
 
