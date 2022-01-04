@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Helpers.Models;
 using Shared.Integration;
 
 namespace Merchants.Api.Controllers.Integrations
@@ -122,9 +123,19 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("get-document-types")]
+        public async Task<ActionResult<IEnumerable<DictionaryDetails>>> GetDocumentTypes()
+        {
+            var response = Enum.GetNames(typeof(ECInvoiceDocumentType))
+                .Select(e => new DictionaryDetails { Code = e, Description = e });
+
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("set-document-number")]
-        public async Task<ActionResult<OperationResponse>> SetDocumentNumber(SetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> SetDocumentNumber([FromBody]SetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -162,7 +173,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("get-document-number")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentNumber(GetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> GetDocumentNumber([FromQuery]GetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -195,38 +206,39 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("get-document-types")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //TODO: fix or remove
+        //[HttpGet]
+        //[Route("get-document-types")]
+        //public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+        //    var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+        //    var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
-            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            //terminalSettings.Password = request.Password;
-            var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
-                new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
-                {
-                    Terminal = terminalSettings
-                },
-                GetCorrelationID());
+        //    EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+        //    //terminalSettings.Password = request.Password;
+        //    var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
+        //        new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
+        //        {
+        //            Terminal = terminalSettings
+        //        },
+        //        GetCorrelationID());
 
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
+        //    var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
 
-            if (response.Status != StatusEnum.Success)
-            {
-                response.Status = StatusEnum.Error;
-                response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
+        //    if (response.Status != StatusEnum.Success)
+        //    {
+        //        response.Status = StatusEnum.Error;
+        //        response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
 
-                return BadRequest(response);
-            }
+        //        return BadRequest(response);
+        //    }
 
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
     }
 }

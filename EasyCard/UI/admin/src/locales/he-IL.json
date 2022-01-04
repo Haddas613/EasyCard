@@ -166,6 +166,7 @@
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "AlreadyPresent": "מיוצג כבר",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
+  "SetDocumentNumber": "הגדרת מספר חשבונית",
 
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -425,6 +426,7 @@
   "CreatedFrom": "נוצר מ",
   "CreatedTo": "נוצר ל",
   "PriceWithDiscount": "מחיר פריט לאחר הנחה",
+  "StartingNumber": "מספר התחלה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

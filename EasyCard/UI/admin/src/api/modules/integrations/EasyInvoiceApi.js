@@ -8,4 +8,16 @@ export default class EasyInvoiceApi {
     async createCustomer(data){
         return this.base.post(this.easyInvoiceIntegrationUrl + `/create-customer`, data);
     }
+
+    async getDocumentTypes(){
+        return this.base.get(this.easyInvoiceIntegrationUrl + '/get-document-types');
+    }
+
+    async getDocumentNumber(terminalID, type){
+        return this.base.get(this.easyInvoiceIntegrationUrl + '/get-document-number', { terminalID, docType: type });
+    }
+
+    async setDocumentNumber(data){
+        return this.base.post(this.easyInvoiceIntegrationUrl + `/set-document-number`, data);
+    }
 }
