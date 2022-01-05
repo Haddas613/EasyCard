@@ -106,7 +106,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("request-logs/{entityID}")]
-        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute] string entityID)
         {
             if (string.IsNullOrWhiteSpace(entityID))
             {
@@ -136,7 +136,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpPost]
         [Route("set-document-number")]
-        public async Task<ActionResult<OperationResponse>> SetDocumentNumber([FromBody]SetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> SetDocumentNumber([FromBody] SetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -211,7 +211,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("get-document-number")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentNumber([FromQuery]GetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> GetDocumentNumber([FromQuery] GetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -307,7 +307,7 @@ namespace Merchants.Api.Controllers.Integrations
                 GetCorrelationID());
 
             //RestClient clientRestSharop;
-           //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
+            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
             //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
             return Ok(getDocumentReportResult);
             // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
@@ -362,41 +362,5 @@ namespace Merchants.Api.Controllers.Integrations
             //
             // return Ok(response);
         }
-
-
-
-        [HttpGet]
-        [Route("get-document-types")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-        //    var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-        //    var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
-
-        //    EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-        //    //terminalSettings.Password = request.Password;
-        //    var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
-        //        new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
-        //        {
-        //            Terminal = terminalSettings
-        //        },
-        //        GetCorrelationID());
-
-        //    var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
-
-        //    if (response.Status != StatusEnum.Success)
-        //    {
-        //        response.Status = StatusEnum.Error;
-        //        response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
-
-        //        return BadRequest(response);
-        //    }
-
-        //    return Ok(response);
-        //}
     }
 }
