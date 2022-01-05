@@ -11,6 +11,9 @@ namespace Shared.Helpers
 {
     public interface IWebApiClient
     {
+        Task<string> GetObj<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null);
+
+
         Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null);
 
         Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
