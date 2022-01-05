@@ -135,6 +135,7 @@ namespace Merchants.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
             //terminalSettings.Password = request.Password;
             var changeDocumentNumberResult = await eCInvoicing.SetDocumentNumber(
                 new EasyInvoice.Models.ECInvoiceSetDocumentNumberRequest
@@ -159,7 +160,6 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
-
         [HttpGet]
         [Route("get-document-number")]
         public async Task<ActionResult<OperationResponse>> GetDocumentNumber(GetDocumentNumberRequest request)
@@ -173,6 +173,7 @@ namespace Merchants.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
             //terminalSettings.Password = request.Password;
             var getDocumentNumberResult = await eCInvoicing.GetDocumentNumber(
                 new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
@@ -182,7 +183,7 @@ namespace Merchants.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
 
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString());
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.NextDocumentNumber.ToString());
 
             if (response.Status != StatusEnum.Success)
             {
@@ -208,6 +209,7 @@ namespace Merchants.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
             //terminalSettings.Password = request.Password;
             var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
                 new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest

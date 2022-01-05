@@ -36,8 +36,8 @@ using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
 using Newtonsoft.Json;
 using Transactions.Api.Validation;
-using SharedIntegration = Shared.Integration;
 using Shared.Api.Swagger;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {

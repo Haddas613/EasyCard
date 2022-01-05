@@ -46,7 +46,7 @@ namespace Transactions.Business.Services
             else
             {
                 var response = context.PaymentRequests.Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID().Cast<Guid?>();
+                var terminals = user.GetTerminalID()?.Cast<Guid?>();
                 if (terminals?.Count() > 0)
                 {
                     response = response.Where(d => terminals.Contains(d.TerminalID));

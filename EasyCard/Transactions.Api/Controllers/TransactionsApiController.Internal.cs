@@ -72,7 +72,7 @@ namespace Transactions.Api.Controllers
             if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
             {
                 var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
-                var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                 var firstDevice = devices.devices.FirstOrDefault();
 
                 if (firstDevice == null)
@@ -736,6 +736,11 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
@@ -751,7 +756,7 @@ namespace Transactions.Api.Controllers
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Only ILS invoices allowed");
             }
 
-            if (string.IsNullOrWhiteSpace(model.DealDetails.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails.ConsumerName))
+            if (string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerName))
             {
                 return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Both ConsumerEmail and ConsumerName must be specified");

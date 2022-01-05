@@ -29,8 +29,8 @@ namespace Merchants.Api.Controllers
             this.externalSystemsService = externalSystemsService;
         }
 
-        [HttpGet]
         //[ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" }, Duration = 3600)]
+        [HttpGet]
         [Route("externalsystems")]
         public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems(bool showForTemplatesOnly = false)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions
+namespace Nayax.Models
 {
     public class NayaxUpdateTranRecordRequest
     {

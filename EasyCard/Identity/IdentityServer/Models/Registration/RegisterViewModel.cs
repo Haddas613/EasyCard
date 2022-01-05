@@ -1,6 +1,8 @@
 ﻿using IdentityServer.Resources;
 using Merchants.Api.Client.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +18,7 @@ namespace IdentityServer.Models.Registration
         /// </summary>
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [StringLength(50, MinimumLength = 2)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BusinessName { get; set; }
 
         /// <summary>
@@ -23,6 +26,7 @@ namespace IdentityServer.Models.Registration
         /// </summary>
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [StringLength(50, MinimumLength = 2)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string FirstName { get; set; }
 
         /// <summary>
@@ -30,12 +34,14 @@ namespace IdentityServer.Models.Registration
         /// </summary>
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [StringLength(50, MinimumLength = 2)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string LastName { get; set; }
 
         /// <summary>
         /// Marketing name
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string MarketingName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
@@ -45,11 +51,13 @@ namespace IdentityServer.Models.Registration
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [EmailAddress(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "NotValidEmailField")]
         [StringLength(100)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Email { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [Phone]
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]

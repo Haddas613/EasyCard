@@ -341,8 +341,15 @@ namespace Nayax
         public async Task<ProcessorUpdateParamteresResponse> ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
         {
             var res = new ProcessorCreateTransactionResponse();
-            var nayaxParameters = updateParamRequest.ProcessorSettings as NayaxTerminalSettings;
+            
             if (updateParamRequest == null)
+            {
+                throw new ArgumentNullException("NayaxTerminalSettings is required");
+            }
+
+            var nayaxParameters = updateParamRequest.ProcessorSettings as NayaxTerminalSettings;
+
+            if (nayaxParameters == null)
             {
                 throw new ArgumentNullException("NayaxTerminalSettings is required");
             }

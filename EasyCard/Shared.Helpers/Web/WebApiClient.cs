@@ -59,7 +59,7 @@ namespace Shared.Helpers
         public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 
             if (getHeaders != null)
             {
@@ -70,7 +70,7 @@ namespace Shared.Helpers
                 }
             }
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
             var res = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -99,7 +99,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -116,7 +116,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, json);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -149,7 +149,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -162,7 +162,7 @@ namespace Shared.Helpers
 
             var credentials = values;
 
-            HttpResponseMessage response = await HttpClient.PostAsync(url, credentials);
+            using HttpResponseMessage response = await HttpClient.PostAsync(url, credentials);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -195,7 +195,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url);
 
             if (getHeaders != null)
             {
@@ -212,7 +212,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, json);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -245,7 +245,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -262,7 +262,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, xml);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -295,7 +295,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -310,7 +310,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, payload);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -342,7 +342,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -360,7 +360,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -392,7 +392,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -410,7 +410,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             return response;
         }
@@ -421,7 +421,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
 
             if (getHeaders != null)
             {
@@ -434,7 +434,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, string.Empty);
 
-            var response = await HttpClient.SendAsync(request);
+            using var response = await HttpClient.SendAsync(request);
 
             onResponse?.Invoke(string.Empty, response.StatusCode, response.Headers);
 
@@ -466,7 +466,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -481,7 +481,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, payload);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var operationResponse = new RawRequestResult();
             operationResponse.StatusCode = response.StatusCode;
@@ -509,7 +509,7 @@ namespace Shared.Helpers
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (getHeaders != null)
             {
@@ -528,7 +528,7 @@ namespace Shared.Helpers
 
             request.Content = form;
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            using HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 

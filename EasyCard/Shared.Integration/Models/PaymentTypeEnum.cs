@@ -21,10 +21,5 @@ namespace Shared.Integration.Models
 
         [EnumMember(Value = "invoice-only")]
         InvoiceOnly = 5,
-
-        //TODO: uncomment when bitcoin is supported
-        //[EnumMember(Value = "bitcoin")]
-        //Bitcoin = 4
-
     }
 }

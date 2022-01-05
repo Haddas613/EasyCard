@@ -62,7 +62,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("p")]
-        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery]string r)
+        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery] string r)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -93,7 +93,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("i")]
-        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery]string r)
+        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery] string r)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -148,12 +148,17 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                if(!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }
 
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            if (checkoutConfig == null)
+            {
+                throw new ApplicationException("Checkout data is null");
             }
 
             if (checkoutConfig.Consumer != null)
@@ -279,7 +284,7 @@ namespace CheckoutPortal.Controllers
                 var maxNumberOfPayments = (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments);
                 if (request.NumberOfPayments > maxNumberOfPayments)
                 {
-                    ModelState.AddModelError(nameof(request.NumberOfPayments), 
+                    ModelState.AddModelError(nameof(request.NumberOfPayments),
                         Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@max", maxNumberOfPayments.GetValueOrDefault(0).ToString()));
                 }
                 else
@@ -295,10 +300,10 @@ namespace CheckoutPortal.Controllers
                         var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
                         installmentDetails.InitialPaymentAmount = request.InitialPaymentAmount.Value;
-                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ? 
+                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ?
                             request.InstallmentPaymentAmount.Value : (request.Amount.Value - request.InitialPaymentAmount.Value) / (request.NumberOfPayments.Value - 1);
 
-                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value 
+                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value
                             || installmentDetails.InitialPaymentAmount < 0.1m || installmentDetails.InstallmentPaymentAmount < 0.1m)
                         {
                             ModelState.AddModelError(nameof(InstallmentDetails), Messages.TotalAmountIsInvalid);
@@ -306,9 +311,9 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
-                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
+                        var installmentPaymentAmount = Math.Floor(request.Amount.GetValueOrDefault() / request.NumberOfPayments.GetValueOrDefault());
 
-                        installmentDetails.InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
+                        installmentDetails.InitialPaymentAmount = request.Amount.GetValueOrDefault() - installmentPaymentAmount * (request.NumberOfPayments.GetValueOrDefault() - 1);
                         installmentDetails.InstallmentPaymentAmount = installmentPaymentAmount;
                     }
                 }
@@ -463,7 +468,7 @@ namespace CheckoutPortal.Controllers
                 return Redirect(redirectToBitURL);
             }
 
-            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
+            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest?.RedirectUrl;
 
             if (string.IsNullOrWhiteSpace(redirectUrl))
             {
@@ -642,7 +647,7 @@ namespace CheckoutPortal.Controllers
                     model.Amount = 0;
                     model.TotalAmount = 0;
                 }
-                else if(request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
+                else if (request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }

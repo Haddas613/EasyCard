@@ -17,7 +17,7 @@ namespace EasyInvoice.Converters
             var json = new ECInvoiceCreateDocumentRequest
             {
                 CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress),
-                CustomerEmail = message.DealDetails.ConsumerEmail,
+                CustomerEmail = message.DealDetails?.ConsumerEmail,
                 CustomerName = message.ConsumerName,
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
                 CustomerTaxId = message.ConsumerNationalID,

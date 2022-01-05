@@ -28,18 +28,17 @@ namespace Shared.Helpers
             yield return new BankDictionaryDetails() { Description = "ירושלים (54)", Value = "54" };
         }
 
-        public static bool CheckValidAccountDetails(int bankCode, string branchNumber, string AccountNumber)
+        public static bool CheckValidAccountDetails(int bankCode, string branchNumber, string accountNumber)
         {
             bool validAccount = true;
             int branchNumberInt = -1;
-            int accountNumber = -1;
 
             if (string.IsNullOrEmpty(branchNumber) || !int.TryParse(branchNumber, out branchNumberInt))
             {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(AccountNumber) || !int.TryParse(AccountNumber, out accountNumber))
+            if (string.IsNullOrEmpty(accountNumber) || !int.TryParse(accountNumber, out var accountNumberParsed))
             {
                 return false;
             }
@@ -65,79 +64,79 @@ namespace Shared.Helpers
             }
 
             int.TryParse(branchNumber.Substring(branchNumber.Length - 1, 1), out u);
-            if (AccountNumber.Length < 9)
+            if (accountNumber.Length < 9)
             {
                 a = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 9, 1), out a);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 9, 1), out a);
             }
 
-            if (AccountNumber.Length < 8)
+            if (accountNumber.Length < 8)
             {
                 b = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 8, 1), out b);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 8, 1), out b);
             }
 
-            if (AccountNumber.Length < 7)
+            if (accountNumber.Length < 7)
             {
                 c = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 7, 1), out c);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 7, 1), out c);
             }
 
-            if (AccountNumber.Length < 6)
+            if (accountNumber.Length < 6)
             {
                 d = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 6, 1), out d);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 6, 1), out d);
             }
 
-            if (AccountNumber.Length < 5)
+            if (accountNumber.Length < 5)
             {
                 e = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 5, 1), out e);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 5, 1), out e);
             }
 
-            if (AccountNumber.Length < 4)
+            if (accountNumber.Length < 4)
             {
                 f = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 4, 1), out f);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 4, 1), out f);
             }
 
-            if (AccountNumber.Length < 3)
+            if (accountNumber.Length < 3)
             {
                 g = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 3, 1), out g);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 3, 1), out g);
             }
 
-            if (AccountNumber.Length < 2)
+            if (accountNumber.Length < 2)
             {
                 h = 0;
             }
             else
             {
-                int.TryParse(AccountNumber.Substring(AccountNumber.Length - 2, 1), out h);
+                int.TryParse(accountNumber.Substring(accountNumber.Length - 2, 1), out h);
             }
 
-            int.TryParse(AccountNumber.Substring(AccountNumber.Length - 1, 1), out x);
+            int.TryParse(accountNumber.Substring(accountNumber.Length - 1, 1), out x);
             int sum = 0;
             if (bankCode == 12 && branchNumberInt == 595)
             {
@@ -178,7 +177,7 @@ namespace Shared.Helpers
                 case 52:
 
                     sum = ((9 * a) + (8 * b) + (7 * c) + (6 * d) + (5 * e) + (4 * f) + (3 * g) + (2 * h) + x) % 11;
-                    validAccount =  sum.IsIn(0, 6);
+                    validAccount = sum.IsIn(0, 6);
                     if (!validAccount)
                     {
                         sum = ((6 * d) + (5 * e) + (4 * f) + (3 * g) + (2 * h) + x) % 11;
@@ -231,8 +230,6 @@ namespace Shared.Helpers
             }
 
             return validAccount;
-
-
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Shared.Integration.Models
     public class ProcessorUpdateParamteresResponse
     {
         public bool Success { get; set; }
+
         public int Code { get; set; }
     }
 }

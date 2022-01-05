@@ -19,7 +19,7 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Merchants.Api.Controllers.TerminalsApiController.HandlePinPadDevices(Merchants.Business.Entities.Terminal.TerminalExternalSystem,Nayax.NayaxTerminalCollection)">
+        <member name="M:Merchants.Api.Controllers.TerminalsApiController.HandlePinPadDevices(Merchants.Business.Entities.Terminal.TerminalExternalSystem,Nayax.Models.NayaxTerminalCollection)">
             <summary>
             Removes every PinPadDevice from PinPadDevices table that are no longer present in the latest data.
             </summary>

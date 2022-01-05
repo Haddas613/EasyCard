@@ -254,7 +254,7 @@ namespace Merchants.Api.Controllers
 
                 if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
                 {
-                    var devices = model.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    var devices = model.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                     await HandlePinPadDevices(texternalSystem, devices);
                 }
 
@@ -276,8 +276,8 @@ namespace Merchants.Api.Controllers
                     {
                         if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
                         {
-                            var devices = texternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
-                            mapper.Map(devices, terminal, typeof(Nayax.NayaxTerminalCollection), typeof(Terminal));
+                            var devices = texternalSystem.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
+                            mapper.Map(devices, terminal, typeof(Nayax.Models.NayaxTerminalCollection), typeof(Terminal));
                         }
                         else
                         {
@@ -589,9 +589,9 @@ namespace Merchants.Api.Controllers
         /// <param name="terminalExternalSystem">Original data</param>
         /// <param name="data">New data</param>
         /// <returns></returns>
-        private async Task HandlePinPadDevices(TerminalExternalSystem terminalExternalSystem, Nayax.NayaxTerminalCollection data)
+        private async Task HandlePinPadDevices(TerminalExternalSystem terminalExternalSystem, Nayax.Models.NayaxTerminalCollection data)
         {
-            var old = terminalExternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+            var old = terminalExternalSystem.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
 
             if (old is null || old.devices is null)
             {

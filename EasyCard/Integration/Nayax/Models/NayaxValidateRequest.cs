@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Transactions.Api.Models.Transactions.Enums;
 
-namespace Transactions.Api.Models.Transactions
+namespace Nayax.Models
 {
     public class NayaxValidateRequest
     {
@@ -47,7 +46,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// ILS = 376,
         /// DOLLAR= 840,
-        ///  EURO = 978
+        /// EURO = 978
         /// </summary>
         [EnumDataType(typeof(CurrencyEnumISO_Code))]
         [JsonConverter(typeof(StringEnumConverter))]

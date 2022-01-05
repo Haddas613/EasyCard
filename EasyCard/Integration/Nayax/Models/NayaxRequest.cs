@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions
+namespace Nayax.Models
 {
     public class NayaxRequest
     {
@@ -15,7 +15,7 @@ namespace Transactions.Api.Models.Transactions
         public string ProcessorTerminal { get; set; }
 
         /// <summary>
-        /// Aditek Identifier for device  
+        /// Aditek Identifier for device
         /// </summary>
         [Required]
         public string ClientToken { get; set; }

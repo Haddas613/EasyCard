@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions
+namespace Nayax.Models
 {
     public class NayaxResult
     {
         public bool Approval { get; set; }
+
         public string ResultText { get; set; }
+
         public string Mutav { get; set; }
+
         public string Vuid { get; set; }
+
         public string SysTraceNumber { get; set; }
+
         public string CorrelationID { get; set; }
+
         public string UpdateReceiptNumber { get; set; }
 
         public NayaxResult()
         {
-
         }
 
         public NayaxResult(string message, bool approval)

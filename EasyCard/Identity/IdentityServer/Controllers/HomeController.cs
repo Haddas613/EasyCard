@@ -27,8 +27,8 @@ namespace IdentityServer.Controllers
         {
             var model = new HomeIndexViewModel
             {
-                IsAuthorized = User?.Identity.IsAuthenticated == true,
-                UserName = User.Identity?.Name
+                IsAuthorized = User?.Identity?.IsAuthenticated == true,
+                UserName = User?.Identity?.Name
             };
             return View(model);
         }

@@ -28,6 +28,7 @@ namespace Nayax.Converters
         {
             return ((int)transactionType);
         }
+
         public static NayaxCreditTermsEnum GetNayaxCreditTerms(this TransactionTypeEnum transactionType)
         {
             switch (transactionType)
@@ -53,6 +54,7 @@ namespace Nayax.Converters
         {
             return ((int)creditTerms);
         }
+
         public static NayaxCurrencyEnum GetNayaxCurrency(this CurrencyEnum currency)
         {
             return (NayaxCurrencyEnum)Enum.Parse(typeof(NayaxCurrencyEnum), currency.ToString());
@@ -93,6 +95,88 @@ namespace Nayax.Converters
         public static bool IsSuccessful(this AuthResponseBody pairResult)
         {
             return (PairResultEnum)Convert.ToInt32(pairResult.statusCode) == PairResultEnum.Success;
+        }
+
+        public static TransactionTypeEnum GetTransactionTypeFromNayax(this CreditTermsEnum creditTerm)
+        {
+            return creditTerm switch
+            {
+                CreditTermsEnum.credit => TransactionTypeEnum.Credit,
+                CreditTermsEnum.immediate => TransactionTypeEnum.Immediate,
+                CreditTermsEnum.regular => TransactionTypeEnum.RegularDeal,
+                CreditTermsEnum.installments => TransactionTypeEnum.Installments,
+                _ => TransactionTypeEnum.RegularDeal,
+            };
+        }
+
+        public static SolekEnum GetTransactionSolek(this IssuerAquirEnum issuerAquirEnum)
+        {
+            return issuerAquirEnum switch
+            {
+                IssuerAquirEnum.Cal => SolekEnum.VISA,
+                IssuerAquirEnum.Isracard => SolekEnum.ISRACARD,
+                IssuerAquirEnum.LeumiCard => SolekEnum.LEUMI_CARD,
+                IssuerAquirEnum.Tourist => SolekEnum.UNKNOWN,
+                IssuerAquirEnum.RFU07 => SolekEnum.OTHER,
+                _ => SolekEnum.UNKNOWN,
+            };
+        }
+
+        public static SpecialTransactionTypeEnum GetSpecialTransactionTypeFromNayax(this TranTypeEnum tranType)
+        {
+            return tranType switch
+            {
+                TranTypeEnum.refund => SpecialTransactionTypeEnum.Refund,
+                TranTypeEnum.charge => SpecialTransactionTypeEnum.RegularDeal,
+                _ => SpecialTransactionTypeEnum.RegularDeal,
+            };
+        }
+
+        public static CurrencyEnum GetCurrencyFromNayax(this CurrencyEnumISO_Code currencyEnum)
+        {
+            return currencyEnum switch
+            {
+                CurrencyEnumISO_Code.ILS => CurrencyEnum.ILS,
+                CurrencyEnumISO_Code.USD => CurrencyEnum.USD,
+                CurrencyEnumISO_Code.EUR => CurrencyEnum.EUR,
+                _ => CurrencyEnum.ILS,
+            };
+        }
+
+        // TODO: should be replaced to regex
+        public static string GetCardNumber(this string maskedPan)
+        {
+            try
+            {
+                string cardNumber = string.Empty;
+                bool start = true;
+                for (int i = 0; i < maskedPan.Length; i++)
+                {
+                    if (start)
+                    {
+                        if (maskedPan[i].Equals('0'))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            start = false;
+                            cardNumber = string.Format("{0}{1}", cardNumber, maskedPan[i]);
+                        }
+                    }
+                    else
+                    {
+                        cardNumber = string.Format("{0}{1}", cardNumber, maskedPan.Substring(i));
+                        break;
+                    }
+                }
+
+                return cardNumber;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

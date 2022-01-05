@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nayax
+namespace Nayax.Models
 {
     public class NayaxTerminalCollection
     {

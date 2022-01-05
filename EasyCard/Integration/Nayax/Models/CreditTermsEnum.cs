@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Helpers.Models
+namespace Nayax.Models
 {
     public enum CreditTermsEnum
     {

@@ -282,9 +282,8 @@ namespace Transactions.Api.Controllers
             {
                 EnsureExists(model.BankDetails);
             }
-            else if(model.PaymentType == PaymentTypeEnum.InvoiceOnly)
+            else if (model.PaymentType == PaymentTypeEnum.InvoiceOnly)
             {
-
             }
             else
             {
@@ -861,18 +860,21 @@ namespace Transactions.Api.Controllers
 
             foreach (var dealEntity in allBillings)
             {
-                logger.LogWarning($"Billing Deal {dealEntity?.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
-
-                try
+                if (dealEntity != null)
                 {
-                    // TODO: Add to history
-                    await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
-                    response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity?.BillingDeal?.BillingDealID).GetValueOrDefault() });
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity?.BillingDeal?.BillingDealID}: {ex.Message}");
+                    try
+                    {
+                        // TODO: Add to history
+                        await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+
+                        response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity.BillingDeal?.BillingDealID).GetValueOrDefault() });
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity.BillingDeal?.BillingDealID}: {ex.Message}");
+                    }
                 }
             }
 
@@ -929,7 +931,7 @@ namespace Transactions.Api.Controllers
 
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
-                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails?.ConsumerID?.ToString() ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.BillingDealID), GetBillingDealLink(billingDeal.BillingDealID)),
                 new TextSubstitution("RenewLink", GetBillingDealRenewLink(paymentIntent.PaymentRequestID)),
             };

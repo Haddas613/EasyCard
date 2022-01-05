@@ -153,6 +153,7 @@ namespace Transactions.Api.Controllers.External
                     try
                     {
                         var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+
                         //aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
                         //mapper.Map(model, aggregatorRequest.CreditCardDetails);
 

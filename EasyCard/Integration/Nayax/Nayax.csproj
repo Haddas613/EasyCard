@@ -20,11 +20,20 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Models\NayaxValidateRequestResource.Designer.cs">
+      <DependentUpon>NayaxValidateRequestResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Messages.resx">
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\NayaxValidateRequestResource.resx">
+      <LastGenOutput>NayaxValidateRequestResource.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>

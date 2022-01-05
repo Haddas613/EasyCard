@@ -124,7 +124,7 @@ namespace Transactions.Api.Controllers
                 var nayaxIntegration = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
                 if (nayaxIntegration != null)
                 {
-                    var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                     response.Settings.AllowPinPad = devices?.devices?.Any() == true;
                     if (response.Settings.AllowPinPad == true)
                     {

@@ -21,7 +21,8 @@ namespace Shared.Integration.Models
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
-        /// <param name="rejectionReasonEnum"></param>
+        /// <param name="errorCode"></param>
+        /// <param name="errorCodeStr"></param>
         public ProcessorPreCreateTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
         {
             Success = false;
@@ -35,7 +36,7 @@ namespace Shared.Integration.Models
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
-        /// <param name="errorCode"></param>
+        /// <param name="errorCodeStr"></param>
         public ProcessorPreCreateTransactionResponse(string errorMessage, string errorCodeStr)
         {
             Success = false;
@@ -46,7 +47,7 @@ namespace Shared.Integration.Models
         public bool Success { get; set; }
 
         /// <summary>
-        /// General error mesage which can be displayed to merchant
+        /// General error message which can be displayed to merchant
         /// </summary>
         public string ErrorMessage { get; set; }
 

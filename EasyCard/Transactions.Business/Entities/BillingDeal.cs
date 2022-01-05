@@ -200,6 +200,11 @@ namespace Transactions.Business.Entities
 
         public void UpdateNextScheduledDate(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
+            if (BillingSchedule == null)
+            {
+                throw new ApplicationException("BillingSchedule is null");
+            }
+
             InProgress = BillingProcessingStatusEnum.Pending;
             CurrentTransactionID = paymentTransactionID;
             CurrentTransactionTimestamp = timestamp;
@@ -213,7 +218,7 @@ namespace Transactions.Business.Entities
             }
             else
             {
-                NextScheduledTransaction = BillingSchedule?.GetNextScheduledDate(legalDate.Value, CurrentDeal.Value);
+                NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(legalDate.Value, CurrentDeal.Value);
             }
 
             Active = NextScheduledTransaction != null;

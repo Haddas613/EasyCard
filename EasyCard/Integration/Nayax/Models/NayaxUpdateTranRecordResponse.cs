@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions
+namespace Nayax.Models
 {
     public class NayaxUpdateTranRecordResponse
     {
