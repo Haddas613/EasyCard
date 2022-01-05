@@ -18,6 +18,8 @@ namespace Transactions.Api.Client
 
         Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model);
 
+        Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model);
+
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 
         Task<CheckoutData> GetCheckout(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey);

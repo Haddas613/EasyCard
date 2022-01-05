@@ -132,7 +132,7 @@ namespace Transactions.Api.Controllers.External
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
-                processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
+                //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
                 var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
                 var bitResponse = processorResponse as BitCreateTransactionResponse;

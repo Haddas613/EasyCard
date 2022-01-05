@@ -44,6 +44,7 @@
     <Compile Include="..\Transactions.Api\Models\UpdateParameters\UpdateParametersResponse.cs" Link="Models\UpdateParametersResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Currency\CurrencyRateUpdateRequest.cs" Link="Models\CurrencyRateUpdateRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\External\Bit\InitialBitOperationResponse.cs" Link="Models\InitialBitOperationResponse.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\Bit\CaptureBitTransactionRequest.cs" Link="Models\CaptureBitTransactionRequest.cs" />
 
   </ItemGroup>
 
