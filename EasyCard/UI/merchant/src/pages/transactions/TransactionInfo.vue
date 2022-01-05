@@ -226,7 +226,7 @@ export default {
   methods: {
     async transmit() {
       let operation = await this.$api.transmissions.transmit({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.$terminalID || this.model.terminalID,
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
 

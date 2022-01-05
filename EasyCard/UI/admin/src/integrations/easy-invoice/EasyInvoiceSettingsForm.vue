@@ -22,10 +22,38 @@
         </div>
       </template>
     </ec-dialog>
+    <ec-dialog :dialog.sync="documentNumberDialog" color="ecbg">
+      <template v-slot:title>{{$t('SetDocumentNumber')}}</template>
+      <template>
+        <v-form ref="documentNumberFormRef" lazy-validation>
+          <v-row>
+          <v-col cols="12" md="4" class="py-0">
+            <v-select
+              :items="ecInvoiceTypes"
+              item-text="description"
+              item-value="code"
+              v-model="documentNumberModel.docType"
+              :label="$t('InvoiceType')"
+              :rules="[vr.primitives.required]"
+              @change="getDocumentNumber()"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="4" class="py-0">
+            <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
+          </v-col>
+        </v-row>
+        </v-form>
+        <div class="d-flex justify-end">
+          <v-btn @click="documentNumberDialog = false" :disabled="loading">{{$t("Cancel")}}</v-btn>
+          <v-btn class="mx-1" color="primary" @click="setDocumentNumber()" :disabled="loading">{{$t("Save")}}</v-btn>
+        </div>
+      </template>
+    </ec-dialog>
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
         <v-col cols="12" class="pt-0 text-end pb-4">
           <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
+          <v-btn small class="mx-1" @click="documentNumberDialog = true;">{{$t("SetDocumentNumber")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')"></v-text-field>
@@ -76,13 +104,22 @@ export default {
         userName: null,
         password: null
       },
-      vr: ValidationRules
+      documentNumberModel: {
+        docType: null,
+        currentNum: null,
+        minNum: 0
+      },
+      ecInvoiceTypes: {},
+      vr: ValidationRules,
+      documentNumberDialog: false
     }
   },
-  mounted () {
+  async mounted () {
     if(!this.model.settings){
       this.model.settings = {};
     }
+
+    this.ecInvoiceTypes = await this.$api.integrations.easyInvoice.getDocumentTypes();
   },
   methods: {
     save() {
@@ -116,6 +153,30 @@ export default {
       this.newCustomerModel.password = null;
       this.newCustomerDialog = false;
       this.loading = false;
+    },
+    async getDocumentNumber(){
+      if (!this.documentNumberModel.docType){
+        return;
+      }
+
+      let res = await this.$api.integrations.easyInvoice.getDocumentNumber(this.terminalId, this.documentNumberModel.docType);
+      if (res && (res.entityReference || res.entityReference === 0)){
+        this.documentNumberModel.currentNum = res.entityReference;
+        this.documentNumberModel.minNum = res.entityReference;
+      }
+    },
+    async setDocumentNumber(){
+      if (!this.$refs.documentNumberFormRef.validate()){
+        return;
+      }
+      
+      await this.$api.integrations.easyInvoice.setDocumentNumber({
+        terminalID: this.terminalId,
+        docType: this.documentNumberModel.docType,
+        currentNum: this.documentNumberModel.currentNum
+      });
+
+      this.documentNumberDialog = false;
     }
   },
 };
