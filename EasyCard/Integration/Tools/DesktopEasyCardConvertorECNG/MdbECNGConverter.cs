@@ -588,14 +588,13 @@ namespace DesktopEasyCardConvertorECNG
                 Origin = config.Origin
             };
             OperationResponse res = null;
-            switch (request.PaymentType)
+            switch (customerInFile.PayType)
             {
-
-                case PaymentTypeEnum.Card:
-                case PaymentTypeEnum.Bank:
+                case "0":
+                case "1":
                     res = await transactionsService.CreateBillingDeal(request);
                     break;
-                case PaymentTypeEnum.InvoiceOnly:
+                case "2":
                     res = await transactionsService.CreateBillingDealInvoiceOnly(requestForInvoiceOnlyBilling);
                     break;
                 default:
