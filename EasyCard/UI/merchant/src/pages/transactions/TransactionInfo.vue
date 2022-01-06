@@ -258,7 +258,7 @@ export default {
     },
     async cancelTransmission() {
       let operation = await this.$api.transmissions.cancelTransmission({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.$terminalID || this.model.terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
 
