@@ -40,26 +40,24 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Terminal> GetTerminals() => GetTerminalsQuery().AsNoTracking();
-
-        public IQueryable<Terminal> GetTerminalsQuery()
+        public IQueryable<Terminal> GetTerminals()
         {
             if (user.IsAdmin())
             {
-                return context.Terminals;
+                return context.Terminals.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
                 var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.Terminals.Where(t => t.TerminalID == terminalID);
+                return context.Terminals.Where(t => t.TerminalID == terminalID).AsNoTracking();
             }
             else if (user.IsNayaxApi())
             {
-                return context.Terminals.Where(t => t.Integrations.Any(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+                return context.Terminals.Where(t => t.Integrations.Any(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)).AsNoTracking();
             }
             else
             {
-                var response = context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = context.Terminals.Where(t => t.MerchantID == user.GetMerchantID()).AsNoTracking();
                 var terminals = user.GetTerminalID();
                 if (terminals?.Count() > 0)
                 {
@@ -72,7 +70,7 @@ namespace Merchants.Business.Services
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminalQuery = GetTerminalsQuery()
+            var terminalQuery = GetTerminals()
                     .Include(t => t.Merchant)
                     .Where(m => m.TerminalID == terminalID);
 
@@ -277,7 +275,7 @@ namespace Merchants.Business.Services
 
             context.MerchantHistories.Add(history);
 
-            entity.Updated = DateTime.UtcNow;
+            exist.Updated = DateTime.UtcNow;
 
             if (dbTransaction != null)
             {

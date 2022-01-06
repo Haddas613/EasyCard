@@ -55,7 +55,7 @@ namespace Merchants.Api.Controllers.Integrations
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+            var easyInvoiceIntegration = (await terminalsService.GetTerminalExternalSystems(terminal.TerminalID)).FirstOrDefault(es => es.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID);
 
             var createUserResult = await eCInvoicing.CreateCustomer(
                 new EasyInvoice.Models.ECCreateCustomerRequest
