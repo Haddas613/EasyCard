@@ -261,7 +261,7 @@ namespace Transactions.Api.Controllers
             }
 
             // Check consumer
-            var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+            var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID), "Consumer") : null;
 
             newInvoice.DealDetails.CheckConsumerDetails(consumer);
 

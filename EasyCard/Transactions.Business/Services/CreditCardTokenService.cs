@@ -66,6 +66,28 @@ namespace Transactions.Business.Services
             }
         }
 
+        public IQueryable<CreditCardTokenDetails> GetTokensShared(bool showIncactive = false)
+        {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+
+            if (!showIncactive)
+            {
+                tokens = tokens.Where(t => t.Active);
+            }
+
+            if (user.IsAdmin())
+            {
+                throw new ApplicationException("This method should not be used by Admin");
+            }
+            else
+            {
+                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID())
+                    .Where(d => d.InitialTransactionID != null);
+
+                return response;
+            }
+        }
+
         public async override Task UpdateEntity(CreditCardTokenDetails entity, IDbContextTransaction dbTransaction = null)
         {
             //TODO: audit

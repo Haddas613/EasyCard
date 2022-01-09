@@ -253,7 +253,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -320,7 +320,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -413,7 +413,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -455,7 +455,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -502,7 +502,7 @@ namespace Transactions.Api.Controllers
 
             var consumer = EnsureExists(
                 await consumersService.GetConsumers()
-                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
+                .FirstOrDefaultAsync(d => d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
 
             if (billingDeal.PaymentType != PaymentTypeEnum.Card)
             {

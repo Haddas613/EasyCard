@@ -186,11 +186,6 @@
             Create consumer
             </summary>
         </member>
-        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.TerminalID">
-            <summary>
-            Target terminal
-            </summary>
-        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerEmail">
             <summary>
             End-customer Email
@@ -335,11 +330,6 @@
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">
             <summary>
             Concurrency check
-            </summary>
-        </member>
-        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.TerminalID">
-            <summary>
-            Target terminal
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerSecondPhone">

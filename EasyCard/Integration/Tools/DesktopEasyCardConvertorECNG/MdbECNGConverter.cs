@@ -404,7 +404,6 @@ namespace DesktopEasyCardConvertorECNG
                     ConsumerSecondPhone = customerInFile.Phone2,
                     ExternalReference = externalReference,
                     Origin = config.Origin,
-                    TerminalID = ecngTerminal.TerminalID
                 });
                 consumerID = resCreateCustomer.EntityUID ?? Guid.Empty;
 

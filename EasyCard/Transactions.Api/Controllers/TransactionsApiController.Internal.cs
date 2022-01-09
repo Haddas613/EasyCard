@@ -160,7 +160,7 @@ namespace Transactions.Api.Controllers
             }
 
             // Check consumer
-            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             if (consumer != null)
             {
@@ -643,7 +643,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = transaction.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
@@ -780,7 +780,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
@@ -1118,7 +1118,6 @@ namespace Transactions.Api.Controllers
             consumer.ConsumerName = (transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName) ?? transaction.DealDetails?.ConsumerName;
             consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
             consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
-            consumer.TerminalID = transaction.TerminalID;
             consumer.MerchantID = merchantID;
             consumer.Active = true;
             consumer.ApplyAuditInfo(httpContextAccessor);

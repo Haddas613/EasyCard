@@ -85,5 +85,7 @@ namespace Merchants.Shared.Models
         public bool DoNotCreateSaveTokenInitialDeal { get; set; }
 
         public string RavMutavNumber { get; set; }
+
+        public bool? SharedCreditCardTokens { get; set; }
     }
 }
