@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ValidationRules from "../../helpers/validation-rules";
 import CreditCardSecureDetailsFields from "../transactions/CreditCardSecureDetailsFields";
 
@@ -98,7 +99,7 @@ export default {
       );
 
       if (!this.model.terminalID) {
-        this.model.terminalID = this.customer.terminalID;
+        this.model.terminalID = this.terminalStore.terminalID;
       }
 
       this.customerTokens =
@@ -143,6 +144,11 @@ export default {
         ...data
       };
     }
-  }
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
 };
 </script>

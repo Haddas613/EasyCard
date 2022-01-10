@@ -172,23 +172,27 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="6">
-          <v-row class="pt-3">
+        <v-col cols="12" md="9">
+          <v-row>
             <v-col cols="12" md="4">
-                <v-switch v-model="model.hasInvoice" hide-details>
-                <template v-slot:label>
-                  <small>{{$t('HasInvoice')}}</small>
-                </template>
-              </v-switch>
+                <v-select
+                  :items="dictionaries.propertyPresenceEnum"
+                  item-text="description"
+                  item-value="code"
+                  v-model="model.hasInvoice"
+                  :label="$t('HasInvoice')"
+                  hide-details="true"
+                  clearable
+                ></v-select>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" class="mt-3">
                 <v-switch v-model="model.hasMasavFile" hide-details>
                 <template v-slot:label>
                   <small>{{$t('HasMasavFile')}}</small>
                 </template>
               </v-switch>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" class="mt-3">
                 <v-switch v-model="model.isPaymentRequest" hide-details>
                 <template v-slot:label>
                   <small>{{$t('IsPaymentRequest')}}</small>

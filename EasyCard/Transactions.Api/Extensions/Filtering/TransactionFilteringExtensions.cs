@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
+using Shared.Helpers.Models;
 using System;
 using System.Linq;
 using Transactions.Api.Models.Transactions;
@@ -183,9 +184,16 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DocumentOrigin == filter.DocumentOrigin);
             }
 
-            if (filter.HasInvoice.GetValueOrDefault())
+            if (filter.HasInvoice.GetValueOrDefault(PropertyPresenceEnum.All) != PropertyPresenceEnum.All)
             {
-                src = src.Where(t => t.InvoiceID != null);
+                if (filter.HasInvoice == PropertyPresenceEnum.Yes)
+                {
+                    src = src.Where(t => t.InvoiceID != null);
+                }
+                else
+                {
+                    src = src.Where(t => t.InvoiceID == null);
+                }
             }
 
             if (filter.HasMasavFile.GetValueOrDefault())
