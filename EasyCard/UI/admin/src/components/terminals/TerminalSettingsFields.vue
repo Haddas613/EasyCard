@@ -131,6 +131,11 @@
               :disabled="model.settings.cvvRequired"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.sharedCreditCardTokens"
+              :label="$t('SharedCreditCardTokens')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col md="4" cols="12">
             <v-switch v-model="model.settings.j2Allowed" :label="$t('J2Allowed')" hide-details></v-switch>
