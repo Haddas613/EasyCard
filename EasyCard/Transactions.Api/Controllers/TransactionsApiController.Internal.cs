@@ -126,12 +126,14 @@ namespace Transactions.Api.Controllers
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
 
-            //TODO: check token expiration
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
                 {
-                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    if (!(terminal.Settings.SharedCreditCardTokens == true))
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
                 }
 
                 if (token.CardExpiration?.Expired == true)

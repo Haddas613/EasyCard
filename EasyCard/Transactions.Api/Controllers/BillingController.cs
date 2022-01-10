@@ -45,6 +45,7 @@ using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
 using SharedApi = Shared.Api;
+using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -272,7 +273,16 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+                if (token.TerminalID != terminal.TerminalID)
+                {
+                    if (!(terminal.Settings.SharedCreditCardTokens == true))
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
+                }
+
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
                 newBillingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 

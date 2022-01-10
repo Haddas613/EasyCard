@@ -316,12 +316,15 @@ namespace MerchantProfileApi.Controllers
             var response = new List<TerminalDeviceResponse>();
 
             //TODO: temporary
-            if (integration?.Settings != null && integration.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+            if (integration?.Settings != null && integration?.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
             {
-                var devices = integration.Settings.GetValue("devices").ToObject<IEnumerable<JObject>>();
-                foreach (var d in devices)
+                var devices = integration.Settings.GetValue("devices")?.ToObject<IEnumerable<JObject>>();
+                if (devices != null)
                 {
-                    response.Add(new TerminalDeviceResponse { DeviceID = d.GetValue("terminalID").Value<string>(), DeviceName = d.GetValue("posName").Value<string>() });
+                    foreach (var d in devices)
+                    {
+                        response.Add(new TerminalDeviceResponse { DeviceID = d.GetValue("terminalID").Value<string>(), DeviceName = d.GetValue("posName").Value<string>() });
+                    }
                 }
             }
 
