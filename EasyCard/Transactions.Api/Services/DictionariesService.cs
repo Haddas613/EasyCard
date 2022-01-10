@@ -17,6 +17,8 @@ using Transactions.Api.Models.Transactions.Enums;
 using Shared.Integration.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests.Enums;
 using Shared.Api.Models.Enums;
+using Shared.Helpers.Models;
+using Shared.Helpers.Models.Resources;
 
 namespace Transactions.Api.Services
 {
@@ -73,6 +75,8 @@ namespace Transactions.Api.Services
 
             var documentOriginEnumType = typeof(DocumentOriginEnum);
             var finalizationStatusEnumType = typeof(TransactionFinalizationStatusEnum);
+
+            var propertyPresenceEnumType = typeof(PropertyPresenceEnum);
 
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -143,6 +147,9 @@ namespace Transactions.Api.Services
             var finalizationStatusTypes = Enum.GetValues(finalizationStatusEnumType).Cast<TransactionFinalizationStatusEnum>()
                 .ToDictionary(m => finalizationStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var propertyPresenceTypes = Enum.GetValues(propertyPresenceEnumType).Cast<PropertyPresenceEnum>()
+               .ToDictionary(m => propertyPresenceEnumType.GetDataContractAttrForEnum(m.ToString()), m => PropertyPresenceEnumResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
             response.SpecialTransactionTypeEnum = spTranTypes;
@@ -166,6 +173,7 @@ namespace Transactions.Api.Services
             response.QuickDateFilterAltEnum = quickDateFilterAltTypes;
             response.DocumentOriginEnum = documentOriginTypes;
             response.TransactionFinalizationStatusEnum = finalizationStatusTypes;
+            response.PropertyPresenceEnum = propertyPresenceTypes;
 
             return response;
         }

@@ -7,7 +7,7 @@ namespace Shared.Helpers.Models
     public enum PropertyPresenceEnum
     {
         All = 0,
-        Present = 1,
-        NotPresent = 2,
+        Yes = 1,
+        No = 2,
     }
 }

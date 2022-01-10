@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Resources\PropertyPresenceEnumResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PropertyPresenceEnumResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\CurrencyResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -33,6 +38,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Resources\PropertyPresenceEnumResource.he.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Resources\PropertyPresenceEnumResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PropertyPresenceEnumResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\CurrencyResource.he-IL.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
