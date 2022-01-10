@@ -521,7 +521,7 @@ $(document).ready(function () {
             $("#number-of-payments").on("change", function (e) {
                 let totalAmount = $("#Amount").val();
                 let newAmount = Math.floor((totalAmount / e.target.value));
-                let initialAmount = (totalAmount - newAmount * (e.target.value - 1));
+                let initialAmount = parseFloat((totalAmount - newAmount * (e.target.value - 1)).toFixed(2));
 
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
                 $("#InstallmentPaymentAmount").val(newAmount)
