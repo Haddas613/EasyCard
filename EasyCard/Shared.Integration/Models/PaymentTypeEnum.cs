@@ -19,7 +19,5 @@ namespace Shared.Integration.Models
         [EnumMember(Value = "bank")]
         Bank = 3,
 
-        [EnumMember(Value = "invoice-only")]
-        InvoiceOnly = 5,
     }
 }

@@ -1,11 +1,48 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@{
+﻿@{
     ViewData["Title"] = "Bit Payment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model BitPaymentViewModel
 
-<p>Bit payment in progress</p>
+<form asp-action="BitPaymentCompleted" method="post" hidden id="form">
+    <input type="hidden" asp-for="PaymentTransactionID" id="PaymentTransactionID" />
+    <input type="hidden" asp-for="TransactionSerialId" id="TransactionSerialId" />
+    <input type="hidden" asp-for="PaymentInitiationId" id="PaymentInitiationId" />
+    <input type="hidden" asp-for="RedirectUrl" id="RedirectUrl" />
+</form>
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <h3 class="text-center">Bit payment in progress</h3>
+    </div>
+    <div class="col-md-2">
+        <div id="bitcom-button-container"></div>
+    </div>
+</div>
+
+@section Scripts{
+<script nws-csp-add-nonce="true">
+$(document).ready(function () {
+    let transaction = {
+        transactionSerialId: '@(Model.TransactionSerialId)',
+        paymentInitiationId: '@(Model.PaymentInitiationId)'
+    };
+    BitPayment.pay(transaction);
+    BitPayment.Buttons({
+        onCreate: function(openBitPaymentPage){
+            //openBitPaymentPage(transaction);
+            $("#form").submit();
+        },
+        onApproved: function(details){
+            return fetch('/bitcom-transaction-complete', {
+                 method: 'post',
+                 headers: {'content-type': 'application/json'},
+                 body: JSON.stringify({orderID: details.paymentInitiationId })
+            }).then(function(res){
+             // Show approval page
+            });
+        } 
+    }).render('#bitcom-button-container');
+});
+</script>
+}

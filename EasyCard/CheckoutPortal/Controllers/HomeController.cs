@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
+using Transactions.Api.Models.External.Bit;
 
 namespace CheckoutPortal.Controllers
 {
@@ -463,9 +464,15 @@ namespace CheckoutPortal.Controllers
             {
                 var bitResult = result as Transactions.Api.Models.External.Bit.InitialBitOperationResponse;
 
-                //TODO: temporary, redirect to bit result when ready
-                var redirectToBitURL = $"https://public.bankhapoalim.co.il/bitcom/2.2.1/payment-modal?transactionSerialId={bitResult.BitTransactionSerialId}&eventSerialId={bitResult.BitPaymentInitiationId}";
-                return Redirect(redirectToBitURL);
+                return RedirectToAction(nameof(BitPayment), new BitPaymentViewModel {
+                    PaymentInitiationId = bitResult.BitPaymentInitiationId,
+                    TransactionSerialId = bitResult.BitTransactionSerialId,
+                    RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
+                    PaymentTransactionID = result.EntityUID.Value,
+                    PaymentIntent = request.PaymentIntent,
+                    ApiKey = request.ApiKey,
+                    PaymentRequest = request.PaymentRequest,
+                });
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest?.RedirectUrl;
@@ -560,9 +567,76 @@ namespace CheckoutPortal.Controllers
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("bit")]
-        public IActionResult BitPayment([FromQuery] BitPaymentQueryModel request)
+        public IActionResult BitPayment([FromQuery] BitPaymentViewModel request)
         {
-            return View();
+            return View(request);
+        }
+
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ValidateAntiForgeryToken]
+        [Route("bit-completed")]
+        public async Task<IActionResult> BitPaymentCompleted([FromBody] BitPaymentViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError($"{nameof(BitPaymentCompleted)}: {string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage))}");
+                return PaymentError();
+            }
+
+            CheckoutData checkoutConfig;
+            bool isPaymentIntent = request.PaymentIntent != null;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            var bitRequest = new CaptureBitTransactionRequest
+            {
+                PaymentInitiationId = request.PaymentInitiationId,
+                PaymentTransactionID = request.PaymentTransactionID
+            };
+
+            var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
+
+            if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
+                return PaymentError();
+            }
+
+            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
+
+            if (string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                return RedirectToAction("PaymentResult");
+            }
+            else
+            {
+                if (checkoutConfig.Settings?.LegacyRedirectResponse == true)
+                {
+                    var paymentTransaction = await transactionsApiClient.GetTransaction(request.PaymentTransactionID);
+
+                    //TODO: not supported for bit?
+                    //redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+
+                    return Redirect(redirectUrl);
+                }
+                else
+                {
+                    return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = request.PaymentTransactionID }));
+                }
+            }
         }
 
         [HttpGet]

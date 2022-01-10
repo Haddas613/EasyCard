@@ -6,7 +6,7 @@ export default class EasyInvoiceApi {
     }
     
     async createCustomer(data){
-        return this.base.post(this.easyInvoiceIntegrationUrl + `/create-customer`, data);
+        return this.base.post(this.easyInvoiceIntegrationUrl + `/create-customer`, data, { showSuccessToastr: false });
     }
 
     async getDocumentTypes(){

@@ -345,5 +345,18 @@ namespace Transactions.Api.Client
                 return clientError.TryConvert(new InitialBitOperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
+
+        public async Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/capture", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
     }
 }

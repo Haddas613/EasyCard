@@ -143,6 +143,8 @@ export default {
         ...this.newCustomerModel
       }
       let operation = await this.$api.integrations.easyInvoice.createCustomer(payload);
+      this.loading = false;
+
       if (!this.$apiSuccess(operation)) return;
 
       this.$toasted.show(operation.message, { type: "success" });
@@ -152,7 +154,6 @@ export default {
       this.newCustomerModel.userName = null;
       this.newCustomerModel.password = null;
       this.newCustomerDialog = false;
-      this.loading = false;
     },
     async getDocumentNumber(){
       if (!this.documentNumberModel.docType){
