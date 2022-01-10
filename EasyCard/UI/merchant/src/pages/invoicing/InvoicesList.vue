@@ -210,12 +210,12 @@ export default {
               await vm.resendSelectedInvoices();
             }
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              vm.switchSelectAll();
-            }
-          }
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     vm.switchSelectAll();
+          //   }
+          // }
         ]
       }
     });

@@ -316,12 +316,12 @@ export default {
             text: this.$t("TransmitAll"),
             fn: () => this.showTransmitDialog = true
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              this.switchSelectAll();
-            }
-          },
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     this.switchSelectAll();
+          //   }
+          // },
           {
             text: this.$t("Excel"),
             fn: () => {

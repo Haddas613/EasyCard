@@ -417,12 +417,12 @@ export default {
               this.$router.push({ name: "CreateBillingDeal" });
             }
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              vm.switchSelectAll();
-            }
-          },
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     vm.switchSelectAll();
+          //   }
+          // },
           {
             text: this.$t("TriggerSelected"),
             fn: async () => {
