@@ -82,7 +82,7 @@ namespace Transactions.Business.Services
             else
             {
                 var response = tokens.Where(t => t.MerchantID == user.GetMerchantID())
-                    .Where(d => d.InitialTransactionID != null);
+                    .Where(d => d.InitialTransactionID == null);
 
                 return response;
             }
