@@ -82,7 +82,7 @@
       <v-card-text class="body-1 black--text">
         <create-terminal-dialog
           :show.sync="showCreateTerminalDialog"
-          v-on:ok="getTerminals()"
+          v-on:ok="$router.push({name: 'EditTerminal', params: {id: $event}})"
           :merchant-id="$route.params.id"
         ></create-terminal-dialog>
         <ec-list :items="terminals" v-if="terminals && terminals.length > 0">
