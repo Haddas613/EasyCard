@@ -56,7 +56,8 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
             using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -70,8 +71,11 @@ namespace Shared.Helpers
                 }
             }
 
+            onRequest?.Invoke(url, string.Empty);
             using HttpResponseMessage response = await HttpClient.SendAsync(request);
             var res = await response.Content.ReadAsStringAsync();
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
             if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<T>(res);

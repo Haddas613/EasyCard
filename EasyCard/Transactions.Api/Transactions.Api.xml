@@ -554,6 +554,21 @@
             End-customer Email
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.External.Bit.GetBitTransactionQuery.PaymentTransactionID">
+            <summary>
+            ECNG transaction id
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.External.Bit.GetBitTransactionQuery.PaymentInitiationId">
+            <summary>
+            Bit transaction id (BitPaymentInitiationId)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.External.Bit.GetBitTransactionQuery.TransactionSerialId">
+            <summary>
+            Bit transaction serial id (BitTransactionSerialId)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
             <summary>
             Invoice details

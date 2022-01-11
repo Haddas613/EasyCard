@@ -567,8 +567,15 @@ namespace CheckoutPortal.Controllers
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("bit")]
-        public IActionResult BitPayment([FromQuery] BitPaymentViewModel request)
+        public async Task<IActionResult> BitPayment([FromQuery] BitPaymentViewModel request)
         {
+            var bitTransaction = await transactionsApiClient.GetBitTransaction(new GetBitTransactionQuery
+            {
+                PaymentInitiationId = request.PaymentInitiationId,
+                TransactionSerialId = request.TransactionSerialId,
+                PaymentTransactionID = request.PaymentTransactionID,
+            });
+
             return View(request);
         }
 

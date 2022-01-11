@@ -18,9 +18,9 @@ namespace Bit.Models
         public int CurrencyTypeCode { get; set; } = 1;
 
         /// <summary>
-        /// Only value 1 (J4) is supported. Required
+        /// Only value 2 (J5) is supported. Required
         /// </summary>
-        public int DebitMethodCode { get; set; } = 1;
+        public int DebitMethodCode { get; set; } = 2;
 
         /// <summary>
         /// Not required.

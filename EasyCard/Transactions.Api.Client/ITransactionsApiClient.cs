@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models;
+﻿using Bit.Models;
+using Shared.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,6 +20,8 @@ namespace Transactions.Api.Client
         Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model);
 
         Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model);
+
+        Task<BitTransactionResponse> GetBitTransaction(GetBitTransactionQuery request);
 
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 

@@ -58,8 +58,23 @@ namespace Bit.Models
 
         /// <summary>
         /// This is the payment initiation status code.
+        /// received - 1,
+        /// rejected - 2,
+        /// partiallyAuthorised - 3,
+        /// valid - 4,
+        /// revokedByPsu - 5,
+        /// expired - 6,
+        /// terminatedByTpp - 7,
         /// </summary>
         public string RequestStatusCode { get; set; }
+
+        public bool Success
+        {
+            get
+            {
+                return RequestStatusCode == "4";
+            }
+        }
 
         /// <summary>
         /// This is the payment initiation status code description.

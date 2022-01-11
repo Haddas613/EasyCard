@@ -45,6 +45,8 @@
     <Compile Include="..\Transactions.Api\Models\Currency\CurrencyRateUpdateRequest.cs" Link="Models\CurrencyRateUpdateRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\External\Bit\InitialBitOperationResponse.cs" Link="Models\InitialBitOperationResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\External\Bit\CaptureBitTransactionRequest.cs" Link="Models\CaptureBitTransactionRequest.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\Bit\GetBitTransactionQuery.cs" Link="Models\GetBitTransactionQuery.cs" />
+    <Compile Include="..\Integration\Bit\Models\BitTransactionResponse.cs" Link="Models\BitTransactionResponse.cs" />
 
   </ItemGroup>
 
