@@ -50,6 +50,8 @@ namespace Bit.Services
                 throw new ApplicationException($"Could not retrieve token: {tokenResponse.Error} ({tokenResponse.ErrorType}). {tokenResponse.ErrorDescription}");
             }
 
+            res?.Dispose();
+
             //set Token to the new token and set the expiry time to the new expiry time
             Token = tokenResponse;
             ExpiryTime = DateTime.UtcNow.AddSeconds(Token.ExpiresIn);

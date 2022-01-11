@@ -447,7 +447,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
 
-            using HttpResponseMessage response = await HttpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             return response;
         }
