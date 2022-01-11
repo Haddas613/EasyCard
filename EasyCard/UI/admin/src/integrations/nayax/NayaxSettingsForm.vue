@@ -27,7 +27,7 @@
           </template>
         </v-select>
       </v-col>
-      <v-col cols="6" class="text-end">
+      <v-col cols="6" class="text-end" v-if="!isTemplate">
         <v-btn small color="success" class="mx-1" @click="addDevice()" :disabled="!formValid || (selectedDevice && !selectedDevice.terminalID)">{{$t("Add")}}</v-btn>
         <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!selectedDevice || !formValid">{{$t("PairDevice")}}</v-btn>
         <v-btn small color="error" class="mx-1" @click="removeCurrentDevice()" :disabled="!selectedDevice">{{$t("Delete")}}</v-btn>
@@ -49,6 +49,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -153,6 +154,11 @@ export default {
       }
       
       return (this.lodash.countBy(this.model.settings.devices, d => d.terminalID  == val).true < 2) || this.$t("AlreadyPresent");
+    }
+  },
+  computed: {
+    isTemplate() {
+      return this.apiName == appConstants.terminal.api.terminalTemplates;
     }
   },
 };

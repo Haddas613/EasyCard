@@ -123,12 +123,12 @@ export default {
     }
   },
   methods: {
-    save() {
+    async save() {
       if(!this.formValid){
         return;
       }
       this.loading = true;
-      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
+      await this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
     },
     async loadMerchantData(){

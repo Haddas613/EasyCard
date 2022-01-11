@@ -51,7 +51,7 @@
     </ec-dialog>
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
-        <v-col cols="12" class="pt-0 text-end pb-4">
+        <v-col v-if="!isTemplate" cols="12" class="pt-0 text-end pb-4">
           <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
           <v-btn small class="mx-1" @click="documentNumberDialog = true;">{{$t("SetDocumentNumber")}}</v-btn>
         </v-col>
@@ -74,6 +74,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -178,6 +179,11 @@ export default {
       });
 
       this.documentNumberDialog = false;
+    }
+  },
+  computed: {
+    isTemplate() {
+      return this.apiName == appConstants.terminal.api.terminalTemplates;
     }
   },
 };

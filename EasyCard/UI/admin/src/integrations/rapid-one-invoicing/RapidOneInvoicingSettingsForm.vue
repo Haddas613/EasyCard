@@ -59,6 +59,8 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
+
 export default {
   props: {
     data: {
@@ -190,6 +192,11 @@ export default {
         return false;  
       }
       return url.protocol === "http:" || url.protocol === "https:";
+    }
+  },
+  computed: {
+    isTemplate() {
+      return this.apiName == appConstants.terminal.api.terminalTemplates;
     }
   },
 };

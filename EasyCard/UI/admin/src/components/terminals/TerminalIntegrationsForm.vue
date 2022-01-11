@@ -83,6 +83,8 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
+
 export default {
   components: {
     EcDialog: () => import("../ec/EcDialog")
@@ -110,12 +112,12 @@ export default {
       vr: ValidationRules,
       idKey: 'terminalID',
       //api key for integrations to use ($api['terminals'] for example)
-      apiName: this.isTemplate ? 'terminalTemplates' : 'terminals'
+      apiName: this.isTemplate ? appConstants.terminal.api.terminalTemplates : appConstants.terminal.api.terminals,
     };
   },
   async mounted() {
     let integrations = await this.$api.terminals.getAvailableIntegrations({
-      showForTemplatesOnly: this.isTemplate
+      //showForTemplatesOnly: this.isTemplate
     });
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
