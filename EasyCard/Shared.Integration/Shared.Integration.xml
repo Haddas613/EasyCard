@@ -16,6 +16,12 @@
             <param name="transactionRequest"></param>
             <returns>Error message when there is an error, null otherwise</returns>
         </member>
+        <member name="T:Shared.Integration.IExternalSystemSettings">
+            <summary>
+            Every integration settings class must implement this interface.
+            The Integration validity will be based on Valid() method
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.AggregatorCancelTransactionRequest.TransactionID">
             <summary>
             Unique transaction ID

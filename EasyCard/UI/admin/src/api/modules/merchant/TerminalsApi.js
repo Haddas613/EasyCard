@@ -75,8 +75,8 @@ export default class TerminalsApi {
         return this.base.delete(this.terminalsUrl + `/${terminalID}/externalsystem/${externalSystemID}`);
     }
 
-    async enableTerminal(terminalID){
-        return this.base.put(this.terminalsUrl + `/${terminalID}/enable`);
+    async approveTerminal(terminalID){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/approve`);
     }
 
     async disableTerminal(terminalID){

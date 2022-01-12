@@ -119,12 +119,6 @@ namespace Merchants.Business.Migrations
 
                     b.HasKey("ConsumerID");
 
-                    b.HasIndex("TerminalID");
-
-                    b.HasIndex("TerminalID", "ConsumerID");
-
-                    b.HasIndex("TerminalID", "ExternalReference");
-
                     b.ToTable("Consumer");
                 });
 
@@ -625,6 +619,9 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<bool>("Valid")
+                        .HasColumnType("bit");
 
                     b.HasKey("TerminalExternalSystemID");
 

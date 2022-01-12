@@ -208,7 +208,7 @@ namespace Merchants.Api.Controllers
 
             mapper.Map(template, newTerminal);
 
-            newTerminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+            newTerminal.Status = TerminalStatusEnum.PendingApproval;
 
             await terminalsService.CreateEntity(newTerminal);
 
@@ -218,7 +218,7 @@ namespace Merchants.Api.Controllers
         // TODO: concurrency check
 
         /// <summary>
-        /// Ypdates basic terminal information and settings
+        /// Updates basic terminal information and settings
         /// </summary>
         /// <param name="terminalID"></param>
         /// <param name="model"></param>
@@ -283,6 +283,16 @@ namespace Merchants.Api.Controllers
                         {
                             var settings = texternalSystem.Settings.ToObject(settingsType);
                             mapper.Map(settings, terminal, settingsType, typeof(Terminal));
+
+                            if (settings is IExternalSystemSettings externalSystemSettings)
+                            {
+                                texternalSystem.Valid = await externalSystemSettings.Valid();
+                            }
+                            else
+                            {
+                                //If validation is not available, it's assumed to be valid to not block workflow
+                                texternalSystem.Valid = true;
+                            }
                         }
 
                         await terminalsService.UpdateEntity(terminal, dbTransaction);
@@ -376,9 +386,9 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/disable")]
         public async Task<ActionResult<OperationResponse>> DisableTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            terminal.Status = Shared.Enums.TerminalStatusEnum.Disabled;
+            terminal.Status = TerminalStatusEnum.Disabled;
             terminal.SharedApiKey = null;
 
             await terminalsService.UpdateEntity(terminal);
@@ -387,12 +397,31 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{terminalID}/enable")]
-        public async Task<ActionResult<OperationResponse>> EnableTerminal([FromRoute]Guid terminalID)
+        [Route("{terminalID}/approve")]
+        public async Task<ActionResult<OperationResponse>> ApproveTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            terminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+            if (terminal.Integrations.Any())
+            {
+                foreach (var integration in terminal.Integrations)
+                {
+                    var externalSystem = externalSystemsService.GetExternalSystem(integration.ExternalSystemID);
+
+                    //TODO: Delete irrelevant external system?
+                    if (externalSystem == null)
+                    {
+                        continue;
+                    }
+
+                    if (!integration.Valid)
+                    {
+                        return Ok(new OperationResponse(string.Format(Messages.CheckIntegrationSettings, externalSystem.Name), StatusEnum.Error, terminalID));
+                    }
+                }
+            }
+
+            terminal.Status = TerminalStatusEnum.Approved;
 
             await terminalsService.UpdateEntity(terminal);
 

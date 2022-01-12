@@ -491,6 +491,7 @@
   "TransmitSelected": "Transmit Selected",
   "TransmitAll": "Transmit All",
   "DisableSelected": "Disable Selected",
+  "Approve": "Approve",
 
   "--AUTH--": null,
   "Login": "Login",

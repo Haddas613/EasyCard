@@ -13,7 +13,7 @@
         </member>
         <member name="M:Merchants.Api.Controllers.TerminalsApiController.UpdateTerminal(System.Guid,Merchants.Api.Models.Terminal.UpdateTerminalRequest)">
             <summary>
-            Ypdates basic terminal information and settings
+            Updates basic terminal information and settings
             </summary>
             <param name="terminalID"></param>
             <param name="model"></param>

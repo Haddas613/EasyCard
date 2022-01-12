@@ -356,7 +356,12 @@ export default {
       await this.getMerchant();
     },
     async enable(terminal){
-      let opResult = await this.$api.terminals.enableTerminal(terminal.$terminalID);
+      let opResult = await this.$api.terminals.approveTerminal(terminal.$terminalID);
+      
+      if (!this.$apiSuccess(opResult) && opResult.message){
+        this.$toasted.show(opResult.message, { type: "error" })
+      }
+
       await this.getTerminals();
     },
     async disable(terminal){
