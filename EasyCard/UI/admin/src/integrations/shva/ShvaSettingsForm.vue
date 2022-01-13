@@ -7,7 +7,7 @@
         <v-alert class="pt-4" border="top" colored-border type="warning" elevation="2">
           {{$t("ShvaNewPasswordInfoMessage")}}
         </v-alert>
-        <v-form ref="newPasswordFormRef" lazy-validation>
+        <v-form ref="newPasswordFormRef" lazy-validation v-if="model.settings">
           <v-row>
             <v-col cols="12" class="pt-4 pb-0 mb-0">
               <v-text-field
@@ -132,9 +132,12 @@ export default {
         ...this.model,
         terminalID: this.terminalId,
       });
-      if(!this.$apiSuccess(operation)) return;
-
-      this.model.valid = true;
+      if(!this.$apiSuccess(operation)){
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+      }
+      this.$emit('update', this.model);
     },
     async updateParameters(){
       await this.$api.integrations.shva.updateParameters({
