@@ -103,6 +103,79 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
+
+        [HttpPost]
+        [Route("update-customer")]
+        public async Task<ActionResult<OperationResponse>> UpdateCustomer(ECInvoiceUpdateUserDetailsRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
+            var updateUserResult = await eCInvoicing.UpdateCustomer(
+                new UpdateUserDetailsRequest()
+            {
+                Terminal = terminalSettings,
+                city = request.city,
+                country = request.country,
+                countryCode = request.countryCode,
+                email = request.email,
+                generalClientCode = request.generalClientCode,
+                hashExportConfiguration = request.hashExportConfiguration,
+                incomeCode = request.incomeCode,
+                name = request.name,
+                password = request.password,
+                phoneNumber = request.phoneNumber,
+                postalCode = request.postalCode,
+                street = request.street,
+                streetNumber = request.streetNumber,
+                taxId = request.taxId
+            }, GetCorrelationID());
+
+            var response = new OperationResponse(EasyInvoiceMessagesResource.CustomerUpdatedSuccessfully, StatusEnum.Success);
+
+            // Currently only possible if 409 (user already exists)
+            if (updateUserResult.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = EasyInvoiceMessagesResource.CustomerUpdatedFailed;
+
+                return BadRequest(response);
+            }
+
+            //EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            //terminalSettings.Password = request.Password;
+            //terminalSettings.UserName = request.UserName;
+            //easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
+           // await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
+
+            //var generateCertificateResult = await eCInvoicing.GenerateCertificate(
+             //   terminalSettings,
+               // GetCorrelationID());
+
+           // if (generateCertificateResult.Status != StatusEnum.Success)
+           // {
+           //     response.Status = StatusEnum.Error;
+           //     response.Message = generateCertificateResult.Message;
+           //
+           //     return BadRequest(response);
+           // }
+
+            //terminalSettings.KeyStorePassword = generateCertificateResult.EntityReference;
+
+            easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
+            await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
+
+            response.AdditionalData = easyInvoiceIntegration.Settings;
+            return Ok(response);
+        }
+
+
         [HttpGet]
         [Route("request-logs/{entityID}")]
         public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)

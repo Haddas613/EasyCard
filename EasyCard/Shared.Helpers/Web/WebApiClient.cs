@@ -76,6 +76,8 @@ namespace Shared.Helpers
             }
         }
 
+
+       
         public async Task<string> GetObj<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
@@ -113,6 +115,55 @@ namespace Shared.Helpers
             }
         }
 
+        public async Task<T> Patch<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+          ProcessRequest onRequest = null, ProcessResponse onResponse = null
+          )
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Patch, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            var json = JsonConvert.SerializeObject(payload);
+
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            onRequest?.Invoke(url, json);
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            var res = await response.Content.ReadAsStringAsync();
+
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<T>(res);
+            }
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
+            }
+        }
         public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             )

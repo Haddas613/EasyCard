@@ -155,6 +155,51 @@ namespace EasyInvoice
             }
         }
 
+        public async Task<OperationResponse> UpdateCustomer(UpdateUserDetailsRequest request, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = await GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId, request.email);
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                UpdateUserDetailsRequest req = ECInvoiceConverter.GetUpdateUserDataRequest(request);
+                /*
+                 * Response body: empty
+                 * Possible errors:
+                    * HTTP 409 (conflict) - user already exists
+                 */
+                var result = await this.apiClient.Patch<object>(this.configuration.BaseUrl, "/api/v1/user", req, () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "User updated"
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex is WebApiClientErrorException wacEx)
+                {
+                    if (wacEx.StatusCode == System.Net.HttpStatusCode.Conflict)
+                    {
+                        return new OperationResponse
+                        {
+                            Status = Shared.Api.Models.Enums.StatusEnum.Error,
+                            Message = "User Already Exists"
+                        };
+                    }
+                }
+
+                this.logger.LogError(ex, $"EasyInvoice UpdateCustomer request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice UpdateCustomer request failed", integrationMessageId);
+            }
+        }
+
+
         public async Task<OperationResponse> GenerateCertificate(EasyInvoiceTerminalSettings terminal, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -389,7 +434,7 @@ namespace EasyInvoice
             try
             {
                 // headers.Add("Accept-language", "he"); // TODO: get language from options
-
+                
                 var json = new GetDocumentTaxReportModel
                 {
                     endDate = request.EndDate,

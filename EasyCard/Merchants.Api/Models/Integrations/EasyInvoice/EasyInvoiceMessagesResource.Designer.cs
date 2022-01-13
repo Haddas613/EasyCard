@@ -79,6 +79,24 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updating customer details failed.
+        /// </summary>
+        public static string CustomerUpdatedFailed {
+            get {
+                return ResourceManager.GetString("CustomerUpdatedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer details updated successfully.
+        /// </summary>
+        public static string CustomerUpdatedSuccessfully {
+            get {
+                return ResourceManager.GetString("CustomerUpdatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Document Cancelled Failed.
         /// </summary>
         public static string DocumentCancelledFailed {

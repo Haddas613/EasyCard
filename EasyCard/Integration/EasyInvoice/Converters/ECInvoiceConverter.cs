@@ -57,6 +57,29 @@ namespace EasyInvoice.Converters
             return json;
         }
 
+
+        public static UpdateUserDetailsRequest GetUpdateUserDataRequest(UpdateUserDetailsRequest message)
+        {
+            var json = new UpdateUserDetailsRequest
+            {
+                city = message.city,
+                country = message.country,
+                countryCode = message.countryCode,
+                email = message.email,
+                generalClientCode = message.generalClientCode,
+                hashExportConfiguration = message.hashExportConfiguration,
+                incomeCode = message.incomeCode,
+                name = message.name,
+                password = message.password,
+                phoneNumber = message.phoneNumber,
+                postalCode = message.postalCode,
+                street = message.street,
+                streetNumber = message.streetNumber
+            };
+
+            return json;
+        }
+
         public static IList<ECInvoiceRow> GetRows(InvoicingCreateDocumentRequest message)
         {
             if (!(message.DealDetails?.Items?.Count() > 0))
