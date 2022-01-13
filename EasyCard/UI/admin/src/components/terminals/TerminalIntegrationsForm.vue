@@ -50,6 +50,7 @@
         :key="int.externalSystemID"
         no-gutters
         class="mb-4 mx-4"
+        v-bind:class="{'-invalid-integration': !isTemplate && !int.valid}"
       >
         <template v-if="int.externalSystem">
           <v-card-title class="subtitle-2" >
@@ -83,8 +84,6 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
-
 export default {
   components: {
     EcDialog: () => import("../ec/EcDialog")
@@ -112,12 +111,12 @@ export default {
       vr: ValidationRules,
       idKey: 'terminalID',
       //api key for integrations to use ($api['terminals'] for example)
-      apiName: this.isTemplate ? appConstants.terminal.api.terminalTemplates : appConstants.terminal.api.terminals,
+      apiName: this.isTemplate ? 'terminalTemplates' : 'terminals'
     };
   },
   async mounted() {
     let integrations = await this.$api.terminals.getAvailableIntegrations({
-      //showForTemplatesOnly: this.isTemplate
+      showForTemplatesOnly: this.isTemplate
     });
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
@@ -138,13 +137,17 @@ export default {
       this.selectedIntegrationType = null;
       this.integrationDialog = true;
     },
-    addIntegration(){
+    async addIntegration(){
       if(!this.$refs.form.validate()){ return ;}
       let type = this.lodash.find(this.integrationTypes, t => t.name == this.selectedIntegrationType);
       type.disabled = true;
 
       let integration = this.lodash.find(this.integrations[type.name], i => i.externalSystemID == this.selectedIntegrationID);
-      this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
+      let opResult = await this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
+
+      if(!this.isTemplate && opResult.additionalData){
+        integration.valid = opResult.additionalData.valid;
+      }
 
       integration = this.mapIntegration(integration);
       this.model.integrations.push(integration);
@@ -163,7 +166,8 @@ export default {
           type: int.type
         },
         externalSystemID: int.externalSystemID,
-        settings: int.settings
+        settings: int.settings,
+        valid: int.valid,
       }
     },
     async deleteIntegration(integrationID){
@@ -177,3 +181,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.invalid-integration{
+  border: 1px solid var(--v-error-base);
+}
+</style>

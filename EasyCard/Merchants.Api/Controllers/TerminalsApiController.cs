@@ -239,6 +239,11 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
+            //Some integration may not require any additional settings (e.g. NullAggregator)
+            //user is notified if this is the case
+            JObject additionalData = new JObject();
+            additionalData.Add("valid", false);
+
             using (var dbTransaction = terminalsService.BeginDbTransaction())
             {
                 var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -278,12 +283,12 @@ namespace Merchants.Api.Controllers
                         {
                             var devices = texternalSystem.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                             mapper.Map(devices, terminal, typeof(Nayax.Models.NayaxTerminalCollection), typeof(Terminal));
+                            texternalSystem.Valid = await devices.Valid();
+                            additionalData["valid"] = texternalSystem.Valid;
                         }
                         else
                         {
                             var settings = texternalSystem.Settings.ToObject(settingsType);
-                            mapper.Map(settings, terminal, settingsType, typeof(Terminal));
-
                             if (settings is IExternalSystemSettings externalSystemSettings)
                             {
                                 texternalSystem.Valid = await externalSystemSettings.Valid();
@@ -293,6 +298,9 @@ namespace Merchants.Api.Controllers
                                 //If validation is not available, it's assumed to be valid to not block workflow
                                 texternalSystem.Valid = true;
                             }
+
+                            additionalData["valid"] = texternalSystem.Valid;
+                            mapper.Map(settings, terminal, settingsType, typeof(Terminal));
                         }
 
                         await terminalsService.UpdateEntity(terminal, dbTransaction);
@@ -307,7 +315,7 @@ namespace Merchants.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
-            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID) { AdditionalData = additionalData });
         }
 
         [HttpDelete]

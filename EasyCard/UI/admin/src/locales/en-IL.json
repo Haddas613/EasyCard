@@ -549,6 +549,7 @@
   "Bitcoin": "Bitcoin",
   "NotSpecified": "Not Specified",
   "Manager": "Manager",
+  "ReadyToUse": "Ready to Use",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="newPasswordDialog" color="ecbg">
       <template v-slot:title>{{$t('SetNewPassword')}}</template>
       <template>
@@ -33,7 +34,6 @@
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
         <v-col cols="12" class="pt-0 text-end pb-4">
-          <v-btn small color="success" @click="testConnection()">{{$t("TestConnection")}}</v-btn>
           <v-btn small color="secondary" class="mx-1" @click="openNewPasswordDialog()">{{$t("SetNewPassword")}}</v-btn>
           <v-btn v-if="apiName == 'terminals'" small color="primary" @click="updateParameters()">{{$t("UpdateParameters")}}</v-btn>
         </v-col>
@@ -59,10 +59,12 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
   },
   props: {
     data: {
@@ -86,7 +88,8 @@ export default {
       loading: false,
       newPasswordDialog: false,
       newPasswordModel: null,
-      vr: ValidationRules
+      vr: ValidationRules,
+      appConstants: appConstants,
     };
   },
   mounted() {
@@ -114,8 +117,8 @@ export default {
       this.loading = true;
       let payload = {
         newPassword: this.newPasswordModel,
-        terminalID: this.apiName == 'terminals' ? this.terminalId : null,
-        terminalTemplateID: this.apiName == 'terminalTemplates' ? this.terminalId : null
+        terminalID: this.apiName == this.appConstants.terminal.api.terminals ? this.terminalId : null,
+        terminalTemplateID: this.apiName == this.appConstants.terminal.api.terminalTemplates ? this.terminalId : null
       }
       let operation = await this.$api.integrations.shva.setNewPassword(payload);
       if (!this.$apiSuccess(operation)) return;
@@ -125,7 +128,13 @@ export default {
       this.loading = false;
     },
     async testConnection(){
-      await this.$api.integrations.shva.testConnection(this.model);
+      let operation = await this.$api.integrations.shva.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)) return;
+
+      this.model.valid = true;
     },
     async updateParameters(){
       await this.$api.integrations.shva.updateParameters({

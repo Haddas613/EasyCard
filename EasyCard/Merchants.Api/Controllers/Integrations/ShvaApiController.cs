@@ -55,7 +55,33 @@ namespace Merchants.Api.Controllers.Integrations
         [Route("test-connection")]
         public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
-            throw new NotImplementedException();
+            //if (request.TerminalTemplateID.HasValue)
+            //{
+            //    var externalSystems = await terminalTemplatesService.GetTerminalTemplateExternalSystems(request.TerminalTemplateID.Value);
+            //    var shva = externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID);
+            //    if (shva == null)
+            //    {
+            //        return BadRequest("Shva is not connected to this template");
+            //    }
+
+            //    shva.Valid = true;
+            //    await 
+            //}
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var shvaIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
+
+            if (shvaIntegration == null)
+            {
+                return BadRequest("Shva is not connected to this terminal");
+            }
+
+            //TODO: temporary implementation
+            shvaIntegration.Valid = true;
+            await terminalsService.SaveTerminalExternalSystem(shvaIntegration, terminal);
+
+            return new OperationResponse(ShvaMessagesResource.ConnectionSuccess, StatusEnum.Success);
         }
 
         [HttpPost]
