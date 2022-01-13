@@ -419,6 +419,7 @@
   "TransmitAll": "שידר הכל",
   "DisableSelected": "עסקאות בילינג נחסמו",
   "RestoreCustomer": "שחזור לקוח",
+  "RestoreItem": "שחזור פריט",
 
   "--AUTH--": null,
   "Login": "כניסה",
