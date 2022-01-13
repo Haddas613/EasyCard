@@ -56,7 +56,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.OKNumber, s => s.MapFrom(src => src.OKNumber))
                 .ForMember(m => m.PinPadTransactionID, s => s.Ignore());
 
-            CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
+            CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>()
+                .ForMember(m => m.ProcessorResultCode, s => s.MapFrom(src => src.ResultCode));
 
             CreateMap<ProcessorPreCreateTransactionResponse, ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
