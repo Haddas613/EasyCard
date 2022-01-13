@@ -418,6 +418,7 @@
   "TransmitSelected": "שידור נבחר",
   "TransmitAll": "שידר הכל",
   "DisableSelected": "עסקאות בילינג נחסמו",
+  "RestoreCustomer": "שחזור לקוח",
 
   "--AUTH--": null,
   "Login": "כניסה",
