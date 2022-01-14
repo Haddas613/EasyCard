@@ -47,7 +47,7 @@
     <div v-if="model.integrations">
       <v-card
         v-for="int in model.integrations"
-        :key="int.valid + int.externalSystemID"
+        :key="int.externalSystemID"
         no-gutters
         class="mb-4 mx-4"
         v-bind:class="{'invalid-integration': !isTemplate && !int.valid}"
@@ -118,7 +118,7 @@ export default {
   },
   async mounted() {
     let integrations = await this.$api.terminals.getAvailableIntegrations({
-      showForTemplatesOnly: this.isTemplate
+      //showForTemplatesOnly: this.isTemplate
     });
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {

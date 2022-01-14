@@ -98,12 +98,12 @@ export default {
     }
   },
   methods: {
-    save() {
-      if (!this.formValid) {
+    async save() {
+      if (!this.formValid || this.loading) {
         return;
       }
       this.loading = true;
-      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
+      await this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
     },
     openNewPasswordDialog() {
@@ -133,9 +133,11 @@ export default {
         terminalID: this.terminalId,
       });
       if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
         this.model.valid = false;
       }else{
         this.model.valid = true;
+        await this.save();
       }
       this.$emit('update', this.model);
     },

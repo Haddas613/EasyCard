@@ -1,5 +1,6 @@
 <template>
   <v-form v-model="formValid">
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="authenticateDeviceDialog" color="ecbg">
       <template v-slot:title>{{$t('AuthenticateDevice')}}</template>
       <template>
@@ -16,7 +17,7 @@
         </div>
       </template>
     </ec-dialog>
-    <v-row class="pt-2">
+    <v-row class="pt-2" v-if="model.settings">
       <v-col cols="6">
         <v-select :items="model.settings.devices" v-model="selectedDevice" return-object :item-value="deviceValue">
           <template v-slot:item="{ item }">
@@ -53,7 +54,8 @@ import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
   },
   props: {
     data: {
@@ -79,7 +81,8 @@ export default {
       authenticateDeviceOTP: null,
       authenticateDeviceDialog: false,
       otpFormCorrect: false,
-      selectedDevice: null
+      selectedDevice: null,
+      appConstants: appConstants,
     }
   },
   mounted () {
@@ -154,7 +157,21 @@ export default {
       }
       
       return (this.lodash.countBy(this.model.settings.devices, d => d.terminalID  == val).true < 2) || this.$t("AlreadyPresent");
-    }
+    },
+    async testConnection(){
+      let operation = await this.$api.integrations.nayax.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+        await this.save();
+      }
+      this.$emit('update', this.model);
+    },
   },
   computed: {
     isTemplate() {

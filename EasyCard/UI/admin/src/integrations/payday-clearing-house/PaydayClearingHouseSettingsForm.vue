@@ -1,5 +1,6 @@
 <template>
   <v-form v-model="formValid" lazy-validation>
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="loadMerchantDialog">
       <template v-slot:title>{{$t('LoadMerchantData')}}</template>
       <template>
@@ -82,10 +83,12 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
     EcDialog: () => import("../../components/ec/EcDialog"),
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
   },
   props: {
     data: {
@@ -114,7 +117,8 @@ export default {
       },
       loadedMerchantsData: [],
       selectedMerchant: null,
-      vr: ValidationRules
+      vr: ValidationRules,
+      appConstants: appConstants,
     }
   },
   mounted () {
@@ -145,7 +149,21 @@ export default {
       this.model.settings.merchantID = this.selectedMerchant.merchantID;
       this.loadMerchantDialog = false;
       await this.save();
-    }
+    },
+    async testConnection(){
+      let operation = await this.$api.integrations.clearingHouse.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+        await this.save();
+      }
+      this.$emit('update', this.model);
+    },
   },
 };
 </script>

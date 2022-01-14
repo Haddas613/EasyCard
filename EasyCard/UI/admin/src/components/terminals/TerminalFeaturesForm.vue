@@ -52,7 +52,7 @@ export default {
   },
   async mounted() {
     let features = await this.$api.terminals.getAvailableFeatures({
-      showForTemplatesOnly: this.isTemplate
+      //showForTemplatesOnly: this.isTemplate
     });
     if (this.terminal.enabledFeatures && this.terminal.enabledFeatures.length > 0) {
       for (var f of features) {

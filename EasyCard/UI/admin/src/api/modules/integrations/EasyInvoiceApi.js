@@ -20,4 +20,8 @@ export default class EasyInvoiceApi {
     async setDocumentNumber(data){
         return this.base.post(this.easyInvoiceIntegrationUrl + `/set-document-number`, data);
     }
+
+    async testConnection(data){
+        return this.base.post(this.easyInvoiceIntegrationUrl + `/test-connection`, data);
+    }
 }

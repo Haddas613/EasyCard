@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EitherTerminalOrTerminalTemplateIDMustBeSpecified" xml:space="preserve">
-    <value>חובה לציין מספר מסוף או מספר תבנית מסוף</value>
+  <data name="ConnectionFailed" xml:space="preserve">
+    <value>חיבור נכשל</value>
   </data>
-  <data name="NewPasswordSetSuccessfully" xml:space="preserve">
-    <value>הסיסמה החדשה נקבעה בהצלחה</value>
-  </data>
-  <data name="ChangePasswordSetSuccessfully" xml:space="preserve">
-    <value>הסיסמה עודכנה בהצלחה</value>
-  </data>
-  <data name="CouldNotSetNewPassword" xml:space="preserve">
-    <value>נכשלה שליחת סיסמא חדשה</value>
-  </data>
-  <data name="UpdatedParametersSuccessfully" xml:space="preserve">
-    <value>פרמטרים עודכנו בהצלחה</value>
+  <data name="ConnectionSuccess" xml:space="preserve">
+    <value>חיבור נוצר בהצלחה</value>
   </data>
 </root>

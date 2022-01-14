@@ -12,4 +12,8 @@ export default class NayaxApi {
     async authenticateDevice(data){
         return this.base.post(this.easyInvoiceIntegrationUrl + '/authenticate-device', data);
     }
+
+    async testConnection(data){
+        return this.base.post(this.easyInvoiceIntegrationUrl + `/test-connection`, data);
+    }
 }

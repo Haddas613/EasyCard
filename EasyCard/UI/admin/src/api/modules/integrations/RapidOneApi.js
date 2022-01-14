@@ -16,4 +16,8 @@ export default class RapidOneApi {
     async getDepartments(baseurl, token, branchid){
         return this.base.get(this.rapidOneIntegrationUrl + `/departments`, { baseurl, token, branchid });
     }
+
+    async testConnection(data){
+        return this.base.post(this.rapidOneIntegrationUrl + `/test-connection`, data);
+    }
 }

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="newCustomerDialog" color="ecbg">
       <template v-slot:title>{{$t('CreateNewCustomer')}}</template>
       <template>
@@ -79,6 +80,7 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcDialog: () => import("../../components/ec/EcDialog"),
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
   },
   props: {
     data: {
@@ -112,7 +114,8 @@ export default {
       },
       ecInvoiceTypes: {},
       vr: ValidationRules,
-      documentNumberDialog: false
+      documentNumberDialog: false,
+      appConstants: appConstants,
     }
   },
   async mounted () {
@@ -123,12 +126,12 @@ export default {
     this.ecInvoiceTypes = await this.$api.integrations.easyInvoice.getDocumentTypes();
   },
   methods: {
-    save() {
-      if(!this.formValid){
+    async save() {
+      if (!this.formValid || this.loading) {
         return;
       }
       this.loading = true;
-      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
+      await this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
     },
     openNewCustomerDialog() {
@@ -179,7 +182,21 @@ export default {
       });
 
       this.documentNumberDialog = false;
-    }
+    },
+    async testConnection(){
+      let operation = await this.$api.integrations.easyInvoice.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+        await this.save();
+      }
+      this.$emit('update', this.model);
+    },
   },
   computed: {
     isTemplate() {

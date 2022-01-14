@@ -8,4 +8,8 @@ export default class ClearingHouseApi {
     async getCustomerData(params){
         return this.base.get(this.clearingHouseIntegrationUrl + `/merchants`, params);
     }
+
+    async testConnection(data){
+        return this.base.post(this.clearingHouseIntegrationUrl + `/test-connection`, data);
+    }
 }

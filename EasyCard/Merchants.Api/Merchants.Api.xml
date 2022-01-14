@@ -304,11 +304,6 @@
               Looks up a localized string similar to New password set successfully.
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ConnectionSuccess">
-            <summary>
-              Looks up a localized string similar to Connection success.
-            </summary>
-        </member>
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.CouldNotSetNewPassword">
             <summary>
               Looks up a localized string similar to Could not send new password.
@@ -766,6 +761,32 @@
         <member name="P:Merchants.Api.Models.User.UserSummaryResource.UserID">
             <summary>
               Looks up a localized string similar to User ID.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Resources.MessagesResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ConnectionFailed">
+            <summary>
+              Looks up a localized string similar to Connection failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ConnectionSuccess">
+            <summary>
+              Looks up a localized string similar to Connection success.
             </summary>
         </member>
     </members>
