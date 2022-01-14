@@ -83,6 +83,16 @@ namespace Transactions.Api.Controllers.External
             this.apiSettings = apiSettings.Value;
         }
 
+        [HttpGet]
+        [Route("get")]
+        public async Task<ActionResult<BitTransactionResponse>> GetBitTransaction([FromQuery] GetBitTransactionQuery request)
+        {
+            //TODO: temporary
+            var bitTransaction = await bitProcessor.GetBitTransaction(request.PaymentInitiationId, request.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+
+            return Ok(bitTransaction);
+        }
+
         [HttpPost]
         [ValidateModelState]
         [Route("initial")]

@@ -68,7 +68,7 @@ namespace Bit
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var bitTransaction = await GetBitTransaction(paymentTransactionRequest.BitPaymentInitiationId, integrationMessageId);
+            var bitTransaction = await GetBitTransaction(paymentTransactionRequest.BitPaymentInitiationId, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
 
             ValidateAgainstBitTransaction(paymentTransactionRequest, bitTransaction, integrationMessageId);
 
@@ -115,17 +115,41 @@ namespace Bit
                 $"/payments/bit/v2/single-payments" : $"/payments/bit/v2/single-payments/{paymentInitiationId}";
         }
 
-        private async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string integrationMessageId)
+        public async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string paymentTransactionID, string integrationMessageId, string correlationID)
         {
+            string requestUrl = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
             try
             {
-                return await apiClient.Get<BitTransactionResponse>(configuration.BaseUrl, GetBitTransactionUrl(paymentInitiationId), null, BuildHeaders);
+                return await apiClient.Get<BitTransactionResponse>(configuration.BaseUrl, GetBitTransactionUrl(paymentInitiationId), null, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
 
                 throw new IntegrationException("Bit integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+
+                integrationMessage.Request = string.Empty;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
             }
         }
 

@@ -288,7 +288,7 @@ export default {
       return (this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing) 
         && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
         && this.model.dealDetails.consumerEmail
-        && this.model.$currency =='ILS')
+        && (this.model.currency =='ILS' || this.model.$currency =='ILS'))
     },
     async selectJ5(){
       let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);
