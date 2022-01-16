@@ -10,5 +10,7 @@ namespace Transactions.Business.Services
     public interface ICreditCardTokenService : IServiceBase<CreditCardTokenDetails, Guid>
     {
         IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false);
+
+        IQueryable<CreditCardTokenDetails> GetTokensShared(bool showIncactive = false);
     }
 }

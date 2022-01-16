@@ -43,7 +43,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="model.startAt" :min="minDate" no-title scrollable color="primary">
+          <v-date-picker @change="checkDates()" v-model="model.startAt" no-title scrollable color="primary">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="$refs.startAtMenu.save(model.startAt)">{{$t("Ok")}}</v-btn>
           </v-date-picker>
@@ -127,6 +127,11 @@ export default {
   methods: {
     validate() {
       return this.$refs.scheduleFormRef.validate();
+    },
+    checkDates(){
+      if (this.model.startAt > this.model.endAt){
+        this.model.endAt = null;
+      }
     }
   }
 };

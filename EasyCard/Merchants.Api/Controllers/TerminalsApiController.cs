@@ -208,7 +208,7 @@ namespace Merchants.Api.Controllers
 
             mapper.Map(template, newTerminal);
 
-            newTerminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+            newTerminal.Status = TerminalStatusEnum.PendingApproval;
 
             await terminalsService.CreateEntity(newTerminal);
 
@@ -218,7 +218,7 @@ namespace Merchants.Api.Controllers
         // TODO: concurrency check
 
         /// <summary>
-        /// Ypdates basic terminal information and settings
+        /// Updates basic terminal information and settings
         /// </summary>
         /// <param name="terminalID"></param>
         /// <param name="model"></param>
@@ -239,6 +239,11 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
+            //Some integration may not require any additional settings (e.g. NullAggregator)
+            //user is notified if this is the case
+            JObject additionalData = new JObject();
+            additionalData.Add("valid", false);
+
             using (var dbTransaction = terminalsService.BeginDbTransaction())
             {
                 var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -254,7 +259,7 @@ namespace Merchants.Api.Controllers
 
                 if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
                 {
-                    var devices = model.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    var devices = model.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                     await HandlePinPadDevices(texternalSystem, devices);
                 }
 
@@ -276,12 +281,25 @@ namespace Merchants.Api.Controllers
                     {
                         if (texternalSystem.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
                         {
-                            var devices = texternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
-                            mapper.Map(devices, terminal, typeof(Nayax.NayaxTerminalCollection), typeof(Terminal));
+                            var devices = texternalSystem.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
+                            mapper.Map(devices, terminal, typeof(Nayax.Models.NayaxTerminalCollection), typeof(Terminal));
+                            texternalSystem.Valid = await devices.Valid();
+                            additionalData["valid"] = texternalSystem.Valid;
                         }
                         else
                         {
                             var settings = texternalSystem.Settings.ToObject(settingsType);
+                            if (settings is IExternalSystemSettings externalSystemSettings)
+                            {
+                                texternalSystem.Valid = await externalSystemSettings.Valid();
+                            }
+                            else
+                            {
+                                //If validation is not available, it's assumed to be valid to not block workflow
+                                texternalSystem.Valid = true;
+                            }
+
+                            additionalData["valid"] = texternalSystem.Valid;
                             mapper.Map(settings, terminal, settingsType, typeof(Terminal));
                         }
 
@@ -297,7 +315,7 @@ namespace Merchants.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
-            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID) { AdditionalData = additionalData });
         }
 
         [HttpDelete]
@@ -376,9 +394,9 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/disable")]
         public async Task<ActionResult<OperationResponse>> DisableTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            terminal.Status = Shared.Enums.TerminalStatusEnum.Disabled;
+            terminal.Status = TerminalStatusEnum.Disabled;
             terminal.SharedApiKey = null;
 
             await terminalsService.UpdateEntity(terminal);
@@ -387,12 +405,31 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{terminalID}/enable")]
-        public async Task<ActionResult<OperationResponse>> EnableTerminal([FromRoute]Guid terminalID)
+        [Route("{terminalID}/approve")]
+        public async Task<ActionResult<OperationResponse>> ApproveTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            terminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+            if (terminal.Integrations.Any())
+            {
+                foreach (var integration in terminal.Integrations)
+                {
+                    var externalSystem = externalSystemsService.GetExternalSystem(integration.ExternalSystemID);
+
+                    //TODO: Delete irrelevant external system?
+                    if (externalSystem == null)
+                    {
+                        continue;
+                    }
+
+                    if (!integration.Valid)
+                    {
+                        return Ok(new OperationResponse(string.Format(Messages.CheckIntegrationSettings, externalSystem.Name), StatusEnum.Error, terminalID));
+                    }
+                }
+            }
+
+            terminal.Status = TerminalStatusEnum.Approved;
 
             await terminalsService.UpdateEntity(terminal);
 
@@ -589,9 +626,9 @@ namespace Merchants.Api.Controllers
         /// <param name="terminalExternalSystem">Original data</param>
         /// <param name="data">New data</param>
         /// <returns></returns>
-        private async Task HandlePinPadDevices(TerminalExternalSystem terminalExternalSystem, Nayax.NayaxTerminalCollection data)
+        private async Task HandlePinPadDevices(TerminalExternalSystem terminalExternalSystem, Nayax.Models.NayaxTerminalCollection data)
         {
-            var old = terminalExternalSystem.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+            var old = terminalExternalSystem.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
 
             if (old is null || old.devices is null)
             {

@@ -7,7 +7,9 @@ using EasyInvoice;
 using EasyInvoice.Models;
 using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.EasyInvoice;
+using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +19,7 @@ using RestSharp;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Helpers.Models;
 using Shared.Integration;
 
 namespace Merchants.Api.Controllers.Integrations
@@ -31,17 +34,67 @@ namespace Merchants.Api.Controllers.Integrations
         private readonly ITerminalsService terminalsService;
         private readonly ITerminalTemplatesService terminalTemplatesService;
         private readonly IMapper mapper;
+        private readonly IExternalSystemsService externalSystemsService;
 
         public EasyInvoiceApiController(
             ECInvoiceInvoicing eCInvoicing,
             ITerminalsService terminalsService,
             ITerminalTemplatesService terminalTemplatesService,
-            IMapper mapper)
+            IMapper mapper,
+            IExternalSystemsService externalSystemsService)
         {
             this.eCInvoicing = eCInvoicing;
             this.terminalsService = terminalsService;
             this.terminalTemplatesService = terminalTemplatesService;
             this.mapper = mapper;
+            this.externalSystemsService = externalSystemsService;
+        }
+
+        [HttpPost]
+        [Route("test-connection")]
+        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var easyInvoiceIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+
+            if (easyInvoiceIntegration == null)
+            {
+                return BadRequest("easyInvoice is not connected to this terminal");
+            }
+
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(easyInvoiceIntegration.ExternalSystemID), nameof(ExternalSystem));
+            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+            var settings = request.Settings.ToObject(settingsType);
+
+            if (settings == null)
+            {
+                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+            }
+
+            //TODO: temporary implementation. Make a request to easyInvoice as well
+            if (settings is IExternalSystemSettings externalSystemSettings)
+            {
+                easyInvoiceIntegration.Valid = await externalSystemSettings.Valid();
+            }
+            else
+            {
+                easyInvoiceIntegration.Valid = true;
+            }
+
+            //TODO: save on success?
+            //mapper.Map(request, easyInvoiceIntegration);
+            //await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
+            var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
+
+            if (!easyInvoiceIntegration.Valid)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = Resources.MessagesResource.ConnectionFailed;
+            }
+
+            return response;
         }
 
         [HttpPost]
@@ -54,7 +107,7 @@ namespace Merchants.Api.Controllers.Integrations
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+            var easyInvoiceIntegration = (await terminalsService.GetTerminalExternalSystems(terminal.TerminalID)).FirstOrDefault(es => es.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID);
 
             var createUserResult = await eCInvoicing.CreateCustomer(
                 new EasyInvoice.Models.ECCreateCustomerRequest
@@ -178,7 +231,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("request-logs/{entityID}")]
-        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute] string entityID)
         {
             if (string.IsNullOrWhiteSpace(entityID))
             {
@@ -196,9 +249,19 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("get-document-types")]
+        public async Task<ActionResult<IEnumerable<DictionaryDetails>>> GetDocumentTypes()
+        {
+            var response = Enum.GetNames(typeof(ECInvoiceDocumentType))
+                .Select(e => new DictionaryDetails { Code = e, Description = e });
+
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("set-document-number")]
-        public async Task<ActionResult<OperationResponse>> SetDocumentNumber(SetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> SetDocumentNumber([FromBody] SetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -209,6 +272,7 @@ namespace Merchants.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
             //terminalSettings.Password = request.Password;
             var changeDocumentNumberResult = await eCInvoicing.SetDocumentNumber(
                 new EasyInvoice.Models.ECInvoiceSetDocumentNumberRequest
@@ -273,7 +337,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("get-document-number")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentNumber(GetDocumentNumberRequest request)
+        public async Task<ActionResult<OperationResponse>> GetDocumentNumber([FromQuery] GetDocumentNumberRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -284,6 +348,7 @@ namespace Merchants.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+
             //terminalSettings.Password = request.Password;
             var getDocumentNumberResult = await eCInvoicing.GetDocumentNumber(
                 new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
@@ -293,7 +358,7 @@ namespace Merchants.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
 
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.nextDocumentNumber.ToString());
+            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.NextDocumentNumber.ToString());
 
             if (response.Status != StatusEnum.Success)
             {
@@ -369,7 +434,7 @@ namespace Merchants.Api.Controllers.Integrations
                 GetCorrelationID());
 
             //RestClient clientRestSharop;
-           //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
+            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
             //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
             return Ok(getDocumentReportResult);
             // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
@@ -423,42 +488,6 @@ namespace Merchants.Api.Controllers.Integrations
             // }
             //
             // return Ok(response);
-        }
-
-
-
-        [HttpGet]
-        [Route("get-document-types")]
-        public async Task<ActionResult<OperationResponse>> GetDocumentTypes(GetDocumentNumberRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
-
-            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            //terminalSettings.Password = request.Password;
-            var getDocumentNumberResult = await eCInvoicing.GetDocumentTypes(
-                new EasyInvoice.Models.ECInvoiceGetDocumentNumberRequest
-                {
-                    Terminal = terminalSettings
-                },
-                GetCorrelationID());
-
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentTypesGetSuccessfully, StatusEnum.Success);
-
-            if (response.Status != StatusEnum.Success)
-            {
-                response.Status = StatusEnum.Error;
-                response.Message = EasyInvoiceMessagesResource.DocumentTypesGetFailed;
-
-                return BadRequest(response);
-            }
-
-            return Ok(response);
         }
     }
 }

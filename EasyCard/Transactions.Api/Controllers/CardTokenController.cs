@@ -157,6 +157,17 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
+                    if (User.IsTerminal() || filter.TerminalID.HasValue)
+                    {
+                        var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID ?? (User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault()));
+
+                        if (terminal.Settings.SharedCreditCardTokens == true)
+                        {
+                            query = creditCardTokenService.GetTokensShared().AsNoTracking().Filter(filter);
+                            numberOfRecordsFuture = query.DeferredCount().FutureValue();
+                        }
+                    }
+
                     var response = new SummariesResponse<CreditCardTokenSummary>
                     {
                         Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync(),
@@ -208,7 +219,7 @@ namespace Transactions.Api.Controllers
 
             if (model.ConsumerID != null)
             {
-                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
+                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID), "Consumer");
 
                 // TODO: enable if needed
                 //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
@@ -218,7 +229,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID && d.TerminalID == terminal.TerminalID);
+                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID);
                 if (consumer != null)
                 {
                     model.ConsumerID = consumer.ConsumerID;

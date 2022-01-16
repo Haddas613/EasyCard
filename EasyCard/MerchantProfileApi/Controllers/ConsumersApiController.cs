@@ -124,12 +124,12 @@ namespace MerchantProfileApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateConsumer([FromBody] ConsumerRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-
             var newConsumer = mapper.Map<Consumer>(model);
 
             // NOTE: this is security assignment
-            mapper.Map(terminal, newConsumer);
+            //mapper.Map(terminal, newConsumer);
+
+            newConsumer.MerchantID = User.GetMerchantID().GetValueOrDefault();
 
             newConsumer.ApplyAuditInfo(httpContextAccessor);
 
@@ -150,8 +150,6 @@ namespace MerchantProfileApi.Controllers
         {
             var consumer = EnsureConcurrency(EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID)), model);
 
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == consumer.TerminalID));
-
             mapper.Map(model, consumer);
 
             consumer.ApplyAuditInfo(httpContextAccessor);
@@ -171,8 +169,6 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<OperationResponse>> DeleteConsumer([FromRoute] Guid consumerID)
         {
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
-
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == consumer.TerminalID));
 
             consumer.Active = false;
 
@@ -204,7 +200,6 @@ namespace MerchantProfileApi.Controllers
             foreach (var consumerID in ids)
             {
                 var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
-                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == consumer.TerminalID));
 
                 consumer.Active = false;
 

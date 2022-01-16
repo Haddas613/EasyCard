@@ -8,7 +8,9 @@ namespace Shared.Integration
 {
     public class IntegrationMessage : ITableEntity
     {
-        public IntegrationMessage() { }
+        public IntegrationMessage()
+        {
+        }
 
         public IntegrationMessage(DateTime messageDate, string entityID, string messageId, string correlationId)
         {

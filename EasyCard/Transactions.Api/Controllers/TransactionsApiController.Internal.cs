@@ -72,7 +72,7 @@ namespace Transactions.Api.Controllers
             if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
             {
                 var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
-                var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                 var firstDevice = devices.devices.FirstOrDefault();
 
                 if (firstDevice == null)
@@ -126,12 +126,14 @@ namespace Transactions.Api.Controllers
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
 
-            //TODO: check token expiration
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
                 {
-                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    if (!(terminal.Settings.SharedCreditCardTokens == true))
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
                 }
 
                 if (token.CardExpiration?.Expired == true)
@@ -160,7 +162,7 @@ namespace Transactions.Api.Controllers
             }
 
             // Check consumer
-            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             if (consumer != null)
             {
@@ -231,6 +233,8 @@ namespace Transactions.Api.Controllers
             transaction.ProcessorID = terminalProcessor.ExternalSystemID;
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+            //TODO: if Bit parameters present, do not user resolver, use BitProcessor directly
             var processor = processorResolver.GetProcessor(terminalProcessor);
             IProcessor pinpadProcessor = null;
             if (pinpadDeal)
@@ -641,7 +645,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = transaction.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
@@ -734,6 +738,11 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
@@ -749,7 +758,7 @@ namespace Transactions.Api.Controllers
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Only ILS invoices allowed");
             }
 
-            if (string.IsNullOrWhiteSpace(model.DealDetails.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails.ConsumerName))
+            if (string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerName))
             {
                 return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Both ConsumerEmail and ConsumerName must be specified");
@@ -773,7 +782,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
@@ -1111,7 +1120,6 @@ namespace Transactions.Api.Controllers
             consumer.ConsumerName = (transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName) ?? transaction.DealDetails?.ConsumerName;
             consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
             consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
-            consumer.TerminalID = transaction.TerminalID;
             consumer.MerchantID = merchantID;
             consumer.Active = true;
             consumer.ApplyAuditInfo(httpContextAccessor);

@@ -268,6 +268,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 //builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
+                builder.Property(p => p.BitPaymentInitiationId).HasColumnName("BitPaymentInitiationId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
+                builder.Property(p => p.BitTransactionSerialId).HasColumnName("BitTransactionSerialId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
+
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
 

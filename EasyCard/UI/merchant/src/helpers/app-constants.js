@@ -44,6 +44,7 @@ const appConstants = {
             invoicing: "invoicing",
             marketer: "marketer",
             pinpadProcessor: "pinpadProcessor",
+            virtualWalletProcessor: "virtualWalletProcessor",
         }
     },
     transaction: {

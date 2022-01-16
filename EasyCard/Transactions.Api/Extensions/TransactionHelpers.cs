@@ -40,39 +40,5 @@ namespace Transactions.Api.Extensions
 
             return QuickStatusFilterTypeEnum.Pending;
         }
-        public static TransactionTypeEnum GetTransactionTypeFromNayax(this CreditTermsEnum creditTerm)
-        {
-            return creditTerm switch
-            {
-                CreditTermsEnum.credit => TransactionTypeEnum.Credit,
-                CreditTermsEnum.immediate => TransactionTypeEnum.Immediate,
-                CreditTermsEnum.regular => TransactionTypeEnum.RegularDeal,
-                CreditTermsEnum.installments => TransactionTypeEnum.Installments,
-                _ => TransactionTypeEnum.RegularDeal,
-            };
-        }
-
-        public static SolekEnum GetTransactionSolek(this IssuerAquirEnum issuerAquirEnum)
-        {
-            return issuerAquirEnum switch
-            {
-                IssuerAquirEnum.Cal => SolekEnum.VISA,
-                IssuerAquirEnum.Isracard => SolekEnum.ISRACARD,
-                IssuerAquirEnum.LeumiCard => SolekEnum.LEUMI_CARD,
-                IssuerAquirEnum.Tourist => SolekEnum.UNKNOWN,
-                IssuerAquirEnum.RFU07 => SolekEnum.OTHER,
-                _ => SolekEnum.UNKNOWN,
-            };
-        }
-
-        public static SpecialTransactionTypeEnum GetSpecialTransactionTypeFromNayax(this TranTypeEnum tranType)
-        {
-            return tranType switch
-            {
-                TranTypeEnum.refund => SpecialTransactionTypeEnum.Refund,
-                TranTypeEnum.charge => SpecialTransactionTypeEnum.RegularDeal,
-                _ => SpecialTransactionTypeEnum.RegularDeal,
-            };
-        }
     }
 }

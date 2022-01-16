@@ -286,7 +286,6 @@ namespace EasyInvoice
             }
         }
 
-
         public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -337,13 +336,6 @@ namespace EasyInvoice
 
                 var result = await this.apiClient.Get<DocumentNextNumberModel>(this.configuration.BaseUrl, "/api/v1/user/document-settings", json, () => Task.FromResult(headers));
                 return result;
-                //    return new OperationResponse
-                //    {
-                //        //EntityID = result
-                //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
-                //        Message = "Get Document Number",
-                //         
-                //    };
             }
             catch (Exception ex)
             {
@@ -471,10 +463,8 @@ namespace EasyInvoice
                 var result = await this.apiClient.Get<DocumentTypeModel>(this.configuration.BaseUrl, "/api/v1/document-types", null, () => Task.FromResult(headers));
                 return new OperationResponse
                 {
-                    //EntityID = result
                     Status = Shared.Api.Models.Enums.StatusEnum.Success,
                     Message = "Get Document Types",
-                    //  AdditionalData = result
                 };
             }
             catch (Exception ex)
@@ -484,7 +474,6 @@ namespace EasyInvoice
                 throw new IntegrationException("EasyInvoice Get Document Types request failed", integrationMessageId);
             }
         }
-
 
         public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
         {
@@ -518,6 +507,7 @@ namespace EasyInvoice
                         "logoUrl": "https://s3-eu-west-1.amazonaws.com/invoicesystem-logos-stage/1/customer_logo"
                     }
                  */
+
                 var result = await this.apiClient.PostFile(this.configuration.BaseUrl, "/api/v1/user/logo", stream, fileName, "file", () => Task.FromResult(headers));
 
                 return new OperationResponse

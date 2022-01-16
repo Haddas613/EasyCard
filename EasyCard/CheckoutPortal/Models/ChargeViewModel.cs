@@ -124,6 +124,8 @@ namespace CheckoutPortal.Models
 
         public bool PinPad { get; set; }
 
+        public bool PayWithBit { get; set; }
+
         [BindNever]
         public int? MinCreditInstallments { get; set; }
 

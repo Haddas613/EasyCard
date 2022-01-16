@@ -58,11 +58,6 @@ namespace MerchantProfileApi.Extensions
                 }
             }
 
-            if (filter.TerminalID.HasValue)
-            {
-                src = src.Where(c => c.TerminalID == filter.TerminalID.Value);
-            }
-
             if (!string.IsNullOrWhiteSpace(filter.Email))
             {
                 src = src.Where(c => EF.Functions.Like(c.ConsumerEmail, filter.Email.UseWildCard(true)));

@@ -45,6 +45,12 @@ namespace Transactions.Shared.Enums
         /// Document created by consumer using Checkout Page with a payment link
         /// </summary>
         [EnumMember(Value = "paymentRequest")]
-        PaymentRequest = 5
+        PaymentRequest = 5,
+
+        /// <summary>
+        /// Document created by consumer using Bit
+        /// </summary>
+        [EnumMember(Value = "bit")]
+        Bit = 6
     }
 }

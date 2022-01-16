@@ -10,6 +10,7 @@
       :show.sync="showTransmitDialog"
       v-on:ok="refresh()"
     ></transactions-transmit-dialog>
+    <transaction-slip-dialog v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID" ref="slipDialog" :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -81,7 +82,7 @@
             :header-props="{ sortIcon: null }"
             class="elevation-1">     
           <template v-slot:item.terminalName="{ item }">
-            {{item.terminalName || item.terminalID}}
+            <small>{{item.terminalName || item.terminalID}}</small>
           </template> 
           <template v-slot:item.transactionAmount="{ item }">
             <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
@@ -140,6 +141,8 @@ export default {
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     TransactionsTransmitDialog: () =>
       import("../../components/transactions/TransactionsTransmitDialog"),
+      TransactionSlipDialog: () =>
+      import("../../components/transactions/TransactionSlipDialog"),
   },
   props: {
     filters: {
@@ -184,6 +187,9 @@ export default {
         Failed: "error--text",
         Canceled: "accent--text"
       },
+      selectedTransaction: null,
+      transactionSlipDialog: false,
+      loadingTransaction: false,
     };
   },
   watch: {
@@ -268,6 +274,17 @@ export default {
           });
           if(!this.$apiSuccess(operation)) return;
           window.open(operation.entityReference, "_blank");
+    },
+    async showSlipDialog(transaction){
+      if(this.loadingTransaction){
+        return;
+      }
+      this.loadingTransaction = true;
+      this.selectedTransaction = await this.$api.transactions.getTransaction(
+        transaction.$paymentTransactionID
+      );
+      this.loadingTransaction = false;
+      this.transactionSlipDialog = true;
     }
   },
   computed: {
@@ -299,12 +316,12 @@ export default {
             text: this.$t("TransmitAll"),
             fn: () => this.showTransmitDialog = true
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              this.switchSelectAll();
-            }
-          },
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     this.switchSelectAll();
+          //   }
+          // },
           {
             text: this.$t("Excel"),
             fn: () => {

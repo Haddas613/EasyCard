@@ -16,8 +16,6 @@ namespace DesktopEasyCardConvertorECNG.Models.Helper
                     return PaymentTypeEnum.Card;
                 case "1":
                     return PaymentTypeEnum.Bank;
-                case "2":
-                    return PaymentTypeEnum.InvoiceOnly;
                 default:
                     return PaymentTypeEnum.Card;
             }

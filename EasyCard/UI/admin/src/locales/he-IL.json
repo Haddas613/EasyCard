@@ -166,6 +166,7 @@
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "AlreadyPresent": "מיוצג כבר",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
+  "SetDocumentNumber": "הגדרת מספר חשבונית",
 
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -425,6 +426,8 @@
   "CreatedFrom": "נוצר מ",
   "CreatedTo": "נוצר ל",
   "PriceWithDiscount": "מחיר פריט לאחר הנחה",
+  "StartingNumber": "מספר התחלה",
+  "SharedCreditCardTokens": "לתת הרשאות לטוקן כרטיס אשראי",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -492,6 +495,7 @@
   "TransmitSelected": "שידור נבחר",
   "TransmitAll": "שידר הכל",
   "DisableSelected": "עסקאות בילינג נחסמו",
+  "Approve": "אישור",
 
   "--AUTH--": null,
   "Login": "כניסה",
@@ -550,6 +554,7 @@
   "Bitcoin": "ביטקוין",
   "NotSpecified": "לא צוין",
   "Manager": "מנהל",
+  "ReadyToUse": "מוכן לשימוש",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "הצג עסקאות שלא שודרו",
@@ -569,5 +574,6 @@
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
-  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
+  "BitProcessorConnectedMessage": "Bit Processor Connected and ready to use."
 }

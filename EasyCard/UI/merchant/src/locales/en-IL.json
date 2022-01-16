@@ -418,6 +418,8 @@
   "TransmitSelected": "Transmit Selected",
   "TransmitAll": "Transmit All",
   "DisableSelected": "Disable Selected",
+  "RestoreCustomer": "Restore Customer",
+  "RestoreItem": "Restore Item",
 
   "--AUTH--": null,
   "Login": "Login",

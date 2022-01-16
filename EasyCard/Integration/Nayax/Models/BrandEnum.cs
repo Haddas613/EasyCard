@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions.Enums
+namespace Nayax.Models
 {
     public enum BrandEnum
     {
@@ -16,6 +16,7 @@ namespace Transactions.Api.Models.Transactions.Enums
         JCB = 06,
         DISCOVER = 07,
         MAESTRO = 08,
+
       // RFU09 = 09,
       // RFU10 = 10,
       // RFU11 = 11

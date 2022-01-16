@@ -4,10 +4,10 @@ using System.Text;
 
 namespace EasyInvoice.Models
 {
-
     public class DocumentNextNumberModel
     {
-        public string documentType { get; set; }
-        public Int64 nextDocumentNumber { get; set; }
+        public string DocumentType { get; set; }
+
+        public long NextDocumentNumber { get; set; }
     }
 }

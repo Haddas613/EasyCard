@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.Nayax;
+using Merchants.Api.Models.Terminal;
+using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,17 +30,67 @@ namespace Merchants.Api.Controllers.Integrations
         private readonly ITerminalsService terminalsService;
         private readonly IPinPadDevicesService pinPadDeviceService;
         private readonly IMapper mapper;
+        private readonly IExternalSystemsService externalSystemsService;
 
         public NayaxApiController(
             NayaxProcessor nayaxProcessor,
             ITerminalsService terminalsService,
             IMapper mapper,
-            IPinPadDevicesService pinPadDeviceService)
+            IPinPadDevicesService pinPadDeviceService,
+            IExternalSystemsService externalSystemsService)
         {
             this.nayaxProcessor = nayaxProcessor;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.pinPadDeviceService = pinPadDeviceService;
+            this.externalSystemsService = externalSystemsService;
+        }
+
+        [HttpPost]
+        [Route("test-connection")]
+        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var nayaxIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+
+            if (nayaxIntegration == null)
+            {
+                return BadRequest("Nayax PinPad is not connected to this terminal");
+            }
+
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(nayaxIntegration.ExternalSystemID), nameof(ExternalSystem));
+            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+            var settings = request.Settings.ToObject(settingsType);
+
+            if (settings == null)
+            {
+                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+            }
+
+            //TODO: temporary implementation. Make a request to nayax as well
+            if (settings is IExternalSystemSettings externalSystemSettings)
+            {
+                nayaxIntegration.Valid = await externalSystemSettings.Valid();
+            }
+            else
+            {
+                nayaxIntegration.Valid = true;
+            }
+
+            //TODO: save on success?
+            //mapper.Map(request, nayaxIntegration);
+            //await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
+            var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
+
+            if (!nayaxIntegration.Valid)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = Resources.MessagesResource.ConnectionFailed;
+            }
+
+            return response;
         }
 
         [HttpPost]

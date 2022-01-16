@@ -56,6 +56,6 @@ export default class MerchantsApi {
     }
 
     async loginAsMerchant(merchantID){
-        return this.base.post(this.merchantsUrl + `/${merchantID}/loginAsMerchant`, null, false);
+        return this.base.post(this.merchantsUrl + `/${merchantID}/loginAsMerchant`, null, { showSuccessToastr: false });
     }
 }

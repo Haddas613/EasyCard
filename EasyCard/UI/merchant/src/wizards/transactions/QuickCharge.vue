@@ -76,6 +76,7 @@
             v-on:select-customer="customersDialog = true"
             ref="ccSecureDetails"
             :btn-text="null"
+            allow-bit
           ></credit-card-secure-details>
           <customer-dialog-invoker
             :show.sync="customersDialog"
@@ -334,6 +335,8 @@ export default {
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
+      this.model.useBit = data.useBit;
+
       this.$set(this.model, 'installmentDetails', data.installmentDetails);
       this.model.transactionType = data.transactionType;
 
@@ -370,6 +373,13 @@ export default {
         this.model.creditCardToken = null;
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
+      } 
+      else if(data.useBit){
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        this.model.bitPaymentInitiationId = data.data.bitPaymentInitiationId;
+        this.model.bitTransactionSerialId = data.data.bitTransactionSerialId;
       }
     },
     async processAdditionalSettings(data) {
@@ -377,13 +387,8 @@ export default {
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
       this.model.terminalID = this.terminal.terminalID;
-      if(!this.quickChargeMode){
-        this.model.invoiceDetails = data.invoiceDetails;
-        this.model.issueInvoice = !!this.model.invoiceDetails;
-      }else{
-        this.model.invoiceDetails = null;
-        this.model.issueInvoice = false;
-      }
+      this.model.invoiceDetails = data.invoiceDetails;
+      this.model.issueInvoice = !!this.model.invoiceDetails;
 
       await this.createTransaction();
     },

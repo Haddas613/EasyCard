@@ -96,7 +96,7 @@ export default {
       if (operationResult.status === "success") {
         this.visible = false;
         this.model.label = null;
-        this.$emit("ok");
+        this.$emit("ok", operationResult.entityReference);
       }
     }
   }

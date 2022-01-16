@@ -12,8 +12,6 @@ namespace MerchantProfileApi.Models.Billing
 
         public Guid MerchantID { get; set; }
 
-        public Guid TerminalID { get; set; }
-
         public bool Active { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }

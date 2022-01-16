@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions.Enums
+namespace Nayax.Models
 {
     public enum TranTypeEnum
     {
@@ -11,6 +11,7 @@ namespace Transactions.Api.Models.Transactions.Enums
         //forced_transaction = 03,
         //cashback = 06,
         //cash = 07,
+
         refund = 53,
         //loading = 55
     }

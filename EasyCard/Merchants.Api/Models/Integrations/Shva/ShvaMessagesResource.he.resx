@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConnectionSuccess" xml:space="preserve">
-    <value>חיבור נוצר בהצלחה</value>
-  </data>
   <data name="EitherTerminalOrTerminalTemplateIDMustBeSpecified" xml:space="preserve">
     <value>חובה לציין מספר מסוף או מספר תבנית מסוף</value>
   </data>

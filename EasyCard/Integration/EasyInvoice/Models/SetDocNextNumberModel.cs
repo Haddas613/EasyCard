@@ -10,7 +10,8 @@ namespace EasyInvoice.Models
     {
         [JsonProperty("documentType")]
         public string DocumentType { get; set; }
+
         [JsonProperty("nextDocumentNumber")]
-        public Int64 NextDocumentNumber { get; set; }
+        public long NextDocumentNumber { get; set; }
     }
 }

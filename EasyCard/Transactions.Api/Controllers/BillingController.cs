@@ -45,6 +45,7 @@ using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
 using SharedApi = Shared.Api;
+using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -253,7 +254,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -272,7 +273,16 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+                if (token.TerminalID != terminal.TerminalID)
+                {
+                    if (!(terminal.Settings.SharedCreditCardTokens == true))
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
+                }
+
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
                 newBillingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 
@@ -281,10 +291,6 @@ namespace Transactions.Api.Controllers
             else if (model.PaymentType == PaymentTypeEnum.Bank)
             {
                 EnsureExists(model.BankDetails);
-            }
-            else if(model.PaymentType == PaymentTypeEnum.InvoiceOnly)
-            {
-
             }
             else
             {
@@ -321,7 +327,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -414,7 +420,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -456,7 +462,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -503,7 +509,7 @@ namespace Transactions.Api.Controllers
 
             var consumer = EnsureExists(
                 await consumersService.GetConsumers()
-                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
+                .FirstOrDefaultAsync(d => d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
 
             if (billingDeal.PaymentType != PaymentTypeEnum.Card)
             {
@@ -625,7 +631,7 @@ namespace Transactions.Api.Controllers
             // send expiration emails
             await ProcessExpiredCardsBillingDeals(terminal);
 
-            if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+            if (terminal.BillingSettings?.CreateRecurrentPaymentsAutomatically == true)
             {
                 return await ProcessSendDueBillingDealsToQueue(terminalID);
             }
@@ -861,18 +867,21 @@ namespace Transactions.Api.Controllers
 
             foreach (var dealEntity in allBillings)
             {
-                logger.LogWarning($"Billing Deal {dealEntity?.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
-
-                try
+                if (dealEntity != null)
                 {
-                    // TODO: Add to history
-                    await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
-                    response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity?.BillingDeal?.BillingDealID).GetValueOrDefault() });
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity?.BillingDeal?.BillingDealID}: {ex.Message}");
+                    try
+                    {
+                        // TODO: Add to history
+                        await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+
+                        response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity.BillingDeal?.BillingDealID).GetValueOrDefault() });
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity.BillingDeal?.BillingDealID}: {ex.Message}");
+                    }
                 }
             }
 
@@ -929,7 +938,7 @@ namespace Transactions.Api.Controllers
 
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
-                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails?.ConsumerID?.ToString() ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.BillingDealID), GetBillingDealLink(billingDeal.BillingDealID)),
                 new TextSubstitution("RenewLink", GetBillingDealRenewLink(paymentIntent.PaymentRequestID)),
             };

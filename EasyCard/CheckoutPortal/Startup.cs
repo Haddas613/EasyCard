@@ -160,7 +160,7 @@ namespace CheckoutPortal
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net")
+                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il")
                 )
                 //.FrameAncestors(s => s.Self())
                 //.FormActions(s => s.Self())

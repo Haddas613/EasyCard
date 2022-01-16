@@ -16,6 +16,12 @@
             <param name="transactionRequest"></param>
             <returns>Error message when there is an error, null otherwise</returns>
         </member>
+        <member name="T:Shared.Integration.IExternalSystemSettings">
+            <summary>
+            Every integration settings class must implement this interface.
+            The Integration validity will be based on Valid() method
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.AggregatorCancelTransactionRequest.TransactionID">
             <summary>
             Unique transaction ID
@@ -425,7 +431,8 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="rejectionReasonEnum"></param>
+            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
         </member>
         <member name="M:Shared.Integration.Models.ProcessorChangePasswordResponse.#ctor(System.String,System.String)">
             <summary>
@@ -433,7 +440,7 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
         </member>
         <member name="P:Shared.Integration.Models.ProcessorChangePasswordResponse.ErrorMessage">
             <summary>
@@ -541,6 +548,21 @@
             For billing deal
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.BitPaymentInitiationId">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.BitTransactionSerialId">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.ProcessorCreateTransactionRequest.RedirectURL">
+            <summary>
+            For Bit Processor only
+            </summary>
+        </member>
         <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Shared.Integration.Models.ProcessorCreateTransactionResponse"/> class.
@@ -553,7 +575,9 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="rejectionReasonEnum"></param>
+            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
+            <param name="processorResult"></param>
         </member>
         <member name="M:Shared.Integration.Models.ProcessorCreateTransactionResponse.#ctor(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
@@ -561,11 +585,12 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
+            <param name="processorResult"></param>
         </member>
         <member name="P:Shared.Integration.Models.ProcessorCreateTransactionResponse.ErrorMessage">
             <summary>
-            General error mesage which can be displayed to merchant
+            General error message which can be displayed to merchant
             </summary>
         </member>
         <member name="P:Shared.Integration.Models.ProcessorCreateTransactionResponse.CompRetailerNum">
@@ -590,7 +615,8 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="rejectionReasonEnum"></param>
+            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
         </member>
         <member name="M:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.#ctor(System.String,System.String)">
             <summary>
@@ -598,11 +624,11 @@
             Use this in case of error response
             </summary>
             <param name="errorMessage"></param>
-            <param name="errorCode"></param>
+            <param name="errorCodeStr"></param>
         </member>
         <member name="P:Shared.Integration.Models.ProcessorPreCreateTransactionResponse.ErrorMessage">
             <summary>
-            General error mesage which can be displayed to merchant
+            General error message which can be displayed to merchant
             </summary>
         </member>
         <member name="P:Shared.Integration.Models.ProcessorTransmitTransactionsRequest.ProcessorSettings">

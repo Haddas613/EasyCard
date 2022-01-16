@@ -22,6 +22,8 @@ namespace Transactions.Shared
 
         public string RapidInvoiceRequestsLogStorageTable { get; set; }
 
+        public string BitRequestsLogStorageTable { get; set; }
+
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
 
         public int TransmissionMaxBatchSize { get; set; } = 10;

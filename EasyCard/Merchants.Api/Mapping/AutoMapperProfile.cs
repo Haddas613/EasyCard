@@ -153,7 +153,7 @@ namespace Merchants.Api.Mapping
                .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.MerchantNumber))
                .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<Nayax.NayaxTerminalCollection, Terminal>()
+            CreateMap<Nayax.Models.NayaxTerminalCollection, Terminal>()
              .ForMember(m => m.PinPadProcessorTerminalReference, s => s.MapFrom(src => string.Join(",", src.devices.Select(e => e.TerminalID))))
              .ForAllOtherMembers(d => d.Ignore());
 

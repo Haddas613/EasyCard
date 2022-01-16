@@ -17,11 +17,6 @@ namespace MerchantProfileApi.Models.Billing
     public class ConsumerRequest
     {
         /// <summary>
-        /// Target terminal
-        /// </summary>
-        public Guid? TerminalID { get; set; }
-
-        /// <summary>
         /// End-customer Email
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
@@ -95,6 +90,5 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerNote { get; set; }
 
         public BankDetails BankDetails { get; set; }
-
     }
 }

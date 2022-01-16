@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
+using Transactions.Api.Models.External.Bit;
 
 namespace CheckoutPortal.Controllers
 {
@@ -62,7 +63,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("p")]
-        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery]string r)
+        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery] string r)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -93,7 +94,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("i")]
-        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery]string r)
+        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery] string r)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -148,12 +149,17 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                if(!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }
 
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            if (checkoutConfig == null)
+            {
+                throw new ApplicationException("Checkout data is null");
             }
 
             if (checkoutConfig.Consumer != null)
@@ -185,6 +191,20 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
+            //TODO: Bit payment validation when feature is added
+            //if (checkoutConfig?.Settings.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Bit) == false
+            //    && (request.PayWithBit))
+            //{
+            //    ModelState.AddModelError(nameof(request.SaveCreditCard), "Bit payments are not allowed for this terminal");
+            //    return await IndexViewResult(checkoutConfig, request);
+            //}
+
+            if (request.PayWithBit && request.TransactionType != TransactionTypeEnum.RegularDeal)
+            {
+                ModelState.AddModelError(nameof(request.PayWithBit), "Only regular deals are allowed for Bit payments");
+                return await IndexViewResult(checkoutConfig, request);
+            }
+
             if (checkoutConfig?.Settings.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.CreditCardTokens) == false
                 && (request.SaveCreditCard))
             {
@@ -195,7 +215,7 @@ namespace CheckoutPortal.Controllers
             // If token is present and correct, credit card validation is removed from model state
             if (request.CreditCardToken.HasValue || request.PinPad)
             {
-                if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
 
@@ -265,7 +285,7 @@ namespace CheckoutPortal.Controllers
                 var maxNumberOfPayments = (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments);
                 if (request.NumberOfPayments > maxNumberOfPayments)
                 {
-                    ModelState.AddModelError(nameof(request.NumberOfPayments), 
+                    ModelState.AddModelError(nameof(request.NumberOfPayments),
                         Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@max", maxNumberOfPayments.GetValueOrDefault(0).ToString()));
                 }
                 else
@@ -281,10 +301,10 @@ namespace CheckoutPortal.Controllers
                         var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
                         installmentDetails.InitialPaymentAmount = request.InitialPaymentAmount.Value;
-                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ? 
+                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ?
                             request.InstallmentPaymentAmount.Value : (request.Amount.Value - request.InitialPaymentAmount.Value) / (request.NumberOfPayments.Value - 1);
 
-                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value 
+                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value
                             || installmentDetails.InitialPaymentAmount < 0.1m || installmentDetails.InstallmentPaymentAmount < 0.1m)
                         {
                             ModelState.AddModelError(nameof(InstallmentDetails), Messages.TotalAmountIsInvalid);
@@ -292,9 +312,9 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
-                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
+                        var installmentPaymentAmount = Math.Floor(request.Amount.GetValueOrDefault() / request.NumberOfPayments.GetValueOrDefault());
 
-                        installmentDetails.InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
+                        installmentDetails.InitialPaymentAmount = request.Amount.GetValueOrDefault() - installmentPaymentAmount * (request.NumberOfPayments.GetValueOrDefault() - 1);
                         installmentDetails.InstallmentPaymentAmount = installmentPaymentAmount;
                     }
                 }
@@ -323,7 +343,44 @@ namespace CheckoutPortal.Controllers
 
             request.AllowPinPad = request.AllowPinPad == true && checkoutConfig.Settings.AllowPinPad == true;
 
-            if (checkoutConfig.PaymentRequest != null)
+            if (request.PayWithBit)
+            {
+                var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
+                {
+                    CreditCardSecureDetails = null,
+                    DealDetails = new DealDetails(),
+                    CreditCardToken = null,
+                    InstallmentDetails = null,
+                    TransactionType = TransactionTypeEnum.RegularDeal,
+                };
+
+                if (checkoutConfig.PaymentIntentID != null)
+                {
+                    mdel.PaymentIntentID = checkoutConfig.PaymentIntentID;
+                }
+                else
+                {
+                    mdel.PaymentRequestID = checkoutConfig.PaymentRequest?.PaymentRequestID;
+                }
+
+                mapper.Map(request, mdel);
+                mapper.Map(request, mdel.DealDetails);
+                mapper.Map(checkoutConfig.Settings, mdel);
+
+                if (checkoutConfig.PaymentRequest.UserAmount)
+                {
+                    mdel.TransactionAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
+                    mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
+                }
+                else
+                {
+                    mdel.Calculate();
+                }
+
+                result = await transactionsApiClient.InitiateBitTransaction(mdel);
+            }
+            else if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest()
                 {
@@ -360,22 +417,6 @@ namespace CheckoutPortal.Controllers
                 }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
-
-                if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
-                {
-                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
-
-                    ModelState.AddModelError("Charge", result.Message);
-                    if (result.Errors?.Count() > 0)
-                    {
-                        foreach (var err in result.Errors)
-                        {
-                            ModelState.AddModelError(err.Code, err.Description);
-                        }
-                    }
-
-                    return await IndexViewResult(checkoutConfig, request);
-                }
             }
             else//PR IS NULL
             {
@@ -401,24 +442,40 @@ namespace CheckoutPortal.Controllers
                 mdel.Calculate();
 
                 result = await transactionsApiClient.CreateTransaction(mdel);
-                if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
-                {
-                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransaction)}: {result.Message}");
-
-                    ModelState.AddModelError("Charge", result.Message);
-                    if (result.Errors?.Count() > 0)
-                    {
-                        foreach (var err in result.Errors)
-                        {
-                            ModelState.AddModelError(err.Code, err.Description);
-                        }
-                    }
-
-                    return await IndexViewResult(checkoutConfig, request);
-                }
             }
 
-            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
+            if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
+
+                ModelState.AddModelError("Charge", result.Message);
+                if (result.Errors?.Count() > 0)
+                {
+                    foreach (var err in result.Errors)
+                    {
+                        ModelState.AddModelError(err.Code, err.Description);
+                    }
+                }
+
+                return await IndexViewResult(checkoutConfig, request);
+            }
+
+            if (request.PayWithBit)
+            {
+                var bitResult = result as Transactions.Api.Models.External.Bit.InitialBitOperationResponse;
+
+                return RedirectToAction(nameof(BitPayment), new BitPaymentViewModel {
+                    PaymentInitiationId = bitResult.BitPaymentInitiationId,
+                    TransactionSerialId = bitResult.BitTransactionSerialId,
+                    RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
+                    PaymentTransactionID = result.EntityUID.Value,
+                    PaymentIntent = request.PaymentIntent,
+                    ApiKey = request.ApiKey,
+                    PaymentRequest = request.PaymentRequest,
+                });
+            }
+
+            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest?.RedirectUrl;
 
             if (string.IsNullOrWhiteSpace(redirectUrl))
             {
@@ -509,6 +566,88 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("bit")]
+        public async Task<IActionResult> BitPayment([FromQuery] BitPaymentViewModel request)
+        {
+            var bitTransaction = await transactionsApiClient.GetBitTransaction(new GetBitTransactionQuery
+            {
+                PaymentInitiationId = request.PaymentInitiationId,
+                TransactionSerialId = request.TransactionSerialId,
+                PaymentTransactionID = request.PaymentTransactionID,
+            });
+
+            return View(request);
+        }
+
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ValidateAntiForgeryToken]
+        [Route("bit-completed")]
+        public async Task<IActionResult> BitPaymentCompleted([FromBody] BitPaymentViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError($"{nameof(BitPaymentCompleted)}: {string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage))}");
+                return PaymentError();
+            }
+
+            CheckoutData checkoutConfig;
+            bool isPaymentIntent = request.PaymentIntent != null;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            var bitRequest = new CaptureBitTransactionRequest
+            {
+                PaymentInitiationId = request.PaymentInitiationId,
+                PaymentTransactionID = request.PaymentTransactionID
+            };
+
+            var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
+
+            if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
+                return PaymentError();
+            }
+
+            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
+
+            if (string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                return RedirectToAction("PaymentResult");
+            }
+            else
+            {
+                if (checkoutConfig.Settings?.LegacyRedirectResponse == true)
+                {
+                    var paymentTransaction = await transactionsApiClient.GetTransaction(request.PaymentTransactionID);
+
+                    //TODO: not supported for bit?
+                    //redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+
+                    return Redirect(redirectUrl);
+                }
+                else
+                {
+                    return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = request.PaymentTransactionID }));
+                }
+            }
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult PaymentResult()
         {
             return View();
@@ -589,7 +728,7 @@ namespace CheckoutPortal.Controllers
                     model.Amount = 0;
                     model.TotalAmount = 0;
                 }
-                else if(request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
+                else if (request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }

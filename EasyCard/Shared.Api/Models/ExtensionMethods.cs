@@ -8,7 +8,8 @@ namespace Shared.Api.Models
 {
     public static class ExtensionMethods
     {
-        public static bool IsIn<T>(this T value, params T[] otherValues) where T : struct
+        public static bool IsIn<T>(this T value, params T[] otherValues)
+            where T : struct
         {
             return otherValues.Contains(value);
         }

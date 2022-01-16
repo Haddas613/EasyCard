@@ -66,6 +66,7 @@
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="IssueInvoice" />
                     <input type="hidden" asp-for="AllowPinPad" />
+                    <input type="hidden" asp-for="PayWithBit" />
 
                     @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
                     {
@@ -301,6 +302,10 @@
                         {
                             <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
                         }
+                        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+                            <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
+                            PayWithBit
+                        </button>
                     </div>
                 </form>
             </div>
@@ -310,6 +315,19 @@
 </div>
 
 @section Scripts {
+<script nws-csp-add-nonce="true">
+$(document).ready(function () {
+    BitPayment.Buttons({
+     onCreate: function(openBitPaymentPage){
+         var transaction = {
+             transactionSerialId: '111',
+             paymentInitiationId: '222'
+         };
+        openBitPaymentPage(transaction);
+     }
+    }).render('#bitcom-button-container'); 
+});
+</script>
 
 @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
 {
@@ -432,6 +450,14 @@
             </text>
             }
 
+            $("#paywithbit").on("click", function () {
+                if (!$("#checkout-form").valid()) {
+                    return;
+                }
+                $("#PayWithBit").val(true);
+                $("#checkout-form").submit();
+            })
+
             //$("#Amount").on("focus", function () {
             //    if ($("#SaveCreditCard").is(":checked")) {
             //        setTimeout(() => {
@@ -495,7 +521,7 @@
             $("#number-of-payments").on("change", function (e) {
                 let totalAmount = $("#Amount").val();
                 let newAmount = Math.floor((totalAmount / e.target.value));
-                let initialAmount = (totalAmount - newAmount * (e.target.value - 1));
+                let initialAmount = parseFloat((totalAmount - newAmount * (e.target.value - 1)).toFixed(2));
 
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
                 $("#InstallmentPaymentAmount").val(newAmount)

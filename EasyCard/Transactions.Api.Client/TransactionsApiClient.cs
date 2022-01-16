@@ -18,6 +18,8 @@ using Transactions.Api.Models.UpdateParameters;
 using Transactions.Api.Models.Currency;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Api.Models.External.Bit;
+using Bit.Models;
 
 namespace Transactions.Api.Client
 {
@@ -332,6 +334,44 @@ namespace Transactions.Api.Client
             return await webApiClient.Get<SummariesAmountResponse<TransactionSummary>>(apiConfiguration.TransactionsApiAddress, $"api/transactions", filter, BuildHeaders);
         }
 
+        public async Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model)
+        {
+            try
+            {
+                return await webApiClient.Post<InitialBitOperationResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/initial", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new InitialBitOperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
 
+        public async Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/capture", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
+        public async Task<BitTransactionResponse> GetBitTransaction(GetBitTransactionQuery request)
+        {
+            try
+            {
+                return await webApiClient.Get<BitTransactionResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/get", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+                //logger.LogError(clientError.Message);
+                //return null;
+            }
+        }
     }
 }

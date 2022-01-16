@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Invoicing;
+using Transactions.Shared;
 using SharedHelpers = Shared.Helpers;
 using SharedIntegration = Shared.Integration;
 using SharedInvoicing = Shared.Integration.Models.Invoicing;
-using Transactions.Shared;
 
 namespace Transactions.Api.Validation
 {

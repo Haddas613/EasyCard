@@ -45,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
+    <ProjectReference Include="..\Integration\Bit\Bit.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
     <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
@@ -136,6 +137,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UserSummaryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\MessagesResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MessagesResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -197,6 +203,10 @@
     <EmbeddedResource Update="Models\User\UserSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UserSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MessagesResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MessagesResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

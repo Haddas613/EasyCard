@@ -44,7 +44,7 @@ export default class TerminalsApi {
     }
 
     async updateTerminal(data){
-        return this.base.put(this.terminalsUrl + '/' + data.terminalID, data);
+        return this.base.put(this.terminalsUrl + '/' + data.terminalID, data, { showBadRequestToastr: false });
     }
 
     async resetPrivateApiKey(terminalID){
@@ -68,15 +68,15 @@ export default class TerminalsApi {
     }
 
     async saveExternalSystem(terminalID, data, showSuccessToastr = true){
-        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data, showSuccessToastr);
+        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data, { showSuccessToastr });
     }
 
     async deleteExternalSystem(terminalID, externalSystemID){
         return this.base.delete(this.terminalsUrl + `/${terminalID}/externalsystem/${externalSystemID}`);
     }
 
-    async enableTerminal(terminalID){
-        return this.base.put(this.terminalsUrl + `/${terminalID}/enable`);
+    async approveTerminal(terminalID){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/approve`);
     }
 
     async disableTerminal(terminalID){

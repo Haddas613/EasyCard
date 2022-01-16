@@ -176,7 +176,7 @@ namespace Upay.Models
             StringBuilder sb = new StringBuilder();
             try
             {
-                MD5 md5 = new MD5CryptoServiceProvider();
+                using MD5 md5 = new MD5CryptoServiceProvider();
                 md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(str));
                 var r = md5.Hash;
                 foreach (var i in r)

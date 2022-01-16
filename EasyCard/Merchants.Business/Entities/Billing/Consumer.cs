@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Merchants.Business.Entities.Billing
 {
-    public class Consumer : IAuditEntity, IEntityBase<Guid>, IConcurrencyCheck, ITerminalEntity, IMerchantEntity
+    public class Consumer : IAuditEntity, IEntityBase<Guid>, IConcurrencyCheck, /*ITerminalEntity,*/ IMerchantEntity
     {
         public Consumer()
         {

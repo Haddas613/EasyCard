@@ -357,3 +357,7 @@ MigrationBackup/
 /EasyCard/Merchants.Api/appsettings.json
 /EasyCard/Transactions.Api/appsettings.Development.json
 /EasyCard/Transactions.Api/appsettings.json
+
+
+**/.sonarqube
+**/.sonarlint

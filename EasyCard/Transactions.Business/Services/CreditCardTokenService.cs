@@ -56,11 +56,33 @@ namespace Transactions.Business.Services
             else
             {
                 var response = tokens.Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID().Cast<Guid?>();
+                var terminals = user.GetTerminalID()?.Cast<Guid?>();
                 if (terminals?.Count() > 0)
                 {
                     response = response.Where(d => terminals.Contains(d.TerminalID));
                 }
+
+                return response;
+            }
+        }
+
+        public IQueryable<CreditCardTokenDetails> GetTokensShared(bool showIncactive = false)
+        {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+
+            if (!showIncactive)
+            {
+                tokens = tokens.Where(t => t.Active);
+            }
+
+            if (user.IsAdmin())
+            {
+                throw new ApplicationException("This method should not be used by Admin");
+            }
+            else
+            {
+                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID())
+                    .Where(d => d.InitialTransactionID == null);
 
                 return response;
             }
