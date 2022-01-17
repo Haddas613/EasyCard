@@ -181,6 +181,8 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            response.Settings.AllowBit = terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID);
+
             return response;
         }
     }

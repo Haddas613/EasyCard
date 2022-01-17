@@ -126,6 +126,16 @@
               Looks up a localized string similar to Customer created successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerUpdatedFailed">
+            <summary>
+              Looks up a localized string similar to Updating customer details failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerUpdatedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Customer details updated successfully.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentCancelledFailed">
             <summary>
               Looks up a localized string similar to Document Cancelled Failed.

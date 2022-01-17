@@ -165,5 +165,8 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public ICollection<Merchants.Shared.Enums.FeatureEnum> EnabledFeatures { get; set; }
+
+        [BindNever]
+        public bool? AllowBit { get; set; }
     }
 }
