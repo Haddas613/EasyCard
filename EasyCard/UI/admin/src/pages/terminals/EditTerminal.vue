@@ -58,8 +58,8 @@
                 v-bind:class="{ 'mx-1': !$vuetify.breakpoint.smAndDown }"
               >{{$t('Approve')}}</v-btn>
               <v-btn
-                color="primary"
-                :disabled="!terminalSettingsFormValid"
+                :color="!terminalSettingsFormValid ? 'error' : 'primary'"
+                :outlined="!terminalSettingsFormValid"
                 :block="$vuetify.breakpoint.smAndDown"
                 @click="saveTerminalSettings()"
               >{{$t('Save')}}</v-btn>
@@ -133,7 +133,9 @@ export default {
   },
   methods: {
     async saveTerminalSettings(noRedirect) {
+      this.$refs.terminalSettingsForm.validate();
       if (!this.terminalSettingsFormValid) {
+        this.$toasted.show(this.$t("FormInvalidSaveNotAllowed"), { type: "error" });
         return false;
       }
       let data = this.$refs.terminalSettingsRef.getData();

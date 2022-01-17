@@ -504,5 +504,6 @@
   "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS",
   "NoAvailableTerminals": "מסוף אינו זמין",
   "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק.",
-  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
+  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות"
 }
