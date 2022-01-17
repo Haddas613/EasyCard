@@ -910,6 +910,9 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
                 new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
                 new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                new TextSubstitution(nameof(transaction.NumberOfPayments), transaction.NumberOfPayments.ToString()),
+                new TextSubstitution(nameof(transaction.InitialPaymentAmount), $"{transaction.InitialPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                new TextSubstitution(nameof(transaction.InstallmentPaymentAmount), $"{transaction.InstallmentPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
 
                 new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty),
                 new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty),
