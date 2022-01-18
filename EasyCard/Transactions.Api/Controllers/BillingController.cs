@@ -273,14 +273,15 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                CreditCardTokenDetails token = null; // EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
 
-                if (token.TerminalID != terminal.TerminalID)
+                if (terminal.Settings.SharedCreditCardTokens == true)
                 {
-                    if (!(terminal.Settings.SharedCreditCardTokens == true))
-                    {
-                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
-                    }
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                }
+                else
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
                 }
 
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
@@ -544,6 +545,8 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        // It should be reworked to enable/disable methods pair
+        [Obsolete]
         [HttpPost]
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)

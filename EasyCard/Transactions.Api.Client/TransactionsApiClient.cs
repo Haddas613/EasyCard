@@ -280,6 +280,8 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        // It should be reworked to enable/disable methods pair
+        [Obsolete]
         public async Task<OperationResponse> SwitchBillingDeal(Guid billingDealID)
         {
             var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/switch", null, BuildHeaders);
