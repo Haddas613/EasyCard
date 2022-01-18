@@ -156,6 +156,9 @@
   <data name="BillingDealsRequired" xml:space="preserve">
     <value>Billing Deals required</value>
   </data>
+  <data name="BillingDealsWereActivated" xml:space="preserve">
+    <value>{0} Billing Deals were activated</value>
+  </data>
   <data name="BillingDealsWereDisabled" xml:space="preserve">
     <value>{0} Billing Deals were disabled</value>
   </data>

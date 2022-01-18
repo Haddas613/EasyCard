@@ -463,6 +463,7 @@
   "OperationsCount": "Operations Count",
   "OperationsCountTotal": "Operations Count (total)",
   "DeleteSelected": "Delete Selected",
+  "ActivateSelected": "Activate Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "CreditCardHasExpired": "Credit card has expired",

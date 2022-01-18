@@ -447,4 +447,7 @@
   <data name="BillingDealsWereDisabled" xml:space="preserve">
     <value>עסקאות בילינג נחסמו {0}</value>
   </data>
+  <data name="BillingDealsWereActivated" xml:space="preserve">
+    <value>{0} עסקאות בילינג  הופעלו</value>
+  </data>
 </root>

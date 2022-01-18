@@ -606,6 +606,43 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereDisabled, successfulCount), StatusEnum.Success));
         }
 
+        [HttpPost]
+        [Route("activate-billing-deals")]
+        public async Task<ActionResult<OperationResponse>> ActivateBillingDeals([FromBody] ActivateBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
+            }
+
+            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+            }
+
+            int successfulCount = 0;
+
+            foreach (var billingDealID in request.BillingDealsID)
+            {
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+
+                if (billingDeal.Active || billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
+                {
+                    continue;
+                }
+
+                billingDeal.Active = true;
+
+                billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+                await billingDealService.UpdateEntity(billingDeal);
+
+                successfulCount++;
+            }
+
+            return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereActivated, successfulCount), StatusEnum.Success));
+        }
+
         /// <summary>
         /// Used only by job
         /// </summary>
