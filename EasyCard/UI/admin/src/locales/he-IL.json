@@ -537,6 +537,7 @@
   "OperationsCount": "מספר פעולות",
   "OperationsCountTotal": "מספר פעולות (סה\"כ)",
   "DeleteSelected": "מחק מסומנים",
+  "ActivateSelected": "הפעל את נבחרים",
   "SavedCards": "שמור כרטיסים",
   "NotAccessible": "לא ניתן לגשת",
   "CreditCardHasExpired": "כרטיס אשראי פג תוקף",
@@ -575,5 +576,6 @@
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
   "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
-  "BitProcessorConnectedMessage": "Bit Processor Connected and ready to use."
+  "BitProcessorConnectedMessage": " מחובר ומוכן לשימוש BIT.",
+  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות"
 }

@@ -302,10 +302,13 @@
                         {
                             <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
                         }
-                        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
-                            <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
-                            PayWithBit
-                        </button>
+                        @if(Model.AllowBit == true)
+                        {
+                            <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+                                <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
+                                PayWithBit
+                            </button>
+                        }
                     </div>
                 </form>
             </div>
@@ -315,20 +318,6 @@
 </div>
 
 @section Scripts {
-<script nws-csp-add-nonce="true">
-$(document).ready(function () {
-    BitPayment.Buttons({
-     onCreate: function(openBitPaymentPage){
-         var transaction = {
-             transactionSerialId: '111',
-             paymentInitiationId: '222'
-         };
-        openBitPaymentPage(transaction);
-     }
-    }).render('#bitcom-button-container'); 
-});
-</script>
-
 @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
 {
     <script src="~/lib/signalr/signalr.min.js"></script>

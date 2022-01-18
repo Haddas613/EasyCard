@@ -61,12 +61,11 @@ namespace Merchants.Api.Controllers.Integrations
             }
 
             var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(nayaxIntegration.ExternalSystemID), nameof(ExternalSystem));
-            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
-            var settings = request.Settings.ToObject(settingsType);
+            var settings = request.Settings.ToObject<NayaxTerminalCollection>();
 
             if (settings == null)
             {
-                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                throw new ApplicationException($"Could not create instance of {nameof(NayaxTerminalCollection)}");
             }
 
             //TODO: temporary implementation. Make a request to nayax as well

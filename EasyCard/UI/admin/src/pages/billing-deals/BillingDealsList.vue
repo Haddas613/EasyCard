@@ -178,6 +178,15 @@ export default {
       
       await this.getDataFromApi();
     },
+    async activateBillingDeals() {
+      let selected = this.getSelected();
+      if(!selected) { return; }
+      let opResult = await this.$api.billingDeals.activateBillingDeals(
+        this.lodash.map(selected, i => i.$billingDealID)
+      );
+      
+      await this.refresh();
+    },
     getSelected(){
       let billings = this.lodash.filter(this.billingDeals, i => i.selected);
       if (billings.length === 0) {
@@ -209,6 +218,12 @@ export default {
               text: vm.$t("DisableSelected"),
               fn: async () => {
                 await vm.disableBillingDeals();
+              }
+            },
+            {
+              text: vm.$t("DisableSelected"),
+              fn: async () => {
+                await vm.activateBillingDeals();
               }
             },
             {

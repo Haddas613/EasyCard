@@ -70,4 +70,8 @@ export default class BillingDealsApi {
     async disableBillingDeals(billingDealsID) {
         return await this.base.post(this.billingUrl + '/disable-billing-deals', { billingDealsID });
     } 
+
+    async activateBillingDeals(billingDealsID) {
+        return await this.base.post(this.billingUrl + '/activate-billing-deals', { billingDealsID });
+    } 
 }

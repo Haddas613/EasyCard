@@ -532,6 +532,7 @@
   "OperationsCount": "Operations Count",
   "OperationsCountTotal": "Operations Count (total)",
   "DeleteSelected": "Delete Selected",
+  "ActivateSelected": "Activate Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "CreditCardHasExpired": "Credit card has expired",
@@ -570,5 +571,6 @@
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
   "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
-  "BitProcessorConnectedMessage": "Bit Processor Connected and ready to use."
+  "BitProcessorConnectedMessage": "Bit connected and ready to use.",
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
 }

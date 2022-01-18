@@ -344,6 +344,15 @@ export default {
       
       await this.refresh();
     },
+    async activateBillingDeals() {
+      let selected = this.getSelected();
+      if(!selected) { return; }
+      let opResult = await this.$api.billingDeals.activateBillingDeals(
+        this.lodash.map(selected, i => i.$billingDealID)
+      );
+      
+      await this.refresh();
+    },
     async createTransactions() {
       if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
@@ -433,6 +442,12 @@ export default {
             text: this.$t("DisableSelected"),
             fn: async () => {
               await vm.disableBillingDeals();
+            }
+          },
+          {
+            text: this.$t("ActivateSelected"),
+            fn: async () => {
+              await vm.activateBillingDeals();
             }
           },
           {

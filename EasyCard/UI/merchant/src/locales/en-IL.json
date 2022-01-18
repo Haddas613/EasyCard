@@ -463,6 +463,7 @@
   "OperationsCount": "Operations Count",
   "OperationsCountTotal": "Operations Count (total)",
   "DeleteSelected": "Delete Selected",
+  "ActivateSelected": "Activate Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "CreditCardHasExpired": "Credit card has expired",
@@ -504,5 +505,6 @@
   "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
   "NoAvailableTerminals": "No available terminals",
   "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
-  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
 }
