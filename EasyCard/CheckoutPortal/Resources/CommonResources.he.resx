@@ -228,4 +228,7 @@
   <data name="AuthorizationCodeOptional" xml:space="preserve">
     <value>קוד אימות (אופציונאלי)</value>
   </data>
+  <data name="ThisCreditCardIsAlreadyAddedAsToken" xml:space="preserve">
+    <value>כרטיס האשראי כבר קיים כטוקן</value>
+  </data>
 </root>

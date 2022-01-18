@@ -231,4 +231,7 @@
   <data name="AuthorizationCodeOptional" xml:space="preserve">
     <value>Authorization Code (optional)</value>
   </data>
+  <data name="ThisCreditCardIsAlreadyAddedAsToken" xml:space="preserve">
+    <value>This credit card is already added as Token</value>
+  </data>
 </root>
