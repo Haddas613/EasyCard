@@ -8,7 +8,7 @@
             <v-text-field
               v-model="model.label"
               :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.stringLength(6, 50)]"
+              :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
               :label="$t('BusinessName')"
               outlined
             ></v-text-field>
