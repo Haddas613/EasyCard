@@ -129,13 +129,13 @@
               v-model="model.settings.doNotCreateSaveTokenInitialDeal"
               :label="$t('DoNotCreateSaveTokenInitialDeal')"
               :disabled="model.settings.cvvRequired"
-              @change="model.settings.sharedCreditCardTokens = false;"
+              @change="onCreateTokenInitialDealChanged()"
               hide-details
             ></v-switch>
             <v-switch
               v-model="model.settings.sharedCreditCardTokens"
               :label="$t('SharedCreditCardTokens')"
-              :disabled="model.settings.doNotCreateSaveTokenInitialDeal"
+              :disabled="!model.settings.doNotCreateSaveTokenInitialDeal"
               hide-details
             ></v-switch>
           </v-col>
@@ -777,6 +777,11 @@ export default {
         this.model.bankDetails = {};
       }else if(!this.editBankDetails && canDisposeBankDetails){
         this.model.bankDetails = null;
+      }
+    },
+    onCreateTokenInitialDealChanged(){
+      if(!this.model.settings.doNotCreateSaveTokenInitialDeal){
+        this.model.settings.sharedCreditCardTokens = false;
       }
     }
   },
