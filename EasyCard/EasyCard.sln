@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{9B8C2352-522A-4F75-A1AA-F5E4226EEB83}"
 EndProject
@@ -124,9 +124,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopEasyCardConvertorECN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantProfileApi.Client", "MerchantProfileApi.Client\MerchantProfileApi.Client.csproj", "{C64D25DD-F5DE-41B6-9D75-F7D312B19022}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bit", "Integration\Bit\Bit.csproj", "{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit", "Integration\Bit\Bit.csproj", "{3E63538E-7B11-4577-BAAC-E7EBC5FC200B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAdminApiClient", "Tests\TestAdminApiClient\TestAdminApiClient.csproj", "{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAdminApiClient", "Tests\TestAdminApiClient\TestAdminApiClient.csproj", "{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecwid", "Integration\Ecwid\Ecwid.csproj", "{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -332,6 +334,10 @@ Global
 		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -384,6 +390,7 @@ Global
 		{5D92154F-F872-421E-97D7-FD9AC951F479} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
 		{3E63538E-7B11-4577-BAAC-E7EBC5FC200B} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81} = {BD9E08F4-001A-4C24-8779-290E3656E697}
+		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

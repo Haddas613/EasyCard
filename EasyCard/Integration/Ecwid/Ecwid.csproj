@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
+  </ItemGroup>
+
+</Project>
