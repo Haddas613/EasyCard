@@ -273,8 +273,7 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
-                CreditCardTokenDetails token = null; // EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
-
+                CreditCardTokenDetails token = null;
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
                     token = EnsureExists(await creditCardTokenService.GetTokensShared().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
@@ -283,6 +282,9 @@ namespace Transactions.Api.Controllers
                 {
                     token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
                 }
+
+                //Ensure that token is not removed from key vault
+                EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
 
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
                 newBillingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
@@ -361,7 +363,15 @@ namespace Transactions.Api.Controllers
                     EnsureExists(model.CreditCardToken);
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                CreditCardTokenDetails token = null;
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                }
+                else
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
+                }
 
                 //Ensure that token is not removed from key vault
                 EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
