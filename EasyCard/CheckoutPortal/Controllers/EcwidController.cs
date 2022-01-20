@@ -24,6 +24,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
 using CheckoutPortal.Models.Ecwid;
+using Ecwid.Configuration;
+using Ecwid;
+using Ecwid.Models;
 
 namespace CheckoutPortal.Controllers
 {
@@ -37,6 +40,9 @@ namespace CheckoutPortal.Controllers
         private readonly IMapper mapper;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
+        private readonly EcwidGlobalSettings ecwidSettings;
+
+        private readonly EcwidConvertor ecwidConvertor;
 
         public EcwidController(
             ILogger<EcwidController> logger,
@@ -44,7 +50,8 @@ namespace CheckoutPortal.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            IOptions<ApiSettings> apiSettings)
+            IOptions<ApiSettings> apiSettings,
+            IOptions<EcwidGlobalSettings> ecwidSettings)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -52,21 +59,29 @@ namespace CheckoutPortal.Controllers
             this.mapper = mapper;
             this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
+            this.ecwidSettings = ecwidSettings.Value;
+
+            this.ecwidConvertor = new EcwidConvertor(this.ecwidSettings);
         }
 
         [HttpPost]
         public IActionResult Index(EcwidRequestPayload request)
         {
-            string decryptedJson = null;
+            EcwidOrder ecwidOrder = null;
             try
             {
-
+                ecwidOrder = ecwidConvertor.DecryptEcwidOrder(request.Data);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"{nameof(EcwidController)} index error: Could not decrypt given request: {request.Data}");
                 throw new ApplicationException("Invalid request");
             }
+
+            //TODO: get consumer from ecwid data by external reference. If not present create one and use it
+            //when creating set Origin to "Ecwid"
+
+            //TODO: use api key when initializing Transactions.Api.Client
 
             return View();
         }

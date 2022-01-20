@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ecwid.Models
 {
-    internal class EcwidRequest
+    public class EcwidRequest
     {
         public int StoreID { get; set; }
 
