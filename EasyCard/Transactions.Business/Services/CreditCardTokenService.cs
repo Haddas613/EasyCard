@@ -66,14 +66,11 @@ namespace Transactions.Business.Services
             }
         }
 
-        public IQueryable<CreditCardTokenDetails> GetTokensShared(bool showIncactive = false)
+        public IQueryable<CreditCardTokenDetails> GetTokensShared(Guid baseTerminalID)
         {
             var tokens = context.CreditCardTokenDetails.AsQueryable();
 
-            if (!showIncactive)
-            {
-                tokens = tokens.Where(t => t.Active);
-            }
+            tokens = tokens.Where(t => t.Active);
 
             if (user.IsAdmin())
             {
@@ -81,8 +78,9 @@ namespace Transactions.Business.Services
             }
             else
             {
+                // NOTE: assign user to terminal will not work in this case
                 var response = tokens.Where(t => t.MerchantID == user.GetMerchantID())
-                    .Where(d => d.InitialTransactionID == null);
+                    .Where(d => d.InitialTransactionID == null || d.TerminalID == baseTerminalID);
 
                 return response;
             }

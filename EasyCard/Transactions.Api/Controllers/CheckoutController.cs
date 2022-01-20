@@ -165,9 +165,20 @@ namespace Transactions.Api.Controllers
                     response.Consumer = new ConsumerInfo();
                     mapper.Map(consumer, response.Consumer);
 
-                    var tokensRaw = await creditCardTokenService.GetTokens()
-                        .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
-                        .ToListAsync();
+                    List<CreditCardTokenDetails> tokensRaw = null;
+
+                    if (terminal.Settings.SharedCreditCardTokens == true)
+                    {
+                        tokensRaw = await creditCardTokenService.GetTokensShared(terminal.TerminalID)
+                            .Where(d.ConsumerID == consumer.ConsumerID)
+                            .ToListAsync();
+                    }
+                    else
+                    {
+                        tokensRaw = await creditCardTokenService.GetTokens()
+                            .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
+                            .ToListAsync();
+                    }
 
                     //TODO: no in memory filtering
                     var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)

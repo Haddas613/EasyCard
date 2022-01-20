@@ -163,7 +163,8 @@ namespace Transactions.Api.Controllers
 
                         if (terminal.Settings.SharedCreditCardTokens == true)
                         {
-                            query = creditCardTokenService.GetTokensShared().AsNoTracking().Filter(filter);
+                            filter.TerminalID = null;
+                            query = creditCardTokenService.GetTokensShared(terminal.TerminalID).AsNoTracking().Filter(filter);
                             numberOfRecordsFuture = query.DeferredCount().FutureValue();
                         }
                     }

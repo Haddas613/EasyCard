@@ -276,7 +276,7 @@ namespace Transactions.Api.Controllers
                 CreditCardTokenDetails token = null;
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
-                    token = EnsureExists(await creditCardTokenService.GetTokensShared().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
                 }
                 else
                 {
@@ -366,7 +366,7 @@ namespace Transactions.Api.Controllers
                 CreditCardTokenDetails token = null;
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
-                    token = EnsureExists(await creditCardTokenService.GetTokensShared().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
                 }
                 else
                 {

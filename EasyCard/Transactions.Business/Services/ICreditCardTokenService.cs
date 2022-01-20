@@ -11,6 +11,6 @@ namespace Transactions.Business.Services
     {
         IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false);
 
-        IQueryable<CreditCardTokenDetails> GetTokensShared(bool showIncactive = false);
+        IQueryable<CreditCardTokenDetails> GetTokensShared(Guid baseTerminalID);
     }
 }
