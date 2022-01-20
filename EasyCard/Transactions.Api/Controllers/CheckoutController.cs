@@ -170,7 +170,7 @@ namespace Transactions.Api.Controllers
                     if (terminal.Settings.SharedCreditCardTokens == true)
                     {
                         tokensRaw = await creditCardTokenService.GetTokensShared(terminal.TerminalID)
-                            .Where(d.ConsumerID == consumer.ConsumerID)
+                            .Where(d => d.ConsumerID == consumer.ConsumerID)
                             .ToListAsync();
                     }
                     else
