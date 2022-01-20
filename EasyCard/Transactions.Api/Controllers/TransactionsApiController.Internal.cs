@@ -146,7 +146,14 @@ namespace Transactions.Api.Controllers
 
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
-                    dbToken = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    if (User.IsAdmin())
+                    {
+                        dbToken = EnsureExists(await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    }
+                    else
+                    {
+                        dbToken = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    }
                 }
                 else
                 {

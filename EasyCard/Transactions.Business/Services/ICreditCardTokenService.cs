@@ -12,5 +12,7 @@ namespace Transactions.Business.Services
         IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false);
 
         IQueryable<CreditCardTokenDetails> GetTokensShared(Guid baseTerminalID);
+
+        IQueryable<CreditCardTokenDetails> GetTokensSharedAdmin(Guid merchantID, Guid baseTerminalID);
     }
 }

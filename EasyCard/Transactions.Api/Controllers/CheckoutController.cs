@@ -169,7 +169,7 @@ namespace Transactions.Api.Controllers
 
                     if (terminal.Settings.SharedCreditCardTokens == true)
                     {
-                        tokensRaw = await creditCardTokenService.GetTokensShared(terminal.TerminalID)
+                        tokensRaw = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID)
                             .Where(d => d.ConsumerID == consumer.ConsumerID)
                             .ToListAsync();
                     }

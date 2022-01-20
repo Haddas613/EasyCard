@@ -86,6 +86,26 @@ namespace Transactions.Business.Services
             }
         }
 
+        public IQueryable<CreditCardTokenDetails> GetTokensSharedAdmin(Guid merchantID, Guid baseTerminalID)
+        {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+
+            tokens = tokens.Where(t => t.Active);
+
+            if (!user.IsAdmin())
+            {
+                throw new ApplicationException("This method should only be used by Admin");
+            }
+            else
+            {
+                // NOTE: assign user to terminal will not work in this case
+                var response = tokens.Where(t => t.MerchantID == merchantID)
+                    .Where(d => d.InitialTransactionID == null || d.TerminalID == baseTerminalID);
+
+                return response;
+            }
+        }
+
         public async override Task UpdateEntity(CreditCardTokenDetails entity, IDbContextTransaction dbTransaction = null)
         {
             //TODO: audit
