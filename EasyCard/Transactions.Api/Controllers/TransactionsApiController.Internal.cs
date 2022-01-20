@@ -144,7 +144,14 @@ namespace Transactions.Api.Controllers
                 mapper.Map(token, transaction.CreditCardDetails);
                 mapper.Map(token, transaction);
 
-                dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    dbToken = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                }
+                else
+                {
+                    dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                }
 
                 if (transaction.InitialTransactionID == null)
                 {
