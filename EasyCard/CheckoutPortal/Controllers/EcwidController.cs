@@ -60,7 +60,7 @@ namespace CheckoutPortal.Controllers
             string decryptedJson = null;
             try
             {
-                decryptedJson = 
+
             }
             catch (Exception ex)
             {
