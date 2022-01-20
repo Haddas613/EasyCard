@@ -13,8 +13,8 @@
       </v-col>
       <v-col md="4" cols="12">
         <v-text-field
-          :value="$options.filters.ecdate(model.created ,'LLLL')"
-          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+          :value="$options.filters.ecdate(model.created, 'LLLL')"
+          v-bind:class="{ 'px-1': $vuetify.breakpoint.mdAndUp }"
           disabled
           :label="$t('Created')"
           outlined
@@ -35,7 +35,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Features")}}
+        {{ $t("Features") }}
         <v-divider></v-divider>
       </v-col>
       <v-col cols="12">
@@ -44,7 +44,7 @@
     </v-row>
     <v-row v-if="model.integrations && Object.keys(model.integrations).length > 0" class="pb-2">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Integrations")}}
+        {{ $t("Integrations") }}
         <v-divider></v-divider>
       </v-col>
       <v-col cols="12">
@@ -53,14 +53,18 @@
     </v-row>
     <v-row no-gutters>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("General")}}
+        {{ $t("General") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.settings.euroRate"
           :label="$t('EuroRate')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          :rules="[
+            vr.primitives.required,
+            vr.primitives.inRange(0, 99),
+            vr.primitives.precision(2),
+          ]"
           required
           outlined
           :hint="$t('CurrencyRateZeroValueHint')"
@@ -69,10 +73,14 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+          v-bind:class="{ 'px-1': $vuetify.breakpoint.mdAndUp }"
           v-model="model.settings.dollarRate"
           :label="$t('DollarRate')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          :rules="[
+            vr.primitives.required,
+            vr.primitives.inRange(0, 99),
+            vr.primitives.precision(2),
+          ]"
           required
           outlined
           :hint="$t('CurrencyRateZeroValueHint')"
@@ -83,7 +91,11 @@
         <v-text-field
           :value="model.settings.vatExempt ? 0 : (model.settings.vatRateGlobal * 100).toFixed(0)"
           :label="$t('VATPercent')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          :rules="[
+            vr.primitives.required,
+            vr.primitives.inRange(0, 99),
+            vr.primitives.precision(2),
+          ]"
           required
           outlined
           disabled
@@ -133,7 +145,12 @@
           disabled
           hide-details
         ></v-switch>
-        <v-switch v-model="model.settings.j2Allowed" :label="$t('J2Allowed')" hide-details disabled></v-switch>
+        <v-switch
+          v-model="model.settings.j2Allowed"
+          :label="$t('J2Allowed')"
+          hide-details
+          disabled
+        ></v-switch>
         <v-switch
           v-model="model.settings.enableCancellationOfUntransmittedTransactions"
           :label="$t('EnableCancellationOfUntransmittedTransactions')"
@@ -186,7 +203,7 @@
       <v-col md="6" cols="12">
         <v-text-field
           v-model="model.settings.maxInstallments"
-          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+          v-bind:class="{ 'px-1': $vuetify.breakpoint.mdAndUp }"
           :label="$t('MaxInstallments')"
           type="number"
           :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
@@ -205,7 +222,7 @@
       <v-col md="6" cols="12">
         <v-text-field
           v-model="model.settings.maxCreditInstallments"
-          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+          v-bind:class="{ 'px-1': $vuetify.breakpoint.mdAndUp }"
           :label="$t('MaxCreditInstallments')"
           type="number"
           :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
@@ -215,7 +232,7 @@
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("SharedApiKey")}}
+        {{ $t("SharedApiKey") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="12">
@@ -223,9 +240,12 @@
           color="success"
           :outlined="!showSharedApiKey"
           small
-          @click="showSharedApiKey = !showSharedApiKey;"
-        >{{$t("ShowSharedKey")}}</v-btn>
-        <v-btn class="mx-1" color="primary" small @click="resetSharedKey()">{{$t("ResetSharedKey")}}</v-btn>
+          @click="showSharedApiKey = !showSharedApiKey"
+          >{{ $t("ShowSharedKey") }}</v-btn
+        >
+        <v-btn class="mx-1" color="primary" small @click="resetSharedKey()">{{
+          $t("ResetSharedKey")
+        }}</v-btn>
       </v-col>
       <v-col cols="12" md="12">
         <v-text-field
@@ -239,11 +259,11 @@
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Api)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("PrivateApiKey")}}
+        {{ $t("PrivateApiKey") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="12">
-        <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
+        <v-btn color="primary" small @click="resetPrivateKey()">{{ $t("ResetPrivateKey") }}</v-btn>
       </v-col>
       <v-col cols="12" md="12">
         <v-text-field
@@ -257,7 +277,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Invoice")}}
+        {{ $t("Invoice") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="6">
@@ -302,7 +322,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("PaymentRequest")}}
+        {{ $t("PaymentRequest") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="6">
@@ -331,7 +351,11 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)">
+      <v-col
+        cols="12"
+        md="6"
+        v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)"
+      >
         <v-text-field
           v-model="model.paymentRequestSettings.fromPhoneNumber"
           :rules="[vr.primitives.numeric()]"
@@ -343,8 +367,12 @@
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
       <v-col cols="12" md="5">
-        <div  class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
-          <img class="mt-1" v-bind:src="getBlobUrl(model.paymentRequestSettings.merchantLogo)" height="48">
+        <div class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
+          <img
+            class="mt-1"
+            v-bind:src="getBlobUrl(model.paymentRequestSettings.merchantLogo)"
+            height="48"
+          />
           <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
@@ -353,7 +381,7 @@
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Billing")}}
+        {{ $t("Billing") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="7">
@@ -379,7 +407,7 @@
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Checkout")}}
+        {{ $t("Checkout") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="7">
@@ -388,7 +416,7 @@
       <v-col cols="12" md="5">
         <div v-if="model.checkoutSettings.customCssReference" class="mt-5">
           <a class="body-1" v-bind:href="getBlobUrl(model.checkoutSettings.customCssReference)">
-            {{$t("LinkToCSS")}}
+            {{ $t("LinkToCSS") }}
           </a>
           <v-btn icon color="error" @click="deleteCustomCSS()">
             <v-icon>mdi-delete</v-icon>
@@ -406,7 +434,7 @@
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text">
-        {{$t("CheckoutRedirectUrls")}}
+        {{ $t("CheckoutRedirectUrls") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="6" class="d-flex justify-start">
@@ -420,22 +448,27 @@
       <v-col cols="12" md="6" class="d-flex justify-end">
         <v-btn color="success" small @click="addRedirectUrl()">
           <v-icon left class="body-1">mdi-plus-circle</v-icon>
-          {{$t('Add')}}
+          {{ $t("Add") }}
         </v-btn>
       </v-col>
       <v-col cols="12" class="pt-6">
-        <ec-list color="ecbg"
-            :items="model.checkoutSettings.redirectUrls" 
-            v-if="model.checkoutSettings.redirectUrls && model.checkoutSettings.redirectUrls.length > 0"
-            stretch 
-            dense>
+        <ec-list
+          color="ecbg"
+          :items="model.checkoutSettings.redirectUrls"
+          v-if="
+            model.checkoutSettings.redirectUrls && model.checkoutSettings.redirectUrls.length > 0
+          "
+          stretch
+          dense
+        >
           <template v-slot:left="{ index }">
             <v-col cols="12">
-              <v-text-field 
-                v-model="model.checkoutSettings.redirectUrls[index]" 
-                outlined 
+              <v-text-field
+                v-model="model.checkoutSettings.redirectUrls[index]"
+                outlined
                 :label="$t('@RedirectURLNumber').replace('@number', index + 1)"
-                :rules="[vr.primitives.required]"></v-text-field>
+                :rules="[vr.primitives.required]"
+              ></v-text-field>
             </v-col>
           </template>
           <template v-slot:append="{ item }">
@@ -448,7 +481,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("Transmission")}}
+        {{ $t("Transmission") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="7">
@@ -462,60 +495,62 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing) && model.bankDetails">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("BankAccountDetails")}}
+        {{ $t("BankAccountDetails") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('InstitutionName')"
-          v-model="model.bankDetails.instituteName"
-          disabled
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('InstitutionNumber')"
-          v-model="model.bankDetails.instituteNum"
-          disabled
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('InstitutionServiceProvider')"
-          type="number"
-          v-model="model.bankDetails.instituteServiceNum"
-          disabled
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('Bank')"
-          outlined
-          v-bind:value="model.bankDetails.bank"
-          disabled
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('BankBranch')"
-          outlined
-          v-bind:value="model.bankDetails.bankBranch"
-          disabled
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field
-          :label="$t('BankAccount')"
-          outlined
-          v-bind:value="model.bankDetails.bankAccount"
-          disabled
-        ></v-text-field>
-      </v-col>
+      <template>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('InstitutionName')"
+            :value="model.bankDetails.instituteName"
+            disabled
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('InstitutionNumber')"
+            :value="model.bankDetails.instituteNum"
+            disabled
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('InstitutionServiceProvider')"
+            type="number"
+            :value="model.bankDetails.instituteServiceNum"
+            disabled
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('Bank')"
+            outlined
+            :value="model.bankDetails.bank"
+            disabled
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('BankBranch')"
+            outlined
+            :value="model.bankDetails.bankBranch"
+            disabled
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            :label="$t('BankAccount')"
+            outlined
+            :value="model.bankDetails.bankAccount"
+            disabled
+          ></v-text-field>
+        </v-col>
+      </template>
     </v-row>
   </div>
 </template>
@@ -536,8 +571,8 @@ export default {
     data: {
       type: Object,
       default: () => null,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -561,22 +596,26 @@ export default {
       );
     }
 
-    this.model.settings.vatRatePercent = (
-      this.model.settings.vatRate * 100
-    ).toFixed(2);
+    this.model.settings.vatRatePercent = (this.model.settings.vatRate * 100).toFixed(2);
 
     if (!this.model.invoiceSettings.defaultInvoiceType) {
-      this.$set(this.model.invoiceSettings, "defaultInvoiceType",
+      this.$set(
+        this.model.invoiceSettings,
+        "defaultInvoiceType",
         appConstants.invoicing.defaultInvoiceType
       );
     }
     if (!this.model.invoiceSettings.defaultRefundInvoiceType) {
-      this.$set(this.model.invoiceSettings, "defaultRefundInvoiceType",
+      this.$set(
+        this.model.invoiceSettings,
+        "defaultRefundInvoiceType",
         appConstants.invoicing.defaultRefundInvoiceType
       );
     }
     if (!this.model.invoiceSettings.defaultCreditInvoiceType) {
-      this.$set(this.model.invoiceSettings, "defaultCreditInvoiceType",
+      this.$set(
+        this.model.invoiceSettings,
+        "defaultCreditInvoiceType",
         appConstants.invoicing.defaultCreditInvoiceType
       );
     }
@@ -587,9 +626,7 @@ export default {
       let result = { ...this.model };
       if (this.model.billingSettings.billingNotificationsEmailsRaw) {
         result.billingSettings.billingNotificationsEmails = [];
-        let split = result.billingSettings.billingNotificationsEmailsRaw.split(
-          ","
-        );
+        let split = result.billingSettings.billingNotificationsEmailsRaw.split(",");
         for (var s of split) {
           let trimmed = s.trim();
           if (trimmed && this.vr.primitives.email(trimmed) === true) {
@@ -602,7 +639,7 @@ export default {
       result.settings.vatRate = result.settings.vatRatePercent
         ? (result.settings.vatRatePercent / 100).toFixed(2)
         : 0;
-        
+
       this.watchModel();
       return result;
     },
@@ -610,10 +647,8 @@ export default {
       if (!this.model.terminalID) {
         return;
       }
-      let operation = await this.$api.terminals.resetPrivateApiKey(
-        this.model.terminalID
-      );
-      if(!this.$apiSuccess(operation)) return;
+      let operation = await this.$api.terminals.resetPrivateApiKey(this.model.terminalID);
+      if (!this.$apiSuccess(operation)) return;
 
       this.privateApiKey = operation.entityReference;
     },
@@ -621,10 +656,8 @@ export default {
       if (!this.model.terminalID) {
         return;
       }
-      let operation = await this.$api.terminals.resetSharedApiKey(
-        this.model.terminalID
-      );
-      if(!this.$apiSuccess(operation)) return;
+      let operation = await this.$api.terminals.resetSharedApiKey(this.model.terminalID);
+      if (!this.$apiSuccess(operation)) return;
 
       this.showSharedKey = true;
       this.model.sharedApiKey = operation.entityReference;
@@ -633,42 +666,50 @@ export default {
     emitUpdate() {
       this.$emit("update", this.model);
     },
-    deleteRedirectUrl(item){
-      let idx = this.model.checkoutSettings.redirectUrls.findIndex(i => i == item);
-      if(idx === -1) { return ;}
+    deleteRedirectUrl(item) {
+      let idx = this.model.checkoutSettings.redirectUrls.findIndex((i) => i == item);
+      if (idx === -1) {
+        return;
+      }
 
       this.model.checkoutSettings.redirectUrls.splice(idx, 1);
     },
-    addRedirectUrl(){
-      if(!this.model.checkoutSettings.redirectUrls){
+    addRedirectUrl() {
+      if (!this.model.checkoutSettings.redirectUrls) {
         this.model.checkoutSettings.redirectUrls = [];
-      }else{
-        let idx = this.model.checkoutSettings.redirectUrls.findIndex(i => !i);
-        if(idx !== -1) { return ;}
+      } else {
+        let idx = this.model.checkoutSettings.redirectUrls.findIndex((i) => !i);
+        if (idx !== -1) {
+          return;
+        }
       }
 
       this.model.checkoutSettings.redirectUrls.push("");
     },
-    watchModel(){
+    watchModel() {
       this.changed = false;
-      let modelWatcher = this.$watch('model', (nv, ov) => {
-        this.changed = true;
-        modelWatcher(); //unwatch
-      }, { deep: true})
+      let modelWatcher = this.$watch(
+        "model",
+        (nv, ov) => {
+          this.changed = true;
+          modelWatcher(); //unwatch
+        },
+        { deep: true }
+      );
     },
-    async deleteCustomCSS(){
+    async deleteCustomCSS() {
       let operation = await this.$api.terminals.deleteCustomCSS(this.data.terminalID);
-      if(!this.$apiSuccess(operation)) return;
+      if (!this.$apiSuccess(operation)) return;
       this.model.checkoutSettings.customCssReference = null;
     },
-    async deleteMerchantLogo(){
+    async deleteMerchantLogo() {
       let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
-      if(!this.$apiSuccess(operation)) return;
-       this.data.paymentRequestSettings.merchantLogo = null;
+      if (!this.$apiSuccess(operation)) return;
+      this.data.paymentRequestSettings.merchantLogo = null;
     },
-    getBlobUrl(resource){
+    getBlobUrl(resource) {
       return `${this.$cfg.VUE_APP_BLOB_BASE_ADDRESS}/${resource}`;
-    }
-  }
+    },
+  },
 };
 </script>
