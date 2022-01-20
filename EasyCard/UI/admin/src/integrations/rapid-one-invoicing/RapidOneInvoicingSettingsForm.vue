@@ -63,6 +63,9 @@ import ValidationRules from "../../helpers/validation-rules";
 import appConstants from "../../helpers/app-constants";
 
 export default {
+  components: {
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
+  },
   props: {
     data: {
       type: Object,
