@@ -29,8 +29,11 @@ namespace Ecwid
         /// <returns>JSON string</returns>
         public string Decrypt(string rawEcwidRequest)
         {
+            // For correct payload decryption, create additional padding to make the payload a multiple of 4:
+            string paddedBase64 = rawEcwidRequest.PadRight(rawEcwidRequest.Length + (4 - (rawEcwidRequest.Length % 4)), '=');
+
             // Ecwid sends data in url-safe base64. Convert the raw data to the original base64 first
-            string base64Original = rawEcwidRequest.Replace('-', '_').Replace('+', '/');
+            string base64Original = paddedBase64.Replace('-', '_').Replace('+', '/');
 
             return cryptoServiceCompact.DecryptCompact(base64Original);
         }

@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Ecwid.Models
 {
-    internal class EcwidCart
+    public class EcwidCart
     {
-        //TODO
+        public CurrencyEnum Currency { get; set; }
+
+        public EcwidOrder Order { get; set; }
     }
 }
