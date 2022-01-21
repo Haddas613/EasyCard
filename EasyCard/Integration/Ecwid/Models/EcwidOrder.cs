@@ -57,5 +57,7 @@ namespace Ecwid.Models
         public EcwidAddressDetails BillingPerson { get; set; }
 
         public EcwidAddressDetails ShippingPerson { get; set; }
+
+        public EcwidMerchantSettings MerchantSettings { get; set; }
     }
 }

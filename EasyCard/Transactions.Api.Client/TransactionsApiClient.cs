@@ -168,6 +168,19 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/paymentIntent", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
         public async Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID)
         {
             try
@@ -223,13 +236,6 @@ namespace Transactions.Api.Client
             var transaction = await webApiClient.Get<TransactionResponse>(apiConfiguration.TransactionsApiAddress, $"/api/transactions/{transactionID}", null, BuildHeaders);
 
             return transaction;
-        }
-
-        public async Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model)
-        {
-            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/paymentIntent", model, BuildHeaders);
-
-            return res;
         }
 
         public async Task<SummariesResponse<BillingDealSummary>> GetBillingDeals(BillingDealsFilter filter)
