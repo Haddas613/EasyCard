@@ -31,7 +31,7 @@ namespace Upay
         {
             bool valid = true;
 
-            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(AuthenticateKey))
+            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
             {
                 valid = false;
             }

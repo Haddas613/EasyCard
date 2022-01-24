@@ -26,11 +26,6 @@ namespace RapidOne
                 valid = false;
             }
 
-            if (string.IsNullOrEmpty(BankAccountNumber) || string.IsNullOrEmpty(LedgerAccount))
-            {
-                valid = false;
-            }
-
             if (Department == default || Branch == default)
             {
                 valid = false;

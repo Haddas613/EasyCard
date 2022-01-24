@@ -27,6 +27,9 @@ using CheckoutPortal.Models.Ecwid;
 using Ecwid.Configuration;
 using Ecwid;
 using Ecwid.Models;
+using MerchantProfileApi.Client;
+using MerchantProfileApi.Models.Billing;
+using CheckoutPortal.Services;
 
 namespace CheckoutPortal.Controllers
 {
@@ -35,10 +38,10 @@ namespace CheckoutPortal.Controllers
     public class EcwidController : Controller
     {
         private readonly ILogger<EcwidController> logger;
-        private readonly ITransactionsApiClient transactionsApiClient;
+        private readonly IApiClientsFactory apiClientsFactory; 
+        private readonly ITerminalApiKeyTokenServiceFactory terminalApiKeyTokenServiceFactory;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
-        private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
         private readonly EcwidGlobalSettings ecwidSettings;
 
@@ -46,26 +49,26 @@ namespace CheckoutPortal.Controllers
 
         public EcwidController(
             ILogger<EcwidController> logger,
-            ITransactionsApiClient transactionsApiClient,
+            IApiClientsFactory apiClientsFactory,
+            ITerminalApiKeyTokenServiceFactory terminalApiKeyTokenServiceFactory,
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
             IOptions<ApiSettings> apiSettings,
             IOptions<EcwidGlobalSettings> ecwidSettings)
         {
             this.logger = logger;
-            this.transactionsApiClient = transactionsApiClient;
+            this.apiClientsFactory = apiClientsFactory;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
-            this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
             this.ecwidSettings = ecwidSettings.Value;
+            this.terminalApiKeyTokenServiceFactory = terminalApiKeyTokenServiceFactory;
 
-            this.ecwidConvertor = new EcwidConvertor(this.ecwidSettings);
+            ecwidConvertor = new EcwidConvertor(this.ecwidSettings);
         }
 
         [HttpPost]
-        public IActionResult Index(EcwidRequestPayload request)
+        public async Task<IActionResult> Index(EcwidRequestPayload request)
         {
             EcwidOrder ecwidOrder = null;
             try
@@ -78,12 +81,50 @@ namespace CheckoutPortal.Controllers
                 throw new ApplicationException("Invalid request");
             }
 
-            //TODO: get consumer from ecwid data by external reference. If not present create one and use it
-            //when creating set Origin to "Ecwid"
+            if (ecwidOrder.MerchantSettings == null || string.IsNullOrEmpty(ecwidOrder.MerchantSettings?.ApiKey))
+            {
+                logger.LogError($"{nameof(EcwidController)} index error: Could not retrieve merchant settings: {request.Data}");
+                throw new ApplicationException("Invalid request. Merchant settings are not present");
+            }
 
-            //TODO: use api key when initializing Transactions.Api.Client
+            var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidOrder.MerchantSettings.ApiKey);
+            var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
 
-            return View();
+            var customerPayload = ecwidConvertor.GetConsumerRequest(ecwidOrder);
+
+            var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter 
+            {
+                ExternalReference = customerPayload.ExternalReference,
+                Origin = customerPayload.Origin,
+            });
+
+            Guid? consumerID = null;
+
+            if (exisingConsumers.NumberOfRecords == 1)
+            {
+                consumerID = exisingConsumers.Data.First().ConsumerID;
+            }
+            else if (exisingConsumers.NumberOfRecords > 1)
+            {
+                throw new ApplicationException("There are several consumers with same card code in ECNG");
+            }
+
+            if (consumerID == null)
+            {
+                var createConsumerResponse = await merchantMetadataApiClient.CreateConsumer(customerPayload);
+                consumerID = createConsumerResponse.EntityUID;
+            }
+
+            var paymentRequestPayload = ecwidConvertor.GetCreatePaymentRequest(ecwidOrder);
+            paymentRequestPayload.DealDetails.ConsumerID = consumerID;
+
+            var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);
+
+            var paymentIntentResponse = await transactionsApiClient.CreatePaymentIntent(paymentRequestPayload);
+
+            var url = paymentIntentResponse.AdditionalData.Value<string>("url");
+
+            return Redirect(url);
         }
 
         [Route("settings")]

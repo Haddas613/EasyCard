@@ -121,6 +121,18 @@ namespace CheckoutPortal
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
 
+            services.AddSingleton<IApiClientsFactory, ApiClientsFactory>(serviceProvider =>
+            {
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                return new ApiClientsFactory(apiCfg);
+            }); 
+
+            services.AddSingleton<ITerminalApiKeyTokenServiceFactory, TerminalApiKeyTokenServiceFactory>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                return new TerminalApiKeyTokenServiceFactory(cfg);
+            });
+
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
