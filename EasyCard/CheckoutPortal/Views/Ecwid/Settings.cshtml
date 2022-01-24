@@ -1,0 +1,113 @@
+﻿@using CheckoutPortal.Models.Ecwid
+@using Shared.Helpers
+@{
+    ViewData["Title"] = "EasyCard";
+}
+@model EcwidSettingsQuery
+@inject CommonLocalizationService localizer
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="~/css/ecwid-styles.css" />
+    @*<link rel="stylesheet" href="https://d35z3p2poghz10.cloudfront.net/ecwid-sdk/css/1.3.13/ecwid-app-ui.css" />*@
+    <script src="https://d35z3p2poghz10.cloudfront.net/ecwid-sdk/js/1.2.9/ecwid-app.js"></script>
+
+</head>
+<!-- Back button block START -->
+
+<div id="go-back-btn" class="content-control-menu-nav settings-page">
+    <a class="horizontal-icolink icolink-small icolink-prepend">
+        <span class="icon-arr-left"></span> <span class="gwt-InlineLabel">BACK</span>
+    </a>
+</div>
+
+<!-- Back button block END -->
+<!-- Main app block START -->
+
+<div class="settings-page main">
+    <div class="settings-page__body">
+
+        <!-- APP SETTINGS AREA START -->
+
+        <div class="settings-page__body settings">
+            <div class="named-area">
+                <div class="named-area__header">
+                    <div class="named-area__titles">
+                        <h4 class="named-area__title h4">Set up the application</h4>
+                        <span class="named-area__subtitle">Specify ECNG Terminal Private api key</span>
+                    </div>
+                </div>
+                <div class="named-area__body">
+                    <fieldset class="border rounded p-2 m-2">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TerminalApiKey")</label>
+                            <div class="col-sm-9">
+                                <input data-visibility="private" data-name="apiKey" type="text" class="form-control form-control-sm" placeholder="@localizer.Get("TerminalApiKey")" autocomplete="off">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group d-flex justify-content-end">
+                        <button id="save-btn" class="btn btn-primary">
+                            @localizer.Get("Save")
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+@section Scripts{
+<script src="https://d35z3p2poghz10.cloudfront.net/ecwid-sdk/css/1.3.13/ecwid-app-ui.min.js"></script>
+<script src="~/js/ecwid-functions.js"></script>
+
+<script nws-csp-add-nonce="true">
+    (function() {
+        $(document).ready(function () {
+            $("#go-back-btn").on("click", function(){
+                goBack();
+            });
+            $("#save-btn").on("click", function(){
+                saveUserData();
+            });
+        });
+    })()
+    // Autosave feature for fields. Complimentary JS for the one from SDK above
+
+    //(function initFieldset() {
+
+    //    var elms = document.querySelectorAll('.field__input, .field__select, .field__textarea, .radio');
+    //    for (var i = 0; i < elms.length; i++) {
+    //        elms[i].addEventListener('blur', function (e) {
+    //            checkFieldChange(this);
+    //            if (this.classList.contains('field__input') || this.classList.contains('field__textarea')) {
+    //                saveUserData();
+    //            }
+    //        }, false);
+
+    //        elms[i].addEventListener('change', function () {
+    //            if (this.value) {
+    //                saveUserData();
+    //            }
+    //            else {
+    //                saveUserData();
+    //            }
+    //        }, false);
+
+    //        elms[i].addEventListener('click', function () {
+    //            if (this.value) {
+    //                saveUserData();
+    //            }
+    //            else {
+    //                saveUserData();
+    //            }
+    //        }, false);
+    //    }
+    //})();
+
+</script>
+}

@@ -231,4 +231,10 @@
   <data name="ThisCreditCardIsAlreadyAddedAsToken" xml:space="preserve">
     <value>כרטיס האשראי כבר קיים כטוקן</value>
   </data>
+  <data name="TerminalApiKey" xml:space="preserve">
+    <value>Terminal Api Key</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>שמור</value>
+  </data>
 </root>

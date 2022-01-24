@@ -129,9 +129,9 @@ namespace CheckoutPortal.Controllers
 
         [Route("settings")]
         [HttpGet]
-        public IActionResult Settings()
+        public async Task<IActionResult> Settings(EcwidSettingsQuery request)
         {
-            return View();
+            return View(request);
         }
     }
 }
