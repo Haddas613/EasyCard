@@ -198,7 +198,9 @@ namespace Transactions.Business.Entities
 
         public BillingProcessingStatusEnum InProgress { get; set; }
 
-        public void UpdateNextScheduledDate(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
+        public int? FailedAttemptsCount { get; set; }
+
+        public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
             if (BillingSchedule == null)
             {
@@ -222,6 +224,23 @@ namespace Transactions.Business.Entities
             }
 
             Active = NextScheduledTransaction != null;
+        }
+
+        public void UpdateNextScheduledDatAfterError(string errorMessage, string correlationID, int? failedTransactionsCountBeforeInactivate, int? numberOfDaysToRetryTransaction)
+        {
+            InProgress = BillingProcessingStatusEnum.Pending;
+            HasError = true;
+            LastError = errorMessage;
+            LastErrorCorrelationID = correlationID;
+            FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
+            if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
+            {
+                Active = false;
+            }
+            else
+            {
+                NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
+            }
         }
     }
 }

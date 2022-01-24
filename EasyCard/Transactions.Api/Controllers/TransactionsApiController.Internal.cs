@@ -58,10 +58,10 @@ namespace Transactions.Api.Controllers
 {
     public partial class TransactionsApiController
     {
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
+        private async Task<Terminal> GetTerminal(Guid terminalID)
         {
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
@@ -69,6 +69,11 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
+            return terminal;
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
+        {
             if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
             {
                 var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
@@ -534,7 +539,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -678,7 +683,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -808,7 +813,7 @@ namespace Transactions.Api.Controllers
             //invoiceRequest.MerchantIP = GetIP();
             invoiceRequest.CorrelationId = GetCorrelationID();
 
-            model.UpdateNextScheduledDate(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
+            model.UpdateNextScheduledDatAfterSuccess(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
 
             await billingDealService.UpdateEntity(model);
 
@@ -1050,7 +1055,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal, CreditCardTokenKeyVault token)
+        private async Task<OperationResponse> NextBillingDeal(Terminal terminal, BillingDeal billingDeal, CreditCardTokenKeyVault token)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(billingDeal);
 
@@ -1071,7 +1076,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
+                    actionResult = await ProcessTransaction(terminal, transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
                 }
 
                 var response = actionResult.Result as ObjectResult;

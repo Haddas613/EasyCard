@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -104,7 +105,9 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var tokenResponse = await CreateTokenInternal(model);
+            var terminal = await GetTerminal(model.TerminalID);
+
+            var tokenResponse = await CreateTokenInternal(terminal, model);
 
             var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -205,16 +208,16 @@ namespace Transactions.Api.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(Terminal terminal, TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
         {
-            // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            //// TODO: caching
+            //var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
-            // TODO: caching
-            var systemSettings = await systemSettingsService.GetSystemSettings();
+            //// TODO: caching
+            //var systemSettings = await systemSettingsService.GetSystemSettings();
 
-            // merge system settings with terminal settings
-            mapper.Map(systemSettings, terminal);
+            //// merge system settings with terminal settings
+            //mapper.Map(systemSettings, terminal);
 
             TokenTerminalSettingsValidator.Validate(terminal, model);
 
@@ -340,6 +343,20 @@ namespace Transactions.Api.Controllers
             await creditCardTokenService.CreateEntity(dbData);
 
             return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) };
+        }
+
+        private async Task<Terminal> GetTerminal(Guid terminalID)
+        {
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            return terminal;
         }
     }
 }

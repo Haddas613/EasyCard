@@ -439,6 +439,7 @@ namespace Transactions.Api.Controllers
             Debug.WriteLine(User);
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
+            var terminal = await GetTerminal(model.TerminalID);
 
             if (model.SaveCreditCard == true)
             {
@@ -460,7 +461,7 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model, tokenRequest);
 
                     DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
-                    var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
+                    var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
 
                     var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -482,11 +483,11 @@ namespace Transactions.Api.Controllers
                 }
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
-                return await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+                return await ProcessTransaction(terminal, model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
             else
             {
-                return await ProcessTransaction(model, null);
+                return await ProcessTransaction(terminal, model, null);
             }
         }
 
@@ -524,6 +525,8 @@ namespace Transactions.Api.Controllers
             mapper.Map(dbPaymentRequest, model);
             mapper.Map(prmodel, model);
 
+            var terminal = await GetTerminal(model.TerminalID);
+
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)
@@ -545,7 +548,7 @@ namespace Transactions.Api.Controllers
                 mapper.Map(model, tokenRequest);
 
                 DocumentOriginEnum origin = isPaymentIntent ? DocumentOriginEnum.Checkout : DocumentOriginEnum.PaymentRequest;
-                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -592,12 +595,12 @@ namespace Transactions.Api.Controllers
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
 
-                createResult = await ProcessTransaction(model, token,
+                createResult = await ProcessTransaction(terminal, model, token,
                     specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
             else
             {
-                createResult = await ProcessTransaction(model, null,
+                createResult = await ProcessTransaction(terminal, model, null,
                     specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
 
@@ -634,6 +637,7 @@ namespace Transactions.Api.Controllers
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
             CreditCardTokenKeyVault token;
+            var terminal = await GetTerminal(model.TerminalID);
 
             // Does it have sense to use J5 together with Token?
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
@@ -645,11 +649,10 @@ namespace Transactions.Api.Controllers
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
                 var dbData = mapper.Map<CreditCardTokenDetails>(tokenRequest);
-                var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
                 dbData.MerchantID = terminal.MerchantID;
                 DocumentOriginEnum origin = User.IsTerminal() ? DocumentOriginEnum.API : DocumentOriginEnum.UI;
 
-                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest, origin);
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -664,7 +667,7 @@ namespace Transactions.Api.Controllers
                 transaction.CreditCardToken = tokenResponseOperation.EntityUID;
             }
 
-            return await ProcessTransaction(transaction, token, JDealTypeEnum.J5);
+            return await ProcessTransaction(terminal, transaction, token, JDealTypeEnum.J5);
         }
 
         /// <summary>
@@ -688,7 +691,7 @@ namespace Transactions.Api.Controllers
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, transaction.TransactionDate.Value);
 
             var token = EnsureExists(await keyValueStorage.Get(createTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
-            var response = await ProcessTransaction(createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+            var response = await ProcessTransaction(terminal, createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
 
             return response;
         }
@@ -704,7 +707,7 @@ namespace Transactions.Api.Controllers
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
             transaction.TransactionAmount = 1;
-
+            var terminal = await GetTerminal(model.TerminalID);
             CreditCardTokenKeyVault token = null;
 
             if (model.CreditCardToken != null)
@@ -712,7 +715,7 @@ namespace Transactions.Api.Controllers
                 token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
             }
 
-            return await ProcessTransaction(transaction, token, JDealTypeEnum.J2);
+            return await ProcessTransaction(terminal, transaction, token, JDealTypeEnum.J2);
         }
 
         /// <summary>
@@ -726,15 +729,15 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> Refund([FromBody] RefundRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
-
+            var terminal = await GetTerminal(model.TerminalID);
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
-                return await ProcessTransaction(transaction, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+                return await ProcessTransaction(terminal, transaction, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
             }
             else
             {
-                return await ProcessTransaction(transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+                return await ProcessTransaction(terminal, transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
             }
         }
 
@@ -842,9 +845,11 @@ namespace Transactions.Api.Controllers
                         }
                     }
 
+                    var terminal = await GetTerminal(billingDeal.TerminalID);
+
                     if (operationResult.Status == StatusEnum.Success)
                     {
-                        operationResult = await NextBillingDeal(billingDeal, token);
+                        operationResult = await NextBillingDeal(terminal, billingDeal, token);
                     }
 
                     if (operationResult.Status == StatusEnum.Success)
@@ -853,11 +858,8 @@ namespace Transactions.Api.Controllers
                     }
                     else
                     {
-                        billingDeal.InProgress = BillingProcessingStatusEnum.Pending;
-                        billingDeal.Active = false;
-                        billingDeal.HasError = true;
-                        billingDeal.LastError = operationResult.Message;
-                        billingDeal.LastErrorCorrelationID = GetCorrelationID();
+                        billingDeal.UpdateNextScheduledDatAfterError(operationResult.Message, GetCorrelationID(), terminal.BillingSettings.FailedTransactionsCountBeforeInactivate, terminal.BillingSettings.NumberOfDaysToRetryTransaction);
+
                         await billingDealService.UpdateEntity(billingDeal);
 
                         response.FailedCount++;

@@ -267,7 +267,6 @@ namespace Transactions.Business.Entities
 
         // TODO: move pinpad details to separate class
 
-
         public string PinPadDeviceID { get; set; }
 
         /// <summary>

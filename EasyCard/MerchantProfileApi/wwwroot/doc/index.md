@@ -31,8 +31,6 @@ EasyCard’s Redirect debit page is included in the company’s PCI certificatio
 ||Metadata API|https://merchant.e-c.co.il|
 ||Identity Server|https://identity.e-c.co.il|
 
-> Please use <api_address>/swagger to get full API description
-
 > Please request our developers team for Postman examples if needed
 
 ## Checkout Page addresses
