@@ -45,6 +45,7 @@ export default {
       vr: ValidationRules,
       formValid: false,
       loading: false,
+      appConstants: appConstants,
     }
   },
   mounted () {
@@ -62,7 +63,7 @@ export default {
       this.loading = false;
     },
     async testConnection(){
-      let operation = await this.$api.integrations.clearingHouse.testConnection({
+      let operation = await this.$api.integrations.upay.testConnection({
         ...this.model,
         terminalID: this.terminalId,
       });

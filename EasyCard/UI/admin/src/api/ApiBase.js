@@ -28,6 +28,7 @@ import TransmissionsReportingApi from './modules/transactions/TransmissionsRepor
 import CardTokensReportingApi from './modules/reporting/CardTokensReportingApi';
 import RapidOneApi from './modules/integrations/RapidOneApi';
 import IntegrationsCommonApi from './modules/integrations/IntegrationsCommonApi';
+import UPayApi from './modules/integrations/UPayApi';
 
 class ApiBase {
     constructor() {
@@ -57,7 +58,8 @@ class ApiBase {
             clearingHouse: new ClearingHouseApi(this),
             nayax: new NayaxApi(this),
             rapidOne: new RapidOneApi(this),
-            common: new IntegrationsCommonApi(this)
+            common: new IntegrationsCommonApi(this),
+            upay: new UPayApi(this),
         };
         this.reporting = {
             admin: new AdminReportingApi(this),

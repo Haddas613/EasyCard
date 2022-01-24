@@ -50,7 +50,7 @@ namespace Merchants.Api.Controllers.Integrations
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
 
-            var rapidOneIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
+            var rapidOneIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.RapidOneInvoicingExternalSystemID));
 
             if (rapidOneIntegration == null)
             {
