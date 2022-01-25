@@ -91,8 +91,12 @@
     [PinPadCorrelationID]            VARCHAR (50)     NULL,
     [PinPadUpdateReceiptNumber]      VARCHAR (50)     NULL,
     [ClearingHouseConcurrencyToken]  NVARCHAR (50)    NULL,
+    [BitPaymentInitiationId]         VARCHAR (64)     NULL,
+    [BitTransactionSerialId]         VARCHAR (64)     NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

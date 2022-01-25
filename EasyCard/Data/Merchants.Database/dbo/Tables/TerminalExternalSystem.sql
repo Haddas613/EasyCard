@@ -6,9 +6,12 @@
     [UpdateTimestamp]          ROWVERSION       NULL,
     [Created]                  DATETIME2 (7)    NULL,
     [Type]                     INT              DEFAULT ((0)) NOT NULL,
+    [Valid]                    BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_TerminalExternalSystem] PRIMARY KEY CLUSTERED ([TerminalExternalSystemID] ASC),
     CONSTRAINT [FK_TerminalExternalSystem_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID])
 );
+
+
 
 
 

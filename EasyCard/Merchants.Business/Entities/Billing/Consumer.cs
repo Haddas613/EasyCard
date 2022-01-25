@@ -69,5 +69,7 @@ namespace Merchants.Business.Entities.Billing
         {
             return ConsumerID;
         }
+
+        public Guid? MergedFromConsumerID { get; set; }
     }
 }
