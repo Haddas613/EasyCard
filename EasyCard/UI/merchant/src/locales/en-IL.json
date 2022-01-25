@@ -357,6 +357,11 @@
   "CreatedFrom": "Created From",
   "CreatedTo": "Created To",
   "PriceWithDiscount": "Price with discount",
+  "FailedTransactionsCountBeforeInactivate": "Failed Transactions Count Before Inactivate",
+  "NumberOfDaysToRetryTransaction": "Number of Days to retry Transaction",
+  "FailedAttemptsCount": "Failed Attempts Count",
+  "LastError": "Last Error",
+  "LastErrorCorrelationID": "Last Error Correlation ID",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

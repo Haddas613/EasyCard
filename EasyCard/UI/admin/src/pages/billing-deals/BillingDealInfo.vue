@@ -75,6 +75,10 @@
                   <p class="caption error--text text--darken-2">{{$t('LastErrorCorrelationID')}}</p>
                   <p>{{model.lastErrorCorrelationID || '-'}}</p>
                 </v-col>
+                <v-col cols="12" md="4" class="info-block" v-if="model.failedAttemptsCount && model.failedAttemptsCount > 0">
+                  <p class="caption ecgray--text text--darken-2">{{$t('FailedAttemptsCount')}}</p>
+                  <p>{{model.failedAttemptsCount}}</p>
+                </v-col>
               </v-row>
             </v-card-text>
           </v-card>

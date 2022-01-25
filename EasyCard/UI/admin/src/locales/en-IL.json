@@ -424,6 +424,11 @@
   "PriceWithDiscount": "Price with discount",
   "StartingNumber": "Starting Number",
   "SharedCreditCardTokens": "Shared Credit Card Tokens",
+  "FailedTransactionsCountBeforeInactivate": "Failed Transactions Count Before Inactivate",
+  "FailedTransactionsCountBeforeInactivateHint": "After given number of transactions billing will be inactive",
+  "NumberOfDaysToRetryTransaction": "Number of Days to retry Transaction",
+  "NumberOfDaysToRetryTransactionHint": "Transaction creation will be retried after N days",
+  "FailedAttemptsCount": "Failed Attempts Count",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

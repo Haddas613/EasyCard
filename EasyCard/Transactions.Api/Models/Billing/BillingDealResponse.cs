@@ -162,5 +162,7 @@ namespace Transactions.Api.Models.Billing
         public string LastErrorCorrelationID { get; set; }
 
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
+
+        public int? FailedAttemptsCount { get; set; }
     }
 }

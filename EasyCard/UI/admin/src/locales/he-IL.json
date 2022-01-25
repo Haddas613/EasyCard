@@ -428,6 +428,11 @@
   "PriceWithDiscount": "מחיר פריט לאחר הנחה",
   "StartingNumber": "מספר התחלה",
   "SharedCreditCardTokens": "לתת הרשאות לטוקן כרטיס אשראי",
+  "FailedTransactionsCountBeforeInactivate": "עסקאות שנכשלו סופר לפני לא פעיל",
+  "FailedTransactionsCountBeforeInactivateHint": "לאחר מספר העסקאות הנתון החיוב לא יהיה פעיל",
+  "NumberOfDaysToRetryTransaction": "מספר הימים לניסיון חוזר בעסקה",
+  "NumberOfDaysToRetryTransactionHint": "יצירת העסקה תבוצע מחדש לאחר N ימים",
+  "FailedAttemptsCount": "ספירת ניסיונות כושלים",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
