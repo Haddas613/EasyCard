@@ -213,6 +213,7 @@ namespace Transactions.Business.Entities
             CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value + 1 : 1;
             HasError = false;
             LastError = null;
+            FailedAttemptsCount = 0;
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments && BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
                 (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && BillingSchedule.EndAt <= legalDate))
             {
