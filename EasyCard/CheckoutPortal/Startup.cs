@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Localization;
 using SharedApi = Shared.Api;
 using CheckoutPortal.Services;
 using CheckoutPortal.Models;
+using Ecwid.Configuration;
 
 namespace CheckoutPortal
 {
@@ -81,7 +82,8 @@ namespace CheckoutPortal
             };
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
-            services.Configure<ApiSettings>(Configuration.GetSection("API"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API")); 
+            services.Configure<EcwidGlobalSettings>(Configuration.GetSection("Ecwid"));
 
             services.AddHttpContextAccessor();
 
@@ -172,7 +174,7 @@ namespace CheckoutPortal
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il")
+                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il", "d35z3p2poghz10.cloudfront.net")
                 )
                 //.FrameAncestors(s => s.Self())
                 //.FormActions(s => s.Self())

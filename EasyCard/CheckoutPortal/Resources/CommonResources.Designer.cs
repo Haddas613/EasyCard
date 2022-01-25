@@ -340,11 +340,29 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save Card.
         /// </summary>
         public static string SaveCard {
             get {
                 return ResourceManager.GetString("SaveCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Api Key.
+        /// </summary>
+        public static string TerminalApiKey {
+            get {
+                return ResourceManager.GetString("TerminalApiKey", resourceCulture);
             }
         }
         
