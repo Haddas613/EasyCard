@@ -80,6 +80,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
 
 export default {
   name: "TransactionsList",
@@ -97,7 +98,9 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      transactionsFilter: {},
+      transactionsFilter: {
+        terminalID: null,
+      },
       dictionaries: {},
       datePeriod: null,
       totalOperationsCount: null,
@@ -108,7 +111,10 @@ export default {
   },
   methods: {
     async applyFilter(filter) {
-      this.transactionsFilter = filter;
+      this.transactionsFilter = {
+        ...this.transactionsFilter,
+        ...filter,
+      };
       await this.getGroupedDataFromApi();
     },
     async refresh() {
@@ -158,15 +164,21 @@ export default {
       return { dateFrom, dateTo };
     },
     async exportExcel() {
-          let operation = await this.$api.transactions.getExcel({
-            ...this.transactionsFilter,
-            ...this.options
-          });
-          if(!this.$apiSuccess(operation)) return;
-          window.open(operation.entityReference, "_blank");
+      let operation = await this.$api.transactions.getExcel({
+        ...this.transactionsFilter,
+        ...this.options
+      });
+      if(!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, "_blank");
     }
   },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    }),
+  },
   async mounted() {
+    this.transactionsFilter.terminalID = this.terminalStore.terminalID;
     await this.getGroupedDataFromApi();
 
     this.$store.commit("ui/changeHeader", {

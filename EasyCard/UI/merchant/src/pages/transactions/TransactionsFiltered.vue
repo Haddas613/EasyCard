@@ -165,7 +165,8 @@ export default {
       moment: moment,
       loading: false,
       transactionsFilter: {
-        ...this.filters
+        ...this.filters,
+        terminalID: null,
       },
       headers: [],
       defaultFilter: {
@@ -268,12 +269,12 @@ export default {
       }
     },
     async exportExcel() {
-          let operation = await this.$api.transactions.getExcel({
-            ...this.transactionsFilter,
-            ...this.options
-          });
-          if(!this.$apiSuccess(operation)) return;
-          window.open(operation.entityReference, "_blank");
+      let operation = await this.$api.transactions.getExcel({
+        ...this.transactionsFilter,
+        ...this.options
+      });
+      if(!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, "_blank");
     },
     async showSlipDialog(transaction){
       if(this.loadingTransaction){
@@ -297,7 +298,8 @@ export default {
     })
   },
   async mounted() {
-    await this.applyFilters();
+    this.transactionsFilter.terminalID = this.terminalStore.terminalID;
+    await this.getDataFromApi();
 
     this.$store.commit("ui/changeHeader", {
       value: {

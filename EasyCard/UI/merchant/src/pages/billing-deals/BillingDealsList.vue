@@ -274,6 +274,7 @@ export default {
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
+        terminalID: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -415,6 +416,7 @@ export default {
     })
   },
   async mounted() {
+    this.billingDealsFilter.terminalID = this.terminalStore.terminalID;
     await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {

@@ -191,6 +191,7 @@ export default {
     }
   },
   async mounted() {
+    this.invoicesFilter.terminalID = this.terminalStore.terminalID;
     await this.getDataFromApi();
     const vm = this;
     if(!this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing)) return;
