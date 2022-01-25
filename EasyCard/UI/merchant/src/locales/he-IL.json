@@ -362,6 +362,7 @@
   "FailedAttemptsCount": "ספירת ניסיונות כושלים",
   "LastError": "שגיאה אחרונה",
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "SelectForTrigger": "חיובי בילינג",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

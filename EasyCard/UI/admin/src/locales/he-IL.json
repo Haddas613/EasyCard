@@ -433,6 +433,7 @@
   "NumberOfDaysToRetryTransaction": "מספר הימים לניסיון חוזר בעסקה",
   "NumberOfDaysToRetryTransactionHint": "יצירת העסקה תבוצע מחדש לאחר N ימים",
   "FailedAttemptsCount": "ספירת ניסיונות כושלים",
+  "SelectForTrigger": "חיובי בילינג",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

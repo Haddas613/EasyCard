@@ -362,6 +362,7 @@
   "FailedAttemptsCount": "Failed Attempts Count",
   "LastError": "Last Error",
   "LastErrorCorrelationID": "Last Error Correlation ID",
+  "SelectForTrigger": "Select for Trigger",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
