@@ -638,9 +638,12 @@
                         no.length == 15 && (no.indexOf("34") == 0 || no.indexOf("37") == 0) ||
                         no.length == 13 && no[0] == 4)
                 };
+                var checkDiarect = function(no) {
+                    return (no.length === 9);
+                };
                 $("#cc-number").on("input", function (e) {
                     let rawVal = e.target.value.split(' ').join('');
-                    if(!validateCardNo(rawVal)){
+                    if(!validateCardNo(rawVal) && !checkDiarect(rawVal)){
                         $("#cc-added-warn").attr('hidden', true);
                         return;
                     }

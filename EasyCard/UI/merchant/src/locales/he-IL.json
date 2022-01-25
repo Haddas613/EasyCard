@@ -357,6 +357,12 @@
   "CreatedFrom": "נוצר מ",
   "CreatedTo": "נוצר ל",
   "PriceWithDiscount": "מחיר פריט לאחר הנחה",
+  "FailedTransactionsCountBeforeInactivate": "עסקאות שנכשלו סופר לפני לא פעיל",
+  "NumberOfDaysToRetryTransaction": "מספר הימים לניסיון חוזר בעסקה",
+  "FailedAttemptsCount": "ספירת ניסיונות כושלים",
+  "LastError": "שגיאה אחרונה",
+  "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "SelectForTrigger": "חיובי בילינג",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

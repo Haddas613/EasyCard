@@ -54,7 +54,7 @@
               :persistent-hint="true"
             >
               <template v-slot:label>
-                <small>{{$t('Actual')}}</small>
+                <small>{{$t('SelectForTrigger')}}</small>
               </template>
             </v-switch>
           </v-col>
@@ -274,6 +274,7 @@ export default {
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
+        terminalID: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -286,7 +287,7 @@ export default {
   },
   methods: {
     async getDataFromApi(extendData) {
-      this.loading = true;
+      //this.loading = true;
       let data = await this.$api.billingDeals.get({
         ...this.billingDealsFilter
       });
@@ -415,6 +416,7 @@ export default {
     })
   },
   async mounted() {
+    this.billingDealsFilter.terminalID = this.terminalStore.terminalID;
     await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {

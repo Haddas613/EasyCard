@@ -334,7 +334,7 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="7">
+          <v-col cols="12" md="6">
             <v-textarea
               v-model="model.billingSettings.billingNotificationsEmailsRaw"
               :counter="512"
@@ -345,12 +345,27 @@
               rows="3"
             ></v-textarea>
           </v-col>
+          <v-spacer/>
           <v-col cols="12" md="5">
             <v-switch
               class="pt-0"
               v-model="model.billingSettings.createRecurrentPaymentsAutomatically"
               :label="$t('CreateRecurrentPaymentsAutomatically')"
               hide-details
+            ></v-switch>
+            <v-switch
+              class="pt-2"
+              v-model="model.billingSettings.failedTransactionsCountBeforeInactivate"
+              :label="$t('FailedTransactionsCountBeforeInactivate')"
+              :hint="$t('FailedTransactionsCountBeforeInactivateHint')"
+              persistent-hint
+            ></v-switch>
+            <v-switch
+              class="pt-2"
+              v-model="model.billingSettings.numberOfDaysToRetryTransaction"
+              :label="$t('NumberOfDaysToRetryTransaction')"
+              :hint="$t('NumberOfDaysToRetryTransactionHint')"
+              persistent-hint
             ></v-switch>
           </v-col>
         </v-row>
