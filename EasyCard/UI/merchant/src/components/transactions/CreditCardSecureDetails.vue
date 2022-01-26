@@ -59,6 +59,16 @@
         <template v-if="model.useBit">
           <bit-payment-component></bit-payment-component>
         </template>
+        <template v-if="model.pinPad && availableDevices.length > 0">
+          <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+            <template v-slot:item="{ item }">
+              {{item.deviceID + '-' + item.deviceName}}
+            </template>
+            <template v-slot:selection="{ item }">
+              {{item.deviceID + '-' + item.deviceName}}
+            </template>
+          </v-select>
+        </template>
         <template v-else-if="!model.pinPad">
           <ec-dialog-invoker
             v-on:click="handleClick()"
