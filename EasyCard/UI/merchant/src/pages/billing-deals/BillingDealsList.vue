@@ -314,7 +314,9 @@ export default {
     },
     async applyFilters(data) {
       this.billingDealsFilter = {
-        ...data
+        ...this.billingDealsFilter,
+        ...data,
+        skip: 0,
       };
       await this.getDataFromApi();
     },
