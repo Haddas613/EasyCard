@@ -49,7 +49,7 @@ namespace RapidOne.Converters
                     Quantity = item.Quantity.GetValueOrDefault(1),
                     UnitPrice = new FinDocUnitPriceDto()
                     {
-                        Value = item.Price.GetValueOrDefault(),
+                        Value = Math.Round(item.NetAmount.GetValueOrDefault() / item.Quantity.GetValueOrDefault(1), 2, MidpointRounding.AwayFromZero), // TODO: coins
                         Currency = "₪"
                     },
                     Subtotal = item.NetAmount.GetValueOrDefault(),
