@@ -119,7 +119,6 @@ namespace ClearingHouse
 
         public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest)
         {
-
             string requestUrl = null;
             string requestStr = null;
             string responseStr = null;

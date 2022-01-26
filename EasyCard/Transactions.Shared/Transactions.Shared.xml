@@ -39,6 +39,11 @@
             Document created by consumer using Checkout Page with a payment link
             </summary>
         </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Bit">
+            <summary>
+            Document created by consumer using Bit
+            </summary>
+        </member>
         <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sending">
             <summary>
             Required because of technical reason - to do not send request twice
@@ -633,6 +638,11 @@
         <member name="P:Transactions.Shared.Messages.BillingDealsRequired">
             <summary>
               Looks up a localized string similar to Billing Deals required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealsWereActivated">
+            <summary>
+              Looks up a localized string similar to {0} Billing Deals were activated.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.BillingDealsWereDisabled">

@@ -123,6 +123,18 @@
   <data name="CustomerCreatedSuccessfully" xml:space="preserve">
     <value>לקוח נוצר בהצלחה</value>
   </data>
+  <data name="CustomerUpdatedFailed" xml:space="preserve">
+    <value>נכשל בעדכון פרטי לקוח</value>
+  </data>
+  <data name="CustomerUpdatedSuccessfully" xml:space="preserve">
+    <value>פרטי לקוח עודכנו בהצלחה</value>
+  </data>
+  <data name="DocumentCancelledFailed" xml:space="preserve">
+    <value>נכשל בביטול המסמך</value>
+  </data>
+  <data name="DocumentCancelledSuccessfully" xml:space="preserve">
+    <value>מסמך בוטל בהצלחה</value>
+  </data>
   <data name="DocumentNumberChangedFailed" xml:space="preserve">
     <value>שינוי מספר מסמך נכשל</value>
   </data>

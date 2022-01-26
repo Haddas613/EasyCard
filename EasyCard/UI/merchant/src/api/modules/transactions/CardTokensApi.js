@@ -1,12 +1,18 @@
+import store from '../../../store/index'
+
 export default class CardTokensApi {
     constructor(base) {
         this.base = base;
         this.baseUrl = this.base.cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
         this.cardtokensUrl = this.baseUrl + '/api/cardtokens';
+        
     }
 
     getCustomerCardTokens(customerId){
-        return this.base.get(this.cardtokensUrl, {consumerID: customerId});
+        return this.base.get(this.cardtokensUrl, {
+            consumerID: customerId,
+            terminalID: store.state.settings.terminal.terminalID,
+        });
     }
 
     createCardToken(data){

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Shared.Integration;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ClearingHouse
 {
-    public class ClearingHouseTerminalSettings
+    public class ClearingHouseTerminalSettings : IExternalSystemSettings
     {
         public string MerchantReference { get; set; }
 
@@ -12,5 +14,27 @@ namespace ClearingHouse
         public string ShvaTerminalReference { get; set; }
 
         public long? MerchantID { get; set; }
+
+        public Task<bool> Valid()
+        {
+            bool valid = true;
+
+            if (string.IsNullOrEmpty(MerchantReference))
+            {
+                valid = false;
+            }
+
+            if (string.IsNullOrEmpty(ShvaTerminalReference))
+            {
+                valid = false;
+            }
+
+            if (MerchantID.GetValueOrDefault() == default)
+            {
+                valid = false;
+            }
+
+            return Task.FromResult(valid);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -104,7 +105,9 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var tokenResponse = await CreateTokenInternal(model);
+            var terminal = await GetTerminal(model.TerminalID);
+
+            var tokenResponse = await CreateTokenInternal(terminal, model);
 
             var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -157,6 +160,18 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
+                    if (User.IsTerminal() || filter.TerminalID.HasValue)
+                    {
+                        var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID ?? (User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault()));
+
+                        if (terminal.Settings.SharedCreditCardTokens == true)
+                        {
+                            filter.TerminalID = null;
+                            query = creditCardTokenService.GetTokensShared(terminal.TerminalID).AsNoTracking().Filter(filter);
+                            numberOfRecordsFuture = query.DeferredCount().FutureValue();
+                        }
+                    }
+
                     var response = new SummariesResponse<CreditCardTokenSummary>
                     {
                         Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync(),
@@ -193,22 +208,22 @@ namespace Transactions.Api.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(Terminal terminal, TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
         {
-            // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            //// TODO: caching
+            //var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
-            // TODO: caching
-            var systemSettings = await systemSettingsService.GetSystemSettings();
+            //// TODO: caching
+            //var systemSettings = await systemSettingsService.GetSystemSettings();
 
-            // merge system settings with terminal settings
-            mapper.Map(systemSettings, terminal);
+            //// merge system settings with terminal settings
+            //mapper.Map(systemSettings, terminal);
 
             TokenTerminalSettingsValidator.Validate(terminal, model);
 
             if (model.ConsumerID != null)
             {
-                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
+                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID), "Consumer");
 
                 // TODO: enable if needed
                 //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
@@ -218,7 +233,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID && d.TerminalID == terminal.TerminalID);
+                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID);
                 if (consumer != null)
                 {
                     model.ConsumerID = consumer.ConsumerID;
@@ -328,6 +343,20 @@ namespace Transactions.Api.Controllers
             await creditCardTokenService.CreateEntity(dbData);
 
             return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) };
+        }
+
+        private async Task<Terminal> GetTerminal(Guid terminalID)
+        {
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            return terminal;
         }
     }
 }

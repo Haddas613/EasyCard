@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Shared.Integration;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Upay
 {
-    public class UpayTerminalSettings
+    public class UpayTerminalSettings : IExternalSystemSettings
     {
         /// <summary>
         /// Gets or Sets  Email
@@ -24,5 +26,17 @@ namespace Upay
         /// </summary>
         [DataMember(Name = "authenticateKey")]
         public string AuthenticateKey { get; set; }
+
+        public Task<bool> Valid()
+        {
+            bool valid = true;
+
+            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+            {
+                valid = false;
+            }
+
+            return Task.FromResult(valid);
+        }
     }
 }

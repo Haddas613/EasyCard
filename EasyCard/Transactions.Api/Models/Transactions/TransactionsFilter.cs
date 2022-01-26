@@ -2,6 +2,7 @@
 using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
+using Shared.Helpers.Models;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -101,7 +102,7 @@ namespace Transactions.Api.Models.Transactions
         [SwaggerExclude]
         public DocumentOriginEnum? DocumentOrigin { get; set; }
 
-        public bool? HasInvoice { get; set; }
+        public PropertyPresenceEnum? HasInvoice { get; set; }
 
         public bool? IsPaymentRequest { get; set; }
 

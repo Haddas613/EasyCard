@@ -88,6 +88,9 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid>("MerchantID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("MergedFromConsumerID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("OperationDoneBy")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -118,12 +121,6 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("ConsumerID");
-
-                    b.HasIndex("TerminalID");
-
-                    b.HasIndex("TerminalID", "ConsumerID");
-
-                    b.HasIndex("TerminalID", "ExternalReference");
 
                     b.ToTable("Consumer");
                 });
@@ -625,6 +622,9 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<bool>("Valid")
+                        .HasColumnType("bit");
 
                     b.HasKey("TerminalExternalSystemID");
 

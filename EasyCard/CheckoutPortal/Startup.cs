@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Localization;
 using SharedApi = Shared.Api;
 using CheckoutPortal.Services;
 using CheckoutPortal.Models;
+using Ecwid.Configuration;
 
 namespace CheckoutPortal
 {
@@ -81,7 +82,8 @@ namespace CheckoutPortal
             };
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
-            services.Configure<ApiSettings>(Configuration.GetSection("API"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API")); 
+            services.Configure<EcwidGlobalSettings>(Configuration.GetSection("Ecwid"));
 
             services.AddHttpContextAccessor();
 
@@ -119,6 +121,18 @@ namespace CheckoutPortal
             {
                 var cryptoCfg = serviceProvider.GetRequiredService<IOptions<Models.ApplicationSettings>>()?.Value;
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
+
+            services.AddSingleton<IApiClientsFactory, ApiClientsFactory>(serviceProvider =>
+            {
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                return new ApiClientsFactory(apiCfg);
+            }); 
+
+            services.AddSingleton<ITerminalApiKeyTokenServiceFactory, TerminalApiKeyTokenServiceFactory>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                return new TerminalApiKeyTokenServiceFactory(cfg);
             });
 
             services.Configure<RequestLocalizationOptions>(options =>
@@ -160,7 +174,7 @@ namespace CheckoutPortal
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net")
+                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il", "d35z3p2poghz10.cloudfront.net")
                 )
                 //.FrameAncestors(s => s.Self())
                 //.FormActions(s => s.Self())

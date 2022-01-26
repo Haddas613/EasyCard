@@ -76,6 +76,7 @@ namespace Transactions.Api.Extensions
                 {
                     firstItem.Amount = financialItem.Amount - dealDetails.Items?.Sum(i => i.Amount).GetValueOrDefault(0);
                     firstItem.Price = firstItem.Amount;
+
                     //firstItem.VAT = Math.Round(firstItem.Amount.Value / (1m + financialItem.VATRate), 2, MidpointRounding.AwayFromZero);
                     firstItem.VAT = financialItem.VATTotal - dealDetails.Items?.Sum(i => i.VAT).GetValueOrDefault(0);
                     firstItem.NetAmount = firstItem.Amount - firstItem.VAT;

@@ -11,7 +11,6 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice
         [Required]
         public Guid TerminalID { get; set; }
 
-
         public string DocType { get; set; }
     }
 }

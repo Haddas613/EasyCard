@@ -54,7 +54,7 @@
               :persistent-hint="true"
             >
               <template v-slot:label>
-                <small>{{$t('Actual')}}</small>
+                <small>{{$t('SelectForTrigger')}}</small>
               </template>
             </v-switch>
           </v-col>
@@ -274,6 +274,7 @@ export default {
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
+        terminalID: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -286,7 +287,7 @@ export default {
   },
   methods: {
     async getDataFromApi(extendData) {
-      this.loading = true;
+      //this.loading = true;
       let data = await this.$api.billingDeals.get({
         ...this.billingDealsFilter
       });
@@ -313,7 +314,9 @@ export default {
     },
     async applyFilters(data) {
       this.billingDealsFilter = {
-        ...data
+        ...this.billingDealsFilter,
+        ...data,
+        skip: 0,
       };
       await this.getDataFromApi();
     },
@@ -339,6 +342,15 @@ export default {
       let selected = this.getSelected();
       if(!selected) { return; }
       let opResult = await this.$api.billingDeals.disableBillingDeals(
+        this.lodash.map(selected, i => i.$billingDealID)
+      );
+      
+      await this.refresh();
+    },
+    async activateBillingDeals() {
+      let selected = this.getSelected();
+      if(!selected) { return; }
+      let opResult = await this.$api.billingDeals.activateBillingDeals(
         this.lodash.map(selected, i => i.$billingDealID)
       );
       
@@ -406,6 +418,9 @@ export default {
     })
   },
   async mounted() {
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
     await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {
@@ -417,12 +432,12 @@ export default {
               this.$router.push({ name: "CreateBillingDeal" });
             }
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              vm.switchSelectAll();
-            }
-          },
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     vm.switchSelectAll();
+          //   }
+          // },
           {
             text: this.$t("TriggerSelected"),
             fn: async () => {
@@ -433,6 +448,12 @@ export default {
             text: this.$t("DisableSelected"),
             fn: async () => {
               await vm.disableBillingDeals();
+            }
+          },
+          {
+            text: this.$t("ActivateSelected"),
+            fn: async () => {
+              await vm.activateBillingDeals();
             }
           },
           {

@@ -8,6 +8,7 @@ using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,7 +56,47 @@ namespace Merchants.Api.Controllers.Integrations
         [Route("test-connection")]
         public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
-            throw new NotImplementedException();
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var shvaIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
+
+            if (shvaIntegration == null)
+            {
+                return BadRequest("Shva is not connected to this terminal");
+            }
+
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(shvaIntegration.ExternalSystemID), nameof(ExternalSystem));
+            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+            var settings = request.Settings.ToObject(settingsType);
+
+            if (settings == null)
+            {
+                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+            }
+
+            //TODO: temporary implementation. Make a request to shva as well
+            if (settings is IExternalSystemSettings externalSystemSettings)
+            {
+                shvaIntegration.Valid = await externalSystemSettings.Valid();
+            }
+            else
+            {
+                shvaIntegration.Valid = true;
+            }
+
+            //TODO: save on success?
+            //mapper.Map(request, shvaIntegration);
+            //await terminalsService.SaveTerminalExternalSystem(shvaIntegration, terminal);
+            var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
+
+            if (!shvaIntegration.Valid)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = Resources.MessagesResource.ConnectionFailed;
+            }
+
+            return response;
         }
 
         [HttpPost]

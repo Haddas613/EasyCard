@@ -51,8 +51,15 @@
             ></terminal-settings-fields>
             <v-flex class="d-flex justify-end">
               <v-btn
-                color="primary"
+                color="success"
                 :disabled="!terminalSettingsFormValid"
+                :block="$vuetify.breakpoint.smAndDown"
+                @click="approveTerminal()"
+                v-bind:class="{ 'mx-1': !$vuetify.breakpoint.smAndDown }"
+              >{{$t('Approve')}}</v-btn>
+              <v-btn
+                :color="!terminalSettingsFormValid ? 'error' : 'primary'"
+                :outlined="!terminalSettingsFormValid"
                 :block="$vuetify.breakpoint.smAndDown"
                 @click="saveTerminalSettings()"
               >{{$t('Save')}}</v-btn>
@@ -125,9 +132,11 @@ export default {
     window.addEventListener('beforeunload', this.confirmLeave);
   },
   methods: {
-    async saveTerminalSettings() {
+    async saveTerminalSettings(noRedirect) {
+      this.$refs.terminalSettingsForm.validate();
       if (!this.terminalSettingsFormValid) {
-        return;
+        this.$toasted.show(this.$t("FormInvalidSaveNotAllowed"), { type: "error" });
+        return false;
       }
       let data = this.$refs.terminalSettingsRef.getData();
 
@@ -135,11 +144,17 @@ export default {
       //   data.bankDetails = this.terminal.bankDetails;
       // }
       
-      let operaionResult = await this.$api.terminals.updateTerminal(data);
+      let operationResult = await this.$api.terminals.updateTerminal(data);
       this.$refs.terminalSettingsRef.watchModel();
-      if (operaionResult.status === "success") {
-        return this.$router.push({ name: "Merchant", params: {id: this.terminal.merchantID} });
+      if (operationResult.status === "success") {
+        return noRedirect ? true : this.$router.push({ name: "Merchant", params: {id: this.terminal.merchantID} });
       }
+      else if (operationResult.errors && operationResult.errors.length > 0) {
+        operationResult.errors.forEach(e => {
+          this.$toasted.show(e.description, { type: "error" });
+        })
+      }
+      return false;
     },
     async refreshTerminal() {
       let terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
@@ -161,7 +176,19 @@ export default {
           return false;
       }
       return true;
-    }
+    },
+    async approveTerminal(){
+      let saveTerminal = await this.saveTerminalSettings(true);
+      if(!saveTerminal){
+        return;
+      }
+
+      let opResult = await this.$api.terminals.approveTerminal(this.$route.params.id);
+
+      if (!this.$apiSuccess(opResult) && opResult.message){
+        this.$toasted.show(opResult.message, { type: "error" })
+      }
+    },
   },
   beforeRouteLeave (to, from, next) { 
     if(this.confirmLeave()){

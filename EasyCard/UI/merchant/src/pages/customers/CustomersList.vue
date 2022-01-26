@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import CustomersList from "../../components/customers/CustomersList";
 import { mapState } from "vuex";
 
 export default {

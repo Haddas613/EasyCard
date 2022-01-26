@@ -17,7 +17,7 @@ namespace EasyInvoice.Converters
             var json = new ECInvoiceCreateDocumentRequest
             {
                 CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress),
-                CustomerEmail = message.DealDetails.ConsumerEmail,
+                CustomerEmail = message.DealDetails?.ConsumerEmail,
                 CustomerName = message.ConsumerName,
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
                 CustomerTaxId = message.ConsumerNationalID,
@@ -53,6 +53,29 @@ namespace EasyInvoice.Converters
             {
                 json.Payments = MapPaymentDetails(message);
             }
+
+            return json;
+        }
+
+
+        public static UpdateUserDetailsRequest GetUpdateUserDataRequest(UpdateUserDetailsRequest message)
+        {
+            var json = new UpdateUserDetailsRequest
+            {
+                city = message.city,
+                country = message.country,
+                countryCode = message.countryCode,
+                email = message.email,
+                generalClientCode = message.generalClientCode,
+                hashExportConfiguration = message.hashExportConfiguration,
+                incomeCode = message.incomeCode,
+                name = message.name,
+                password = message.password,
+                phoneNumber = message.phoneNumber,
+                postalCode = message.postalCode,
+                street = message.street,
+                streetNumber = message.streetNumber
+            };
 
             return json;
         }

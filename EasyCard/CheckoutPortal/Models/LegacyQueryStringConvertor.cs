@@ -23,7 +23,7 @@ namespace CheckoutPortal.Models
             ResourceManager rm = new ResourceManager("CardVendor", Assembly.GetExecutingAssembly());
 
             var shvaDetails = (JObject)paymentTransaction.ShvaTransactionDetails;
-            var manpikId = GetInValueManpik(paymentTransaction.CreditCardDetails.CardVendor);
+            var manpikId = GetInValueManpik(paymentTransaction.CreditCardDetails?.CardVendor);
             var solekStr = shvaDetails["solek"]?.ToString();
             var solekId = GetInValueSolek(solekStr);
 
@@ -62,8 +62,8 @@ namespace CheckoutPortal.Models
                 CardNameIDCode = ((int)solekId).ToString(),
                 Manpik = CardVendor.ResourceManager.GetString(manpikId.ToString(), culture),
                 ManpikID = ((int)manpikId).ToString(),
-                Mutag = GetMutagStr(paymentTransaction.CreditCardDetails.CardBrand),
-                MutagID = paymentTransaction.CreditCardDetails.CardBrand,
+                Mutag = GetMutagStr(paymentTransaction.CreditCardDetails?.CardBrand),
+                MutagID = paymentTransaction.CreditCardDetails?.CardBrand,
 
                 Tz = request.NationalID,
                 CardDate = paymentTransaction.CreditCardDetails?.CardExpiration.ToString(),

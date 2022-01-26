@@ -209,7 +209,7 @@ namespace Transactions.Api.Controllers
             mapper.Map(systemSettings, terminal);
 
             // Check consumer
-            var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+            var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
             if (model.IssueInvoice.GetValueOrDefault())
             {
@@ -406,7 +406,6 @@ namespace Transactions.Api.Controllers
                 consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
                 consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
                 consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
-                consumer.TerminalID = transaction.TerminalID.GetValueOrDefault();
                 consumer.MerchantID = merchantID;
                 consumer.ApplyAuditInfo(httpContextAccessor);
 

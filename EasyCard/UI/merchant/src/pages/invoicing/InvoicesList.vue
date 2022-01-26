@@ -191,7 +191,9 @@ export default {
     }
   },
   async mounted() {
-    await this.getDataFromApi();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
     const vm = this;
     if(!this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing)) return;
     
@@ -210,12 +212,12 @@ export default {
               await vm.resendSelectedInvoices();
             }
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              vm.switchSelectAll();
-            }
-          }
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     vm.switchSelectAll();
+          //   }
+          // }
         ]
       }
     });

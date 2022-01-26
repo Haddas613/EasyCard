@@ -19,5 +19,7 @@ namespace Merchants.Api.Models.Terminal
         public byte[] UpdateTimestamp { get; set; }
 
         public DateTime? Created { get; set; }
+
+        public bool Valid { get; set; }
     }
 }

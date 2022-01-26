@@ -18,6 +18,8 @@ using Transactions.Api.Models.UpdateParameters;
 using Transactions.Api.Models.Currency;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Api.Models.External.Bit;
+using Bit.Models;
 
 namespace Transactions.Api.Client
 {
@@ -166,6 +168,19 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/paymentIntent", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
         public async Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID)
         {
             try
@@ -223,13 +238,6 @@ namespace Transactions.Api.Client
             return transaction;
         }
 
-        public async Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model)
-        {
-            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/paymentIntent", model, BuildHeaders);
-
-            return res;
-        }
-
         public async Task<SummariesResponse<BillingDealSummary>> GetBillingDeals(BillingDealsFilter filter)
         {
             var transaction = await webApiClient.Get<SummariesResponse<BillingDealSummary>>(apiConfiguration.TransactionsApiAddress, $"/api/billing", filter, BuildHeaders);
@@ -278,6 +286,8 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        // It should be reworked to enable/disable methods pair
+        [Obsolete]
         public async Task<OperationResponse> SwitchBillingDeal(Guid billingDealID)
         {
             var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/switch", null, BuildHeaders);
@@ -332,6 +342,44 @@ namespace Transactions.Api.Client
             return await webApiClient.Get<SummariesAmountResponse<TransactionSummary>>(apiConfiguration.TransactionsApiAddress, $"api/transactions", filter, BuildHeaders);
         }
 
+        public async Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model)
+        {
+            try
+            {
+                return await webApiClient.Post<InitialBitOperationResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/initial", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new InitialBitOperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
 
+        public async Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/capture", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
+        public async Task<BitTransactionResponse> GetBitTransaction(GetBitTransactionQuery request)
+        {
+            try
+            {
+                return await webApiClient.Get<BitTransactionResponse>(apiConfiguration.TransactionsApiAddress, "api/external/bit/get", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+                //logger.LogError(clientError.Message);
+                //return null;
+            }
+        }
     }
 }

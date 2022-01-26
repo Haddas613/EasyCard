@@ -124,7 +124,7 @@ namespace Transactions.Api.Controllers
                 var nayaxIntegration = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
                 if (nayaxIntegration != null)
                 {
-                    var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                     response.Settings.AllowPinPad = devices?.devices?.Any() == true;
                     if (response.Settings.AllowPinPad == true)
                     {
@@ -165,9 +165,20 @@ namespace Transactions.Api.Controllers
                     response.Consumer = new ConsumerInfo();
                     mapper.Map(consumer, response.Consumer);
 
-                    var tokensRaw = await creditCardTokenService.GetTokens()
-                        .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
-                        .ToListAsync();
+                    List<CreditCardTokenDetails> tokensRaw = null;
+
+                    if (terminal.Settings.SharedCreditCardTokens == true)
+                    {
+                        tokensRaw = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID)
+                            .Where(d => d.ConsumerID == consumer.ConsumerID)
+                            .ToListAsync();
+                    }
+                    else
+                    {
+                        tokensRaw = await creditCardTokenService.GetTokens()
+                            .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
+                            .ToListAsync();
+                    }
 
                     //TODO: no in memory filtering
                     var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)
@@ -180,6 +191,8 @@ namespace Transactions.Api.Controllers
                     }
                 }
             }
+
+            response.Settings.AllowBit = terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID);
 
             return response;
         }

@@ -163,6 +163,7 @@
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "AlreadyPresent": "Already present",
   "OnlyNumbersAreAllowed": "Only numbers are allowed",
+  "SetDocumentNumber": "Set Document Number",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -421,6 +422,14 @@
   "CreatedFrom": "Created From",
   "CreatedTo": "Created To",
   "PriceWithDiscount": "Price with discount",
+  "StartingNumber": "Starting Number",
+  "SharedCreditCardTokens": "Shared Credit Card Tokens",
+  "FailedTransactionsCountBeforeInactivate": "Failed Transactions Count Before Inactivate",
+  "FailedTransactionsCountBeforeInactivateHint": "After given number of transactions billing will be inactive",
+  "NumberOfDaysToRetryTransaction": "Number of Days to retry Transaction",
+  "NumberOfDaysToRetryTransactionHint": "Transaction creation will be retried after N days",
+  "FailedAttemptsCount": "Failed Attempts Count",
+  "SelectForTrigger": "Select for Trigger",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -488,6 +497,7 @@
   "TransmitSelected": "Transmit Selected",
   "TransmitAll": "Transmit All",
   "DisableSelected": "Disable Selected",
+  "Approve": "Approve",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -528,6 +538,7 @@
   "OperationsCount": "Operations Count",
   "OperationsCountTotal": "Operations Count (total)",
   "DeleteSelected": "Delete Selected",
+  "ActivateSelected": "Activate Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "CreditCardHasExpired": "Credit card has expired",
@@ -545,6 +556,7 @@
   "Bitcoin": "Bitcoin",
   "NotSpecified": "Not Specified",
   "Manager": "Manager",
+  "ReadyToUse": "Ready to Use",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
@@ -564,5 +576,7 @@
   "NullAggregatorConnectedMessage": "NULL Aggregator connected.",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
-  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
+  "BitProcessorConnectedMessage": "Bit connected and ready to use.",
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
 }

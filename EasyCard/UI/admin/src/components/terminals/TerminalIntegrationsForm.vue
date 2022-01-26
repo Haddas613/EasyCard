@@ -50,6 +50,7 @@
         :key="int.externalSystemID"
         no-gutters
         class="mb-4 mx-4"
+        v-bind:class="{'invalid-integration': !isTemplate && !int.valid}"
       >
         <template v-if="int.externalSystem">
           <v-card-title class="subtitle-2" >
@@ -70,6 +71,7 @@
               v-bind:is="getIntegrationComponentName(int.externalSystem.key)"
               v-bind="{data: int, terminalId: terminal[idKey], apiName: apiName}"
               v-if="$options.components[getIntegrationComponentName(int.externalSystem.key)]"
+              v-on:update="refreshIntegration($event)"
             ></component>
             <p v-else>
               {{$t("NotSupportedContactAdministration")}}
@@ -110,12 +112,13 @@ export default {
       vr: ValidationRules,
       idKey: 'terminalID',
       //api key for integrations to use ($api['terminals'] for example)
-      apiName: this.isTemplate ? 'terminalTemplates' : 'terminals'
+      apiName: this.isTemplate ? 'terminalTemplates' : 'terminals',
+      loading: false,
     };
   },
   async mounted() {
     let integrations = await this.$api.terminals.getAvailableIntegrations({
-      showForTemplatesOnly: this.isTemplate
+      //showForTemplatesOnly: this.isTemplate
     });
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
@@ -136,19 +139,28 @@ export default {
       this.selectedIntegrationType = null;
       this.integrationDialog = true;
     },
-    addIntegration(){
-      if(!this.$refs.form.validate()){ return ;}
-      let type = this.lodash.find(this.integrationTypes, t => t.name == this.selectedIntegrationType);
-      type.disabled = true;
+    async addIntegration(){
+      if(!this.$refs.form.validate() || this.loading){ return ;}
+      this.loading = true;
+      try{
+        let type = this.lodash.find(this.integrationTypes, t => t.name == this.selectedIntegrationType);
+        type.disabled = true;
 
-      let integration = this.lodash.find(this.integrations[type.name], i => i.externalSystemID == this.selectedIntegrationID);
-      this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
+        let integration = this.lodash.find(this.integrations[type.name], i => i.externalSystemID == this.selectedIntegrationID);
+        let opResult = await this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
 
-      integration = this.mapIntegration(integration);
-      this.model.integrations.push(integration);
+        if(!this.isTemplate && opResult.additionalData){
+          integration.valid = opResult.additionalData.valid;
+        }
 
-      this.selectedIntegrationType = null;
-      this.integrationDialog = false;
+        integration = this.mapIntegration(integration);
+        this.model.integrations.push(integration);
+
+        this.selectedIntegrationType = null;
+        this.integrationDialog = false;
+      }finally{
+        this.loading = false;
+      }
     },
 
     mapIntegration(int){
@@ -161,7 +173,8 @@ export default {
           type: int.type
         },
         externalSystemID: int.externalSystemID,
-        settings: int.settings
+        settings: int.settings,
+        valid: int.valid,
       }
     },
     async deleteIntegration(integrationID){
@@ -171,7 +184,19 @@ export default {
       let type = this.lodash.find(this.integrationTypes, t => t.name == this.model.integrations[idx].externalSystem.type);
       type.disabled = false;
       this.model.integrations.splice(idx, 1);
+    },
+    refreshIntegration(data){
+      let idx = this.lodash.findIndex(this.model.integrations, i => i.externalSystemID == data.externalSystemID);
+      if (idx > -1){
+        this.$set(this.model.integrations, idx, data);
+      }
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.invalid-integration{
+  border: 1px solid var(--v-error-base);
+}
+</style>

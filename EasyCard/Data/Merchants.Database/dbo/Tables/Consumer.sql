@@ -20,6 +20,7 @@
     [BillingDesktopRefNumber] NVARCHAR (50)    NULL,
     [ConsumerSecondPhone]     NVARCHAR (50)    NULL,
     [BankDetails]             NVARCHAR (MAX)   NULL,
+    [MergedFromConsumerID]    UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
 
@@ -36,17 +37,16 @@
 
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ExternalReference]
-    ON [dbo].[Consumer]([TerminalID] ASC, [ExternalReference] ASC);
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ConsumerID]
-    ON [dbo].[Consumer]([TerminalID] ASC, [ConsumerID] ASC);
+
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID]
-    ON [dbo].[Consumer]([TerminalID] ASC);
+
+
+
+GO
+
 

@@ -78,11 +78,6 @@ namespace MerchantProfileApi.Models.Billing
         public byte[] UpdateTimestamp { get; set; }
 
         /// <summary>
-        /// Target terminal
-        /// </summary>
-        public Guid? TerminalID { get; set; }
-
-        /// <summary>
         /// End-customer Phone
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]

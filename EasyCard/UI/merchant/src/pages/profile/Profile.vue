@@ -161,9 +161,12 @@ export default {
   },
   methods: {
     async saveTerminalSettings() {
+      this.$refs.terminalSettingsForm.validate();
       if (!this.terminalSettingsFormValid) {
-        return;
+        this.$toasted.show(this.$t("FormInvalidSaveNotAllowed"), { type: "error" });
+        return false;
       }
+      
       let data = this.$refs.terminalSettingsRef.getData();
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       if (operaionResult.status === "success") {

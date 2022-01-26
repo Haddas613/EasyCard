@@ -38,66 +38,6 @@ namespace Nayax.Converters
             return doPeriodic;
         }
 
-        /*
-        public static AshEndRequestBody GetAshEndRequestBody(this ShvaTerminalSettings shvaParameters)
-        {
-            var ashEndReq = new AshEndRequestBody();
-
-            ashEndReq.UserName = shvaParameters.UserName;
-            ashEndReq.Password = shvaParameters.Password;
-            ashEndReq.MerchantNumber = shvaParameters.MerchantNumber;
-
-            return ashEndReq;
-        }
-
-        public static AshAuthRequestBody GetAshAuthRequestBody(this AshStartResponseBody ashStartResultBody, ShvaTerminalSettings shvaParameters)
-        {
-            var ashAuthReq = new AshAuthRequestBody();
-
-            ashAuthReq.pinpad = ashStartResultBody.pinpad;
-            ashAuthReq.globalObj = ashStartResultBody.globalObj;
-
-            ashAuthReq.MerchantNumber = shvaParameters.MerchantNumber;
-            ashAuthReq.UserName = shvaParameters.UserName;
-            ashAuthReq.Password = shvaParameters.Password;
-
-            return ashAuthReq;
-        }
-        
-        public static NayaxCreateTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
-        {
-            return new ShvaCreateTransactionResponse()
-            {
-                ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-
-                ShvaTranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
-                ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
-                AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
-                AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
-
-                Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
-                CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
-                ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
-            };
-        }
-
-        public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshStartResponseBody resultAshStartBody)
-        {
-            return new ShvaCreateTransactionResponse()
-            {
-                ShvaShovarNumber = resultAshStartBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-
-                ShvaTranRecord = resultAshStartBody.globalObj?.outputObj?.tranRecord?.valueTag,
-                ShvaDealID = resultAshStartBody.globalObj?.outputObj?.uid?.valueTag,
-                AuthSolekNum = resultAshStartBody.globalObj?.outputObj?.authSolekNo?.valueTag,
-                AuthNum = resultAshStartBody.globalObj?.outputObj?.authManpikNo?.valueTag,
-
-                Solek = (SolekEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.solek?.valueTag),
-                CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
-                ShvaTransactionDate = resultAshStartBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
-            };
-        }
-        */
         public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req)
         {
             ObjectInPhase1RequestParams inputObj = new ObjectInPhase1RequestParams();

@@ -21,7 +21,11 @@ const appConstants = {
             Checkout: 'Checkout',
             Api: 'Api',
             Billing: 'Billing'
-        }
+        },
+        api: {
+            terminals: 'terminals',
+            terminalTemplates: 'terminalTemplates',
+        },
     },
     config:{
         ui: {

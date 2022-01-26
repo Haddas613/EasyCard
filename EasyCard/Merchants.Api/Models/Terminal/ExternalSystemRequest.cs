@@ -8,6 +8,8 @@ namespace Merchants.Api.Models.Terminal
 {
     public class ExternalSystemRequest
     {
+        public Guid TerminalID { get; set; }
+
         public long ExternalSystemID { get; set; }
 
         /// <summary>

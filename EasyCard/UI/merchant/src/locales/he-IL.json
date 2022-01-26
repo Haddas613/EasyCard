@@ -357,6 +357,12 @@
   "CreatedFrom": "נוצר מ",
   "CreatedTo": "נוצר ל",
   "PriceWithDiscount": "מחיר פריט לאחר הנחה",
+  "FailedTransactionsCountBeforeInactivate": "עסקאות שנכשלו סופר לפני לא פעיל",
+  "NumberOfDaysToRetryTransaction": "מספר הימים לניסיון חוזר בעסקה",
+  "FailedAttemptsCount": "ספירת ניסיונות כושלים",
+  "LastError": "שגיאה אחרונה",
+  "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "SelectForTrigger": "חיובי בילינג",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -418,6 +424,8 @@
   "TransmitSelected": "שידור נבחר",
   "TransmitAll": "שידר הכל",
   "DisableSelected": "עסקאות בילינג נחסמו",
+  "RestoreCustomer": "שחזור לקוח",
+  "RestoreItem": "שחזור פריט",
 
   "--AUTH--": null,
   "Login": "כניסה",
@@ -461,6 +469,7 @@
   "OperationsCount": "מספר פעולות",
   "OperationsCountTotal": "מספר פעולות (סה\"כ)",
   "DeleteSelected": "מחק מסומנים",
+  "ActivateSelected": "הפעל את נבחרים",
   "SavedCards": "שמור כרטיסים",
   "NotAccessible": "לא ניתן לגשת",
   "CreditCardHasExpired": "כרטיס אשראי פג תוקף",
@@ -502,5 +511,6 @@
   "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS",
   "NoAvailableTerminals": "מסוף אינו זמין",
   "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק.",
-  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
+  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות"
 }

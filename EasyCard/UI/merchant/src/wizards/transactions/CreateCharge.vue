@@ -269,6 +269,10 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
+          
+        if(this.model.dealDetails){
+          this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
+        }
       }
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
@@ -382,6 +386,8 @@ export default {
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
+      this.model.useBit = data.useBit;
+
       this.$set(this.model, 'installmentDetails', data.installmentDetails);
       this.model.transactionType = data.transactionType;
 
@@ -419,6 +425,13 @@ export default {
         this.model.creditCardToken = null;
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
+      }
+      else if(data.useBit){
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        this.model.bitPaymentInitiationId = data.data.bitPaymentInitiationId;
+        this.model.bitTransactionSerialId = data.data.bitTransactionSerialId;
       }
       if (this.quickChargeMode) {
         let res = this.$refs.additionalSettingsForm.ok(true)

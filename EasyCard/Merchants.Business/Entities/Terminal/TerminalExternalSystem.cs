@@ -27,6 +27,8 @@ namespace Merchants.Business.Entities.Terminal
 
         public DateTime? Created { get; set; }
 
+        public bool Valid { get; set; }
+
         public long GetID()
         {
             return TerminalExternalSystemID;

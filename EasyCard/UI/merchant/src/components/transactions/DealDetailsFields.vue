@@ -44,7 +44,7 @@
           :counter="250"
           outlined
           rows="3"
-          :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
+          :rules="[vr.primitives.maxLength(1024)]"
         >
           <template v-slot:label>
             <div>{{$t('DealDescription')}}</div>

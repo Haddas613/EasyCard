@@ -13,13 +13,13 @@
         </member>
         <member name="M:Merchants.Api.Controllers.TerminalsApiController.UpdateTerminal(System.Guid,Merchants.Api.Models.Terminal.UpdateTerminalRequest)">
             <summary>
-            Ypdates basic terminal information and settings
+            Updates basic terminal information and settings
             </summary>
             <param name="terminalID"></param>
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Merchants.Api.Controllers.TerminalsApiController.HandlePinPadDevices(Merchants.Business.Entities.Terminal.TerminalExternalSystem,Nayax.NayaxTerminalCollection)">
+        <member name="M:Merchants.Api.Controllers.TerminalsApiController.HandlePinPadDevices(Merchants.Business.Entities.Terminal.TerminalExternalSystem,Nayax.Models.NayaxTerminalCollection)">
             <summary>
             Removes every PinPadDevice from PinPadDevices table that are no longer present in the latest data.
             </summary>
@@ -124,6 +124,26 @@
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerCreatedSuccessfully">
             <summary>
               Looks up a localized string similar to Customer created successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerUpdatedFailed">
+            <summary>
+              Looks up a localized string similar to Updating customer details failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerUpdatedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Customer details updated successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentCancelledFailed">
+            <summary>
+              Looks up a localized string similar to Document Cancelled Failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentCancelledSuccessfully">
+            <summary>
+              Looks up a localized string similar to Document Cancelled Successfully.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.DocumentNumberChangedFailed">
@@ -292,11 +312,6 @@
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ChangePasswordSetSuccessfully">
             <summary>
               Looks up a localized string similar to New password set successfully.
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ConnectionSuccess">
-            <summary>
-              Looks up a localized string similar to Connection success.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.CouldNotSetNewPassword">
@@ -756,6 +771,32 @@
         <member name="P:Merchants.Api.Models.User.UserSummaryResource.UserID">
             <summary>
               Looks up a localized string similar to User ID.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Resources.MessagesResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ConnectionFailed">
+            <summary>
+              Looks up a localized string similar to Connection failed.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Resources.MessagesResource.ConnectionSuccess">
+            <summary>
+              Looks up a localized string similar to Connection success.
             </summary>
         </member>
     </members>

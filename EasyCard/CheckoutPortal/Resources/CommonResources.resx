@@ -231,4 +231,13 @@
   <data name="AuthorizationCodeOptional" xml:space="preserve">
     <value>Authorization Code (optional)</value>
   </data>
+  <data name="ThisCreditCardIsAlreadyAddedAsToken" xml:space="preserve">
+    <value>This credit card is already added as Token</value>
+  </data>
+  <data name="TerminalApiKey" xml:space="preserve">
+    <value>Terminal Api Key</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
 </root>

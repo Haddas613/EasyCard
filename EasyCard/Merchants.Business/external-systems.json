@@ -63,5 +63,14 @@
     "Key": "null-aggregator",
     "Active": true,
     "CanBeUsedInTerminalTemplate": true
+  },
+  {
+    "ExternalSystemID": 70,
+    "Type": "virtualWalletProcessor",
+    "InstanceTypeFullName": "Bit.BitProcessor, Bit",
+    "SettingsTypeFullName": "Bit.BitTerminalSettings, Bit",
+    "Name": "Bit",
+    "Key": "bit",
+    "Active": true
   }
 ]

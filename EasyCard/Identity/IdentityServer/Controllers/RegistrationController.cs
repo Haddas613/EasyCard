@@ -76,8 +76,6 @@ namespace IdentityServer.Controllers
                 return View(nameof(Index), model);
             }
 
-            model.Email = model.Email;
-
             var emailIsTaken = (await userManager.FindByEmailAsync(model.Email)) != null;
 
             if (emailIsTaken)

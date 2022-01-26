@@ -275,7 +275,7 @@ namespace Merchants.Business.Services
 
             context.MerchantHistories.Add(history);
 
-            entity.Updated = DateTime.UtcNow;
+            exist.Updated = DateTime.UtcNow;
 
             if (dbTransaction != null)
             {
@@ -393,7 +393,6 @@ namespace Merchants.Business.Services
             }
             else
             {
-                entity.UpdateTimestamp = entity.UpdateTimestamp;
                 await context.SaveChangesAsync();
             }
         }

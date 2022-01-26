@@ -56,11 +56,51 @@ namespace Transactions.Business.Services
             else
             {
                 var response = tokens.Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID().Cast<Guid?>();
+                var terminals = user.GetTerminalID()?.Cast<Guid?>();
                 if (terminals?.Count() > 0)
                 {
                     response = response.Where(d => terminals.Contains(d.TerminalID));
                 }
+
+                return response;
+            }
+        }
+
+        public IQueryable<CreditCardTokenDetails> GetTokensShared(Guid baseTerminalID)
+        {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+
+            tokens = tokens.Where(t => t.Active);
+
+            if (user.IsAdmin())
+            {
+                throw new ApplicationException("This method should not be used by Admin");
+            }
+            else
+            {
+                // NOTE: assign user to terminal will not work in this case
+                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID())
+                    .Where(d => d.InitialTransactionID == null || d.TerminalID == baseTerminalID);
+
+                return response;
+            }
+        }
+
+        public IQueryable<CreditCardTokenDetails> GetTokensSharedAdmin(Guid merchantID, Guid baseTerminalID)
+        {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+
+            tokens = tokens.Where(t => t.Active);
+
+            if (!user.IsAdmin())
+            {
+                throw new ApplicationException("This method should only be used by Admin");
+            }
+            else
+            {
+                // NOTE: assign user to terminal will not work in this case
+                var response = tokens.Where(t => t.MerchantID == merchantID)
+                    .Where(d => d.InitialTransactionID == null || d.TerminalID == baseTerminalID);
 
                 return response;
             }

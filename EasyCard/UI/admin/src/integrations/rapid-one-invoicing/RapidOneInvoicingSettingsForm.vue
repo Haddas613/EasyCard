@@ -1,5 +1,6 @@
 <template>
   <v-form v-model="formValid" lazy-validation>
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <v-row v-if="model.settings">
       <v-col cols="12" md="5" class="py-0">
         <v-text-field v-model="model.settings.baseUrl" :error="apiError" :label="$t('URL')"></v-text-field>
@@ -59,7 +60,12 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
+
 export default {
+  components: {
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
+  },
   props: {
     data: {
       type: Object,
@@ -87,6 +93,7 @@ export default {
       branches: [],
       companies: [],
       departments: [],
+      appConstants: appConstants,
     }
   },
   async mounted () {
@@ -190,6 +197,26 @@ export default {
         return false;  
       }
       return url.protocol === "http:" || url.protocol === "https:";
+    },
+    async testConnection(){
+      let operation = await this.$api.integrations.rapidOne.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+        await this.save();
+      }
+      
+      this.$emit('update', this.model);
+    },
+  },
+  computed: {
+    isTemplate() {
+      return this.apiName == appConstants.terminal.api.terminalTemplates;
     }
   },
 };

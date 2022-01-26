@@ -10,6 +10,7 @@
       :show.sync="showTransmitDialog"
       v-on:ok="refresh()"
     ></transactions-transmit-dialog>
+    <transaction-slip-dialog v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID" ref="slipDialog" :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -76,12 +77,12 @@
             :items="transactions"
             :options.sync="options"
             :server-items-length="numberOfRecords"
-            :items-per-page="defaultFilter.take"
+            :footer-props="{ itemsPerPageOptions: [defaultFilter.take], itemsPerPage: defaultFilter.take}"
             :loading="loading"
             :header-props="{ sortIcon: null }"
             class="elevation-1">     
           <template v-slot:item.terminalName="{ item }">
-            {{item.terminalName || item.terminalID}}
+            <small>{{item.terminalName || item.terminalID}}</small>
           </template> 
           <template v-slot:item.transactionAmount="{ item }">
             <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
@@ -119,7 +120,7 @@
           </template>
           <template v-slot:item.paymentTransactionID="{ item }">
             <small>{{item.paymentTransactionID}}</small>
-          </template> 
+          </template>
         </v-data-table>
         </template>
       </v-card-text>
@@ -140,6 +141,8 @@ export default {
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     TransactionsTransmitDialog: () =>
       import("../../components/transactions/TransactionsTransmitDialog"),
+      TransactionSlipDialog: () =>
+      import("../../components/transactions/TransactionSlipDialog"),
   },
   props: {
     filters: {
@@ -162,7 +165,8 @@ export default {
       moment: moment,
       loading: false,
       transactionsFilter: {
-        ...this.filters
+        ...this.filters,
+        terminalID: null,
       },
       headers: [],
       defaultFilter: {
@@ -184,6 +188,9 @@ export default {
         Failed: "error--text",
         Canceled: "accent--text"
       },
+      selectedTransaction: null,
+      transactionSlipDialog: false,
+      loadingTransaction: false,
     };
   },
   watch: {
@@ -262,12 +269,23 @@ export default {
       }
     },
     async exportExcel() {
-          let operation = await this.$api.transactions.getExcel({
-            ...this.transactionsFilter,
-            ...this.options
-          });
-          if(!this.$apiSuccess(operation)) return;
-          window.open(operation.entityReference, "_blank");
+      let operation = await this.$api.transactions.getExcel({
+        ...this.transactionsFilter,
+        ...this.options
+      });
+      if(!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, "_blank");
+    },
+    async showSlipDialog(transaction){
+      if(this.loadingTransaction){
+        return;
+      }
+      this.loadingTransaction = true;
+      this.selectedTransaction = await this.$api.transactions.getTransaction(
+        transaction.$paymentTransactionID
+      );
+      this.loadingTransaction = false;
+      this.transactionSlipDialog = true;
     }
   },
   computed: {
@@ -280,7 +298,9 @@ export default {
     })
   },
   async mounted() {
-    await this.applyFilters();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {
@@ -299,12 +319,12 @@ export default {
             text: this.$t("TransmitAll"),
             fn: () => this.showTransmitDialog = true
           },
-          {
-            text: this.$t("SelectAll"),
-            fn: () => {
-              this.switchSelectAll();
-            }
-          },
+          // {
+          //   text: this.$t("SelectAll"),
+          //   fn: () => {
+          //     this.switchSelectAll();
+          //   }
+          // },
           {
             text: this.$t("Excel"),
             fn: () => {

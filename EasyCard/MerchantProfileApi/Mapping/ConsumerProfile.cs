@@ -29,15 +29,8 @@ namespace MerchantProfileApi.Mapping
                 .ForMember(d => d.Active, o => o.MapFrom(d => d.Active.GetValueOrDefault(true)));
 
             CreateMap<UpdateConsumerRequest, Consumer>()
-                .ForMember(d => d.TerminalID, o => o.Ignore())
                 .ForMember(d => d.ConsumerID, o => o.Ignore())
                 .ForMember(d => d.UpdateTimestamp, o => o.Ignore());
-
-            // NOTE: this is security assignment
-            CreateMap<Merchants.Business.Entities.Terminal.Terminal, Consumer>()
-                .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
-                .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID))
-                .ForAllOtherMembers(d => d.Ignore());
         }
     }
 }

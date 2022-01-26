@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,48 +23,26 @@ namespace Shared.Helpers.Security
 
         private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public WebApiClientTokenService(HttpClient httpClient, IOptions<IdentityServerClientSettings> configuration)
+        /// <summary>
+        /// When set to true, only configuration string without /connect/token will be used as Address for get token request.
+        /// </summary>
+        private readonly bool customCredentialsTokenURi = false;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebApiClientTokenService"/> class.
+        /// </summary>
+        /// <param name="httpClient">http client</param>
+        /// <param name="configuration">Configuration</param>
+        /// <param name="customCredentialsTokenURi">When set to true, only configuration string without /connect/token will be used as Address for get token request.</param>
+        public WebApiClientTokenService(HttpClient httpClient, IOptions<IdentityServerClientSettings> configuration, bool customCredentialsTokenURi = false)
         {
             this.configuration = configuration.Value;
             this.httpClient = httpClient;
+            this.customCredentialsTokenURi = customCredentialsTokenURi;
         }
 
-        public virtual async Task<TokenResponse> GetToken()
+        public virtual async Task<TokenResponse> GetToken(NameValueCollection headers = null)
         {
-            //TODO: Remove?
-            //if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-            //{
-            //    await SemaphoreSlim.WaitAsync();
-            //    {
-            //        if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-            //        {
-            //            try
-            //            {
-            //                var disco = await httpClient.GetDiscoveryDocumentAsync(configuration.Authority);
-            //                if (disco.IsError)
-            //                {
-            //                    throw new ApplicationException($"Cannot resolve token endpoint: {disco.Error}");
-            //                }
-
-            //                this.TokenEndpoint = disco.TokenEndpoint;
-            //            }
-            //            catch
-            //            {
-            //                throw;
-            //            }
-            //            finally
-            //            {
-            //                SemaphoreSlim.Release();
-            //            }
-            //        }
-            //    }
-            //}
-
-            //if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-            //{
-            //    throw new ApplicationException($"Cannot resolve token endpoint");
-            //}
-
             //use token if it exists and is still fresh
             if (this.Token != null)
             {
@@ -72,14 +52,24 @@ namespace Shared.Helpers.Security
                 }
             }
 
-            var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            var request = new ClientCredentialsTokenRequest
             {
-                Address = $"{configuration.Authority}/connect/token",
+                Address = customCredentialsTokenURi ? configuration.Authority : $"{configuration.Authority}/connect/token",
 
                 ClientId = configuration.ClientID,
                 ClientSecret = configuration.ClientSecret,
-                Scope = configuration.Scope
-            });
+                Scope = configuration.Scope,
+            };
+
+            if (headers != null)
+            {
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(request);
 
             if (tokenResponse.IsError)
             {

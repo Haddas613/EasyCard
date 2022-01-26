@@ -58,10 +58,10 @@ namespace Transactions.Api.Controllers
 {
     public partial class TransactionsApiController
     {
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
+        private async Task<Terminal> GetTerminal(Guid terminalID)
         {
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
@@ -69,10 +69,15 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
+            return terminal;
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
+        {
             if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
             {
                 var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
-                var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
                 var firstDevice = devices.devices.FirstOrDefault();
 
                 if (firstDevice == null)
@@ -126,12 +131,14 @@ namespace Transactions.Api.Controllers
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
 
-            //TODO: check token expiration
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
                 {
-                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    if (!(terminal.Settings.SharedCreditCardTokens == true))
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
                 }
 
                 if (token.CardExpiration?.Expired == true)
@@ -142,7 +149,21 @@ namespace Transactions.Api.Controllers
                 mapper.Map(token, transaction.CreditCardDetails);
                 mapper.Map(token, transaction);
 
-                dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    if (User.IsAdmin())
+                    {
+                        dbToken = EnsureExists(await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    }
+                    else
+                    {
+                        dbToken = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    }
+                }
+                else
+                {
+                    dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                }
 
                 if (transaction.InitialTransactionID == null)
                 {
@@ -160,7 +181,7 @@ namespace Transactions.Api.Controllers
             }
 
             // Check consumer
-            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             if (consumer != null)
             {
@@ -231,6 +252,8 @@ namespace Transactions.Api.Controllers
             transaction.ProcessorID = terminalProcessor.ExternalSystemID;
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+            //TODO: if Bit parameters present, do not user resolver, use BitProcessor directly
             var processor = processorResolver.GetProcessor(terminalProcessor);
             IProcessor pinpadProcessor = null;
             if (pinpadDeal)
@@ -516,7 +539,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -641,7 +664,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = transaction.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
@@ -660,7 +683,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.UpdateNextScheduledDate(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
+                billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -734,6 +757,11 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
@@ -749,7 +777,7 @@ namespace Transactions.Api.Controllers
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Only ILS invoices allowed");
             }
 
-            if (string.IsNullOrWhiteSpace(model.DealDetails.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails.ConsumerName))
+            if (string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerName))
             {
                 return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
                     httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Both ConsumerEmail and ConsumerName must be specified");
@@ -773,7 +801,7 @@ namespace Transactions.Api.Controllers
 
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
             // Update details if needed
             invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
@@ -785,7 +813,7 @@ namespace Transactions.Api.Controllers
             //invoiceRequest.MerchantIP = GetIP();
             invoiceRequest.CorrelationId = GetCorrelationID();
 
-            model.UpdateNextScheduledDate(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
+            model.UpdateNextScheduledDatAfterSuccess(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
 
             await billingDealService.UpdateEntity(model);
 
@@ -901,6 +929,9 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
                 new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
                 new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                new TextSubstitution(nameof(transaction.NumberOfPayments), transaction.NumberOfPayments.ToString()),
+                new TextSubstitution(nameof(transaction.InitialPaymentAmount), $"{transaction.InitialPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                new TextSubstitution(nameof(transaction.InstallmentPaymentAmount), $"{transaction.InstallmentPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
 
                 new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty),
                 new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty),
@@ -1024,7 +1055,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal, CreditCardTokenKeyVault token)
+        private async Task<OperationResponse> NextBillingDeal(Terminal terminal, BillingDeal billingDeal, CreditCardTokenKeyVault token)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(billingDeal);
 
@@ -1045,7 +1076,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
+                    actionResult = await ProcessTransaction(terminal, transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
                 }
 
                 var response = actionResult.Result as ObjectResult;
@@ -1111,7 +1142,6 @@ namespace Transactions.Api.Controllers
             consumer.ConsumerName = (transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName) ?? transaction.DealDetails?.ConsumerName;
             consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
             consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
-            consumer.TerminalID = transaction.TerminalID;
             consumer.MerchantID = merchantID;
             consumer.Active = true;
             consumer.ApplyAuditInfo(httpContextAccessor);

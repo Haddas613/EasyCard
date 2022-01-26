@@ -1,5 +1,6 @@
 <template>
   <div>
+    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="newCustomerDialog" color="ecbg">
       <template v-slot:title>{{$t('CreateNewCustomer')}}</template>
       <template>
@@ -22,10 +23,38 @@
         </div>
       </template>
     </ec-dialog>
+    <ec-dialog :dialog.sync="documentNumberDialog" color="ecbg">
+      <template v-slot:title>{{$t('SetDocumentNumber')}}</template>
+      <template>
+        <v-form ref="documentNumberFormRef" lazy-validation>
+          <v-row>
+          <v-col cols="12" md="4" class="py-0">
+            <v-select
+              :items="ecInvoiceTypes"
+              item-text="description"
+              item-value="code"
+              v-model="documentNumberModel.docType"
+              :label="$t('InvoiceType')"
+              :rules="[vr.primitives.required]"
+              @change="getDocumentNumber()"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="4" class="py-0">
+            <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
+          </v-col>
+        </v-row>
+        </v-form>
+        <div class="d-flex justify-end">
+          <v-btn @click="documentNumberDialog = false" :disabled="loading">{{$t("Cancel")}}</v-btn>
+          <v-btn class="mx-1" color="primary" @click="setDocumentNumber()" :disabled="loading">{{$t("Save")}}</v-btn>
+        </div>
+      </template>
+    </ec-dialog>
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
-        <v-col cols="12" class="pt-0 text-end pb-4">
+        <v-col v-if="!isTemplate" cols="12" class="pt-0 text-end pb-4">
           <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
+          <v-btn small class="mx-1" @click="documentNumberDialog = true;">{{$t("SetDocumentNumber")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')"></v-text-field>
@@ -46,10 +75,12 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
     EcDialog: () => import("../../components/ec/EcDialog"),
+    IntegrationReadyCheck: () => import("../../components/integrations/IntegrationReadyCheck"),
   },
   props: {
     data: {
@@ -76,21 +107,31 @@ export default {
         userName: null,
         password: null
       },
-      vr: ValidationRules
+      documentNumberModel: {
+        docType: null,
+        currentNum: null,
+        minNum: 0
+      },
+      ecInvoiceTypes: {},
+      vr: ValidationRules,
+      documentNumberDialog: false,
+      appConstants: appConstants,
     }
   },
-  mounted () {
+  async mounted () {
     if(!this.model.settings){
       this.model.settings = {};
     }
+
+    this.ecInvoiceTypes = await this.$api.integrations.easyInvoice.getDocumentTypes();
   },
   methods: {
-    save() {
-      if(!this.formValid){
+    async save() {
+      if (!this.formValid || this.loading) {
         return;
       }
       this.loading = true;
-      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
+      await this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
     },
     openNewCustomerDialog() {
@@ -106,6 +147,8 @@ export default {
         ...this.newCustomerModel
       }
       let operation = await this.$api.integrations.easyInvoice.createCustomer(payload);
+      this.loading = false;
+
       if (!this.$apiSuccess(operation)) return;
 
       this.$toasted.show(operation.message, { type: "success" });
@@ -115,7 +158,49 @@ export default {
       this.newCustomerModel.userName = null;
       this.newCustomerModel.password = null;
       this.newCustomerDialog = false;
-      this.loading = false;
+    },
+    async getDocumentNumber(){
+      if (!this.documentNumberModel.docType){
+        return;
+      }
+
+      let res = await this.$api.integrations.easyInvoice.getDocumentNumber(this.terminalId, this.documentNumberModel.docType);
+      if (res && (res.entityReference || res.entityReference === 0)){
+        this.documentNumberModel.currentNum = res.entityReference;
+        this.documentNumberModel.minNum = res.entityReference;
+      }
+    },
+    async setDocumentNumber(){
+      if (!this.$refs.documentNumberFormRef.validate()){
+        return;
+      }
+      
+      await this.$api.integrations.easyInvoice.setDocumentNumber({
+        terminalID: this.terminalId,
+        docType: this.documentNumberModel.docType,
+        currentNum: this.documentNumberModel.currentNum
+      });
+
+      this.documentNumberDialog = false;
+    },
+    async testConnection(){
+      let operation = await this.$api.integrations.easyInvoice.testConnection({
+        ...this.model,
+        terminalID: this.terminalId,
+      });
+      if(!this.$apiSuccess(operation)){
+        this.$toasted.show(operation.message, { type: "error" })
+        this.model.valid = false;
+      }else{
+        this.model.valid = true;
+        await this.save();
+      }
+      this.$emit('update', this.model);
+    },
+  },
+  computed: {
+    isTemplate() {
+      return this.apiName == appConstants.terminal.api.terminalTemplates;
     }
   },
 };

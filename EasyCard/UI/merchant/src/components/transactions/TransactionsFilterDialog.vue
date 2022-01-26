@@ -23,21 +23,26 @@
               :customer-id="model.consumerID"
               @update="processCustomer($event)"></customer-dialog-invoker>
             </v-col>
-            <v-col cols="12" md="4" class="pt-0 pb-4">
-               <v-switch v-model="model.hasInvoice" hide-details>
-                <template v-slot:label>
-                  <small>{{$t('HasInvoice')}}</small>
-                </template>
-              </v-switch>
+            <v-col cols="12" md="12" class="pb-0 pt-0">
+              <v-select
+                :items="dictionaries.propertyPresenceEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.hasInvoice"
+                :label="$t('HasInvoice')"
+                outlined
+                hide-details
+                clearable
+              ></v-select>
             </v-col>
-            <v-col cols="12" md="4" class="pt-0 pb-4">
+            <v-col cols="12" md="6" class="mb-1 pt-0">
                <v-switch v-model="model.isPaymentRequest" hide-details>
                 <template v-slot:label>
                   <small>{{$t('IsPaymentRequest')}}</small>
                 </template>
               </v-switch>
             </v-col>
-            <v-col cols="12" md="4" class="pt-0 pb-4">
+            <v-col cols="12" md="6" class="mb-1 pt-0">
                <v-switch v-model="model.hasMasavFile" hide-details>
                 <template v-slot:label>
                   <small>{{$t('HasMasavFile')}}</small>

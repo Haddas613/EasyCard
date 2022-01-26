@@ -64,6 +64,11 @@
           </v-col>
           <v-col cols="12" md="6">
             <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Active')}}</p>
+              <p v-if="model.active" class="success--text">{{$t("Yes")}}</p>
+              <p v-else class="error--text">{{$t("No")}}</p>
+            </div>
+            <div class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
               <p>{{model.consumerNationalID || '-'}}</p>
             </div>
@@ -164,18 +169,132 @@ export default {
     };
   },
   methods: {
-    async deleteCustomer() {
-      let result = await this.$api.consumers.deleteConsumer(
-        this.$route.params.id
-      );
-      this.$router.push({ name: "Customers" });
+    async switchCustomerStatus() {
+      if(this.model.active){
+        let result = await this.$api.consumers.deleteConsumer(
+          this.$route.params.id
+        );
+        return this.$router.push({ name: "Customers" });
+      }
+      else{
+        let result = await this.$api.consumers.updateConsumer(this.$route.params.id, {
+          ...this.model,
+          active: true,
+        });
+        if (!this.$apiSuccess(result)) return;
+        this.model.active = true;
+      }
+      this.initMenu();
     },
     async deleteCardToken(tokenId) {
       let result = await this.$api.cardTokens.deleteCardToken(tokenId);
 
       if (!this.$apiSuccess(result)) return;
       this.tokens = (await this.$api.cardTokens.getCustomerCardTokens(this.$route.params.id)).data || [];
-    }
+    },
+    initMenu(){
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("CreateCustomer"),
+              fn: () => {
+                this.$router.push({ name: "CreateCustomer" });
+              }
+            },
+            {
+              text: this.$t("EditCustomer"),
+              fn: () => {
+                this.$router.push({
+                  name: "EditCustomer",
+                  id: this.$route.params.id
+                });
+              }
+            },
+            {
+              text: this.$t("Charge"),
+              fn: () => {
+                this.$store.commit("payment/addLastChargedCustomer", {
+                  customerID: this.$route.params.id,
+                  terminalID: this.model.terminalID
+                });
+                this.$router.push({
+                  name: "Charge",
+                  params: { customerid: this.$route.params.id }
+                });
+              }
+            },
+            {
+              text: this.$t("Refund"),
+              fn: () => {
+                this.$router.push({
+                  name: "Refund",
+                  params: { customerid: this.$route.params.id }
+                });
+              }
+            },
+            {
+              text: this.$t("CreateBillingDeal"),
+              fn: () => {
+                this.$router.push({
+                  name: "CreateBillingDeal",
+                  params: { customerid: this.$route.params.id }
+                });
+              }
+            },
+            {
+              text: this.$t("Transactions"),
+              fn: () => {
+                this.$router.push({
+                  name: "TransactionsFiltered",
+                  params: { filters: {
+                    consumerID: this.$route.params.id
+                  } }
+                });
+              }
+            },
+            {
+              text: this.$t("BillingDeals"),
+              fn: () => {
+                this.$router.push({
+                  name: "BillingDeals",
+                  params: { filters: {
+                    consumerID: this.$route.params.id
+                  } }
+                });
+              }
+            },
+            {
+              text: this.$t("Invoices"),
+              fn: () => {
+                this.$router.push({
+                  name: "Invoices",
+                  params: { filters: {
+                    consumerID: this.$route.params.id
+                  } }
+                });
+              }
+            },
+            {
+              text: this.$t("PaymentRequests"),
+              fn: () => {
+                this.$router.push({
+                  name: "PaymentRequests",
+                  params: { filters: {
+                    consumerID: this.$route.params.id
+                  } }
+                });
+              }
+            },
+            {
+              text: this.model.active ? this.$t("DeleteCustomer") : this.$t("RestoreCustomer"),
+              fn: this.switchCustomerStatus.bind(this)
+            }
+          ],
+          text: { translate: false, value: this.model.consumerName }
+        }
+      });
+    },
   },
   async mounted() {
     if (this.data) {
@@ -194,107 +313,7 @@ export default {
       (await this.$api.cardTokens.getCustomerCardTokens(this.$route.params.id))
         .data || [];
 
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("CreateCustomer"),
-            fn: () => {
-              this.$router.push({ name: "CreateCustomer" });
-            }
-          },
-          {
-            text: this.$t("EditCustomer"),
-            fn: () => {
-              this.$router.push({
-                name: "EditCustomer",
-                id: this.$route.params.id
-              });
-            }
-          },
-          {
-            text: this.$t("Charge"),
-            fn: () => {
-              this.$store.commit("payment/addLastChargedCustomer", {
-                customerID: this.$route.params.id,
-                terminalID: this.model.terminalID
-              });
-              this.$router.push({
-                name: "Charge",
-                params: { customerid: this.$route.params.id }
-              });
-            }
-          },
-          {
-            text: this.$t("Refund"),
-            fn: () => {
-              this.$router.push({
-                name: "Refund",
-                params: { customerid: this.$route.params.id }
-              });
-            }
-          },
-          {
-            text: this.$t("CreateBillingDeal"),
-            fn: () => {
-              this.$router.push({
-                name: "CreateBillingDeal",
-                params: { customerid: this.$route.params.id }
-              });
-            }
-          },
-          {
-            text: this.$t("Transactions"),
-            fn: () => {
-              this.$router.push({
-                name: "TransactionsFiltered",
-                params: { filters: {
-                  consumerID: this.$route.params.id
-                } }
-              });
-            }
-          },
-          {
-            text: this.$t("BillingDeals"),
-            fn: () => {
-              this.$router.push({
-                name: "BillingDeals",
-                params: { filters: {
-                  consumerID: this.$route.params.id
-                } }
-              });
-            }
-          },
-          {
-            text: this.$t("Invoices"),
-            fn: () => {
-              this.$router.push({
-                name: "Invoices",
-                params: { filters: {
-                  consumerID: this.$route.params.id
-                } }
-              });
-            }
-          },
-          {
-            text: this.$t("PaymentRequests"),
-            fn: () => {
-              this.$router.push({
-                name: "PaymentRequests",
-                params: { filters: {
-                  consumerID: this.$route.params.id
-                } }
-              });
-            }
-          },
-          {
-            text: this.$t("DeleteCustomer"),
-            fn: this.deleteCustomer.bind(this)
-          }
-        ],
-        text: { translate: false, value: this.model.consumerName }
-      }
-    });
+    this.initMenu();
   }
 };
 </script>

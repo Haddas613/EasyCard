@@ -70,9 +70,22 @@ dotnet_diagnostic.SA1210.severity = none
 # SA1108: Block statements should not contain embedded comments
 dotnet_diagnostic.SA1108.severity = none
 
-# disable migrations diagnostics
-[/Transactions.Business/Migrations/**]
-dotnet_analyzer_diagnostic.severity = none
 
-[/Merchants.Business/Migrations/**]
-dotnet_analyzer_diagnostic.severity = none
+
+# CS0612: Type or member is obsolete
+dotnet_diagnostic.CS0612.severity = none
+
+# SA0001: XML comment analysis disabled
+dotnet_diagnostic.SA0001.severity = none
+
+# S1135: Track uses of "TODO" tags
+dotnet_diagnostic.S1135.severity = none
+
+# S1481: Unused local variables should be removed
+dotnet_diagnostic.S1481.severity = none
+
+# S112: General exceptions should never be thrown
+dotnet_diagnostic.S112.severity = none
+
+# S125: Sections of code should not be commented out
+dotnet_diagnostic.S125.severity = none

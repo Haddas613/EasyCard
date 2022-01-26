@@ -50,6 +50,26 @@
           <b>{{model.transactionAmount | currency(model.$currency)}}</b>
         </div>
       </div>
+      <template v-if="model.numberOfPayments > 1">
+        <div class="print-entity">
+          <div>{{$t('NumberOfPayments')}}</div>
+          <div>
+            <b>{{model.numberOfPayments}}</b>
+          </div>
+        </div>
+        <div class="print-entity">
+          <div>{{$t('InitialPaymentAmount')}}</div>
+          <div>
+            <b>{{model.initialPaymentAmount | currency(model.$currency || model.currency)}}</b>
+          </div>
+        </div>
+        <div class="print-entity">
+          <div>{{$t('InstallmentPaymentAmount')}}</div>
+          <div>
+            <b>{{model.installmentPaymentAmount | currency(model.$currency || model.currency)}}</b>
+          </div>
+        </div>
+      </template>
       <div class="print-entity">
         <div>{{$t('CustomerName')}}</div>
         <div>

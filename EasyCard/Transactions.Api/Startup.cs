@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AspNetCore.Authentication.ApiKey;
 using AutoMapper;
 using BasicServices;
 using BasicServices.KeyValueStorage;
+using Bit.Configuration;
+using Bit.Services;
 using IdentityServer4.AccessTokenValidation;
 using InforU;
 using Merchants.Business.Services;
@@ -631,6 +635,46 @@ namespace Transactions.Api
                 var blobStorageService = new BasicServices.BlobStorage.BlobStorageService(appCfg.PublicStorageConnectionString, "excel", logger);
 
                 return new BasicServices.Services.ExcelService(blobStorageService);
+            });
+
+            // Bit integration
+
+            X509Certificate2 bitCertificate = null;
+
+            services.Configure<BitGlobalSettings>(Configuration.GetSection("BitGlobalSettings"));
+            var bitConfig = Configuration.GetSection("BitGlobalSettings").Get<BitGlobalSettings>();
+
+            try
+            {
+                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                {
+                    certStore.Open(OpenFlags.ReadOnly);
+                    X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                        X509FindType.FindByThumbprint,
+                        bitConfig.CertificateThumbprint,
+                        false);
+                    if (certCollection.Count > 0)
+                    {
+                        bitCertificate = certCollection[0];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Cannot load bit certificate {bitConfig.CertificateThumbprint}: {ex.Message}");
+            }
+
+            services.AddSingleton<Bit.BitProcessor, Bit.BitProcessor>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient(bitCertificate);
+                var logger = serviceProvider.GetRequiredService<ILogger<Bit.BitProcessor>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.BitRequestsLogStorageTable, cfg.BitRequestsLogStorageTable);
+
+                var bitOptionsConfig = serviceProvider.GetRequiredService<IOptions<BitGlobalSettings>>();
+                var tokenSvc = new BitTokensService(webApiClient, bitOptionsConfig.Value);
+
+                return new Bit.BitProcessor(bitOptionsConfig, webApiClient, logger, storageService, tokenSvc);
             });
         }
 

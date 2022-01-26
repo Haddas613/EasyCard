@@ -129,6 +129,13 @@
               v-model="model.settings.doNotCreateSaveTokenInitialDeal"
               :label="$t('DoNotCreateSaveTokenInitialDeal')"
               :disabled="model.settings.cvvRequired"
+              @change="onCreateTokenInitialDealChanged()"
+              hide-details
+            ></v-switch>
+            <v-switch
+              v-model="model.settings.sharedCreditCardTokens"
+              :label="$t('SharedCreditCardTokens')"
+              :disabled="!model.settings.doNotCreateSaveTokenInitialDeal"
               hide-details
             ></v-switch>
           </v-col>
@@ -327,7 +334,7 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="7">
+          <v-col cols="12" md="6">
             <v-textarea
               v-model="model.billingSettings.billingNotificationsEmailsRaw"
               :counter="512"
@@ -338,6 +345,7 @@
               rows="3"
             ></v-textarea>
           </v-col>
+          <v-spacer/>
           <v-col cols="12" md="5">
             <v-switch
               class="pt-0"
@@ -345,6 +353,29 @@
               :label="$t('CreateRecurrentPaymentsAutomatically')"
               hide-details
             ></v-switch>
+          </v-col>
+          <v-col cols="12">
+            <v-divider class="mt-2 mb-4"></v-divider>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-1 pt-2"
+              v-model="model.billingSettings.failedTransactionsCountBeforeInactivate"
+              :rules="[vr.primitives.numeric()]"
+              :label="$t('FailedTransactionsCountBeforeInactivate')"
+              :hint="$t('FailedTransactionsCountBeforeInactivateHint')"
+              persistent-hint
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-1 pt-2"
+              v-model="model.billingSettings.numberOfDaysToRetryTransaction"
+              :rules="[vr.primitives.numeric()]"
+              :label="$t('NumberOfDaysToRetryTransaction')"
+              :hint="$t('NumberOfDaysToRetryTransactionHint')"
+              persistent-hint
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
@@ -489,7 +520,6 @@
               item-value="code"
               v-model="model.settings.transmissionSchedule"
               :label="$t('TransmissionTime')"
-              outlined
             ></v-select>
           </v-col>
         </v-row>
@@ -759,6 +789,7 @@ export default {
     onCvvRequiredChanged(){
       this.model.settings.j5Allowed = this.model.settings.cvvRequired;
       this.model.settings.doNotCreateSaveTokenInitialDeal = !this.model.settings.cvvRequired;
+      this.model.settings.sharedCreditCardTokens = false;
     },
     onEditBankDetails(){
       let canDisposeBankDetails = !this.model.bankDetails 
@@ -769,6 +800,11 @@ export default {
         this.model.bankDetails = {};
       }else if(!this.editBankDetails && canDisposeBankDetails){
         this.model.bankDetails = null;
+      }
+    },
+    onCreateTokenInitialDealChanged(){
+      if(!this.model.settings.doNotCreateSaveTokenInitialDeal){
+        this.model.settings.sharedCreditCardTokens = false;
       }
     }
   },

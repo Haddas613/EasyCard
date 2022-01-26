@@ -52,5 +52,7 @@ namespace Transactions.Api.Models.Checkout
         public bool? CvvRequired { get; set; }
 
         public ICollection<FeatureEnum> EnabledFeatures { get; set; }
+
+        public bool? AllowBit { get; set; }
     }
 }

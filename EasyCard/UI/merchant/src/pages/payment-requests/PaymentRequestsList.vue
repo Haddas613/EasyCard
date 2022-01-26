@@ -88,6 +88,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -175,6 +176,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    }),
     canLoadMore() {
       return (
         this.numberOfRecords > 0 &&
@@ -184,7 +188,9 @@ export default {
     }
   },
   async mounted() {
-    await this.getDataFromApi();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {

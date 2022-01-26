@@ -29,5 +29,7 @@ namespace MerchantProfileApi.Models.Billing
         public string BillingDesktopRefNumber { get; set; }
 
         public string SKU { get; set; }
+
+        public bool Active { get; set; }
     }
 }

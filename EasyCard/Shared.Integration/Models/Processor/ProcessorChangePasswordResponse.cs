@@ -21,7 +21,8 @@ namespace Shared.Integration.Models
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
-        /// <param name="rejectionReasonEnum"></param>
+        /// <param name="errorCode"></param>
+        /// <param name="errorCodeStr"></param>
         public ProcessorChangePasswordResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
         {
             Success = false;
@@ -35,7 +36,7 @@ namespace Shared.Integration.Models
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
-        /// <param name="errorCode"></param>
+        /// <param name="errorCodeStr"></param>
         public ProcessorChangePasswordResponse(string errorMessage, string errorCodeStr)
         {
             Success = false;

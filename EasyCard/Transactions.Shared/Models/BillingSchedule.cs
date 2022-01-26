@@ -41,6 +41,22 @@ namespace Transactions.Shared.Models
                 _ => null
             };
 
+            if (date == null)
+            {
+                return null;
+            }
+
+            if (StartAt.HasValue)
+            {
+                var daysInMonth = DateTime.DaysInMonth(date.Value.Year, date.Value.Month);
+                var day = StartAt.Value.Day;
+                if (day > daysInMonth)
+                {
+                    day = daysInMonth;
+                }
+                date = new DateTime(date.Value.Year, date.Value.Month, day);
+            }
+
             if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue)
             {
                 return date > EndAt.Value ? null : date;

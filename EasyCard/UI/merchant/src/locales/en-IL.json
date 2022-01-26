@@ -357,6 +357,12 @@
   "CreatedFrom": "Created From",
   "CreatedTo": "Created To",
   "PriceWithDiscount": "Price with discount",
+  "FailedTransactionsCountBeforeInactivate": "Failed Transactions Count Before Inactivate",
+  "NumberOfDaysToRetryTransaction": "Number of Days to retry Transaction",
+  "FailedAttemptsCount": "Failed Attempts Count",
+  "LastError": "Last Error",
+  "LastErrorCorrelationID": "Last Error Correlation ID",
+  "SelectForTrigger": "Select for Trigger",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -418,6 +424,8 @@
   "TransmitSelected": "Transmit Selected",
   "TransmitAll": "Transmit All",
   "DisableSelected": "Disable Selected",
+  "RestoreCustomer": "Restore Customer",
+  "RestoreItem": "Restore Item",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -461,6 +469,7 @@
   "OperationsCount": "Operations Count",
   "OperationsCountTotal": "Operations Count (total)",
   "DeleteSelected": "Delete Selected",
+  "ActivateSelected": "Activate Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "CreditCardHasExpired": "Credit card has expired",
@@ -502,5 +511,6 @@
   "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
   "NoAvailableTerminals": "No available terminals",
   "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
-  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
 }

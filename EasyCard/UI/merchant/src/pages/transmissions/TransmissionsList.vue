@@ -190,7 +190,9 @@ export default {
     })
   },
   async mounted() {
-    await this.applyFilters();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {

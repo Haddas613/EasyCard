@@ -60,8 +60,11 @@
     [PaymentDetails]              NVARCHAR (MAX)   NULL,
     [Origin]                      NVARCHAR (50)    NULL,
     [InProgress]                  SMALLINT         NOT NULL,
+    [FailedAttemptsCount]         INT              NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

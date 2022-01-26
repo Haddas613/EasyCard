@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models;
+﻿using Bit.Models;
+using Shared.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,6 +7,8 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Currency;
+using Transactions.Api.Models.External.Bit;
+using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.UpdateParameters;
 
@@ -14,6 +17,12 @@ namespace Transactions.Api.Client
     public interface ITransactionsApiClient
     {
         Task<OperationResponse> CreateTransaction(CreateTransactionRequest model);
+
+        Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model);
+
+        Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model);
+
+        Task<BitTransactionResponse> GetBitTransaction(GetBitTransactionQuery request);
 
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 
@@ -32,6 +41,8 @@ namespace Transactions.Api.Client
         Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue(Guid terminalID);
 
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
+
+        Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model);
 
         Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
 

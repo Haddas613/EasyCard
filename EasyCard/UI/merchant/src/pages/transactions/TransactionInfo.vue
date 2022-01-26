@@ -226,7 +226,7 @@ export default {
   methods: {
     async transmit() {
       let operation = await this.$api.transmissions.transmit({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.$terminalID || this.model.terminalID,
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
 
@@ -258,7 +258,7 @@ export default {
     },
     async cancelTransmission() {
       let operation = await this.$api.transmissions.cancelTransmission({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.$terminalID || this.model.terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
 
@@ -288,7 +288,7 @@ export default {
       return (this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing) 
         && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
         && this.model.dealDetails.consumerEmail
-        && this.model.$currency =='ILS')
+        && (this.model.currency =='ILS' || this.model.$currency =='ILS'))
     },
     async selectJ5(){
       let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);

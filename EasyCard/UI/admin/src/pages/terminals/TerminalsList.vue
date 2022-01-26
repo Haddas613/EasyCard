@@ -103,7 +103,10 @@ export default {
       await this.getDataFromApi();
     },
     async enable(terminal){
-      let opResult = await this.$api.terminals.enableTerminal(terminal.$terminalID);
+      let opResult = await this.$api.terminals.approveTerminal(terminal.$terminalID);
+      if (!this.$apiSuccess(opResult) && opResult.message){
+        this.$toasted.show(opResult.message, { type: "error" })
+      }
       await this.getDataFromApi();
     },
     async disable(terminal){

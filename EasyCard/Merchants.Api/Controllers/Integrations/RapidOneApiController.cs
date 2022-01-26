@@ -5,12 +5,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.RapidOne;
+using Merchants.Api.Models.Terminal;
+using Merchants.Business.Models.Integration;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RapidOne;
 using Shared.Api;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
+using Shared.Integration;
 
 namespace Merchants.Api.Controllers.Integrations
 {
@@ -23,11 +28,66 @@ namespace Merchants.Api.Controllers.Integrations
     {
         private readonly RapidOneInvoicing rapidOneInvoicing;
         private readonly IMapper mapper;
+        private readonly ITerminalsService terminalsService;
+        private readonly IExternalSystemsService externalSystemsService;
 
-        public RapidOneApiController(RapidOneInvoicing rapidOneInvoicing, IMapper mapper)
+        public RapidOneApiController(
+            RapidOneInvoicing rapidOneInvoicing,
+            IMapper mapper,
+            ITerminalsService terminalsService,
+            IExternalSystemsService externalSystemsService)
         {
             this.rapidOneInvoicing = rapidOneInvoicing;
             this.mapper = mapper;
+            this.terminalsService = terminalsService;
+            this.externalSystemsService = externalSystemsService;
+        }
+
+        [HttpPost]
+        [Route("test-connection")]
+        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var rapidOneIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.RapidOneInvoicingExternalSystemID));
+
+            if (rapidOneIntegration == null)
+            {
+                return BadRequest("Rapid One is not connected to this terminal");
+            }
+
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(rapidOneIntegration.ExternalSystemID), nameof(ExternalSystem));
+            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+            var settings = request.Settings.ToObject(settingsType);
+
+            if (settings == null)
+            {
+                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+            }
+
+            //TODO: temporary implementation. Make a request to rapidOne as well
+            if (settings is IExternalSystemSettings externalSystemSettings)
+            {
+                rapidOneIntegration.Valid = await externalSystemSettings.Valid();
+            }
+            else
+            {
+                rapidOneIntegration.Valid = true;
+            }
+
+            //TODO: save on success?
+            //mapper.Map(request, rapidOneIntegration);
+            //await terminalsService.SaveTerminalExternalSystem(rapidOneIntegration, terminal);
+            var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
+
+            if (!rapidOneIntegration.Valid)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = Resources.MessagesResource.ConnectionFailed;
+            }
+
+            return response;
         }
 
         [HttpGet]

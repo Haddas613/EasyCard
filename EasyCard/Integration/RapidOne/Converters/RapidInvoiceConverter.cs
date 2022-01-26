@@ -121,7 +121,7 @@ namespace RapidOne.Converters
                     Year = 2000 + creditCardPayment.CardExpiration.Year.Value
                 };
 
-                cc.VoucherNum = GetVoucherNum(creditCardPayment?.ShovarNumber);
+                cc.VoucherNum = GetVoucherNum(creditCardPayment.ShovarNumber);
                 cc.Payments = message.NumberOfPayments;
                 
                 cc.DealType = GetDealType(message.TransactionType);

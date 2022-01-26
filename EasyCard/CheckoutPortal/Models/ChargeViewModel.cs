@@ -124,6 +124,8 @@ namespace CheckoutPortal.Models
 
         public bool PinPad { get; set; }
 
+        public bool PayWithBit { get; set; }
+
         [BindNever]
         public int? MinCreditInstallments { get; set; }
 
@@ -163,5 +165,8 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public ICollection<Merchants.Shared.Enums.FeatureEnum> EnabledFeatures { get; set; }
+
+        [BindNever]
+        public bool? AllowBit { get; set; }
     }
 }

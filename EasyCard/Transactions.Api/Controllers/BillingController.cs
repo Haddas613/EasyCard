@@ -45,6 +45,7 @@ using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
 using SharedApi = Shared.Api;
+using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -253,7 +254,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -272,7 +273,19 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{model.CreditCardToken} required", StatusEnum.Error));
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                CreditCardTokenDetails token = null;
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                }
+                else
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
+                }
+
+                //Ensure that token is not removed from key vault
+                EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
+
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
                 newBillingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 
@@ -281,10 +294,6 @@ namespace Transactions.Api.Controllers
             else if (model.PaymentType == PaymentTypeEnum.Bank)
             {
                 EnsureExists(model.BankDetails);
-            }
-            else if(model.PaymentType == PaymentTypeEnum.InvoiceOnly)
-            {
-
             }
             else
             {
@@ -321,7 +330,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -354,7 +363,15 @@ namespace Transactions.Api.Controllers
                     EnsureExists(model.CreditCardToken);
                 }
 
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                CreditCardTokenDetails token = null;
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                }
+                else
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
+                }
 
                 //Ensure that token is not removed from key vault
                 EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
@@ -414,7 +431,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -456,7 +473,7 @@ namespace Transactions.Api.Controllers
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -503,7 +520,7 @@ namespace Transactions.Api.Controllers
 
             var consumer = EnsureExists(
                 await consumersService.GetConsumers()
-                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
+                .FirstOrDefaultAsync(d => d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
 
             if (billingDeal.PaymentType != PaymentTypeEnum.Card)
             {
@@ -538,6 +555,8 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        // It should be reworked to enable/disable methods pair
+        [Obsolete]
         [HttpPost]
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
@@ -598,6 +617,43 @@ namespace Transactions.Api.Controllers
             }
 
             return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereDisabled, successfulCount), StatusEnum.Success));
+        }
+
+        [HttpPost]
+        [Route("activate-billing-deals")]
+        public async Task<ActionResult<OperationResponse>> ActivateBillingDeals([FromBody] ActivateBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
+            }
+
+            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+            }
+
+            int successfulCount = 0;
+
+            foreach (var billingDealID in request.BillingDealsID)
+            {
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+
+                if (billingDeal.Active || billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
+                {
+                    continue;
+                }
+
+                billingDeal.Active = true;
+
+                billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+                await billingDealService.UpdateEntity(billingDeal);
+
+                successfulCount++;
+            }
+
+            return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereActivated, successfulCount), StatusEnum.Success));
         }
 
         /// <summary>
@@ -861,18 +917,21 @@ namespace Transactions.Api.Controllers
 
             foreach (var dealEntity in allBillings)
             {
-                logger.LogWarning($"Billing Deal {dealEntity?.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
-
-                try
+                if (dealEntity != null)
                 {
-                    // TODO: Add to history
-                    await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
-                    response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity?.BillingDeal?.BillingDealID).GetValueOrDefault() });
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity?.BillingDeal?.BillingDealID}: {ex.Message}");
+                    try
+                    {
+                        // TODO: Add to history
+                        await SendBillingDealCreditCardTokenExpiredEmail(dealEntity.BillingDeal, terminal);
+
+                        response.Add(new BillingDealQueueEntry { TerminalID = terminal.TerminalID, BillingDealID = (dealEntity.BillingDeal?.BillingDealID).GetValueOrDefault() });
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Cannot send expiration email for billing {dealEntity.BillingDeal?.BillingDealID}: {ex.Message}");
+                    }
                 }
             }
 
@@ -929,7 +988,7 @@ namespace Transactions.Api.Controllers
 
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
-                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails?.ConsumerID?.ToString() ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.BillingDealID), GetBillingDealLink(billingDeal.BillingDealID)),
                 new TextSubstitution("RenewLink", GetBillingDealRenewLink(paymentIntent.PaymentRequestID)),
             };

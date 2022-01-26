@@ -31,45 +31,45 @@
     </ec-dialog>
     <v-card-text class="py-0">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <div class="d-flex justify-center" v-if="includeDevice && availableDevices.length">
-          <v-switch
-            dense
-            hide-details
-            v-model="model.pinPad"
-            :label="$t('UsePinPad')"
-            :disabled="!availableDevices.length">
-          </v-switch>
-        </div>
-        <template v-if="model.pinPad">
-            <v-row no-gutters>
-              <v-col cols="12" v-if="availableDevices.length > 0">
-                <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
-                  <template v-slot:item="{ item }">
-                    {{item.deviceID + '-' + item.deviceName}}
-                  </template>
-                  <template v-slot:selection="{ item }">
-                    {{item.deviceID + '-' + item.deviceName}}
-                  </template>
-                </v-select>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="model.dealDetails.consumerName"
-                  :label="$t('CustomerName')"
-                  outlined
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="model.cardOwnerNationalID"
-                  :rules="[vr.special.israeliNationalId]"
-                  :label="$t('NationalID')"
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
+        <v-row no-gutters>
+          <v-col 
+            :cols="(allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)) ? 6 : 12"
+            class="d-flex justify-center"
+            v-if="includeDevice && availableDevices.length">
+            <v-switch
+              dense
+              hide-details
+              v-model="model.pinPad"
+              :label="$t('UsePinPad')"
+              :disabled="!availableDevices.length || model.useBit"
+              @change="model.useBit = false">
+            </v-switch>
+          </v-col>
+          <v-col cols="6" class="d-flex justify-center" v-if="allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)">
+            <v-switch
+              dense
+              hide-details
+              v-model="model.useBit"
+              :label="$t('PayWithBit')"
+              :disabled="true || !availableDevices.length || model.pinPad"
+              @change="model.pinPad = false">
+            </v-switch>
+          </v-col>
+        </v-row>
+        <template v-if="model.useBit">
+          <bit-payment-component></bit-payment-component>
         </template>
-        <template v-if="!model.pinPad">
+        <template v-if="model.pinPad && availableDevices.length > 0">
+          <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+            <template v-slot:item="{ item }">
+              {{item.deviceID + '-' + item.deviceName}}
+            </template>
+            <template v-slot:selection="{ item }">
+              {{item.deviceID + '-' + item.deviceName}}
+            </template>
+          </v-select>
+        </template>
+        <template v-else-if="!model.pinPad">
           <ec-dialog-invoker
             v-on:click="handleClick()"
             v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) && customerTokens"
@@ -165,6 +165,7 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     CardTokenString: () => import("../../components/ctokens/CardTokenString"),
     InstallmentDetails: () => import("./InstallmentDetailsForm"),
+    BitPaymentComponent: () => import("../integrations/BitPaymentComponent"),
   },
   props: {
     data: {
@@ -184,11 +185,18 @@ export default {
     includeCustomer: {
       type: Boolean,
       default: false
+    },
+    allowBit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      model: { ...this.data },
+      model: { 
+        useBit: false,
+        ...this.data
+      },
       tokensDialog: false,
       customerTokens: null,
       selectedToken: null,
