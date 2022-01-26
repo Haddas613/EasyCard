@@ -1,9 +1,10 @@
 ﻿// Initialize the application
 
 EcwidApp.init({
-	app_id: "custom-app-70394425-1", // use your application namespace TODO: config
+	app_id: "custom-app-70394425-1", // use your application namespace
 	autoloadedflag: true,
-	autoheight: true
+	autoheight: true,
+	installed: "yes"
 });
 
 var storeData = EcwidApp.getPayload();
@@ -134,7 +135,8 @@ function setValuesForPage(applicationConfig) {
 
 var initialConfig = {
 	private: {
-		apiKey: "example-api-key"
+		apiKey: "example-api-key",
+		installed: "yes"
 	}
 };
 
