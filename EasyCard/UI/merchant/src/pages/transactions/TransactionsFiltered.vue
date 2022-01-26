@@ -77,7 +77,7 @@
             :items="transactions"
             :options.sync="options"
             :server-items-length="numberOfRecords"
-            :items-per-page="defaultFilter.take"
+            :footer-props="{ itemsPerPageOptions: [defaultFilter.take], itemsPerPage: defaultFilter.take}"
             :loading="loading"
             :header-props="{ sortIcon: null }"
             class="elevation-1">     
@@ -120,7 +120,7 @@
           </template>
           <template v-slot:item.paymentTransactionID="{ item }">
             <small>{{item.paymentTransactionID}}</small>
-          </template> 
+          </template>
         </v-data-table>
         </template>
       </v-card-text>

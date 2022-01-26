@@ -353,20 +353,29 @@
               :label="$t('CreateRecurrentPaymentsAutomatically')"
               hide-details
             ></v-switch>
-            <v-switch
-              class="pt-2"
+          </v-col>
+          <v-col cols="12">
+            <v-divider class="mt-2 mb-4"></v-divider>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-1 pt-2"
               v-model="model.billingSettings.failedTransactionsCountBeforeInactivate"
+              :rules="[vr.primitives.numeric()]"
               :label="$t('FailedTransactionsCountBeforeInactivate')"
               :hint="$t('FailedTransactionsCountBeforeInactivateHint')"
               persistent-hint
-            ></v-switch>
-            <v-switch
-              class="pt-2"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-1 pt-2"
               v-model="model.billingSettings.numberOfDaysToRetryTransaction"
+              :rules="[vr.primitives.numeric()]"
               :label="$t('NumberOfDaysToRetryTransaction')"
               :hint="$t('NumberOfDaysToRetryTransactionHint')"
               persistent-hint
-            ></v-switch>
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
@@ -511,7 +520,6 @@
               item-value="code"
               v-model="model.settings.transmissionSchedule"
               :label="$t('TransmissionTime')"
-              outlined
             ></v-select>
           </v-col>
         </v-row>
