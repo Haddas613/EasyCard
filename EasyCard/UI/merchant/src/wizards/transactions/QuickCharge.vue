@@ -278,6 +278,10 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
+
+        if(this.model.dealDetails){
+          this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
+        }
       }
     }
     
