@@ -99,6 +99,8 @@ export default {
       pagination: {},
       headers: [],
       transactionsFilter: {
+        take: 100,
+        skip: 0,
         terminalID: null,
       },
       dictionaries: {},
@@ -178,8 +180,9 @@ export default {
     }),
   },
   async mounted() {
-    this.transactionsFilter.terminalID = this.terminalStore.terminalID;
-    await this.getGroupedDataFromApi();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {

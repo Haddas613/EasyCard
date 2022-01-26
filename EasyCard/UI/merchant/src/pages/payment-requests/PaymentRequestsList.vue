@@ -188,8 +188,9 @@ export default {
     }
   },
   async mounted() {
-    this.paymentRequestsFilter.terminalID = this.terminalStore.terminalID;
-    await this.getDataFromApi();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {

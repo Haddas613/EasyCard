@@ -190,8 +190,9 @@ export default {
     })
   },
   async mounted() {
-    this.transmissionsFilter.terminalID = this.terminalStore.terminalID;
-    await this.getDataFromApi();
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
 
     this.$store.commit("ui/changeHeader", {
       value: {

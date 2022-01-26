@@ -416,7 +416,9 @@ export default {
     })
   },
   async mounted() {
-    this.billingDealsFilter.terminalID = this.terminalStore.terminalID;
+    await this.applyFilters({
+      terminalID: this.terminalStore.terminalID,
+    });
     await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {
