@@ -576,17 +576,18 @@ namespace CheckoutPortal.Controllers
                 PaymentTransactionID = request.PaymentTransactionID,
             });
 
-            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos;
-            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid;
+            string maScheme = $"%26return_scheme%3Dhttps%253A%252F%252Fecng-checkout.azurewebsites.net%252Fbit-completed";
+
+            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + maScheme;
+            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + maScheme;
 
             return View(request);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [ValidateAntiForgeryToken]
         [Route("bit-completed")]
-        public async Task<IActionResult> BitPaymentCompleted([FromBody] BitPaymentViewModel request)
+        public async Task<IActionResult> BitPaymentCompleted([FromQuery] BitPaymentViewModel request)
         {
             if (!ModelState.IsValid)
             {
