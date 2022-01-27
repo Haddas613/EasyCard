@@ -58,6 +58,8 @@ namespace Transactions.Api.Controllers.External
         private readonly BitProcessor bitProcessor;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ApiSettings apiSettings;
+        private readonly IPaymentIntentService paymentIntentService;
+        private readonly IPaymentRequestsService paymentRequestsService;
 
         public BitApiController(
              IAggregatorResolver aggregatorResolver,
@@ -69,7 +71,9 @@ namespace Transactions.Api.Controllers.External
              IHttpContextAccessorWrapper httpContextAccessor,
              BitProcessor bitProcessor,
              ISystemSettingsService systemSettingsService,
-             IOptions<ApiSettings> apiSettings)
+             IOptions<ApiSettings> apiSettings,
+             IPaymentIntentService paymentIntentService,
+             IPaymentRequestsService paymentRequestsService)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
@@ -81,6 +85,8 @@ namespace Transactions.Api.Controllers.External
             this.bitProcessor = bitProcessor;
             this.systemSettingsService = systemSettingsService;
             this.apiSettings = apiSettings.Value;
+            this.paymentIntentService = paymentIntentService;
+            this.paymentRequestsService = paymentRequestsService;
         }
 
         [HttpGet]
@@ -225,11 +231,30 @@ namespace Transactions.Api.Controllers.External
 
         [HttpPost]
         [ValidateModelState]
-        [Route("v1/capture")]
+        [Route("capture")]
         public async Task<ActionResult<OperationResponse>> Capture([FromBody] Models.External.Bit.CaptureBitTransactionRequest model)
         {
             try
             {
+                PaymentRequest dbPaymentRequest = null;
+                bool isPaymentIntent = false;
+
+                if (model.PaymentRequestID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == model.PaymentRequestID));
+
+                    if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                    {
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+                else
+                {
+                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+
+                    isPaymentIntent = true;
+                }
+
                 var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.PaymentTransactionID));
 
                 Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
@@ -346,6 +371,15 @@ namespace Transactions.Api.Controllers.External
                 {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+                }
+
+                if (isPaymentIntent)
+                {
+                    await paymentIntentService.DeletePaymentIntent(model.PaymentIntentID.GetValueOrDefault());
+                }
+                else
+                {
+                    await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: model.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
                 }
 
                 return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, model.PaymentTransactionID);

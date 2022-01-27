@@ -469,9 +469,9 @@ namespace CheckoutPortal.Controllers
                     TransactionSerialId = bitResult.BitTransactionSerialId,
                     RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
                     PaymentTransactionID = result.EntityUID.Value,
-                    PaymentIntent = request.PaymentIntent,
+                    PaymentIntent = checkoutConfig.PaymentIntentID,
                     ApiKey = request.ApiKey,
-                    PaymentRequest = request.PaymentRequest,
+                    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID,
                 });
             }
 
@@ -596,26 +596,28 @@ namespace CheckoutPortal.Controllers
             }
 
             CheckoutData checkoutConfig;
-            bool isPaymentIntent = request.PaymentIntent != null;
 
             if (request.ApiKey != null)
             {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+                checkoutConfig = await GetCheckoutData(request.ApiKey, null, null, request.RedirectUrl);
             }
-            else
+            else if (request.PaymentIntent != null)
             {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
-                {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
-                }
-
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+                checkoutConfig = await GetCheckoutData(request.PaymentIntent.Value, request.RedirectUrl, true);
+            }
+            else if (request.RedirectUrl != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.PaymentRequest.Value, request.RedirectUrl, false);
+            }else
+            {
+                throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
             var bitRequest = new CaptureBitTransactionRequest
             {
                 PaymentInitiationId = request.PaymentInitiationId,
-                PaymentTransactionID = request.PaymentTransactionID
+                PaymentTransactionID = request.PaymentTransactionID,
+                PaymentIntentID = request.PaymentIntent
             };
 
             var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
@@ -623,7 +625,7 @@ namespace CheckoutPortal.Controllers
             if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
-                return PaymentError();
+                return RedirectToAction(nameof(PaymentError));
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;

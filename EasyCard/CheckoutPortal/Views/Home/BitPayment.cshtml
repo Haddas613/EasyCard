@@ -4,11 +4,13 @@
 }
 @model BitPaymentViewModel
 
-<form asp-action="BitPaymentCompleted" method="post" hidden id="form">
+<form asp-action="BitPaymentCompleted" method="get" hidden id="form">
     <input type="hidden" asp-for="PaymentTransactionID" id="PaymentTransactionID" />
     <input type="hidden" asp-for="TransactionSerialId" id="TransactionSerialId" />
     <input type="hidden" asp-for="PaymentInitiationId" id="PaymentInitiationId" />
     <input type="hidden" asp-for="RedirectUrl" id="RedirectUrl" />
+    <input type="hidden" asp-for="PaymentIntent" id="PaymentIntent" />
+    <input type="hidden" asp-for="PaymentRequest" id="PaymentRequest" />
 </form>
 
 <div class="row justify-content-center">

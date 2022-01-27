@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace CheckoutPortal.Models
@@ -34,13 +35,15 @@ namespace CheckoutPortal.Models
         /// Payment request ID
         /// </summary>
         [StringLength(100)]
-        public string PaymentRequest { get; set; }
+        public Guid? PaymentRequest { get; set; }
 
         [StringLength(100)]
-        public string PaymentIntent { get; set; }
+        public Guid? PaymentIntent { get; set; }
 
+        [BindNever]
         public string ApplicationSchemeIos { get; set; }
 
+        [BindNever]
         public string ApplicationSchemeAndroid { get; set; }
     }
 }
