@@ -38,5 +38,9 @@ namespace CheckoutPortal.Models
 
         [StringLength(100)]
         public string PaymentIntent { get; set; }
+
+        public string ApplicationSchemeIos { get; set; }
+
+        public string ApplicationSchemeAndroid { get; set; }
     }
 }

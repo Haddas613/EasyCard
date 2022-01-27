@@ -576,6 +576,9 @@ namespace CheckoutPortal.Controllers
                 PaymentTransactionID = request.PaymentTransactionID,
             });
 
+            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos;
+            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid;
+
             return View(request);
         }
 
