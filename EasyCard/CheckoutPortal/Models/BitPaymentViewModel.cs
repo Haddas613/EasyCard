@@ -34,10 +34,8 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Payment request ID
         /// </summary>
-        [StringLength(100)]
         public Guid? PaymentRequest { get; set; }
 
-        [StringLength(100)]
         public Guid? PaymentIntent { get; set; }
 
         [BindNever]

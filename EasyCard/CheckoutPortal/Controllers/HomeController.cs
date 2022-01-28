@@ -212,8 +212,25 @@ namespace CheckoutPortal.Controllers
                 return await IndexViewResult(checkoutConfig, request);
             }
 
-            // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue || request.PinPad)
+            if (request.PayWithBit)
+            {
+                if (ModelState[nameof(request.Cvv)] != null)
+                {
+                    ModelState[nameof(request.Cvv)]?.Errors?.Clear();
+                    ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardNumber)] != null)
+                {
+                    ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardExpiration)] != null)
+                {
+                    ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                }
+            }
+            else if (request.CreditCardToken.HasValue || request.PinPad) // If token is present and correct, credit card validation is removed from model state
             {
                 if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {

@@ -1,0 +1,114 @@
+﻿@using Shared.Helpers
+@model ChargeViewModel
+@inject CommonLocalizationService localizer
+
+
+<form asp-action="Charge" method="post" id="bit-form">
+    <input type="hidden" asp-for="RedirectUrl" id="Bit_RedirectUrl" />
+    <input type="hidden" asp-for="PaymentRequest" id="Bit_PaymentRequest" />
+    <input type="hidden" asp-for="PaymentIntent" id="Bit_PaymentIntent" />
+    <input type="hidden" asp-for="ApiKey" id="Bit_ApiKey" />
+    <input type="hidden" asp-for="Currency" id="Bit_Currency" />
+    <input type="hidden" asp-for="Description" id="Bit_Description" />
+    <input type="hidden" asp-for="IssueInvoice" id="Bit_IssueInvoice" />
+    <input type="hidden" asp-for="PayWithBit" id="PayWithBit" />
+
+
+    @if (Model.Amount.GetValueOrDefault() > 0 && !Model.UserAmount)
+    {
+        <input type="hidden" asp-for="Amount" id="Bit_Amount" />
+
+        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
+            @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("TotalSum")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
+        </h3>
+    }
+
+    @if (Model.UserAmount)
+    {
+        <fieldset class="border rounded p-2 m-2" id="amount-area">
+            @if (Model.UserAmount)
+            {
+                <div class="form-group row">
+                    <label asp-for="Amount" id="Bit_Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
+                    <div class="col-sm-9">
+                        <input type="number" step="0.01" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
+                        <span asp-validation-for="Amount"></span>
+                    </div>
+                </div>
+            }
+        </fieldset>
+    }
+    <fieldset class="border rounded p-2 m-2">
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardOwnerName")</label>
+            <div class="col-sm-9">
+                <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" id="Bit_Name" autocomplete="off">
+                <span asp-validation-for="Name"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Email" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Email")</label>
+            <div class="col-sm-9">
+                <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" id="Bit_Email" autocomplete="off">
+                <span asp-validation-for="Email"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="NationalID" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("NationalID")</label>
+            <div class="col-sm-9">
+                <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" id="Bit_NationalID" autocomplete="off">
+                <span asp-validation-for="NationalID"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Phone" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Phone")</label>
+            <div class="col-sm-9">
+                <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" id="Bit_Phone" autocomplete="off">
+                <span asp-validation-for="Phone"></span>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="form-group d-flex justify-content-end">
+        <button class="btn btn-outline-danger mx-1" id="bit-cancel-btn">
+            @localizer.Get("CancelPayment")
+        </button>
+        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+            <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
+            PayWithBit
+        </button>
+    </div>
+</form>
+
+<script nws-csp-add-nonce="true">
+    document.addEventListener("DOMContentLoaded", function() {
+        let amt = parseFloat($("#Bit_Amount").val());
+        if (!amt) {
+            $("#Bit_Amount").val(amt.toFixed(2))
+        }
+
+        $("#bit-cancel-btn").on('click', function (e) {
+            e.preventDefault();
+            $('#cancel-form').submit();
+        });
+
+        $("#paywithbit").on("click", function () {
+            console.log("here")
+            if (!$("#bit-form").valid()) {
+                return;
+            }
+            $("#PayWithBit").val(true);
+            $("#bit-form").submit();
+        })
+
+        $("#bit-form").on("submit", function (e) {
+            if (!$("#bit-form").valid()) {
+                e.preventDefault();
+                return;
+            }
+
+            document.getElementById("loading-spinner").hidden = false;
+            document.getElementsByTagName("body")[0].classList.add("no-scroll")
+        })
+    });
+</script>
