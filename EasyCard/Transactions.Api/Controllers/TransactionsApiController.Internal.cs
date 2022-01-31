@@ -860,15 +860,6 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            try
-            {
-                await invoicingController.SendInvoiceEmail(invoiceRequest.DealDetails.ConsumerEmail, invoiceRequest, terminal);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
-            }
-
             return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID, invoiceID }, endResponse);
         }
 
