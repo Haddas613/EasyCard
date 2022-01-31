@@ -375,19 +375,28 @@ namespace DesktopEasyCardConvertorECNG
                 cf = new ConsumersFilter
                 {
                     ExternalReference = $"RPS_{customerInFile.RivCode}", // TODO: check if consumer exist in R1  RPD_170069
-                    ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All,
+                    ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.OnlyActive,
                     Origin = config.Origin,
                 };
             }
 
-           Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
-           if(consumerID.HasValue && ((isRapidOneClient && string.IsNullOrWhiteSpace(customerInFile.RivCode)) || !isRapidOneClient))
+            if (isRapidOneClient && (string.IsNullOrWhiteSpace(customerInFile.RivCode)))
+            {
+                throw new ApplicationException($"Do not import customer with no Rapid reference number {customerInFile.DealID}");
+            }
+
+            if (isRapidOneClient && (await metadataMerchantService.GetConsumers(cf))?.Data.Count() > 1)
+            {
+                throw new ApplicationException($"More than one customer with same Identity {customerInFile.RivCode}");
+            }
+
+            Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
+            if (consumerID.HasValue)
             {
                 var existingConsumer = await metadataMerchantService.GetConsumer(consumerID.Value);
 
                 var request = mapper.Map<UpdateConsumerRequest>(existingConsumer);
 
-                request.Active = customerInFile.Active;
                 request.BankDetails = bankDetails;
                 request.ConsumerAddress = consumerAddress;
                 request.ConsumerName = customerName;
