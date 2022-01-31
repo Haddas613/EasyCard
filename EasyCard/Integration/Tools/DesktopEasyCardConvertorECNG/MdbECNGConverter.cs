@@ -419,7 +419,6 @@ namespace DesktopEasyCardConvertorECNG
             {
                 var resCreateCustomer = await metadataMerchantService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
                 {
-                    Active = customerInFile.Active, // TODO: do we need to import customers which are not active in mdb?
                     BankDetails = bankDetails,
                     BillingDesktopRefNumber = customerInFile.DealID,
                     ConsumerAddress = consumerAddress,
