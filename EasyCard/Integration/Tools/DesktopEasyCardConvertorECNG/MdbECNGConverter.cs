@@ -327,11 +327,14 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     var consumer = await SyncECNGCustomer(customerInFile);
 
-                    var token = await CreateTokenPerCustomer(customerInFile, consumer);
-
-                    if (!config.DoNotCreateBillings)
+                    if (consumer != null)
                     {
-                        await CreateBillingDeal(customerInFile, token, consumer);
+                        var token = await CreateTokenPerCustomer(customerInFile, consumer);
+
+                        if (!config.DoNotCreateBillings)
+                        {
+                            await CreateBillingDeal(customerInFile, token, consumer);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -363,6 +366,12 @@ namespace DesktopEasyCardConvertorECNG
                 bankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch/*, PaymentType = Shared.Integration.Models.PaymentTypeEnum.Bank* todo to check*/ };
             }
 
+            if (isRapidOneClient && (string.IsNullOrWhiteSpace(externalReference)))
+            {
+                logger.LogWarning($"Do not import customer with no Rapid reference number {customerInFile.DealID}");
+                return null;
+            }
+
             ConsumersFilter cf = new ConsumersFilter
             {
                 BillingDesktopRefNumber = customerInFile.DealID,
@@ -374,23 +383,20 @@ namespace DesktopEasyCardConvertorECNG
             {
                 cf = new ConsumersFilter
                 {
-                    ExternalReference = $"RPS_{customerInFile.RivCode}", // TODO: check if consumer exist in R1  RPD_170069
+                    ExternalReference = externalReference,
                     ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.OnlyActive,
                     Origin = config.Origin,
                 };
             }
 
-            if (isRapidOneClient && (string.IsNullOrWhiteSpace(customerInFile.RivCode)))
+            var existingConsumers = (await metadataMerchantService.GetConsumers(cf))?.Data;
+
+            if (existingConsumers?.Count() > 1)
             {
-                throw new ApplicationException($"Do not import customer with no Rapid reference number {customerInFile.DealID}");
+                throw new ApplicationException($"More than one customer with same Identity {customerInFile.DealID} {customerInFile.RivCode}");
             }
 
-            if (isRapidOneClient && (await metadataMerchantService.GetConsumers(cf))?.Data.Count() > 1)
-            {
-                throw new ApplicationException($"More than one customer with same Identity {customerInFile.RivCode}");
-            }
-
-            Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
+            Guid? consumerID = existingConsumers?.FirstOrDefault()?.ConsumerID;
             if (consumerID.HasValue)
             {
                 var existingConsumer = await metadataMerchantService.GetConsumer(consumerID.Value);
@@ -413,7 +419,7 @@ namespace DesktopEasyCardConvertorECNG
             {
                 var resCreateCustomer = await metadataMerchantService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
                 {
-                    Active = customerInFile.Active,
+                    Active = customerInFile.Active, // TODO: do we need to import customers which are not active in mdb?
                     BankDetails = bankDetails,
                     BillingDesktopRefNumber = customerInFile.DealID,
                     ConsumerAddress = consumerAddress,
