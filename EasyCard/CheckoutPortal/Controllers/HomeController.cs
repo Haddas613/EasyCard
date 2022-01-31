@@ -24,6 +24,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
 using Transactions.Api.Models.External.Bit;
+using System.Web;
+using Shared.Api.Utilities;
 
 namespace CheckoutPortal.Controllers
 {
@@ -593,10 +595,18 @@ namespace CheckoutPortal.Controllers
                 PaymentTransactionID = request.PaymentTransactionID,
             });
 
-            string maScheme = $"%26return_scheme%3Dhttps%253A%252F%252Fecng-checkout.azurewebsites.net%252Fbit-completed";
+            //string maScheme = $"%26return_scheme%3Dhttps%253A%252F%252Fecng-checkout.azurewebsites.net%252Fbit-completed";
 
-            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + maScheme;
-            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + maScheme;
+            var bitCompletedUrl = HttpUtility.UrlEncode($"{apiSettings.CheckoutPortalUrl}/bit-completed" +
+                $"?PaymentInitiationId={request.PaymentInitiationId}&TransactionSerialId={request.TransactionSerialId}" +
+                $"&PaymentTransactionID={request.PaymentTransactionID}&RedirectUrl={request.RedirectUrl}");
+
+            //URL needs to be double encoded
+            var scheme = HttpUtility.UrlEncode($"&return_scheme={bitCompletedUrl}");
+
+            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + scheme;
+            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + scheme;
+            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(this.Request);
 
             return View(request);
         }

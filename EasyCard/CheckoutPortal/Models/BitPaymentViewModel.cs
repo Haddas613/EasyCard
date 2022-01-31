@@ -43,5 +43,8 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public string ApplicationSchemeAndroid { get; set; }
+
+        [BindNever]
+        public bool IsMobile { get; set; }
     }
 }

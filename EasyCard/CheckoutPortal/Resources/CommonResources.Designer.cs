@@ -88,6 +88,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bit Payment.
+        /// </summary>
+        public static string BitPayment {
+            get {
+                return ResourceManager.GetString("BitPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel payment.
         /// </summary>
         public static string CancelPayment {
@@ -295,11 +304,38 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pay with Android.
+        /// </summary>
+        public static string PayWithAndroid {
+            get {
+                return ResourceManager.GetString("PayWithAndroid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay with Bit.
+        /// </summary>
+        public static string PayWithBit {
+            get {
+                return ResourceManager.GetString("PayWithBit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pay with EasyCard.
         /// </summary>
         public static string PayWithEasyCard {
             get {
                 return ResourceManager.GetString("PayWithEasyCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay with IOS.
+        /// </summary>
+        public static string PayWithIOS {
+            get {
+                return ResourceManager.GetString("PayWithIOS", resourceCulture);
             }
         }
         
@@ -327,6 +363,15 @@ namespace CheckoutPortal.Resources {
         public static string RegularDeal {
             get {
                 return ResourceManager.GetString("RegularDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular Payment.
+        /// </summary>
+        public static string RegularPayment {
+            get {
+                return ResourceManager.GetString("RegularPayment", resourceCulture);
             }
         }
         

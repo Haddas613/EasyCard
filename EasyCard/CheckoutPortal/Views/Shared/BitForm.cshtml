@@ -75,7 +75,7 @@
         </button>
         <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
             <img height="20px" src="https://public.bankhapoalim.co.il/bitcom/2.2.1/assets/bit-logo.svg" />
-            PayWithBit
+            @localizer.Get("PayWithBit")
         </button>
     </div>
 </form>
@@ -93,7 +93,6 @@
         });
 
         $("#paywithbit").on("click", function () {
-            console.log("here")
             if (!$("#bit-form").valid()) {
                 return;
             }

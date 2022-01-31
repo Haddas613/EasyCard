@@ -237,4 +237,19 @@
   <data name="Save" xml:space="preserve">
     <value>שמור</value>
   </data>
+  <data name="BitPayment" xml:space="preserve">
+    <value>תשלום Bit</value>
+  </data>
+  <data name="PayWithBit" xml:space="preserve">
+    <value>לתשלום עם Bit</value>
+  </data>
+  <data name="RegularPayment" xml:space="preserve">
+    <value>תשלום רגיל</value>
+  </data>
+  <data name="PayWithAndroid" xml:space="preserve">
+    <value>לתשלום עם Android</value>
+  </data>
+  <data name="PayWithIOS" xml:space="preserve">
+    <value>לתשלום עם IOS</value>
+  </data>
 </root>

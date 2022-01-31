@@ -1,8 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Bit Payment";
+    ViewData["Title"] = localizer.Get("BitPayment");
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model BitPaymentViewModel
+@inject CommonLocalizationService localizer
 
 <form asp-action="BitPaymentCompleted" method="get" hidden id="form">
     <input type="hidden" asp-for="PaymentTransactionID" id="PaymentTransactionID" />
@@ -15,43 +16,47 @@
 
 <div class="row justify-content-center">
     <div class="col-md-12">
-        <h3 class="text-center">Bit payment in progress</h3>
+        <h3 class="text-center">@localizer.Get("BitPayment")</h3>
     </div>
-    <div class="col-md-2">
-        <div id="bitcom-button-container"></div>
-    </div>
-    <div class="col-md-2">
-        <a href="@Model.ApplicationSchemeIos" target="_blank">Pay with ios</a>
-    </div>
-    <div class="col-md-2">
-       <a href="@Model.ApplicationSchemeAndroid" target="_blank">Pay with Android</a>
-    </div>
+
+    @if (!Model.IsMobile)
+    {
+        <div class="col-md-2">
+            <div id="bitcom-button-container"></div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12">
+            <a class="btn btn-primary btn-lg btn-block" href="@Model.ApplicationSchemeIos" target="_blank">@localizer.Get("PayWithIOS")</a>
+        </div>
+        <div class="col-md-12">
+           <div class="py-2"></div>
+        </div>
+        <div class="col-md-12">
+           <a class="btn btn-success btn-lg btn-block" href="@Model.ApplicationSchemeAndroid" target="_blank">@localizer.Get("PayWithAndroid")</a>
+        </div>
+    }
 </div>
 
-@section Scripts{
-<script nws-csp-add-nonce="true">
-$(document).ready(function () {
-    let transaction = {
-        transactionSerialId: '@(Model.TransactionSerialId)',
-        paymentInitiationId: '@(Model.PaymentInitiationId)'
-    };
-    //BitPayment.pay(transaction);
-    BitPayment.Buttons({
-        onCreate: function(openBitPaymentPage){
-            openBitPaymentPage(transaction);
-        },
-        onApproved: function(details){
-            $("#form").submit();
-            //return fetch('/bitcom-transaction-complete', {
-            //     method: 'post',
-            //     headers: {'content-type': 'application/json'},
-            //     body: JSON.stringify({orderID: details.paymentInitiationId })
-            //}).then(function(res){
-            // // Show approval page
-
-            //});
-        } 
-    }).render('#bitcom-button-container');
-});
-</script>
+@if(!Model.IsMobile){
+    @section Scripts{
+    <script nws-csp-add-nonce="true">
+    $(document).ready(function () {
+        let transaction = {
+            transactionSerialId: '@(Model.TransactionSerialId)',
+            paymentInitiationId: '@(Model.PaymentInitiationId)'
+        };
+        //BitPayment.pay(transaction);
+        BitPayment.Buttons({
+            onCreate: function(openBitPaymentPage){
+                openBitPaymentPage(transaction);
+            },
+            onApproved: function(details){
+                $("#form").submit();
+            } 
+        }).render('#bitcom-button-container');
+    });
+    </script>
+    }
 }
