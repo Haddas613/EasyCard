@@ -96,7 +96,6 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -127,7 +126,6 @@ export default {
       dueDateMenu: false,
       minDate: new Date().toISOString(),
       isInstallmentTransaction: false,
-      appConstants: appConstants,
       invoiceAvailable: false
     };
   },
@@ -148,7 +146,7 @@ export default {
       }
 
       this.invoiceAvailable = this.model.currency == 'ILS' 
-        && this.$integrationAvailable(this.terminalStore, this.appConstants.terminal.integrations.invoicing);
+        && this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
 
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }

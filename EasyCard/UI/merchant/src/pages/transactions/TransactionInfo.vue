@@ -108,8 +108,8 @@
         :model="model.dealDetails"
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
-      <credit-card-details :model="model.creditCardDetails" v-if="model.$paymentTypeEnum == appConstants.transaction.paymentTypes.card"></credit-card-details>
-      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.$paymentTypeEnum == appConstants.transaction.paymentTypes.bank"></bank-payment-details>
+      <credit-card-details :model="model.creditCardDetails" v-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.card"></credit-card-details>
+      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.bank"></bank-payment-details>
 
       <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2">
@@ -173,7 +173,6 @@
 
 <script>
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -210,7 +209,6 @@ export default {
         Canceled: "accent--text"
       },
       transactionSlipDialog: false,
-      appConstants: appConstants,
     };
   },
   async mounted() {
@@ -285,7 +283,7 @@ export default {
       this.loading = false;
     },
     canCreateInvoice(){
-      return (this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing) 
+      return (this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing) 
         && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
         && this.model.dealDetails.consumerEmail
         && (this.model.currency =='ILS' || this.model.$currency =='ILS'))

@@ -170,7 +170,7 @@ export default {
       },
       headers: [],
       defaultFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         jDealType: "J4"
       },

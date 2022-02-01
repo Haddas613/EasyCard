@@ -127,7 +127,6 @@
 
 <script>
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 import * as signalR from "@microsoft/signalr";
 import ValidationRules from "../../helpers/validation-rules";
 
@@ -250,7 +249,7 @@ export default {
       }
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultRefundDescription;
-    this.invoiceType = this.terminal.invoiceSettings.defaultRefundInvoiceType || appConstants.invoicing.defaultRefundInvoiceType;
+    this.invoiceType = this.terminal.invoiceSettings.defaultRefundInvoiceType || this.$appConstants.invoicing.defaultRefundInvoiceType;
   },
   methods: {
     goBack() {

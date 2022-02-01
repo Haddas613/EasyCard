@@ -72,7 +72,7 @@ export default {
       searchTimeout: null,
       totalAmount: 0,
       paging: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0
       }
     };
