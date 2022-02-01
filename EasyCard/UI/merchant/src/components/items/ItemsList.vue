@@ -87,6 +87,7 @@ export default {
       this.loading = false;
     },
     async getItems(extendData) {
+      if(this.loading){ return; }
       let searchApply = this.search && this.search.trim().length >= 3;
 
       let data = await this.$api.items.getItems({
