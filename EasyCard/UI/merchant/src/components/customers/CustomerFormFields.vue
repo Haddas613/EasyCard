@@ -1,14 +1,6 @@
 <template>
   <v-row class="pt-2" no-gutters>
     <v-col cols="12" md="6" class="pb-0">
-      <terminal-select
-        class="px-1"
-        v-model="model.terminalID"
-        :disabled="disableTerminal || model.consumerID != null"
-        required
-      ></terminal-select>
-    </v-col>
-    <v-col cols="12" md="6" class="pb-0">
       <v-text-field
         v-model="model.consumerName"
         :counter="50"
