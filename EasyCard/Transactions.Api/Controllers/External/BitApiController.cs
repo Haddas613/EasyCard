@@ -314,7 +314,7 @@ namespace Transactions.Api.Controllers.External
                             {
                                 await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
 
-                                return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, model.PaymentTransactionID);
+                                return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
                             }
                         }
                         catch (Exception ex)
