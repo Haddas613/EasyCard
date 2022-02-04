@@ -670,6 +670,11 @@
               Looks up a localized string similar to Billing deal processing in-progress.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BitPaymentFailed">
+            <summary>
+              Looks up a localized string similar to Bit payment failed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">
             <summary>
               Looks up a localized string similar to Canceled By Aggregator.

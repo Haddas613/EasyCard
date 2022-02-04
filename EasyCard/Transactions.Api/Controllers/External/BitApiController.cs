@@ -264,6 +264,16 @@ namespace Transactions.Api.Controllers.External
                     return new OperationResponse(Shared.Messages.TransactionStatusIsNotValid, StatusEnum.Error, model.PaymentTransactionID);
                 }
 
+                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+                processorRequest.CorrelationId = transaction.CorrelationId ?? GetCorrelationID();
+
+                var bitCaptureResponse = await bitProcessor.CaptureTransaction(processorRequest);
+
+                if (bitCaptureResponse == null || bitCaptureResponse.MessageCode != null)
+                {
+                    return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
+                }
+
                 //await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
 
                 //TODO

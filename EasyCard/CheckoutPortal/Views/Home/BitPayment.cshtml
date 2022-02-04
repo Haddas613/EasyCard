@@ -21,7 +21,7 @@
 
     @if (!Model.IsMobile)
     {
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div id="bitcom-button-container"></div>
         </div>
     }
@@ -47,7 +47,7 @@
             transactionSerialId: '@(Model.TransactionSerialId)',
             paymentInitiationId: '@(Model.PaymentInitiationId)'
         };
-        //BitPayment.pay(transaction);
+        BitPayment.pay(transaction);
         BitPayment.Buttons({
             onCreate: function(openBitPaymentPage){
                 openBitPaymentPage(transaction);

@@ -707,7 +707,7 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult PaymentError(string message)
         {
-            return View(new PaymentErrorViewModel { ErrorMessage = message });
+            return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
