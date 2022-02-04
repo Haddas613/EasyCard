@@ -14,7 +14,7 @@
       <v-text-field
         v-model="model.consumerPhone"
         :counter="50"
-        :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
+        :rules="[vr.primitives.maxLength(50)]"
         :label="$t('Phone')"
         class="px-1"
         outlined
