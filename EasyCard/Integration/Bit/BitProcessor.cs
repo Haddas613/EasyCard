@@ -39,7 +39,7 @@ namespace Bit
             this.tokenService = tokenService;
         }
 
-        public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
+        public async Task<ProcessorCreateTransactionResponse> Versioning(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 

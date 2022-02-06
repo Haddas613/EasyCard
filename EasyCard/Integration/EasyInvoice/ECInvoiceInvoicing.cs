@@ -64,7 +64,6 @@ namespace EasyInvoice
             try
             {
                 headers.Add("Accept-language", "he"); // TODO: get language from options
-
                 svcRes = await this.apiClient.Post<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers),
                      (url, request) =>
                      {

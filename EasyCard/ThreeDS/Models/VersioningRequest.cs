@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace CheckoutPortal.Models._3DS
+namespace ThreeDS.Models
 {
     public class VersioningRequest
     {

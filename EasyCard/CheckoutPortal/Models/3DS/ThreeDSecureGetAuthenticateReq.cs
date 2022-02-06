@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CheckoutPortal.Models
 {
-    public class ThreeDSecureGetVersionReq
+    public class ThreeDSecureGetAuthenticateReq
     {
 		public ErrorVersion errorDetails { get;set;}
 		public VersioningRequest versioningRequest { get; set; }

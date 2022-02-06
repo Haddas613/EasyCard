@@ -14,7 +14,7 @@ namespace CheckoutPortal.Controllers
     public class ThreeDSController : ControllerBase
     {
         [HttpPost]
-        public Task<ActionResult<OperationResponse>> VersionResponse(ThreeDSecureGetVersionReq request)
+        public Task<ActionResult<OperationResponse>> AuthenticateResponse(ThreeDSecureGetAuthenticateReq request)
         {
             return null;
         }
