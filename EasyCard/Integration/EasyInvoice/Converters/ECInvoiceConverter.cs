@@ -25,14 +25,13 @@ namespace EasyInvoice.Converters
                 DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault()).ToString(),
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
-
                 DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
                 TaxAmount = message.VATTotal,
                 TaxPercentage = message.VATRate,
                 TotalAmountBeforeDiscount = message.InvoiceAmount,
                 TotalNetAmount = message.NetTotal,
                 TotalPaidAmount = message.InvoiceAmount,
-
+                
                 TransactionDateTime = message.InvoiceDate?.ToString("o"),
                 Rows = GetRows(message),
             };
