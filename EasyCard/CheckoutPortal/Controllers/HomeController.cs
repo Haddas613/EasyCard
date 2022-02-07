@@ -607,7 +607,19 @@ namespace CheckoutPortal.Controllers
 
             request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + scheme;
             request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + scheme;
-            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(this.Request);
+            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(Request);
+
+            if (DeviceDetectUtilities.IsMobileBrowser(Request))
+            {
+                if (Request.IsIOS())
+                {
+                    return Redirect(request.ApplicationSchemeIos);
+                }
+                else if (Request.IsAndroid())
+                {
+                    return Redirect(request.ApplicationSchemeAndroid);
+                }
+            }
 
             return View(request);
         }
