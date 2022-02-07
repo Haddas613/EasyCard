@@ -81,8 +81,6 @@ namespace Bit
             {
                 RequestAmount = bitTransaction.RequestAmount,
                 PaymentInitiationId = bitTransaction.PaymentInitiationId,
-                SourceTransactionId = bitTransaction.SourceTransactionId,
-                IssuerTransactionId = bitTransaction.IssuerTransactionId,
                 ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID
             };
 
