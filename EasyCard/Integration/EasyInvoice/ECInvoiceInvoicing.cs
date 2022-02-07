@@ -263,8 +263,6 @@ namespace EasyInvoice
 
             try
             {
-                // headers.Add("Accept-language", "he"); // TODO: get language from options
-
                 var json = new SetDocNextNumberModel
                 {
                     DocumentType = request.DocType.ToString(),
