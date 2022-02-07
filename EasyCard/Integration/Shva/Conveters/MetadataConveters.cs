@@ -19,6 +19,16 @@ namespace Shva.Conveters
             return ((int)currency).ToString();
         }
 
+        public static string GetClearerErrorMessage(this string errorMsg, string errorCode)
+        {
+            if (errorCode.Equals("10") && errorMsg.Contains("אישור חלקי"))
+            {
+                return "זוהתה עסקת אימות מוגבר, אנא המתן לאישור בעל הכרטיס במיסרון שקבל מחברת האשראי ולחץ אישור נוסף. (אנא בקש מבעל הכרטיס לעדכן אותך ברגע שאישר את העסקה)";
+            }
+
+            return errorMsg;
+        }
+
         public static string GetShvaExpDate(this CardExpiration cardExpiration)
         {
             return $"{cardExpiration.Year:00}{cardExpiration.Month:00}";

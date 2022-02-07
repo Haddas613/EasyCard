@@ -77,7 +77,8 @@ namespace Shva
             }
             else if (ashStartResultBody.globalObj?.outputObj?.ashStatus != null && ashStartResultBody.globalObj?.outputObj?.ashStatusDes != null)
             {
-                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag, ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.AshStartResult);
+                string errorMsg = ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag.GetClearerErrorMessage(ashStartResultBody.globalObj.outputObj.ashStatus.valueTag);
+                return new ProcessorCreateTransactionResponse(errorMsg, ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.AshStartResult);
             }
             else
             {
