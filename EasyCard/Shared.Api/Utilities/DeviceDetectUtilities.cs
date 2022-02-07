@@ -14,12 +14,22 @@ namespace Shared.Api.Utilities
         public static bool IsMobileBrowser(this HttpRequest request)
         {
             string userAgent = request.Headers["User-Agent"];
-            if (b.IsMatch(userAgent) || v.IsMatch(userAgent.Substring(0, 4)))
-            {
-                return true;
-            }
 
-            return false;
+            return b.IsMatch(userAgent) || v.IsMatch(userAgent.Substring(0, 4));
+        }
+
+        public static bool IsIOS(this HttpRequest request)
+        {
+            string userAgent = request.Headers["User-Agent"];
+
+            return b.IsMatch(userAgent) && userAgent.ToLowerInvariant().Contains("iphone");
+        }
+
+        public static bool IsAndroid(this HttpRequest request)
+        {
+            string userAgent = request.Headers["User-Agent"];
+
+            return b.IsMatch(userAgent) && userAgent.ToLowerInvariant().Contains("android");
         }
     }
 }
