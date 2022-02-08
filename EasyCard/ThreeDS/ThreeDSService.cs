@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Integration;
 using System;
@@ -42,7 +43,7 @@ namespace ThreeDS
         }
 
 
-        public async Task<VersioningRestResponse> Authentication()
+        public async Task<OperationResponse> Authentication()
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
             AuthenticationRequest request = new AuthenticationRequest()
@@ -53,7 +54,7 @@ namespace ThreeDS
                    
 
             };
-            var response = await apiClient.Post<VersioningRestResponse>(configuration.BaseUrl, "authentication", request
+            var response = await apiClient.Post<OperationResponse>(configuration.BaseUrl, "authentication", request
                   );
             return response;
         }
