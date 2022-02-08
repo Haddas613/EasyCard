@@ -245,7 +245,13 @@ namespace Transactions.Api.Controllers.External
                 PaymentRequest dbPaymentRequest = null;
                 bool isPaymentIntent = false;
 
-                if (model.PaymentRequestID != null)
+                if (model.PaymentIntentID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+
+                    isPaymentIntent = true;
+                }
+                else
                 {
                     dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == model.PaymentRequestID));
 
@@ -253,12 +259,6 @@ namespace Transactions.Api.Controllers.External
                     {
                         return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
                     }
-                }
-                else
-                {
-                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
-
-                    isPaymentIntent = true;
                 }
 
                 var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.PaymentTransactionID));
