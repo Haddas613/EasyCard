@@ -77,7 +77,11 @@ class ApiBase {
         }
 
         if (this._ongoingRequests[_urlKey]) {
-            return this._ongoingRequests[_urlKey];
+            return new Promise(async (s, e) => {
+                const result = await this._ongoingRequests[_urlKey];
+                //deep copy the result for every other caller to prevent shared data mutations
+                return s(JSON.parse(JSON.stringify(result)));
+            });
         }
 
         let request = fetch(requestUrl, {
@@ -88,7 +92,7 @@ class ApiBase {
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request, null);
 
-        return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey])
+        return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey]);
     }
 
     async post(url, payload, options = null) {

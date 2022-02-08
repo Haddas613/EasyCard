@@ -33,7 +33,7 @@
       <v-form class="ec-form" ref="form" lazy-validation>
         <v-row no-gutters>
           <v-col 
-            :cols="(allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)) ? 6 : 12"
+            :cols="(allowBit && $integrationAvailable(terminalStore, $appConstants.terminal.integrations.virtualWalletProcessor)) ? 6 : 12"
             class="d-flex justify-center"
             v-if="includeDevice && availableDevices.length">
             <v-switch
@@ -45,7 +45,7 @@
               @change="model.useBit = false">
             </v-switch>
           </v-col>
-          <v-col cols="6" class="d-flex justify-center" v-if="allowBit && $integrationAvailable(terminalStore, appConstants.terminal.integrations.virtualWalletProcessor)">
+          <v-col cols="6" class="d-flex justify-center" v-if="allowBit && $integrationAvailable(terminalStore, $appConstants.terminal.integrations.virtualWalletProcessor)">
             <v-switch
               dense
               hide-details
@@ -72,7 +72,7 @@
         <template v-else-if="!model.pinPad">
           <ec-dialog-invoker
             v-on:click="handleClick()"
-            v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) && customerTokens"
+            v-if="$featureEnabled(terminalStore, $appConstants.terminal.features.CreditCardTokens) && customerTokens"
             :clickable="(customerTokens.length > 0)"
             class="py-2"
           >
@@ -103,10 +103,10 @@
                 v-on:select-customer="onCustomerSelect()"
               ></credit-card-secure-details-fields>
               <v-row no-gutters>
-                <v-col cols="5" md="3" v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens)">
+                <v-col cols="5" md="3" v-if="$featureEnabled(terminalStore, $appConstants.terminal.features.CreditCardTokens)">
                   <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
                 </v-col>
-                <v-col cols="12" :md="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens) ? 9 : 12">
+                <v-col cols="12" :md="$featureEnabled(terminalStore, $appConstants.terminal.features.CreditCardTokens) ? 9 : 12">
                   <v-text-field
                     class="mt-2"
                     v-model="model.oKNumber"
@@ -153,7 +153,6 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -201,7 +200,6 @@ export default {
       customerTokens: null,
       selectedToken: null,
       selectedTokenObj: null,
-      appConstants: appConstants,
       selectedPinPadDevice: null,
       availableDevices: [],
       vr: ValidationRules,
@@ -214,7 +212,7 @@ export default {
       this.dictionaries = dictionaries;
       this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     }
-    if (this.model.dealDetails.consumerID && this.$featureEnabled(this.terminalStore, this.appConstants.terminal.features.CreditCardTokens)) {
+    if (this.model.dealDetails.consumerID && this.$featureEnabled(this.terminalStore, this.$appConstants.terminal.features.CreditCardTokens)) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
@@ -325,7 +323,7 @@ export default {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
     },
     async checkPinPadAvailability(){
-      if(this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.pinpadProcessor)){
+      if(this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.pinpadProcessor)){
         this.availableDevices = await this.$api.terminals.getTerminalDevices(this.terminalStore.terminalID);
         this.selectedDevice = this.availableDevices[0];
       }

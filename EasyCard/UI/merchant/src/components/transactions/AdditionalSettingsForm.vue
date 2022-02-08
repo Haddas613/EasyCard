@@ -17,7 +17,7 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)"
+        <v-switch v-if="$integrationAvailable(terminalStore, $appConstants.terminal.integrations.invoicing)"
           v-model="switchIssueDocument"
           :label="$t('IssueDocument')"
           :disabled="switchIssueDocumentDisabled"
@@ -38,7 +38,6 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
 import { mapState } from "vuex";
 
 export default {
@@ -76,7 +75,6 @@ export default {
       messageDialog: false,
       invoiceTypeUpd: this.invoiceType,
       jDealTypes: [],
-      appConstants: appConstants
     };
   },
   computed: {
@@ -126,7 +124,7 @@ export default {
       this.switchIssueDocumentDisabled = true;
     }
     else if(this.issueDocument){
-      this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
+      this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
     }
     this.updateTransactionType();
   },
@@ -149,7 +147,7 @@ export default {
     },
     updateTransactionType(){
       if(this.model.transactionType === "credit"){
-        this.invoiceTypeUpd = this.terminalStore.invoiceSettings.defaultCreditInvoiceType || appConstants.invoicing.defaultCreditInvoiceType;
+        this.invoiceTypeUpd = this.terminalStore.invoiceSettings.defaultCreditInvoiceType || this.$appConstants.invoicing.defaultCreditInvoiceType;
       }else{
         this.invoiceTypeUpd = this.invoiceType;
       }

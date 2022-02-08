@@ -142,7 +142,7 @@ export default {
       moment: moment,
       loading: false,
       futureBillingDealsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         dateFrom: this.$formatDate(moment()),
         dateTo: this.$formatDate(moment().add(1, 'y')),

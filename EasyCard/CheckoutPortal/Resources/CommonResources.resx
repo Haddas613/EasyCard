@@ -255,4 +255,7 @@
   <data name="RegularPayment" xml:space="preserve">
     <value>Regular Payment</value>
   </data>
+  <data name="CreditCardPayment" xml:space="preserve">
+    <value>Credit Card Payment</value>
+  </data>
 </root>

@@ -7,7 +7,11 @@
 }
 
 <h4 class="text-danger">@localizer.Get("PaymentError")</h4>
-<h2 class="text-danger">@Model.ErrorMessage</h2>
+
+@if(Model?.ErrorMessage != null)
+{
+    <h2 class="text-danger">@Model.ErrorMessage</h2>
+}
 
 <center>
     <img src="~/img/progress-close.png" />

@@ -18,7 +18,7 @@ export default {
       dictionaries: {},
       loading: false,
       itemsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0
       },
     };

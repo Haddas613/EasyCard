@@ -101,6 +101,8 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.DealDescription, o => o.MapFrom(d => d.Description))
                 .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.Email))
                 .ForMember(d => d.ConsumerPhone, o => o.MapFrom(d => d.Phone))
+                .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.Name))
+                .ForMember(d => d.ConsumerNationalID, o => o.MapFrom(d => d.NationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID));
 
             CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()

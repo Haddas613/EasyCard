@@ -92,7 +92,7 @@ export default {
       moment: moment,
       loading: false,
       paymentRequestsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         ...this.filters
       },

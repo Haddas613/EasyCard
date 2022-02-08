@@ -35,9 +35,10 @@
                         <div class="col-md-12">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-outline-primary">
-                                    <input type="radio" name="formPaymentType" id="formPaymentType_regular" autocomplete="off" value="regular"> @localizer.Get("RegularPayment")
+                                    <input type="radio" name="formPaymentType" id="formPaymentType_regular" autocomplete="off" value="regular"> @localizer.Get("CreditCardPayment")
                                 </label>
                                 <label class="btn btn-outline-secondary">
+                                    <img id="bitlogo" height="20px" src="~/img/bit-logo-gray.svg" />
                                     <input type="radio" name="formPaymentType" id="formPaymentType_bit" autocomplete="off" value="bit"> @localizer.Get("BitPayment")
                                 </label>
                             </div>
@@ -69,6 +70,8 @@
         $(document).ready(function () {
             $("input[name=formPaymentType]").on("change", function(e){
                 let selectedMethod = $("input[name=formPaymentType]:checked").val();
+
+                $("#bitlogo").attr("src", selectedMethod == "bit" ? "/img/bit-logo-white.svg" : "/img/bit-logo-gray.svg");
                 $(`.form-area`).attr('hidden', true);
                 $(`#${selectedMethod}`).attr('hidden', false);
             });

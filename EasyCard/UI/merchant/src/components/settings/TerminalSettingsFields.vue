@@ -230,7 +230,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{ $t("SharedApiKey") }}
         <v-divider class="pt-1"></v-divider>
@@ -257,7 +257,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Api)">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Api)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{ $t("PrivateApiKey") }}
         <v-divider class="pt-1"></v-divider>
@@ -354,7 +354,7 @@
       <v-col
         cols="12"
         md="6"
-        v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)"
+        v-if="$featureEnabled(model, $appConstants.terminal.features.SmsNotification)"
       >
         <v-text-field
           v-model="model.paymentRequestSettings.fromPhoneNumber"
@@ -379,7 +379,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Billing)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{ $t("Billing") }}
         <v-divider class="pt-1"></v-divider>
@@ -405,7 +405,7 @@
         ></v-switch>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{ $t("Checkout") }}
         <v-divider class="pt-1"></v-divider>
@@ -432,7 +432,7 @@
         ></v-switch>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text">
         {{ $t("CheckoutRedirectUrls") }}
         <v-divider class="pt-1"></v-divider>
@@ -495,7 +495,7 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing) && model.bankDetails">
+    <v-row v-if="$featureEnabled(model, $appConstants.terminal.features.Billing) && model.bankDetails">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{ $t("BankAccountDetails") }}
         <v-divider class="pt-1"></v-divider>
@@ -557,7 +557,6 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -582,7 +581,6 @@ export default {
       merchantDictionaries: {},
       privateApiKey: null,
       showSharedApiKey: false,
-      appConstants: appConstants,
       changed: false,
     };
   },
@@ -602,21 +600,21 @@ export default {
       this.$set(
         this.model.invoiceSettings,
         "defaultInvoiceType",
-        appConstants.invoicing.defaultInvoiceType
+        this.$appConstants.invoicing.defaultInvoiceType
       );
     }
     if (!this.model.invoiceSettings.defaultRefundInvoiceType) {
       this.$set(
         this.model.invoiceSettings,
         "defaultRefundInvoiceType",
-        appConstants.invoicing.defaultRefundInvoiceType
+        this.$appConstants.invoicing.defaultRefundInvoiceType
       );
     }
     if (!this.model.invoiceSettings.defaultCreditInvoiceType) {
       this.$set(
         this.model.invoiceSettings,
         "defaultCreditInvoiceType",
-        appConstants.invoicing.defaultCreditInvoiceType
+        this.$appConstants.invoicing.defaultCreditInvoiceType
       );
     }
     this.watchModel();

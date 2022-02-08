@@ -270,7 +270,7 @@ export default {
       moment: moment,
       loading: false,
       billingDealsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
@@ -421,7 +421,6 @@ export default {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-    await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {
       value: {

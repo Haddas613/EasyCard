@@ -426,6 +426,8 @@
   "DisableSelected": "Disable Selected",
   "RestoreCustomer": "Restore Customer",
   "RestoreItem": "Restore Item",
+  "AddBankDetails": "Add Bank Details",
+  "DeleteBankDetails": "Delete Bank Details",
 
   "--AUTH--": null,
   "Login": "Login",

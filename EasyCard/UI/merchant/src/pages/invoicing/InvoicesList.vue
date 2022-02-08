@@ -61,7 +61,6 @@
 <script>
 import moment from "moment";
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -91,7 +90,7 @@ export default {
       loading: false,
       loadCount: 0,
       invoicesFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         ...this.filters
       },
@@ -132,7 +131,6 @@ export default {
       this.invoicesFilter = {
         ...data,
         skip: 0,
-        take: 100
       };
       await this.getDataFromApi();
     },
@@ -195,7 +193,7 @@ export default {
       terminalID: this.terminalStore.terminalID,
     });
     const vm = this;
-    if(!this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing)) return;
+    if(!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing)) return;
     
     this.$store.commit("ui/changeHeader", {
       value: {

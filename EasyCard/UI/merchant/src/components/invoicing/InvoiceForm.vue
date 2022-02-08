@@ -44,13 +44,13 @@
 
         <template v-if="paymentInfoAvailable">
           <payment-type v-model="model.paymentType"></payment-type>
-          <template v-if="model.paymentType == appConstants.transaction.paymentTypes.card">
+          <template v-if="model.paymentType == $appConstants.transaction.paymentTypes.card">
             <invoice-credit-card-details-fields ref="ccDetails"></invoice-credit-card-details-fields>
           </template>
-          <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cheque">
+          <template v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.cheque">
             <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
           </template>
-          <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
+          <template v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
             <bank-transfer-details-fields ref="bankDetails"></bank-transfer-details-fields>
           </template>
         </template>
@@ -65,7 +65,6 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -97,7 +96,6 @@ export default {
         transactionType: null
       },
       vr: ValidationRules,
-      appConstants: appConstants,
       messageDialog: false,
       paymentInfoAvailable: true
     };
@@ -149,35 +147,35 @@ export default {
         result.paymentDetails = [];
         let data = null;
         switch(this.model.paymentType){
-          case this.appConstants.transaction.paymentTypes.card:
+          case this.$appConstants.transaction.paymentTypes.card:
             data = this.$refs.ccDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.card
+                paymentType: this.$appConstants.transaction.paymentTypes.card
               });
             }
             break;
-          case this.appConstants.transaction.paymentTypes.cash:
+          case this.$appConstants.transaction.paymentTypes.cash:
             result.paymentDetails.push({
-              paymentType: this.appConstants.transaction.paymentTypes.cash
+              paymentType: this.$appConstants.transaction.paymentTypes.cash
             });
             break;
-          case this.appConstants.transaction.paymentTypes.cheque:
+          case this.$appConstants.transaction.paymentTypes.cheque:
             data = this.$refs.chequeDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.cheque
+                paymentType: this.$appConstants.transaction.paymentTypes.cheque
               });
             }
             break;
-          case this.appConstants.transaction.paymentTypes.bank:
+          case this.$appConstants.transaction.paymentTypes.bank:
             data = this.$refs.bankDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.bank
+                paymentType: this.$appConstants.transaction.paymentTypes.bank
               });
             }
             break;
@@ -186,9 +184,9 @@ export default {
       if (result.invoiceDetails) this.$emit("ok", result);
     },
     invoiceTypeChanged(val){
-      this.paymentInfoAvailable = (val.code == appConstants.invoicing.types.invoiceWithPaymentInfo
-        || val.code == appConstants.invoicing.types.paymentInfo
-        || val.code == appConstants.invoicing.types.refundInvoice);
+      this.paymentInfoAvailable = (val.code == this.$appConstants.invoicing.types.invoiceWithPaymentInfo
+        || val.code == this.$appConstants.invoicing.types.paymentInfo
+        || val.code == this.$appConstants.invoicing.types.refundInvoice);
     }
   }
 };

@@ -113,7 +113,7 @@ export default {
         ...this.filters
       },
       defaultFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
       },
       showDialog: this.showFiltersDialog,

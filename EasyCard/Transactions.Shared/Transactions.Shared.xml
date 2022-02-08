@@ -323,6 +323,11 @@
               Looks up a localized string similar to Billing.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Bit">
+            <summary>
+              Looks up a localized string similar to Bit.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.CanceledByAggregator">
             <summary>
               Looks up a localized string similar to Canceled by Aggregator.
@@ -663,6 +668,11 @@
         <member name="P:Transactions.Shared.Messages.BillingInProgress">
             <summary>
               Looks up a localized string similar to Billing deal processing in-progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BitPaymentFailed">
+            <summary>
+              Looks up a localized string similar to Bit payment failed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">

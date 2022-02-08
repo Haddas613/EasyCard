@@ -252,4 +252,7 @@
   <data name="PayWithIOS" xml:space="preserve">
     <value>לתשלום עם IOS</value>
   </data>
+  <data name="CreditCardPayment" xml:space="preserve">
+    <value>כרטיס אשראי</value>
+  </data>
 </root>

@@ -133,6 +133,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Payment.
+        /// </summary>
+        public static string CreditCardPayment {
+            get {
+                return ResourceManager.GetString("CreditCardPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV.
         /// </summary>
         public static string CVV {
