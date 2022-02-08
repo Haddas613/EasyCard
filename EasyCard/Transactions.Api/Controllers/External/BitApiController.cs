@@ -266,7 +266,7 @@ namespace Transactions.Api.Controllers.External
                 Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
                 //already updated
-                if (transaction.Status != TransactionStatusEnum.ConfirmedByAggregator)
+                if (transaction.Status != TransactionStatusEnum.ConfirmedByAggregator && transaction.Status != TransactionStatusEnum.Initial)
                 {
                     return new OperationResponse(Shared.Messages.TransactionStatusIsNotValid, StatusEnum.Error, model.PaymentTransactionID);
                 }
