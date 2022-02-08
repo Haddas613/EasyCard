@@ -24,4 +24,8 @@ export default class EasyInvoiceApi {
     async testConnection(data){
         return this.base.post(this.easyInvoiceIntegrationUrl + `/test-connection`, data);
     }
+
+    async getLanguages(){
+        return this.base.get(this.easyInvoiceIntegrationUrl + `/languages`);
+    }
 }

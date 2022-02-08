@@ -21,7 +21,9 @@ import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
 import "./integrations";
+
 import config from './app.config';
+import appConstants from './helpers/app-constants';
 
 Vue.config.productionTip = false
 
@@ -45,7 +47,12 @@ Vue.use({
     install: function (Vue, ) {
         Object.defineProperty(Vue.prototype, '$cfg', { value: config });
     }
-})
+});
+Vue.use({
+    install: function (Vue, ) {
+        Object.defineProperty(Vue.prototype, '$appConstants', { value: appConstants });
+    }
+});
 Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);

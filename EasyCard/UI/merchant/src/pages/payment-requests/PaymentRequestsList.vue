@@ -124,7 +124,7 @@ export default {
       moment: moment,
       loading: false,
       paymentRequestsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         ...this.filters
       },
@@ -162,7 +162,6 @@ export default {
       this.paymentRequestsFilter = {
         ...data,
         skip: 0,
-        take: 100
       };
       await this.getDataFromApi();
     },

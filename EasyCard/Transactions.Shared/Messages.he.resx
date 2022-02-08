@@ -450,4 +450,7 @@
   <data name="BillingDealsWereActivated" xml:space="preserve">
     <value>{0} עסקאות בילינג  הופעלו</value>
   </data>
+  <data name="BitPaymentFailed" xml:space="preserve">
+    <value>Bit payment failed</value>
+  </data>
 </root>

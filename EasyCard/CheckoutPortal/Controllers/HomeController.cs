@@ -599,6 +599,7 @@ namespace CheckoutPortal.Controllers
 
             var bitCompletedUrl = HttpUtility.UrlEncode($"{apiSettings.CheckoutPortalUrl}/bit-completed" +
                 $"?PaymentInitiationId={request.PaymentInitiationId}&TransactionSerialId={request.TransactionSerialId}" +
+                $"&PaymentIntent={request.PaymentIntent}&PaymentRequest={request.PaymentRequest}&ApiKey={request.ApiKey}" +
                 $"&PaymentTransactionID={request.PaymentTransactionID}&RedirectUrl={request.RedirectUrl}");
 
             //URL needs to be double encoded
@@ -606,7 +607,19 @@ namespace CheckoutPortal.Controllers
 
             request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + scheme;
             request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + scheme;
-            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(this.Request);
+            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(Request);
+
+            if (DeviceDetectUtilities.IsMobileBrowser(Request))
+            {
+                if (Request.IsIOS())
+                {
+                    return Redirect(request.ApplicationSchemeIos);
+                }
+                else if (Request.IsAndroid())
+                {
+                    return Redirect(request.ApplicationSchemeAndroid);
+                }
+            }
 
             return View(request);
         }
@@ -618,8 +631,9 @@ namespace CheckoutPortal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                logger.LogError($"{nameof(BitPaymentCompleted)}: {string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage))}");
-                return PaymentError();
+                var errorMessage = string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                logger.LogError($"{nameof(BitPaymentCompleted)}: {errorMessage}");
+                return PaymentError(errorMessage);
             }
 
             CheckoutData checkoutConfig;
@@ -632,7 +646,7 @@ namespace CheckoutPortal.Controllers
             {
                 checkoutConfig = await GetCheckoutData(request.PaymentIntent.Value, request.RedirectUrl, true);
             }
-            else if (request.RedirectUrl != null)
+            else if (request.PaymentRequest != null)
             {
                 checkoutConfig = await GetCheckoutData(request.PaymentRequest.Value, request.RedirectUrl, false);
             }else
@@ -644,7 +658,8 @@ namespace CheckoutPortal.Controllers
             {
                 PaymentInitiationId = request.PaymentInitiationId,
                 PaymentTransactionID = request.PaymentTransactionID,
-                PaymentIntentID = request.PaymentIntent
+                PaymentIntentID = request.PaymentIntent,
+                PaymentRequestID = request.PaymentRequest
             };
 
             var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
@@ -652,7 +667,7 @@ namespace CheckoutPortal.Controllers
             if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
-                return RedirectToAction(nameof(PaymentError));
+                return PaymentError(captureResult.Message);
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
@@ -702,9 +717,9 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError()
+        public IActionResult PaymentError(string message)
         {
-            return View();
+            return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

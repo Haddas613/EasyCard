@@ -39,7 +39,7 @@ namespace Bit
             this.tokenService = tokenService;
         }
 
-        public async Task<ProcessorCreateTransactionResponse> Versioning(ProcessorCreateTransactionRequest paymentTransactionRequest)
+        public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -68,7 +68,12 @@ namespace Bit
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var bitTransaction = await GetBitTransaction(paymentTransactionRequest.BitPaymentInitiationId, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
+            var bitTransaction = await GetBitTransaction(
+                paymentTransactionRequest.BitPaymentInitiationId,
+                paymentTransactionRequest.PaymentTransactionID,
+                integrationMessageId,
+                paymentTransactionRequest.CorrelationId,
+                silent: true);
 
             ValidateAgainstBitTransaction(paymentTransactionRequest, bitTransaction, integrationMessageId);
 
@@ -76,8 +81,6 @@ namespace Bit
             {
                 RequestAmount = bitTransaction.RequestAmount,
                 PaymentInitiationId = bitTransaction.PaymentInitiationId,
-                SourceTransactionId = bitTransaction.SourceTransactionId,
-                IssuerTransactionId = bitTransaction.IssuerTransactionId,
                 ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID
             };
 
@@ -115,7 +118,7 @@ namespace Bit
                 $"/payments/bit/v2/single-payments" : $"/payments/bit/v2/single-payments/{paymentInitiationId}";
         }
 
-        public async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string paymentTransactionID, string integrationMessageId, string correlationID)
+        public async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string paymentTransactionID, string integrationMessageId, string correlationID, bool silent = false)
         {
             string requestUrl = null;
             string responseStr = null;
@@ -142,14 +145,17 @@ namespace Bit
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+                if (!silent)
+                {
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
 
-                integrationMessage.Request = string.Empty;
-                integrationMessage.Response = responseStr;
-                integrationMessage.ResponseStatus = responseStatusStr;
-                integrationMessage.Address = requestUrl;
+                    integrationMessage.Request = string.Empty;
+                    integrationMessage.Response = responseStr;
+                    integrationMessage.ResponseStatus = responseStatusStr;
+                    integrationMessage.Address = requestUrl;
 
-                await integrationRequestLogStorageService.Save(integrationMessage);
+                    await integrationRequestLogStorageService.Save(integrationMessage);
+                }
             }
         }
 

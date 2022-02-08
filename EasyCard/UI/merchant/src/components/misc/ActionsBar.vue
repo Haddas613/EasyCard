@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import appConstants from "../../helpers/app-constants";
 import { mapState } from "vuex";
 
 export default {
@@ -88,7 +87,7 @@ export default {
           css: "primary--text",
           text: "Refund",
           link: "Refund",
-          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
+          allowedFor: [this.$appConstants.users.roles.manager, this.$appConstants.users.roles.billingAdmin]
         }
       ]
     };

@@ -178,7 +178,7 @@ export default {
       model: null,
       financialItems: null,
       financialItemsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         billingDealID: this.$route.params.id
       },

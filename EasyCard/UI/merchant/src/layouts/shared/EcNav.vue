@@ -80,7 +80,6 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import Avatar from "vue-avatar";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -97,7 +96,7 @@ export default {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
           to: { name: "Dashboard" },
-          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
+          allowedFor: [this.$appConstants.users.roles.manager, this.$appConstants.users.roles.billingAdmin]
         },
         {
           icon: "mdi-cash-minus",
@@ -129,7 +128,7 @@ export default {
               icon: "mdi-chevron-up-box-outline",
               to: { name: "Refund" },
               text: "Refund",
-              allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
+              allowedFor: [this.$appConstants.users.roles.manager, this.$appConstants.users.roles.billingAdmin]
             },
             {
               icon: "mdi-bank-transfer",
@@ -189,7 +188,7 @@ export default {
               icon: "mdi-plus",
               text: "CreateInvoice",
               to: { name: "CreateInvoice" },
-              requiredIntegration: appConstants.terminal.integrations.invoicing,
+              requiredIntegration: this.$appConstants.terminal.integrations.invoicing,
             }
           ]
         },
@@ -215,8 +214,8 @@ export default {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",
-          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin],
-          requiredFeature: appConstants.terminal.features.Billing,
+          allowedFor: [this.$appConstants.users.roles.manager, this.$appConstants.users.roles.billingAdmin],
+          requiredFeature: this.$appConstants.terminal.features.Billing,
           expanded: false,
           children: [
             {

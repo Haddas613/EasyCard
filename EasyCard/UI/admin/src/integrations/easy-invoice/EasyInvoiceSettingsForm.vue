@@ -1,6 +1,6 @@
 <template>
   <div>
-    <integration-ready-check v-if="apiName === appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
+    <integration-ready-check v-if="apiName === $appConstants.terminal.api.terminals" :integration="model" @test="testConnection()"></integration-ready-check>
     <ec-dialog :dialog.sync="newCustomerDialog" color="ecbg">
       <template v-slot:title>{{$t('CreateNewCustomer')}}</template>
       <template>
@@ -56,14 +56,24 @@
           <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
           <v-btn small class="mx-1" @click="documentNumberDialog = true;">{{$t("SetDocumentNumber")}}</v-btn>
         </v-col>
-        <v-col cols="12" md="4" class="py-0">
+        <v-col cols="12" md="3" class="py-0">
           <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')"></v-text-field>
         </v-col>
-        <v-col cols="12" md="4" class="py-0">
+        <v-col cols="12" md="3" class="py-0">
           <v-text-field v-model="model.settings.userName" :label="$t('UserName')"></v-text-field>
         </v-col>
-        <v-col cols="12" md="4" class="py-0">
+        <v-col cols="12" md="3" class="py-0">
           <v-text-field v-model="model.settings.password" :label="$t('Password')"></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" class="py-0">
+          <v-select
+            :items="languages"
+            item-text="description"
+            item-value="code"
+            v-model="model.settings.lang"
+            :label="$t('Language')"
+            hide-details="true"
+          ></v-select>
         </v-col>
       </v-row>
       <div class="d-flex justify-end">
@@ -75,7 +85,6 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -115,7 +124,7 @@ export default {
       ecInvoiceTypes: {},
       vr: ValidationRules,
       documentNumberDialog: false,
-      appConstants: appConstants,
+      languages: [],
     }
   },
   async mounted () {
@@ -124,6 +133,11 @@ export default {
     }
 
     this.ecInvoiceTypes = await this.$api.integrations.easyInvoice.getDocumentTypes();
+    this.languages = await this.$api.integrations.easyInvoice.getLanguages();
+
+    if(!this.model.settings.lang && this.languages.length > 0){
+      this.model.settings.lang = this.languages[0].code;
+    }
   },
   methods: {
     async save() {
@@ -200,7 +214,7 @@ export default {
   },
   computed: {
     isTemplate() {
-      return this.apiName == appConstants.terminal.api.terminalTemplates;
+      return this.apiName == this.$appConstants.terminal.api.terminalTemplates;
     }
   },
 };

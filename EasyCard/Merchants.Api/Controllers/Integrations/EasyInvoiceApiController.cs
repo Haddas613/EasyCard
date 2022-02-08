@@ -489,5 +489,19 @@ namespace Merchants.Api.Controllers.Integrations
             //
             // return Ok(response);
         }
+
+        [HttpGet]
+        [Route("languages")]
+        [ResponseCache(Duration = 3600)]
+        public async Task<ActionResult<IEnumerable<DictionarySummary<int>>>> GetECLanguages()
+        {
+            var response = Enum.GetNames(typeof(ECInvoiceLangEnum)).Select(x => new DictionarySummary<int>
+            {
+                Code = (int)Enum.Parse(typeof(ECInvoiceLangEnum), x),
+                Description = x
+            });
+
+            return Ok(response);
+        }
     }
 }
