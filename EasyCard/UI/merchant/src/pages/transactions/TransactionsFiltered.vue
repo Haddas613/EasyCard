@@ -36,7 +36,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+                <span dir="ltr">
+                  <template v-if="transactionsFilter.dateFrom">
+                    {{transactionsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="transactionsFilter.dateTo">
+                    {{transactionsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
