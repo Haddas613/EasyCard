@@ -78,6 +78,7 @@
 import { mapState } from "vuex";
 
 export default {
+  name: "MasavFilesList",
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcList: () => import("../../components/ec/EcList"),

@@ -10,7 +10,9 @@
             <v-app-bar flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
               <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
             </v-app-bar>
-            <router-view />
+            <keep-alive max="1" :include="keepAliveComponentsList">
+              <router-view/>
+            </keep-alive>
           </v-flex>
         </v-col>
         <v-col cols="2" class="hidden-sm-and-down" v-bind:class="{'d-none' : drawer}">
@@ -29,7 +31,15 @@ export default {
   components: {
     EcHeaderContent
   },
+  data() {
+    return {
+      keepAliveComponentsList: [],
+    }
+  },
   props: ["drawer"],
+  mounted () {
+    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[1].children, r => r.keepAlive).map(r => r.keepAlive);
+  },
   computed: {
     drawerObj: {
       get: function() {

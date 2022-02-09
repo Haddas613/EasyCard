@@ -23,7 +23,7 @@ const appConstants = {
     config:{
         ui: {
             typeaheadTimeout: 500,
-            defaultTake: process.env.VUE_APP_UI_LIST_DEFAULT_TAKE_COUNT,
+            defaultTake: parseInt(process.env.VUE_APP_UI_LIST_DEFAULT_TAKE_COUNT || "100"),
         },
     },
     users: {

@@ -63,6 +63,7 @@ import moment from "moment";
 import { mapState } from "vuex";
 
 export default {
+  name: "InvoicesList",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),

@@ -132,6 +132,7 @@
 import moment from "moment";
 import { mapState } from "vuex";
 export default {
+  name: "TransactionsFiltered",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
