@@ -14,6 +14,7 @@
 import { mapState } from "vuex";
 
 export default {
+  name: "CustomersList",
   components: {
     CustomersList: () => import("../../components/customers/CustomersList")
   },
