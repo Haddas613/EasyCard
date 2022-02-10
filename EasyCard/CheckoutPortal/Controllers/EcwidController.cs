@@ -40,7 +40,6 @@ namespace CheckoutPortal.Controllers
         private readonly ILogger<EcwidController> logger;
         private readonly IApiClientsFactory apiClientsFactory; 
         private readonly ITerminalApiKeyTokenServiceFactory terminalApiKeyTokenServiceFactory;
-        private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly ApiSettings apiSettings;
         private readonly EcwidGlobalSettings ecwidSettings;
@@ -51,14 +50,12 @@ namespace CheckoutPortal.Controllers
             ILogger<EcwidController> logger,
             IApiClientsFactory apiClientsFactory,
             ITerminalApiKeyTokenServiceFactory terminalApiKeyTokenServiceFactory,
-            ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<ApiSettings> apiSettings,
             IOptions<EcwidGlobalSettings> ecwidSettings)
         {
             this.logger = logger;
             this.apiClientsFactory = apiClientsFactory;
-            this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
             this.apiSettings = apiSettings.Value;
             this.ecwidSettings = ecwidSettings.Value;
@@ -70,10 +67,11 @@ namespace CheckoutPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(EcwidRequestPayload request)
         {
-            EcwidOrder ecwidOrder = null;
+            EcwidPayload ecwidPayload = null;
+
             try
             {
-                ecwidOrder = ecwidConvertor.DecryptEcwidOrder(request.Data);
+                ecwidPayload = ecwidConvertor.DecryptEcwidPayload(request.Data);
             }
             catch (Exception ex)
             {
@@ -81,16 +79,16 @@ namespace CheckoutPortal.Controllers
                 throw new ApplicationException("Invalid request");
             }
 
-            if (ecwidOrder.MerchantSettings == null || string.IsNullOrEmpty(ecwidOrder.MerchantSettings?.ApiKey))
+            if (ecwidPayload.MerchantAppSettings == null || string.IsNullOrEmpty(ecwidPayload.MerchantAppSettings?.ApiKey))
             {
                 logger.LogError($"{nameof(EcwidController)} index error: Could not retrieve merchant settings: {request.Data}");
                 throw new ApplicationException("Invalid request. Merchant settings are not present");
             }
 
-            var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidOrder.MerchantSettings.ApiKey);
+            var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidPayload.MerchantAppSettings.ApiKey);
             var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
 
-            var customerPayload = ecwidConvertor.GetConsumerRequest(ecwidOrder);
+            var customerPayload = ecwidConvertor.GetConsumerRequest(ecwidPayload.Cart.Order);
 
             var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter 
             {
@@ -115,7 +113,7 @@ namespace CheckoutPortal.Controllers
                 consumerID = createConsumerResponse.EntityUID;
             }
 
-            var paymentRequestPayload = ecwidConvertor.GetCreatePaymentRequest(ecwidOrder);
+            var paymentRequestPayload = ecwidConvertor.GetCreatePaymentRequest(ecwidPayload);
             paymentRequestPayload.DealDetails.ConsumerID = consumerID;
 
             var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);

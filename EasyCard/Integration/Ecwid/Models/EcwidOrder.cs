@@ -24,8 +24,6 @@ namespace Ecwid.Models
 
         public string Email { get; set; }
 
-        public EcwidCart Cart { get; set; }
-
         /// <summary>
         /// E.g: CUSTOM_PAYMENT_APP-mollie-pg
         /// </summary>
@@ -57,7 +55,5 @@ namespace Ecwid.Models
         public EcwidAddressDetails BillingPerson { get; set; }
 
         public EcwidAddressDetails ShippingPerson { get; set; }
-
-        public EcwidMerchantSettings MerchantSettings { get; set; }
     }
 }

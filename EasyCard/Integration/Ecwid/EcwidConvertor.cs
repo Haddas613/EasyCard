@@ -25,15 +25,15 @@ namespace Ecwid
             this.decryptor = new EcwidDecryptor(config);
         }
 
-        public EcwidOrder DecryptEcwidOrder(string encryptedRaw)
+        public EcwidPayload DecryptEcwidPayload(string encryptedRaw)
         {
             var json = decryptor.Decrypt(encryptedRaw);
 
-            EcwidOrder ecwidModel = null;
+            EcwidPayload ecwidModel = null;
 
             try
             {
-                ecwidModel = JsonConvert.DeserializeObject<EcwidOrder>(json);
+                ecwidModel = JsonConvert.DeserializeObject<EcwidPayload>(json);
             }
             catch (Exception ex)
             {
@@ -49,12 +49,13 @@ namespace Ecwid
         /// </summary>
         /// <param name="encryptedRaw"></param>
         /// <returns></returns>
-        public PaymentRequestCreate GetCreatePaymentRequest(EcwidOrder ecwidOrder)
+        public PaymentRequestCreate GetCreatePaymentRequest(EcwidPayload payload)
         {
+            var ecwidOrder = payload.Cart.Order;
 
             var transaction = new PaymentRequestCreate
             {
-                Currency = ecwidOrder.Cart.Currency,
+                Currency = payload.Cart.Currency,
 
                 PaymentRequestAmount = ecwidOrder.Total,
                 VATTotal = ecwidOrder.Tax,
