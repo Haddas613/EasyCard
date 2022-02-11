@@ -316,6 +316,7 @@ namespace Transactions.Api.Controllers.External
                             var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
                             aggregatorRequest.AggregatorSettings = aggregatorSettings;
                             aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
+                            aggregatorRequest.IsBit = true;
 
                             var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
                             mapper.Map(aggregatorResponse, transaction);
@@ -351,6 +352,7 @@ namespace Transactions.Api.Controllers.External
                             var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
                             commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
+                            commitAggregatorRequest.IsBit = true;
 
                             var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
                             mapper.Map(commitAggregatorResponse, transaction);

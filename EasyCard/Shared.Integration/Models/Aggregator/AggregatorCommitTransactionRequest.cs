@@ -41,5 +41,10 @@ namespace Shared.Integration.Models
         /// Number Of Installments
         /// </summary>
         public int NumberOfInstallments { get; set; }
+
+        /// <summary>
+        /// Is Bit Transaction
+        /// </summary>
+        public bool IsBit { get; set; }
     }
 }
