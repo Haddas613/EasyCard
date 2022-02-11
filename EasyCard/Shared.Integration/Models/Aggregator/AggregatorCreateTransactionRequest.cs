@@ -103,5 +103,10 @@ namespace Shared.Integration.Models
         /// IsPinPad transaction
         /// </summary>
         public bool IsPinPad { get; set; }
+
+        /// <summary>
+        /// Is Bit Transaction
+        /// </summary>
+        public bool IsBit { get; set; }
     }
 }

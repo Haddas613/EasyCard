@@ -188,6 +188,7 @@ namespace Transactions.Api.Controllers.External
                         aggregatorRequest.TransactionDate = DateTime.Now;
                         var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
                         aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                        aggregatorRequest.IsBit = true;
 
                         var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
                         if (aggregatorValidationErrorMsg != null)
