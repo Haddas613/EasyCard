@@ -68,7 +68,7 @@
     </v-card>
     <v-card width="100%" flat :loading="!transmissions">
       <v-card-text class="px-0">
-        <transmissions-list :key="loading" :transmissions="transmissions" :select-limit="selectLimit" :selectable="transmissionsFilter.notTransmitted" ref="transmissionsList"></transmissions-list>
+        <transmissions-list-component :key="loading" :transmissions="transmissions" :select-limit="selectLimit" :selectable="transmissionsFilter.notTransmitted" ref="transmissionsList"></transmissions-list-component>
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
         </v-flex>
@@ -85,7 +85,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    TransmissionsList: () => import("../../components/transmissions/TransmissionsList"),
+    TransmissionsListComponent: () => import("../../components/transmissions/TransmissionsList"),
     TransmissionsFilterDialog: () =>
       import("../../components/transmissions/TransmissionsFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
