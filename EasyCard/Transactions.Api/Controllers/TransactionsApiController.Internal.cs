@@ -609,6 +609,21 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            //TODO: revisit when EcwidApi is completed
+            //if (transaction.Extension != null)
+            //{
+            //    try
+            //    {
+            //        var ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
+
+            //    }
+            //    //TODO: ignore JSON type mismatch error, only log exception if payload is indeed from ecwid
+            //    catch (Exception ex)
+            //    {
+            //        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+            //    }
+            //}
+
             try
             {
                 await SendTransactionSuccessEmails(transaction, terminal);

@@ -32,6 +32,11 @@
             Request ID
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.AggregatorCancelTransactionRequest.IsBit">
+            <summary>
+            Is Bit Transaction
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.AggregatorCancelTransactionResponse.ErrorMessage">
             <summary>
             TODO: error codes
@@ -60,6 +65,11 @@
         <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.NumberOfInstallments">
             <summary>
             Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCommitTransactionRequest.IsBit">
+            <summary>
+            Is Bit Transaction
             </summary>
         </member>
         <member name="P:Shared.Integration.Models.AggregatorCommitTransactionResponse.ErrorMessage">
@@ -161,6 +171,11 @@
         <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.IsPinPad">
             <summary>
             IsPinPad transaction
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.AggregatorCreateTransactionRequest.IsBit">
+            <summary>
+            Is Bit Transaction
             </summary>
         </member>
         <member name="P:Shared.Integration.Models.AggregatorCreateTransactionResponse.ErrorMessage">

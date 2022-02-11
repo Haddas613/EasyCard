@@ -9,6 +9,8 @@ namespace Ecwid.Models
     {
         public string Id { get; set; }
 
+        public string ReferenceTransactionId { get; set; }
+
         public decimal RefundedAmount { get; set; }
 
         /// <summary>

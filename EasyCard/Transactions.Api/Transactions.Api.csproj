@@ -62,6 +62,7 @@
     <ProjectReference Include="..\Integration\Bit\Bit.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\Ecwid\Ecwid.csproj" />
     <ProjectReference Include="..\Integration\InforU\InforU.csproj" />
     <ProjectReference Include="..\Integration\MasavFile\MasavFile.csproj" />
     <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
