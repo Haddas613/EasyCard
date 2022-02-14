@@ -58,15 +58,20 @@ export default {
   methods: {
     ok() {
       if (!this.$refs.form.validate()) return;
-      let result = { ...this.model, ...this.$refs.customerFormFields.getData(), bankDetails: {...this.$refs.bankDetails.getData() }};
+      let result = { ...this.model, ...this.$refs.customerFormFields.getData()};
+
+      if(this.$refs.bankDetails){
+        result.bankDetails =  {...this.$refs.bankDetails.getData() };
+      }
+
       this.$emit("ok", result);
     },
     addBankDetails() {
-      this.model.bankDetails = {
+      this.$set(this.model, 'bankDetails', {
         bank: null,
         bankBranch: null,
         bankAccount: null,
-      };
+      });
     },
     deleteBankDetails() {
       this.model.bankDetails = null;

@@ -578,5 +578,13 @@
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
   "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
   "BitProcessorConnectedMessage": "Bit connected and ready to use.",
-  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values.",
+
+  "--DICTIONARIES--": null,
+  "processor": "Processor",
+  "aggregator": "Aggregator",
+  "invoicing": "Invoicing",
+  "marketer": "Marketer",
+  "pinpadProcessor": "Pinpad Processor",
+  "virtualWalletProcessor": "Mobile Payment method"
 }
