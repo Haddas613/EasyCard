@@ -53,6 +53,7 @@ using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Ecwid.Models;
 
 namespace Transactions.Api.Controllers
 {
@@ -609,20 +610,32 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            //TODO: revisit when EcwidApi is completed
-            //if (transaction.Extension != null)
-            //{
-            //    try
-            //    {
-            //        var ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
+            if (transaction.Extension != null)
+            {
+                try
+                {
+                    var ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
 
-            //    }
-            //    //TODO: ignore JSON type mismatch error, only log exception if payload is indeed from ecwid
-            //    catch (Exception ex)
-            //    {
-            //        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-            //    }
-            //}
+                    if (ecwidPayload != null)
+                    {
+                        var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
+                        {
+                            PaymentTransactionID = transaction.PaymentTransactionID,
+                            ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
+                            StoreID = ecwidPayload.StoreID,
+                            Status = endResponse.Status == StatusEnum.Success ?
+                                Ecwid.Api.Models.EcwidOrderStatusEnum.PAID : Ecwid.Api.Models.EcwidOrderStatusEnum.CANCELLED,
+                            CorrelationId = transaction.CorrelationId,
+                            Token = ecwidPayload.Token,
+                        });
+                    }
+                }
+                //TODO: ignore JSON type mismatch error, only log exception if payload is indeed from ecwid
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+                }
+            }
 
             try
             {

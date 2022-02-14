@@ -54,6 +54,7 @@ using Shared.Helpers.Services;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Ecwid.Api;
 
 namespace Transactions.Api.Controllers
 {
@@ -93,6 +94,7 @@ namespace Transactions.Api.Controllers
         private readonly InvoicingController invoicingController;
         private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
+        private readonly IEcwidApiClient ecwidApiClient;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -120,7 +122,8 @@ namespace Transactions.Api.Controllers
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
             BillingController billingController,
             InvoicingController invoicingController,
-            BasicServices.Services.IExcelService excelService)
+            BasicServices.Services.IExcelService excelService,
+            IEcwidApiClient ecwidApiClient)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -148,6 +151,7 @@ namespace Transactions.Api.Controllers
             this.transactionsHubContext = transactionsHubContext;
             this.invoicingController = invoicingController;
             this.excelService = excelService;
+            this.ecwidApiClient = ecwidApiClient;
         }
 
         [HttpGet]
