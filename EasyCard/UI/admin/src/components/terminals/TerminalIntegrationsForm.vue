@@ -9,7 +9,7 @@
               <v-select
                 :items="integrationTypes"
                 item-text="name"
-                item-value="name"
+                item-value="value"
                 v-model="selectedIntegrationType"
                 :label="$t('IntegrationType')"
                 :rules="[vr.primitives.required]"
@@ -123,6 +123,7 @@ export default {
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
         name: this.$t(e),
+        value: e,
         disabled: this.lodash.some(this.model.integrations, i => i.externalSystem && i.externalSystem.type == e)
       }
     });
