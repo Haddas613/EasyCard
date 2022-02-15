@@ -14,5 +14,7 @@ namespace Transactions.Api.Models.Checkout
         public string CardExpiration { get; set; }
 
         public string CardVendor { get; set; }
+
+        public DateTime? Created { get; set; }
     }
 }
