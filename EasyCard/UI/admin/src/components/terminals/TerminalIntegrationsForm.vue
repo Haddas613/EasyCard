@@ -144,10 +144,10 @@ export default {
       if(!this.$refs.form.validate() || this.loading){ return ;}
       this.loading = true;
       try{
-        let type = this.lodash.find(this.integrationTypes, t => t.name == this.selectedIntegrationType);
+        let type = this.lodash.find(this.integrationTypes, t => t.value == this.selectedIntegrationType);
         type.disabled = true;
 
-        let integration = this.lodash.find(this.integrations[type.name], i => i.externalSystemID == this.selectedIntegrationID);
+        let integration = this.lodash.find(this.integrations[type.value], i => i.externalSystemID == this.selectedIntegrationID);
         let opResult = await this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
 
         if(!this.isTemplate && opResult.additionalData){
@@ -182,7 +182,7 @@ export default {
       await this.$api[this.apiName].deleteExternalSystem(this.terminal[this.idKey], integrationID);
       let idx = this.lodash.findIndex(this.model.integrations, i => i.externalSystemID == integrationID);
 
-      let type = this.lodash.find(this.integrationTypes, t => t.name == this.model.integrations[idx].externalSystem.type);
+      let type = this.lodash.find(this.integrationTypes, t => t.value == this.model.integrations[idx].externalSystem.type);
       type.disabled = false;
       this.model.integrations.splice(idx, 1);
     },

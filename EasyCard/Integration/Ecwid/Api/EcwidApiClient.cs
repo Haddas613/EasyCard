@@ -44,8 +44,13 @@ namespace Ecwid.Api
 
             try
             {
+                var payload = new
+                {
+                    paymentStatus = request.Status.ToString(),
+                };
+
                 result = await apiClient.Put<EcwidUpdateStatusResponse>(ecwidGlobalSettings.ApiBaseAddress,
-                    $"api/v3/{request.StoreID}/orders/{request.ReferenceTransactionID}?token={request.Token}", request, null,
+                    $"api/v3/{request.StoreID}/orders/{request.ReferenceTransactionID}?token={request.Token}", payload, null,
                     (url, request) =>
                     {
                         requestStr = request;
