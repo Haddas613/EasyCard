@@ -17,6 +17,14 @@
       <v-tab-item key="info">
         <div v-if="model">
           <v-card flat class="mb-2">
+            <div class="mt-2">
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
+                {{$t("CreditCardExpired")}}
+              </v-alert>
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.tokenNotAvailable">
+                {{$t("CreditCardTokenNotAvailable")}}
+              </v-alert>
+            </div>
             <!-- <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
             <v-divider></v-divider>-->
             <v-card-text class="body-1 black--text" v-if="model">

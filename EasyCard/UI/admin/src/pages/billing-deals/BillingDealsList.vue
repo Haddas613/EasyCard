@@ -114,7 +114,7 @@ export default {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         filterDateByNextScheduledTransaction: true,
-        ...this.filters
+        ...this.filters,
       },
       options: {},
       headers: [],

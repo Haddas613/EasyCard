@@ -79,5 +79,7 @@ namespace Transactions.Api.Models.Billing
         public bool OnlyActive { get; set; }
 
         public bool InProgress { get; set; }
+
+        public bool CreditCardExpired { get; set; }
     }
 }

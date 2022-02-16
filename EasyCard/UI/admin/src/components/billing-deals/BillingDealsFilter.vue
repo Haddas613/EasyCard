@@ -61,7 +61,7 @@
           :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
           :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
       </v-row>
-      <v-row class="d-flex" justify="end">
+      <v-row class="d-flex">
         <v-col cols="3" md="2">
           <v-switch v-model="model.invoiceOnly">
             <template v-slot:label>
@@ -101,6 +101,13 @@
           <v-switch v-model="model.inProgress" @change="switchFilterChanged('inProgress')">
             <template v-slot:label>
               <small>{{$t('InProgress')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
+          <v-switch v-model="model.creditCardExpired" @change="switchFilterChanged('creditCardExpired')">
+            <template v-slot:label>
+              <small>{{$t('CreditCardExpired')}}</small>
             </template>
           </v-switch>
         </v-col>
@@ -156,7 +163,7 @@ export default {
       });
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress', 'creditCardExpired'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.model, t, 0);
