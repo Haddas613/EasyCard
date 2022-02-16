@@ -131,6 +131,14 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
             var query = billingDealService.GetBillingDeals().Filter(filter);
+
+            if (filter.CreditCardExpired)
+            {
+                var today = DateTime.UtcNow;
+                query = query
+                    .Join(creditCardTokenService.GetTokens(true).Where(d => d.ExpirationDate <= today), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => l);
+            }
+
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
