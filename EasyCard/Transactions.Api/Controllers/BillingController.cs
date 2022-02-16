@@ -401,7 +401,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
-            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.CurrentTransactionTimestamp);
+            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.HasError ? null : billingDeal.CurrentTransactionTimestamp);
 
             mapper.Map(model, billingDeal);
 
@@ -489,7 +489,7 @@ namespace Transactions.Api.Controllers
 
             EnsureExists(model.DealDetails); // TODO: redo EnsureExists
 
-            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.CurrentTransactionTimestamp);
+            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.HasError ? null : billingDeal.CurrentTransactionTimestamp);
 
             mapper.Map(model, billingDeal);
 
