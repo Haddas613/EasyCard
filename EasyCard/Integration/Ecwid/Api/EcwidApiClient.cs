@@ -35,7 +35,7 @@ namespace Ecwid.Api
 
         public async Task<OperationResponse> UpdateOrderStatus(EcwidUpdateOrderStatusRequest request)
         {
-            object result = null;
+            EcwidUpdateStatusResponse result = null;
             string requestUrl = null;
             string requestStr = null;
             string responseStr = null;
@@ -44,7 +44,13 @@ namespace Ecwid.Api
 
             try
             {
-                result = await apiClient.Post<object>(ecwidGlobalSettings.ApiBaseAddress, "", new { }, null,
+                var payload = new
+                {
+                    paymentStatus = request.Status.ToString(),
+                };
+
+                result = await apiClient.Put<EcwidUpdateStatusResponse>(ecwidGlobalSettings.ApiBaseAddress,
+                    $"api/v3/{request.StoreID}/orders/{request.ReferenceTransactionID}?token={request.Token}", payload, null,
                     (url, request) =>
                     {
                         requestStr = request;
@@ -74,7 +80,8 @@ namespace Ecwid.Api
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }
 
-            var response = new OperationResponse(string.Empty, Shared.Api.Models.Enums.StatusEnum.Success);
+            var response = new OperationResponse(responseStatusStr,
+                result.UpdateCount > 0 ? Shared.Api.Models.Enums.StatusEnum.Success : Shared.Api.Models.Enums.StatusEnum.Error);
 
             return response;
         }
