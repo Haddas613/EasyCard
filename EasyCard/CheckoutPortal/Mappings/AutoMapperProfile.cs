@@ -57,6 +57,8 @@ namespace CheckoutPortal.Mappings
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
                 .ForMember(d => d.AllowPinPad, o => o.MapFrom((src, d) => d.AllowPinPad.HasValue ? d.AllowPinPad : src.AllowPinPad))
+                //if allow pin pad is true, by default it's considered a pinpad payment 
+                .ForMember(d => d.PinPad, o => o.MapFrom((src, d) => d.AllowPinPad.HasValue ? d.AllowPinPad : false))
                 .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
                 .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
