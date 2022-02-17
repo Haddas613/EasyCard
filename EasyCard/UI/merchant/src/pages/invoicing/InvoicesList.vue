@@ -48,7 +48,7 @@
         <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
           <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
         </v-flex>-->
-        <invoices-list :key="loadCount" selectable :invoices="invoices"></invoices-list>
+        <invoices-list-component :key="loadCount" selectable :invoices="invoices"></invoices-list-component>
 
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
@@ -70,7 +70,7 @@ export default {
     InvoicesFilterDialog: () =>
       import("../../components/invoicing/InvoicesFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
-    InvoicesList: () =>
+    InvoicesListComponent: () =>
       import("../../components/invoicing/InvoicesList"),
   },
   props: {
