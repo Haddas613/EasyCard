@@ -258,4 +258,7 @@
   <data name="CreditCardPayment" xml:space="preserve">
     <value>Credit Card Payment</value>
   </data>
+  <data name="SettingsWereSavedSuccessfully" xml:space="preserve">
+    <value>Settings were saved successfully</value>
+  </data>
 </root>

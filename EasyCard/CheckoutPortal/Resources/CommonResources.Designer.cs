@@ -412,6 +412,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings were saved successfully.
+        /// </summary>
+        public static string SettingsWereSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("SettingsWereSavedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Api Key.
         /// </summary>
         public static string TerminalApiKey {
