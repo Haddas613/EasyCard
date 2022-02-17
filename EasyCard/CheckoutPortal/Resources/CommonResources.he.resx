@@ -255,4 +255,7 @@
   <data name="CreditCardPayment" xml:space="preserve">
     <value>כרטיס אשראי</value>
   </data>
+  <data name="SettingsWereSavedSuccessfully" xml:space="preserve">
+    <value>ההגדרות נשמרו בהצלחה</value>
+  </data>
 </root>
