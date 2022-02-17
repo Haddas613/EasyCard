@@ -92,7 +92,8 @@
             $('#cancel-form').submit();
         });
 
-        $("#paywithbit").on("click", function () {
+        $("#paywithbit").on("click", function (e) {
+            e.preventDefault();
             if (!$("#bit-form").valid()) {
                 return;
             }
