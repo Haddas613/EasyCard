@@ -130,6 +130,7 @@ export default {
     },
     async applyFilters(data) {
       this.invoicesFilter = {
+        ...this.invoicesFilter,
         ...data,
         skip: 0,
       };
