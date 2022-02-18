@@ -48,7 +48,7 @@
         <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
           <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
         </v-flex>-->
-        <invoices-list :key="loadCount" selectable :invoices="invoices"></invoices-list>
+        <invoices-list-component :key="loadCount" selectable :invoices="invoices"></invoices-list-component>
 
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
@@ -61,16 +61,16 @@
 <script>
 import moment from "moment";
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
+  name: "InvoicesList",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     InvoicesFilterDialog: () =>
       import("../../components/invoicing/InvoicesFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
-    InvoicesList: () =>
+    InvoicesListComponent: () =>
       import("../../components/invoicing/InvoicesList"),
   },
   props: {
@@ -91,7 +91,7 @@ export default {
       loading: false,
       loadCount: 0,
       invoicesFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         ...this.filters
       },
@@ -130,9 +130,9 @@ export default {
     },
     async applyFilters(data) {
       this.invoicesFilter = {
+        ...this.invoicesFilter,
         ...data,
         skip: 0,
-        take: 100
       };
       await this.getDataFromApi();
     },
@@ -195,7 +195,7 @@ export default {
       terminalID: this.terminalStore.terminalID,
     });
     const vm = this;
-    if(!this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing)) return;
+    if(!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing)) return;
     
     this.$store.commit("ui/changeHeader", {
       value: {

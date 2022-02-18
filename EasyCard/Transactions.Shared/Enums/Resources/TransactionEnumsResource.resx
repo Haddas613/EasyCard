@@ -123,6 +123,9 @@
   <data name="Billing" xml:space="preserve">
     <value>Billing</value>
   </data>
+  <data name="Bit" xml:space="preserve">
+    <value>Bit</value>
+  </data>
   <data name="CanceledByAggregator" xml:space="preserve">
     <value>Canceled by Aggregator</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="Device" xml:space="preserve">
     <value>Device</value>
+  </data>
+  <data name="Ecwid" xml:space="preserve">
+    <value>Ecwid</value>
   </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed to cancel by Aggregator</value>

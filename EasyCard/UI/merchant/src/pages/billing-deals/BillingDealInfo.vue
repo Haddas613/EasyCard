@@ -162,7 +162,7 @@ export default {
       model: null,
       financialItems: null, //e.g invoices or transactions
       financialItemsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         billingDealID: this.$route.params.id
       },

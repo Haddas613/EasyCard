@@ -103,6 +103,13 @@
               </template>
             </v-switch>
           </v-col>
+          <v-col cols="4" md="3">
+          <v-switch v-model="billingDealsFilter.creditCardExpired" @change="switchFilterChanged('creditCardExpired')">
+            <template v-slot:label>
+              <small>{{$t('CreditCardExpired')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -236,6 +243,7 @@ import moment from "moment";
 import { mapState } from "vuex";
 
 export default {
+  name: "BillingDealsList",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -270,7 +278,7 @@ export default {
       moment: moment,
       loading: false,
       billingDealsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
@@ -387,7 +395,7 @@ export default {
       }
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress', 'creditCardExpired'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.billingDealsFilter, t, 0);
@@ -421,7 +429,6 @@ export default {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-    await this.getDataFromApi();
     const vm = this;
     this.$store.commit("ui/changeHeader", {
       value: {

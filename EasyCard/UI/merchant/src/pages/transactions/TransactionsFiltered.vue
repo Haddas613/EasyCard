@@ -36,7 +36,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+                <span dir="ltr">
+                  <template v-if="transactionsFilter.dateFrom">
+                    {{transactionsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="transactionsFilter.dateTo">
+                    {{transactionsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -132,6 +142,7 @@
 import moment from "moment";
 import { mapState } from "vuex";
 export default {
+  name: "TransactionsFiltered",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -170,7 +181,7 @@ export default {
       },
       headers: [],
       defaultFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         jDealType: "J4"
       },

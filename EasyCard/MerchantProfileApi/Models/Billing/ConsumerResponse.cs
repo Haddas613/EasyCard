@@ -1,4 +1,5 @@
 ﻿using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,5 +48,7 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerSecondPhone { get; set; }
 
         public string ConsumerNote { get; set; }
+
+        public BankDetails BankDetails { get; set; }
     }
 }

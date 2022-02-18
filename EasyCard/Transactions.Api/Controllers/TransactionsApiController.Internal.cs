@@ -53,6 +53,7 @@ using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Ecwid.Models;
 
 namespace Transactions.Api.Controllers
 {
@@ -126,6 +127,23 @@ namespace Transactions.Api.Controllers
             {
                 //TODO: Handle refund & credit default invoice types
                 model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            EcwidTransactionExtension ecwidPayload = null;
+
+            if (transaction.Extension != null)
+            {
+                try
+                {
+                    ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
+                    if (ecwidPayload != null && ecwidPayload.Token != null)
+                    {
+                        transaction.DocumentOrigin = DocumentOriginEnum.Ecwid;
+                    }
+                }
+                catch
+                {
+                }
             }
 
             // Update card information based on token
@@ -609,6 +627,27 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            if (ecwidPayload != null)
+            {
+                try
+                {
+                    var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
+                    {
+                        PaymentTransactionID = transaction.PaymentTransactionID,
+                        ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
+                        StoreID = ecwidPayload.StoreID,
+                        Status = endResponse.Status == StatusEnum.Success ?
+                                Ecwid.Api.Models.EcwidOrderStatusEnum.PAID : Ecwid.Api.Models.EcwidOrderStatusEnum.CANCELLED,
+                        CorrelationId = transaction.CorrelationId,
+                        Token = ecwidPayload.Token,
+                    });
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Ecwid update order status failed: {ex.Message}. TransactionID: {transaction.PaymentTransactionID}");
+                }
+            }
+
             try
             {
                 await SendTransactionSuccessEmails(transaction, terminal);
@@ -858,15 +897,6 @@ namespace Transactions.Api.Controllers
 
                     await dbTransaction.RollbackAsync();
                 }
-            }
-
-            try
-            {
-                await invoicingController.SendInvoiceEmail(invoiceRequest.DealDetails.ConsumerEmail, invoiceRequest, terminal);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID, invoiceID }, endResponse);

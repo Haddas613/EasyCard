@@ -30,15 +30,15 @@ namespace Bit.Models
         public string PaymentInitiationId { get; set; }
 
         /// <summary>
-        /// Required.
+        /// When is not mandatory don’t send the field, it should suppose to be string in ""
         /// Usually referred to as the X field in the Israeli card industry. Serves as a reference ID for supporting inquiries.
         /// </summary>
-        public long SourceTransactionId { get; set; }
+        //public string SourceTransactionId { get; set; } = string.Empty;
 
         /// <summary>
         /// Not required.
         /// Usually referred to as the Z field in the Israeli card industry. Serves as a reference ID for supporting inquiries.
         /// </summary>
-        public string IssuerTransactionId { get; set; }
+        //public string IssuerTransactionId { get; set; }
     }
 }

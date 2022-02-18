@@ -63,7 +63,8 @@ namespace EasyInvoice
 
             try
             {
-                headers.Add("Accept-language", "he"); // TODO: get language from options
+                string langInvoice = terminal.Lang.HasValue ? terminal.Lang.Value.ToString().ToLower() : "he";
+                headers.Add("Accept-language", langInvoice);
 
                 svcRes = await this.apiClient.Post<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers),
                      (url, request) =>
@@ -262,8 +263,6 @@ namespace EasyInvoice
 
             try
             {
-                // headers.Add("Accept-language", "he"); // TODO: get language from options
-
                 var json = new SetDocNextNumberModel
                 {
                     DocumentType = request.DocType.ToString(),
@@ -381,7 +380,7 @@ namespace EasyInvoice
             }
         }
 
-        
+
         public async Task<Object> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -417,7 +416,7 @@ namespace EasyInvoice
         }
 
 
-         public async Task<Object> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<Object> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -426,7 +425,7 @@ namespace EasyInvoice
             try
             {
                 // headers.Add("Accept-language", "he"); // TODO: get language from options
-                
+
                 var json = new GetDocumentTaxReportModel
                 {
                     endDate = request.EndDate,

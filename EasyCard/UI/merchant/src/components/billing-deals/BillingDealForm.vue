@@ -35,16 +35,16 @@
         <payment-type :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only']"></payment-type>
       </v-col>
       <template v-if="model.invoiceOnly">
-        <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
-        <cheque-details-fields ref="chequeDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cheque"></cheque-details-fields>
-        <bank-transfer-details-fields ref="bankDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank"></bank-transfer-details-fields>
+        <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == $appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
+        <cheque-details-fields ref="chequeDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.cheque"></cheque-details-fields>
+        <bank-transfer-details-fields ref="bankDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank"></bank-transfer-details-fields>
       </template>
       <template v-else>
         <v-col
           cols="12"
           class="pb-2"
           v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
-          v-if="model.paymentType == appConstants.transaction.paymentTypes.card"
+          v-if="model.paymentType == $appConstants.transaction.paymentTypes.card"
         >
           <v-flex class="d-flex justify-end">
             <v-btn
@@ -52,7 +52,7 @@
               x-small
               :disabled="!model.dealDetails.consumerID"
               @click="ctokenDialog = true;"
-              v-if="$featureEnabled(terminalStore, appConstants.terminal.features.CreditCardTokens)"
+              v-if="$featureEnabled(terminalStore, $appConstants.terminal.features.CreditCardTokens)"
             >
               <v-icon left small>mdi-plus</v-icon>
               {{$t("AddToken")}}
@@ -116,7 +116,7 @@
           cols="12"
           class="pb-2"
           v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
-          v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
+          v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
           <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
         </v-col>
       </template>
@@ -221,7 +221,7 @@
       <v-col cols="12">
         <v-switch
           v-show="!model.invoiceOnly"
-          v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)"
+          v-if="$integrationAvailable(terminalStore, $appConstants.terminal.integrations.invoicing)"
           v-model="model.issueInvoice"
           :label="$t('IssueDocument')"
           :disabled="issueInvoiceDisabled"
@@ -247,7 +247,6 @@
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
 import itemPricingService from "../../helpers/item-pricing";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -290,7 +289,6 @@ export default {
       scheduleDialog: false,
       ctokenDialog: false,
       billingScheduleJSON: JSON.stringify(this.data.billingSchedule),
-      appConstants: appConstants,
       issueInvoiceDisabled: false
     };
   },
@@ -351,45 +349,45 @@ export default {
         result.paymentDetails = [];
         let data = null;
         switch(this.model.paymentType){
-          case this.appConstants.transaction.paymentTypes.card:
+          case this.$appConstants.transaction.paymentTypes.card:
             data = this.$refs.ccDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.card
+                paymentType: this.$appConstants.transaction.paymentTypes.card
               });
             }
             break;
-          case this.appConstants.transaction.paymentTypes.cash:
+          case this.$appConstants.transaction.paymentTypes.cash:
             result.paymentDetails.push({
-              paymentType: this.appConstants.transaction.paymentTypes.cash
+              paymentType: this.$appConstants.transaction.paymentTypes.cash
             });
             break;
-          case this.appConstants.transaction.paymentTypes.cheque:
+          case this.$appConstants.transaction.paymentTypes.cheque:
             data = this.$refs.chequeDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.cheque
+                paymentType: this.$appConstants.transaction.paymentTypes.cheque
               });
             }
             break;
-          case this.appConstants.transaction.paymentTypes.bank:
+          case this.$appConstants.transaction.paymentTypes.bank:
             data = this.$refs.bankDetails.getData();
             if(data){
               result.paymentDetails.push({
                 ...data,
-                paymentType: this.appConstants.transaction.paymentTypes.bank
+                paymentType: this.$appConstants.transaction.paymentTypes.bank
               });
             }
             break;
         }
       }else{
-        if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
+        if(this.model.paymentType == this.$appConstants.transaction.paymentTypes.bank){
           result.creditCardToken = null;
           result.bankDetails = this.$refs.bankDetails.getData();
         }
-        else if(this.model.paymentType == appConstants.transaction.paymentTypes.card){
+        else if(this.model.paymentType == this.$appConstants.transaction.paymentTypes.card){
           if(!this.token){
             this.$toasted.show(this.$t("PleaseSelectCardToken"), { type: "error" });
             if(this.customerTokens.length > 0){
@@ -478,7 +476,7 @@ export default {
       this.model.currency =
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
-    if (this.model.dealDetails.consumerID && this.model.paymentType == appConstants.transaction.paymentTypes.card) {
+    if (this.model.dealDetails.consumerID && this.model.paymentType == this.$appConstants.transaction.paymentTypes.card) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
@@ -502,7 +500,7 @@ export default {
       this.issueInvoiceDisabled = true;
     }
     else if (this.model.issueInvoice) {
-      this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
+      this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
     }
     
     if(!this.model.vatRate){

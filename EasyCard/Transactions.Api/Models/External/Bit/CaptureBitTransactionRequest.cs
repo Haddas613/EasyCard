@@ -10,5 +10,9 @@ namespace Transactions.Api.Models.External.Bit
 
         [Required(AllowEmptyStrings = false)]
         public string PaymentInitiationId { get; set; }
+
+        public Guid? PaymentRequestID { get; set; }
+
+        public Guid? PaymentIntentID { get; set; }
     }
 }

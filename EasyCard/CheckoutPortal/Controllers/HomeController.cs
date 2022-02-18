@@ -24,6 +24,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
 using Transactions.Api.Models.External.Bit;
+using System.Web;
+using Shared.Api.Utilities;
 
 namespace CheckoutPortal.Controllers
 {
@@ -166,7 +168,12 @@ namespace CheckoutPortal.Controllers
             {
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 
@@ -212,10 +219,30 @@ namespace CheckoutPortal.Controllers
                 return await IndexViewResult(checkoutConfig, request);
             }
 
-            // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue || request.PinPad)
+            if (request.PayWithBit)
             {
-                if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                request.PinPad = false;
+                request.PinPadDeviceID = null;
+
+                if (ModelState[nameof(request.Cvv)] != null)
+                {
+                    ModelState[nameof(request.Cvv)]?.Errors?.Clear();
+                    ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardNumber)] != null)
+                {
+                    ModelState[nameof(request.CardNumber)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                }
+                if (ModelState[nameof(request.CardExpiration)] != null)
+                {
+                    ModelState[nameof(request.CardExpiration)]?.Errors?.Clear();
+                    ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+                }
+            }
+            else if (request.CreditCardToken.HasValue || request.PinPad) // If token is present and correct, credit card validation is removed from model state
+            {
+                if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.CreditCardTokenID == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
 
@@ -469,9 +496,9 @@ namespace CheckoutPortal.Controllers
                     TransactionSerialId = bitResult.BitTransactionSerialId,
                     RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
                     PaymentTransactionID = result.EntityUID.Value,
-                    PaymentIntent = request.PaymentIntent,
+                    PaymentIntent = checkoutConfig.PaymentIntentID,
                     ApiKey = request.ApiKey,
-                    PaymentRequest = request.PaymentRequest,
+                    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID,
                 });
             }
 
@@ -576,42 +603,71 @@ namespace CheckoutPortal.Controllers
                 PaymentTransactionID = request.PaymentTransactionID,
             });
 
+            //string maScheme = $"%26return_scheme%3Dhttps%253A%252F%252Fecng-checkout.azurewebsites.net%252Fbit-completed";
+
+            var bitCompletedUrl = HttpUtility.UrlEncode($"{apiSettings.CheckoutPortalUrl}/bit-completed" +
+                $"?PaymentInitiationId={request.PaymentInitiationId}&TransactionSerialId={request.TransactionSerialId}" +
+                $"&PaymentIntent={request.PaymentIntent}&PaymentRequest={request.PaymentRequest}&ApiKey={request.ApiKey}" +
+                $"&PaymentTransactionID={request.PaymentTransactionID}&RedirectUrl={request.RedirectUrl}");
+
+            //URL needs to be double encoded
+            var scheme = HttpUtility.UrlEncode($"&return_scheme={bitCompletedUrl}");
+
+            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + scheme;
+            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + scheme;
+            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(Request);
+
+            if (DeviceDetectUtilities.IsMobileBrowser(Request))
+            {
+                if (Request.IsIOS())
+                {
+                    return Redirect(request.ApplicationSchemeIos);
+                }
+                else if (Request.IsAndroid())
+                {
+                    return Redirect(request.ApplicationSchemeAndroid);
+                }
+            }
+
             return View(request);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [ValidateAntiForgeryToken]
         [Route("bit-completed")]
-        public async Task<IActionResult> BitPaymentCompleted([FromBody] BitPaymentViewModel request)
+        public async Task<IActionResult> BitPaymentCompleted([FromQuery] BitPaymentViewModel request)
         {
             if (!ModelState.IsValid)
             {
-                logger.LogError($"{nameof(BitPaymentCompleted)}: {string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage))}");
-                return PaymentError();
+                var errorMessage = string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                logger.LogError($"{nameof(BitPaymentCompleted)}: {errorMessage}");
+                return PaymentError(errorMessage);
             }
 
             CheckoutData checkoutConfig;
-            bool isPaymentIntent = request.PaymentIntent != null;
 
             if (request.ApiKey != null)
             {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+                checkoutConfig = await GetCheckoutData(request.ApiKey, null, null, request.RedirectUrl);
             }
-            else
+            else if (request.PaymentIntent != null)
             {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
-                {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
-                }
-
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+                checkoutConfig = await GetCheckoutData(request.PaymentIntent.Value, request.RedirectUrl, true);
+            }
+            else if (request.PaymentRequest != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.PaymentRequest.Value, request.RedirectUrl, false);
+            }else
+            {
+                throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
             var bitRequest = new CaptureBitTransactionRequest
             {
                 PaymentInitiationId = request.PaymentInitiationId,
-                PaymentTransactionID = request.PaymentTransactionID
+                PaymentTransactionID = request.PaymentTransactionID,
+                PaymentIntentID = request.PaymentIntent,
+                PaymentRequestID = request.PaymentRequest
             };
 
             var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
@@ -619,7 +675,7 @@ namespace CheckoutPortal.Controllers
             if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
-                return PaymentError();
+                return PaymentError(captureResult.Message);
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
@@ -669,9 +725,9 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError()
+        public IActionResult PaymentError(string message)
         {
-            return View();
+            return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -744,7 +800,12 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 
@@ -765,7 +826,12 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 

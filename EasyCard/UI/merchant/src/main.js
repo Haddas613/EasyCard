@@ -27,6 +27,7 @@ import TerminalSelect from "./components/common/TerminalSelect";
 import inputDecimal from "./extensions/directives/input-decimal";
 
 import config from './app.config';
+import appConstants from './helpers/app-constants';
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => {
@@ -58,7 +59,12 @@ Vue.use({
     install: function (Vue, ) {
         Object.defineProperty(Vue.prototype, '$cfg', { value: config });
     }
-})
+});
+Vue.use({
+    install: function (Vue, ) {
+        Object.defineProperty(Vue.prototype, '$appConstants', { value: appConstants });
+    }
+});
 Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);

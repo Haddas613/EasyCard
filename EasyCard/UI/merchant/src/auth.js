@@ -1,6 +1,6 @@
 import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import cfg from "./app.config";
-import appConstants from "./helpers/app-constants";
+import appConstants from './helpers/app-constants';
 
 class AuthService {
     constructor() {

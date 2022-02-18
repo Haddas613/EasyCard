@@ -44,6 +44,11 @@
             Document created by consumer using Bit
             </summary>
         </member>
+        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Ecwid">
+            <summary>
+            Document created by consumer using Ecwid
+            </summary>
+        </member>
         <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sending">
             <summary>
             Required because of technical reason - to do not send request twice
@@ -323,6 +328,11 @@
               Looks up a localized string similar to Billing.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Bit">
+            <summary>
+              Looks up a localized string similar to Bit.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.CanceledByAggregator">
             <summary>
               Looks up a localized string similar to Canceled by Aggregator.
@@ -336,6 +346,11 @@
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Device">
             <summary>
               Looks up a localized string similar to Device.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Ecwid">
+            <summary>
+              Looks up a localized string similar to Ecwid.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.FailedToCancelByAggregator">
@@ -663,6 +678,11 @@
         <member name="P:Transactions.Shared.Messages.BillingInProgress">
             <summary>
               Looks up a localized string similar to Billing deal processing in-progress.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BitPaymentFailed">
+            <summary>
+              Looks up a localized string similar to Bit payment failed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.CanceledByAggregator">

@@ -68,7 +68,6 @@
 <script>
 import { mapState } from "vuex";
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   name: "InstallmentDetailsForm",
@@ -144,7 +143,7 @@ export default {
     }
   },
   mounted() {
-    if(this.transactionType == appConstants.transaction.types.credit){
+    if(this.transactionType == this.$appConstants.transaction.types.credit){
       this.minInstallments = this.terminalStore.settings.minCreditInstallments || 1;
       this.maxInstallments = this.terminalStore.settings.maxCreditInstallments || 36;
     }else{

@@ -131,6 +131,14 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
             var query = billingDealService.GetBillingDeals().Filter(filter);
+
+            if (filter.CreditCardExpired)
+            {
+                var today = DateTime.UtcNow;
+                query = query
+                    .Join(creditCardTokenService.GetTokens(true).Where(d => d.ExpirationDate <= today), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => l);
+            }
+
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
@@ -401,7 +409,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
-            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.CurrentTransactionTimestamp);
+            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.HasError ? null : billingDeal.CurrentTransactionTimestamp);
 
             mapper.Map(model, billingDeal);
 
@@ -489,7 +497,7 @@ namespace Transactions.Api.Controllers
 
             EnsureExists(model.DealDetails); // TODO: redo EnsureExists
 
-            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.CurrentTransactionTimestamp);
+            billingDeal.NextScheduledTransaction = BillingDealTerminalSettingsValidator.ValidateSchedue(model.BillingSchedule, billingDeal.HasError ? null : billingDeal.CurrentTransactionTimestamp);
 
             mapper.Map(model, billingDeal);
 

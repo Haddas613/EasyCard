@@ -65,6 +65,7 @@ namespace Bit.Models
         /// revokedByPsu - 5,
         /// expired - 6,
         /// terminatedByTpp - 7,
+        /// charged - 11
         /// </summary>
         public string RequestStatusCode { get; set; }
 
@@ -72,7 +73,7 @@ namespace Bit.Models
         {
             get
             {
-                return RequestStatusCode == "4";
+                return RequestStatusCode == "11";
             }
         }
 

@@ -138,7 +138,7 @@ namespace DesktopEasyCardConvertorECNG
                     var productsPerCustomer = await myConnection.QueryAsync<ProductPerCustomer>(" SELECT DealID, DealText, DealSum/ DealCount as ProdSum,DealCount,RivID,products.RivCode FROM tblDealProp as prodpercust inner join tblrivname as products on    products.revid = prodpercust.rivid");
 
                     var rowndsProduct = await myConnection.QueryAsync<RowndsProductsPerCustomer>("select customers.dealid as DealID, customers.totalsum, sums.customerTotalSum, sums.customerTotalSum * 1.17 as sumprodWithMaam from tblDeal as customers inner join(select DEALID, SUM(DealSum) as customerTotalSum from tbldealPROP GROUP BY DEALID) as sums on sums.dealid = customers.dealid");
-                    
+
                     var pausedBillingDeal = await myConnection.QueryAsync<PausedDealsPerCustomer>("select DealID, Month,Year,Note from tbldeallock");
 
                     DataFromMDBFile data = new DataFromMDBFile()
@@ -327,11 +327,14 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     var consumer = await SyncECNGCustomer(customerInFile);
 
-                    var token = await CreateTokenPerCustomer(customerInFile, consumer);
-
-                    if (!config.DoNotCreateBillings)
+                    if (consumer != null)
                     {
-                        await CreateBillingDeal(customerInFile, token, consumer);
+                        var token = await CreateTokenPerCustomer(customerInFile, consumer);
+
+                        if (!config.DoNotCreateBillings)
+                        {
+                            await CreateBillingDeal(customerInFile, token, consumer);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -352,7 +355,7 @@ namespace DesktopEasyCardConvertorECNG
 
         private async Task<ConsumerResponse> SyncECNGCustomer(Customer customerInFile)
         {
-            var externalReference = string.IsNullOrWhiteSpace(customerInFile.RivCode) ? null : isRapidOneClient ? $"RPS_{customerInFile.RivCode}" : null; // TODO: check if consumer exist in R1
+            var externalReference = string.IsNullOrWhiteSpace(customerInFile.RivCode) ? null : isRapidOneClient ? $"RPS_{customerInFile.RivCode}" : null; // TODO: check if consumer exist in R1  RPD_170069
             var consumerAddress = new Shared.Integration.Models.Address() { City = customerInFile.CityID, Street = customerInFile.Street, Zip = customerInFile.ZipCode };
 
             var customerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName);
@@ -363,21 +366,43 @@ namespace DesktopEasyCardConvertorECNG
                 bankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch/*, PaymentType = Shared.Integration.Models.PaymentTypeEnum.Bank* todo to check*/ };
             }
 
+            if (isRapidOneClient && (string.IsNullOrWhiteSpace(externalReference)))
+            {
+                logger.LogWarning($"Do not import customer with no Rapid reference number {customerInFile.DealID}");
+                return null;
+            }
+
             ConsumersFilter cf = new ConsumersFilter
             {
                 BillingDesktopRefNumber = customerInFile.DealID,
                 ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All,
-                Origin = config.Origin
+                Origin = config.Origin,
             };
 
-            Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
+            if (isRapidOneClient)
+            {
+                cf = new ConsumersFilter
+                {
+                    ExternalReference = externalReference,
+                    ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.OnlyActive,
+                    Origin = config.Origin,
+                };
+            }
+
+            var existingConsumers = (await metadataMerchantService.GetConsumers(cf))?.Data;
+
+            if (existingConsumers?.Count() > 1)
+            {
+                throw new ApplicationException($"More than one customer with same Identity {customerInFile.DealID} {customerInFile.RivCode}");
+            }
+
+            Guid? consumerID = existingConsumers?.FirstOrDefault()?.ConsumerID;
             if (consumerID.HasValue)
             {
                 var existingConsumer = await metadataMerchantService.GetConsumer(consumerID.Value);
 
                 var request = mapper.Map<UpdateConsumerRequest>(existingConsumer);
 
-                request.Active = customerInFile.Active;
                 request.BankDetails = bankDetails;
                 request.ConsumerAddress = consumerAddress;
                 request.ConsumerName = customerName;
@@ -394,7 +419,6 @@ namespace DesktopEasyCardConvertorECNG
             {
                 var resCreateCustomer = await metadataMerchantService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
                 {
-                    Active = customerInFile.Active,
                     BankDetails = bankDetails,
                     BillingDesktopRefNumber = customerInFile.DealID,
                     ConsumerAddress = consumerAddress,
@@ -480,12 +504,12 @@ namespace DesktopEasyCardConvertorECNG
             }
 
             var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter
-            { 
-                 PaymentType = paymentType,
-                 CreditCardTokenID = TokenCreditCard,
-                 TerminalID = ecngTerminal.TerminalID,
-                 Origin = config.Origin,
-                 DealReference = customerInFile.DealID
+            {
+                PaymentType = paymentType,
+                CreditCardTokenID = TokenCreditCard,
+                TerminalID = ecngTerminal.TerminalID,
+                Origin = config.Origin,
+                DealReference = customerInFile.DealID
             }))?.Data?.FirstOrDefault();
 
             if (existingBilling != null)
@@ -549,7 +573,7 @@ namespace DesktopEasyCardConvertorECNG
                     DealReference = customerInFile.DealID
                 },
                 Origin = config.Origin
-                
+
             };
 
             var request = new Transactions.Api.Models.Billing.BillingDealRequest()
@@ -599,7 +623,7 @@ namespace DesktopEasyCardConvertorECNG
                 default:
                     break;
             }
-            
+
 
             logger.LogInformation($"Created billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) {customerInFile.TotalSum} {request.Currency}");
 
@@ -612,9 +636,9 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     DateFrom = startPauseDate,
                     DateTo = startPauseDate.AddMonths(1).AddDays(-1),
-                     Reason = pausedBillingDeal.Note
+                    Reason = pausedBillingDeal.Note
                 };
-                var resPausedBillingDeal = await transactionsService.PauseBillingDeal(res.EntityUID??Guid.Empty, requestPausedBillingDeal);
+                var resPausedBillingDeal = await transactionsService.PauseBillingDeal(res.EntityUID ?? Guid.Empty, requestPausedBillingDeal);
                 logger.LogInformation($"Paused billing {res.EntityUID} for {request.DealDetails.ConsumerName} ({request.DealDetails.ConsumerID}) for dates {requestPausedBillingDeal.DateFrom} - {requestPausedBillingDeal.DateTo} Reason: {requestPausedBillingDeal.Reason}");
             }
         }

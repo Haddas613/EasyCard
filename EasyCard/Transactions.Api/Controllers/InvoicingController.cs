@@ -545,6 +545,12 @@ namespace Transactions.Api.Controllers
                             }
                         }
 
+                        //Send to customer as well
+                        if (dbInvoice.DealDetails.ConsumerEmail != null)
+                        {
+                            await SendInvoiceEmail(dbInvoice.DealDetails.ConsumerEmail, dbInvoice, terminal);
+                        }
+
                         return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, dbInvoice.InvoiceID);
                     }
                 }

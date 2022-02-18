@@ -88,6 +88,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bit Payment.
+        /// </summary>
+        public static string BitPayment {
+            get {
+                return ResourceManager.GetString("BitPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel payment.
         /// </summary>
         public static string CancelPayment {
@@ -120,6 +129,15 @@ namespace CheckoutPortal.Resources {
         public static string Credit {
             get {
                 return ResourceManager.GetString("Credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credit Card Payment.
+        /// </summary>
+        public static string CreditCardPayment {
+            get {
+                return ResourceManager.GetString("CreditCardPayment", resourceCulture);
             }
         }
         
@@ -295,11 +313,38 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pay with Android.
+        /// </summary>
+        public static string PayWithAndroid {
+            get {
+                return ResourceManager.GetString("PayWithAndroid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay with Bit.
+        /// </summary>
+        public static string PayWithBit {
+            get {
+                return ResourceManager.GetString("PayWithBit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pay with EasyCard.
         /// </summary>
         public static string PayWithEasyCard {
             get {
                 return ResourceManager.GetString("PayWithEasyCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay with IOS.
+        /// </summary>
+        public static string PayWithIOS {
+            get {
+                return ResourceManager.GetString("PayWithIOS", resourceCulture);
             }
         }
         
@@ -331,6 +376,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regular Payment.
+        /// </summary>
+        public static string RegularPayment {
+            get {
+                return ResourceManager.GetString("RegularPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request ID.
         /// </summary>
         public static string RequestID {
@@ -354,6 +408,15 @@ namespace CheckoutPortal.Resources {
         public static string SaveCard {
             get {
                 return ResourceManager.GetString("SaveCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings were saved successfully.
+        /// </summary>
+        public static string SettingsWereSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("SettingsWereSavedSuccessfully", resourceCulture);
             }
         }
         

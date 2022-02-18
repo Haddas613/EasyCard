@@ -100,7 +100,6 @@
 
 <script>
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     LangSwitcher: () => import("../../components/LanguageSwitcher"),
@@ -119,7 +118,7 @@ export default {
     };
   },
   async mounted() {
-    if (this.$cfg.VUE_APP_VERSION != appConstants.misc.uiDefaultVersion) {
+    if (this.$cfg.VUE_APP_VERSION != this.$appConstants.misc.uiDefaultVersion) {
       this.appVersion = this.$cfg.VUE_APP_VERSION;
     }
 

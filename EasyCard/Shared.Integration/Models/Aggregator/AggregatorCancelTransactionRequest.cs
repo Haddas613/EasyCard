@@ -23,5 +23,10 @@ namespace Shared.Integration.Models
         public string ConcurrencyToken { get; set; }
 
         public object AggregatorSettings { get; set; }
+
+        /// <summary>
+        /// Is Bit Transaction
+        /// </summary>
+        public bool IsBit { get; set; }
     }
 }

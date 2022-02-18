@@ -20,6 +20,12 @@ const appConstants = {
     misc: {
         uiDefaultVersion: '#{versionNumber}#'
     },
+    config:{
+        ui: {
+            typeaheadTimeout: 500,
+            defaultTake: parseInt(process.env.VUE_APP_UI_LIST_DEFAULT_TAKE_COUNT || "100"),
+        },
+    },
     users: {
         roles: {
             merchant: 'Merchant',

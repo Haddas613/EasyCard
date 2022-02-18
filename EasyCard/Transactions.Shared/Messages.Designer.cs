@@ -223,6 +223,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bit payment failed.
+        /// </summary>
+        public static string BitPaymentFailed {
+            get {
+                return ResourceManager.GetString("BitPaymentFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceled By Aggregator.
         /// </summary>
         public static string CanceledByAggregator {

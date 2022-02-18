@@ -10,9 +10,9 @@
             <b>{{dictionaries.paymentTypeEnum[d.paymentType]}}</b>
         </legend>
         <v-flex class="d-flex px-2">
-            <credit-card-payment-details :model="d" v-if="d.paymentType == appConstants.transaction.paymentTypes.card"></credit-card-payment-details>
-            <cheque-payment-details :model="d" v-else-if="d.paymentType == appConstants.transaction.paymentTypes.cheque"></cheque-payment-details>
-            <bank-transfer-payment-details :model="d" v-else-if="d.paymentType == appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
+            <credit-card-payment-details :model="d" v-if="d.paymentType == $appConstants.transaction.paymentTypes.card"></credit-card-payment-details>
+            <cheque-payment-details :model="d" v-else-if="d.paymentType == $appConstants.transaction.paymentTypes.cheque"></cheque-payment-details>
+            <bank-transfer-payment-details :model="d" v-else-if="d.paymentType == $appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
         </v-flex>
       </fieldset>
     </v-card-text>
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -37,7 +36,6 @@ export default {
   data() {
     return {
       dictionaries: null,
-      appConstants: appConstants
     };
   },
   async mounted() {

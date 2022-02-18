@@ -99,7 +99,7 @@ export default {
       pagination: {},
       headers: [],
       transactionsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         terminalID: null,
       },

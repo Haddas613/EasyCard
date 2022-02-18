@@ -229,6 +229,8 @@ namespace Reporting.Api
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
 
+            services.AddScoped<IReportingService, ReportingService>();
+
             services.AddAutoMapper(typeof(Startup));
 
             // DI: request logging

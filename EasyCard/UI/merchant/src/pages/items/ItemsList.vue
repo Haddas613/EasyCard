@@ -1,6 +1,6 @@
 <template>
   <div>
-    <items-list ref="itemsListComponent"></items-list>
+    <items-list-component ref="itemsListComponent"></items-list-component>
   </div>
 </template>
 
@@ -8,8 +8,9 @@
 import { mapState } from "vuex";
 
 export default {
+  name: "ItemsList",
   components: { 
-    ItemsList: () => import("../../components/items/ItemsList")
+    ItemsListComponent: () => import("../../components/items/ItemsList")
   },
   data() {
     return {
@@ -18,7 +19,7 @@ export default {
       dictionaries: {},
       loading: false,
       itemsFilter: {
-        take: 100,
+        take: this.$appConstants.config.ui.defaultTake,
         skip: 0
       },
     };

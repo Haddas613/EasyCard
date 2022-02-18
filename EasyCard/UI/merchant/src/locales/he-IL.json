@@ -426,6 +426,8 @@
   "DisableSelected": "עסקאות בילינג נחסמו",
   "RestoreCustomer": "שחזור לקוח",
   "RestoreItem": "שחזור פריט",
+  "AddBankDetails": "הוסף פרטי בנק",
+  "DeleteBankDetails": "מחק את פרטי הבנק",
 
   "--AUTH--": null,
   "Login": "כניסה",

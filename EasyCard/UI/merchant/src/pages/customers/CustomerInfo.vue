@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-card class="mx-2 my-2">
+    <v-card flat class="mx-2 my-2">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
           <v-col cols="9" class="d-flex">
@@ -95,7 +95,9 @@
       </v-card-text>
     </v-card>
 
-    <v-card class="mx-2 my-2" :loading="tokens == null">
+    <bank-payment-details class="mx-2" card v-if="model.bankDetails" :model="model.bankDetails"></bank-payment-details>
+
+    <v-card flat class="mx-2 my-2" :loading="tokens == null">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
           <v-col cols="9" class="d-flex">
@@ -149,11 +151,11 @@
 </template> 
 
 <script>
-import EcList from "../../components/ec/EcList";
 
 export default {
   components: {
-    EcList,
+    EcList: () => import("../../components/ec/EcList"),
+    BankPaymentDetails: () => import("../../components/details/BankPaymentDetails"),
   },
   props: {
     data: {

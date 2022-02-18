@@ -64,6 +64,8 @@
 @section Scripts{
 <script src="https://d35z3p2poghz10.cloudfront.net/ecwid-sdk/css/1.3.13/ecwid-app-ui.min.js"></script>
 <script src="~/js/ecwid-functions.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
 
 <script nws-csp-add-nonce="true">
     (function() {
@@ -73,6 +75,7 @@
             });
             $("#save-btn").on("click", function(){
                 saveUserData();
+                toastr["success"]('@(localizer.Get("SettingsWereSavedSuccessfully"))');
             });
         });
     })()

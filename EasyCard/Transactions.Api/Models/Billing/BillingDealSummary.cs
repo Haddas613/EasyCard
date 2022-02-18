@@ -64,5 +64,10 @@ namespace Transactions.Api.Models.Billing
         public SharedIntegration.Models.DealDetails DealDetails { get; set; }
 
         public bool InvoiceOnly { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token
+        /// </summary>
+        public Guid? CreditCardToken { get; set; }
     }
 }

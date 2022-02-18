@@ -57,6 +57,8 @@ namespace CheckoutPortal.Mappings
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
                 .ForMember(d => d.AllowPinPad, o => o.MapFrom((src, d) => d.AllowPinPad.HasValue ? d.AllowPinPad : src.AllowPinPad))
+                //if allow pin pad is true, by default it's considered a pinpad payment 
+                .ForMember(d => d.PinPad, o => o.MapFrom((src, d) => d.AllowPinPad.HasValue ? d.AllowPinPad : false))
                 .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
                 .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
@@ -64,7 +66,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TransactionTypes, o => o.MapFrom(src => src.TransactionTypes))
                 .ForMember(d => d.PinPadDevices, o => o.MapFrom(src => src.PinPadDevices))
                 .ForMember(d => d.EnabledFeatures, o => o.MapFrom(src => src.EnabledFeatures))
-                .ForMember(d => d.AllowBit, o => o.MapFrom(src => src.AllowBit))
+                .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
@@ -101,6 +103,8 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.DealDescription, o => o.MapFrom(d => d.Description))
                 .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.Email))
                 .ForMember(d => d.ConsumerPhone, o => o.MapFrom(d => d.Phone))
+                .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.Name))
+                .ForMember(d => d.ConsumerNationalID, o => o.MapFrom(d => d.NationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID));
 
             CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()

@@ -1,12 +1,12 @@
 <template>
   <v-flex width="100%">
-    <customers-list
+    <customers-list-component
       :show-previously-charged="false"
       v-on:ok="customerClicked($event)"
       :filter-by-terminal="true"
       allow-show-deleted
       overview
-    ></customers-list>
+    ></customers-list-component>
   </v-flex>
 </template>
 
@@ -14,8 +14,9 @@
 import { mapState } from "vuex";
 
 export default {
+  name: "CustomersList",
   components: {
-    CustomersList: () => import("../../components/customers/CustomersList")
+    CustomersListComponent: () => import("../../components/customers/CustomersList")
   },
   data() {
     return {
