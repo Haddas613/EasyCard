@@ -51,6 +51,12 @@ namespace Transactions.Shared.Enums
         /// Document created by consumer using Bit
         /// </summary>
         [EnumMember(Value = "bit")]
-        Bit = 6
+        Bit = 6,
+
+        /// <summary>
+        /// Document created by consumer using Ecwid
+        /// </summary>
+        [EnumMember(Value = "ecwid")]
+        Ecwid = 7
     }
 }

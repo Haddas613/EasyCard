@@ -129,6 +129,23 @@ namespace Transactions.Api.Controllers
                 model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
             }
 
+            EcwidTransactionExtension ecwidPayload = null;
+
+            if (transaction.Extension != null)
+            {
+                try
+                {
+                    ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
+                    if (ecwidPayload != null && ecwidPayload.Token != null)
+                    {
+                        transaction.DocumentOrigin = DocumentOriginEnum.Ecwid;
+                    }
+                }
+                catch
+                {
+                }
+            }
+
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
 
@@ -610,30 +627,24 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            if (transaction.Extension != null)
+            if (ecwidPayload != null)
             {
                 try
                 {
-                    var ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
-
-                    if (ecwidPayload != null)
+                    var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
                     {
-                        var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
-                        {
-                            PaymentTransactionID = transaction.PaymentTransactionID,
-                            ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
-                            StoreID = ecwidPayload.StoreID,
-                            Status = endResponse.Status == StatusEnum.Success ?
+                        PaymentTransactionID = transaction.PaymentTransactionID,
+                        ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
+                        StoreID = ecwidPayload.StoreID,
+                        Status = endResponse.Status == StatusEnum.Success ?
                                 Ecwid.Api.Models.EcwidOrderStatusEnum.PAID : Ecwid.Api.Models.EcwidOrderStatusEnum.CANCELLED,
-                            CorrelationId = transaction.CorrelationId,
-                            Token = ecwidPayload.Token,
-                        });
-                    }
+                        CorrelationId = transaction.CorrelationId,
+                        Token = ecwidPayload.Token,
+                    });
                 }
-                //TODO: ignore JSON type mismatch error, only log exception if payload is indeed from ecwid
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+                    logger.LogError(ex, $"Ecwid update order status failed: {ex.Message}. TransactionID: {transaction.PaymentTransactionID}");
                 }
             }
 

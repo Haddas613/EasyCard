@@ -5,6 +5,7 @@ using Shared.Integration.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Shared.Enums;
 
 namespace CheckoutPortal.Helpers
 {
@@ -73,21 +74,21 @@ namespace CheckoutPortal.Helpers
 
             var request = new ConsumerRequest
             {
-                ConsumerPhone = ecwidOrder.BillingPerson.Phone,
+                ConsumerPhone = ecwidOrder.ShippingPerson.Phone,
                 ConsumerEmail = ecwidOrder.Email,
-                ConsumerName = ecwidOrder.BillingPerson.Name,
+                ConsumerName = ecwidOrder.ShippingPerson.Name,
                 ConsumerNationalID = ecwidOrder.CustomerTaxId,
                 ExternalReference = ecwidOrder.CustomerId,
-                Origin = "Ecwid", //TODO: from origin enum
+                Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
             };
 
             request.ConsumerAddress = new Address
             {
-                City = ecwidOrder.BillingPerson.City,
-                CountryCode = ecwidOrder.BillingPerson.CountryCode,
-                Street = ecwidOrder.BillingPerson.Street,
-                Zip = ecwidOrder.BillingPerson.PostalCode
+                City = ecwidOrder.ShippingPerson.City,
+                CountryCode = ecwidOrder.ShippingPerson.CountryCode,
+                Street = ecwidOrder.ShippingPerson.Street,
+                Zip = ecwidOrder.ShippingPerson.PostalCode
             };
 
             return request;

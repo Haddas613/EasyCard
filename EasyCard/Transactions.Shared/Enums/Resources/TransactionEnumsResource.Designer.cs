@@ -115,6 +115,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ecwid.
+        /// </summary>
+        public static string Ecwid {
+            get {
+                return ResourceManager.GetString("Ecwid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to cancel by Aggregator.
         /// </summary>
         public static string FailedToCancelByAggregator {

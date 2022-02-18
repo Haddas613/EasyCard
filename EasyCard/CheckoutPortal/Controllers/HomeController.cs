@@ -221,6 +221,9 @@ namespace CheckoutPortal.Controllers
 
             if (request.PayWithBit)
             {
+                request.PinPad = false;
+                request.PinPadDeviceID = null;
+
                 if (ModelState[nameof(request.Cvv)] != null)
                 {
                     ModelState[nameof(request.Cvv)]?.Errors?.Clear();
