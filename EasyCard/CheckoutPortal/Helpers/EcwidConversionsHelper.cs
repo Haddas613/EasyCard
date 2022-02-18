@@ -67,17 +67,17 @@ namespace CheckoutPortal.Helpers
         /// <returns>Consumer request</returns>
         public static ConsumerRequest GetConsumerRequest(this EcwidOrder ecwidOrder)
         {
-            if (ecwidOrder.CustomerId == null || ecwidOrder.BillingPerson == null)
+            if (ecwidOrder.BillingPerson == null)
             {
                 return null;
             }
 
             var request = new ConsumerRequest
             {
-                ConsumerPhone = ecwidOrder.ShippingPerson.Phone,
+                ConsumerPhone = ecwidOrder.BillingPerson.Phone,
                 ConsumerEmail = ecwidOrder.Email,
-                ConsumerName = ecwidOrder.ShippingPerson.Name,
-                ConsumerNationalID = ecwidOrder.CustomerTaxId,
+                ConsumerName = ecwidOrder.BillingPerson.Name,
+                ConsumerNationalID = ecwidOrder.CustomerTaxId ?? ecwidOrder.BillingPerson.CompanyName,
                 ExternalReference = ecwidOrder.CustomerId,
                 Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
@@ -85,10 +85,10 @@ namespace CheckoutPortal.Helpers
 
             request.ConsumerAddress = new Address
             {
-                City = ecwidOrder.ShippingPerson.City,
-                CountryCode = ecwidOrder.ShippingPerson.CountryCode,
-                Street = ecwidOrder.ShippingPerson.Street,
-                Zip = ecwidOrder.ShippingPerson.PostalCode
+                City = ecwidOrder.BillingPerson.City,
+                CountryCode = ecwidOrder.BillingPerson.CountryCode,
+                Street = ecwidOrder.BillingPerson.Street,
+                Zip = ecwidOrder.BillingPerson.PostalCode
             };
 
             return request;
