@@ -58,5 +58,11 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "cardLastFourDigits")]
         public string CardLastFourDigits { get; set; }
+
+        /// <summary>
+        /// Is Bit Transaction
+        /// </summary>
+        [DataMember(Name = "isBit")]
+        public bool IsBit { get; set; }
     }
 }
