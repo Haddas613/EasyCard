@@ -116,7 +116,7 @@ namespace CheckoutPortal.Models
         public Guid? CreditCardToken { get; set; }
 
         [BindNever]
-        public IEnumerable<SavedTokenInfo> SavedTokens { get; set; }
+        public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
 
         public bool? IssueInvoice { get; set; }
 

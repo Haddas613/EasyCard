@@ -182,13 +182,7 @@ namespace Transactions.Api.Controllers
 
                     //TODO: no in memory filtering
                     var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)
-                        .Select(d => new TokenInfo {
-                            CardNumber = d.CardNumber,
-                            CardExpiration = d.CardExpiration.ToString(),
-                            CardVendor = d.CardVendor,
-                            CreditCardTokenID = d.CreditCardTokenID,
-                            Created = d.Created,
-                        })
+                        .Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID })
                         .ToList();
 
                     if (tokens.Count > 0)

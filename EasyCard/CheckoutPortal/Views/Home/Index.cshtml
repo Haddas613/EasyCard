@@ -155,18 +155,9 @@
                                         <div class="form-check">
                                             @foreach (var savedToken in Model.SavedTokens)
                                             {
-                                                <div class="d-flex justify-content-between">
-                                                    <div>
-                                                        <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.CreditCardTokenID" />
-                                                        <span dir="ltr">@savedToken.Label</span>
-                                                    </div>
-                                                    @if (savedToken.Created.HasValue)
-                                                    {
-                                                        <span class="align-self-end">
-                                                            <small>@(savedToken.Created?.ToString("dd/MM/yyyy"))</small>
-                                                        </span>
-                                                    }    
-                                                </div>
+                                                <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" />
+                                                <span dir="ltr">@savedToken.Value</span>
+                                                <br />
                                             }
                                             <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />@localizer.Get("EnterNewCard")<br />
                                         </div>
