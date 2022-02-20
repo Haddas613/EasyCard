@@ -33,6 +33,9 @@ const allowedForManagerOrAdminGuard = new AllowedForGuard([appConstants.users.ro
  * 
  * 3. closeBtn: string:(route-name) | boolean - when present with positive value, the close button will appear on mobile 
  * layout instead of burger menu. Either route or goBack(-1) will be used if route name is supplied or not respectively.
+ * 
+ * Also, they can be included in global keep-alive. Add root level keepAlive property with the value of the name of corresponding component.
+ * Note that it will only work for MainLayout components.
  */
 const routes = [
     {
@@ -98,6 +101,7 @@ const routes = [
             {
                 name: 'Transactions',
                 path: 'transactions/list',
+                keepAlive: 'TransactionsFiltered',
                 component: () =>
                     import ('../pages/transactions/TransactionsFiltered.vue'),
                     //import ('../pages/transactions/TransactionsList.vue'),
@@ -105,6 +109,7 @@ const routes = [
             {
                 name: 'Transmissions',
                 path: 'transmissions/list',
+                keepAlive: 'TransmissionsList',
                 component: () =>
                     import ('../pages/transmissions/TransmissionsList.vue'),
             },
@@ -124,12 +129,14 @@ const routes = [
                     backBtn: 'Dashboard'
                 },
                 props: true,
+                keepAlive: 'TransactionsFiltered',
                 component: () =>
                     import ('../pages/transactions/TransactionsFiltered.vue'),
             },
             {
                 name: 'Items',
                 path: 'items/list',
+                keepAlive: 'ItemsList',
                 component: () =>
                     import ('../pages/items/ItemsList.vue'),
             },
@@ -163,6 +170,7 @@ const routes = [
             {
                 name: 'Customers',
                 path: 'customers/list',
+                keepAlive: 'CustomersList',
                 component: () =>
                     import ('../pages/customers/CustomersList.vue'),
             },
@@ -214,6 +222,7 @@ const routes = [
             {
                 name: 'BillingDeals',
                 path: 'billing-deals/list',
+                keepAlive: 'BillingDealsList',
                 props: true,
                 meta: {
                     guard: allowedForManagerOrAdminGuard
@@ -224,6 +233,7 @@ const routes = [
             {
                 name: 'FutureBillingDeals',
                 path: 'future-billing-deals/list',
+                keepAlive: 'FutureBillingDealsList',
                 props: true,
                 meta: {
                     guard: allowedForManagerOrAdminGuard
@@ -264,6 +274,7 @@ const routes = [
             {
                 name: 'Invoices',
                 path: 'invoicing/list',
+                keepAlive: 'InvoicesList',
                 props: true,
                 component: () =>
                     import ('../pages/invoicing/InvoicesList.vue'),
@@ -280,6 +291,7 @@ const routes = [
             {
                 name: 'PaymentRequests',
                 path: 'payment-requests/list',
+                keepAlive: 'PaymentRequestsList',
                 props: true,
                 component: () =>
                     import ('../pages/payment-requests/PaymentRequestsList.vue'),
@@ -305,6 +317,7 @@ const routes = [
             {
                 name: 'MasavFiles',
                 path: 'masav-files/list',
+                keepAlive: 'MasavFilesList',
                 props: true,
                 meta: {
                     backBtn: 'Dashboard'
