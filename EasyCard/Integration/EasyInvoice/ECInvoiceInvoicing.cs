@@ -46,8 +46,7 @@ namespace EasyInvoice
         public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
         {
             var terminal = documentCreationRequest.InvoiceingSettings as EasyInvoiceTerminalSettings;
-
-            var json = ECInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
+            var json = ECInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest, terminal);
             json.KeyStorePassword = terminal.KeyStorePassword;
 
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
