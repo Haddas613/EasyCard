@@ -192,7 +192,7 @@ namespace Transactions.Api.Controllers
 
             if (User.IsTerminal())
             {
-                var terminal = EnsureExists(await terminalsService.GetTerminal((User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault());
+                var terminal = EnsureExists(await terminalsService.GetTerminal((User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault()));
 
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
