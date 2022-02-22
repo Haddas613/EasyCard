@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Shared.Helpers
 {
     public static class CreditCardHelpers
     {
+        private static Regex paddedCardNumber = new Regex(@"0{12}\d{4}", RegexOptions.Compiled);
+
         public static string GetCardDigits(string cardBin, string cardLastFourDigits)
         {
             return $"{cardBin?.Trim()}****{cardLastFourDigits?.Trim()}";
@@ -20,6 +23,13 @@ namespace Shared.Helpers
             if (string.IsNullOrWhiteSpace(cardNumber))
             {
                 return null;
+            }
+
+            //In some cases we only know 4 last digits, while the rest of the card is just padded 0
+            //so we only show relevant part of the card
+            if (paddedCardNumber.IsMatch(cardNumber))
+            {
+                return $"****{cardNumber?.Substring(cardNumber.Length - 4, 4)}";
             }
 
             if (cardNumber.Length < 6)
