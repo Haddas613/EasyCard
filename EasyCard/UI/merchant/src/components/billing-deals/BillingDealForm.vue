@@ -32,7 +32,7 @@
           ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
-        <payment-type :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only']"></payment-type>
+        <payment-type @change="onPaymentTypeChanged($event)" :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only']"></payment-type>
       </v-col>
       <template v-if="model.invoiceOnly">
         <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == $appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
@@ -289,7 +289,8 @@ export default {
       scheduleDialog: false,
       ctokenDialog: false,
       billingScheduleJSON: JSON.stringify(this.data.billingSchedule),
-      issueInvoiceDisabled: false
+      issueInvoiceDisabled: false,
+      customer: null,
     };
   },
   computed: {
@@ -315,7 +316,15 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+      this.model.dealDetails = Object.assign(this.model.dealDetails, {
+        consumerEmail: data.consumerEmail,
+        consumerPhone: data.consumerPhone,
+        consumerID: data.consumerID,
+        consumerAddress: data.consumerAddress,
+        consumerNationalID: data.consumerNationalID,
+        consumerName: data.consumerName
+      });
+      this.customer = data;
       await this.getCustomerTokens();
     },
     handleClick() {
@@ -463,7 +472,21 @@ export default {
       }else{
         this.model.paymentDetails = null;
       }
-    }
+    },
+    onPaymentTypeChanged(pt){
+      if (pt == this.$appConstants.transaction.paymentTypes.bank
+        && (this.customer && this.customer.bankDetails)
+        && (!this.model.paymentDetails || !this.model.paymentDetails.length)){
+          if(this.model.invoiceOnly){
+            this.model.paymentDetails = [{
+              ...this.customer.bankDetails,
+              paymentType: this.$appConstants.transaction.paymentTypes.bank
+            }];
+          }else {
+            this.model.bankDetails = { ...this.customer.bankDetails };
+          }
+      }
+    },
   },
   async mounted() {
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
