@@ -430,6 +430,7 @@
   "NumberOfDaysToRetryTransactionHint": "Transaction creation will be retried after N days",
   "FailedAttemptsCount": "Failed Attempts Count",
   "SelectForTrigger": "Select for Trigger",
+  "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

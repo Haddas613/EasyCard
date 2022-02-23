@@ -6,15 +6,15 @@
       <template>
         <v-form ref="newCustomerFormRef" lazy-validation>
           <v-row>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.email]" :label="$t('Email')"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.password" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('Password')"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.businessID" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('BusinessID')"></v-text-field>
-          </v-col>
+            <v-col cols="12" md="4" class="py-0">
+              <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.email]" :label="$t('Email')"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" class="py-0">
+              <v-text-field v-model="newCustomerModel.password" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 63)]" :label="$t('Password')"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" class="py-0">
+              <v-text-field v-model="newCustomerModel.businessID" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('BusinessID')"></v-text-field>
+            </v-col>
         </v-row>
         </v-form>
         <div class="d-flex justify-end">
@@ -28,20 +28,20 @@
       <template>
         <v-form ref="documentNumberFormRef" lazy-validation>
           <v-row>
-          <v-col cols="12" md="4" class="py-0">
-            <v-select
-              :items="ecInvoiceTypes"
-              item-text="description"
-              item-value="code"
-              v-model="documentNumberModel.docType"
-              :label="$t('InvoiceType')"
-              :rules="[vr.primitives.required]"
-              @change="getDocumentNumber()"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
-          </v-col>
+            <v-col cols="12" md="4" class="py-0">
+              <v-select
+                :items="ecInvoiceTypes"
+                item-text="description"
+                item-value="code"
+                v-model="documentNumberModel.docType"
+                :label="$t('InvoiceType')"
+                :rules="[vr.primitives.required]"
+                @change="getDocumentNumber()"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="4" class="py-0">
+              <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
+            </v-col>
         </v-row>
         </v-form>
         <div class="d-flex justify-end">
@@ -74,6 +74,9 @@
             :label="$t('Language')"
             hide-details="true"
           ></v-select>
+        </v-col>
+        <v-col cols="12" md="3" class="py-0">
+          <v-switch :label="$t('UsePaymentInfoAsDonation')" v-model="model.settings.paymentInfoAsDonation"></v-switch>
         </v-col>
       </v-row>
       <div class="d-flex justify-end">
