@@ -65,6 +65,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
             }
 
+            if (filter.ConsumerExternalReference != null)
+            {
+                src = src.Where(t => t.DealDetails.ConsumerExternalReference == filter.ConsumerExternalReference);
+            }
+
             if (filter.PaymentRequestAmount > 0)
             {
                 src = src.Where(t => t.PaymentRequestAmount == filter.PaymentRequestAmount);

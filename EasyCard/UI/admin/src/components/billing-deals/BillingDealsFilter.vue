@@ -48,6 +48,12 @@
             clearable
           ></v-select>
         </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.consumerExternalReference"
+            :label="$t('CustomerExternalReference')"
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-row>
         <v-col class="pb-0 mb-0" cols="4" md="12">

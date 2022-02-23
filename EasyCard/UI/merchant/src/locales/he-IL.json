@@ -363,6 +363,7 @@
   "LastError": "שגיאה אחרונה",
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
   "SelectForTrigger": "חיובי בילינג",
+  "CustomerExternalReference": "מזהה חיצוני",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

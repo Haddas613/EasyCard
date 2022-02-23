@@ -81,5 +81,7 @@ namespace Transactions.Api.Models.Billing
         public bool InProgress { get; set; }
 
         public bool CreditCardExpired { get; set; }
+
+        public string ConsumerExternalReference { get; set; }
     }
 }

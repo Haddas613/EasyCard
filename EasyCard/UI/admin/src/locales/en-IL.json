@@ -430,6 +430,7 @@
   "NumberOfDaysToRetryTransactionHint": "Transaction creation will be retried after N days",
   "FailedAttemptsCount": "Failed Attempts Count",
   "SelectForTrigger": "Select for Trigger",
+  "CustomerExternalReference": "Customer External Reference",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

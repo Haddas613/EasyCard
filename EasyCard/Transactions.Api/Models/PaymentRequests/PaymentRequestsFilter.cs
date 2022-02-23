@@ -35,5 +35,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public decimal? PaymentRequestAmount { get; set; }
 
         public Guid? ConsumerID { get; set; }
+
+        public string ConsumerExternalReference { get; set; }
     }
 }
