@@ -26,6 +26,9 @@ using Shared.Api.Configuration;
 using Transactions.Api.Models.External.Bit;
 using System.Web;
 using Shared.Api.Utilities;
+using ThreeDS;
+using ThreeDS.Models;
+using Merchants.Business.Services;
 
 namespace CheckoutPortal.Controllers
 {
@@ -33,12 +36,14 @@ namespace CheckoutPortal.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
+        private readonly ITerminalsService terminalsService;
         private readonly ITransactionsApiClient transactionsApiClient;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
+        private readonly ThreeDSService threeDSService;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -46,10 +51,13 @@ namespace CheckoutPortal.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
+            IHubContext<Hubs.TransactionsHub,
+                Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
+             ITerminalsService terminalsService,
             IOptions<ApiSettings> apiSettings)
         {
             this.logger = logger;
+            this.terminalsService = terminalsService;
             this.transactionsApiClient = transactionsApiClient;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
@@ -434,7 +442,26 @@ namespace CheckoutPortal.Controllers
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
+                if (!(mdel.PinPad ?? false))
+                {
+                    var terminal = await terminalsService.GetTerminal(mdel.TerminalID);
 
+                    var VersioningResult = threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
+                    if (VersioningResult?.Result?.errorDetails == null)
+                    {
+                        string retailer = terminal.ProcessorTerminalReference;
+                        AuthenticateReqModel req = new AuthenticateReqModel
+                        {
+                            threeDSServerTransID = VersioningResult.Result.versioningResponse.threeDSServerTransID,
+                            Retailer = retailer
+                        };
+                        await threeDSService.Authentication(req);
+                    }
+/*                    else
+                    { 
+                    return error 
+                    }*/
+                }
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
             }
             else//PR IS NULL
@@ -459,7 +486,10 @@ namespace CheckoutPortal.Controllers
                 }
 
                 mdel.Calculate();
-
+                if(!(mdel.PinPad??false))
+                {
+                    threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
+                }
                 result = await transactionsApiClient.CreateTransaction(mdel);
             }
 

@@ -43,18 +43,17 @@ namespace ThreeDS
         }
 
 
-        public async Task<OperationResponse> Authentication()
+        public async Task<OperationResponse> Authentication(AuthenticateReqModel request)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-            AuthenticationRequest request = new AuthenticationRequest()
+            AuthenticationRequest requestAuthen = new AuthenticationRequest()
                 {
                   UserName = configuration.UserName,
                   Password = configuration.Password,
                   PspID = configuration.PspID,
-                   
-
+                  Retailer =""//todo haddas need to be done  
             };
-            var response = await apiClient.Post<OperationResponse>(configuration.BaseUrl, "authentication", request
+            var response = await apiClient.Post<OperationResponse>(configuration.BaseUrl, "authentication", requestAuthen
                   );
             return response;
         }
