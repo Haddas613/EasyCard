@@ -24,6 +24,8 @@ namespace Transactions.Shared
 
         public string BitRequestsLogStorageTable { get; set; }
 
+        public string EcwidRequestsLogStorageTable { get; set; }
+
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
 
         public int TransmissionMaxBatchSize { get; set; } = 10;

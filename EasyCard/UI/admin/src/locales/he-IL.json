@@ -434,7 +434,6 @@
   "NumberOfDaysToRetryTransactionHint": "יצירת העסקה תבוצע מחדש לאחר N ימים",
   "FailedAttemptsCount": "ספירת ניסיונות כושלים",
   "SelectForTrigger": "חיובי בילינג",
-  "UsePaymentInfoAsDonation": "השתמש בפרטי תשלום כתרומה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -584,5 +583,13 @@
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
   "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
   "BitProcessorConnectedMessage": " מחובר ומוכן לשימוש BIT.",
-  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות"
+  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות",
+
+  "--DICTIONARIES--": null,
+  "processor": "מעבד",
+  "aggregator": "אגרגטור",
+  "invoicing": "חשבוניות",
+  "marketer": "משווק",
+  "pinpadProcessor": "מעבד פין פד",
+  "virtualWalletProcessor": "אמצעי תשלום נייד"
 }

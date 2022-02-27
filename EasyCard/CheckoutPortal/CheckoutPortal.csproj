@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Integration\Ecwid\Ecwid.csproj" />
-    <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />
@@ -22,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="wwwroot\lib\jquery-payment\" />
   </ItemGroup>
 

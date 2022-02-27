@@ -54,6 +54,7 @@ using Shared.Helpers.Services;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Ecwid.Api;
 
 namespace Transactions.Api.Controllers
 {
@@ -93,6 +94,7 @@ namespace Transactions.Api.Controllers
         private readonly InvoicingController invoicingController;
         private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
+        private readonly IEcwidApiClient ecwidApiClient;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -120,7 +122,8 @@ namespace Transactions.Api.Controllers
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
             BillingController billingController,
             InvoicingController invoicingController,
-            BasicServices.Services.IExcelService excelService)
+            BasicServices.Services.IExcelService excelService,
+            IEcwidApiClient ecwidApiClient)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -148,6 +151,7 @@ namespace Transactions.Api.Controllers
             this.transactionsHubContext = transactionsHubContext;
             this.invoicingController = invoicingController;
             this.excelService = excelService;
+            this.ecwidApiClient = ecwidApiClient;
         }
 
         [HttpGet]
@@ -827,8 +831,8 @@ namespace Transactions.Api.Controllers
 
                     if (billingDeal.PaymentType == PaymentTypeEnum.Card && billingDeal.InvoiceOnly == false)
                     {
-                        token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
-                        if (token == null)
+                        var tokenData = await creditCardTokenService.GetTokens().Where(d => d.CreditCardTokenID == billingDeal.CreditCardToken).FirstOrDefaultAsync();
+                        if (tokenData == null)
                         {
                             logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
                             operationResult.Status = StatusEnum.Error;
@@ -836,11 +840,30 @@ namespace Transactions.Api.Controllers
                         }
                         else
                         {
-                            if (token.CardExpiration.Expired == true)
+                            if (tokenData.CardExpiration.Expired == true)
                             {
                                 logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
                                 operationResult.Status = StatusEnum.Error;
                                 operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+                            }
+                            else
+                            {
+                                token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
+                                if (token == null)
+                                {
+                                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
+                                    operationResult.Status = StatusEnum.Error;
+                                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+                                }
+                                else
+                                {
+                                    if (token.CardExpiration.Expired == true)
+                                    {
+                                        logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
+                                        operationResult.Status = StatusEnum.Error;
+                                        operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+                                    }
+                                }
                             }
                         }
                     }

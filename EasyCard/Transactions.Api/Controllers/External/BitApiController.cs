@@ -188,6 +188,7 @@ namespace Transactions.Api.Controllers.External
                         aggregatorRequest.TransactionDate = DateTime.Now;
                         var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
                         aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                        aggregatorRequest.IsBit = true;
 
                         var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
                         if (aggregatorValidationErrorMsg != null)
@@ -281,6 +282,14 @@ namespace Transactions.Api.Controllers.External
                     return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
                 }
 
+                if (!string.IsNullOrEmpty(bitCaptureResponse.SuffixPlasticCardNumber))
+                {
+                    transaction.CreditCardDetails = new Business.Entities.CreditCardDetails
+                    {
+                        CardNumber = $"000000000000{bitCaptureResponse.SuffixPlasticCardNumber}",
+                    };
+                }
+
                 //await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
 
                 //TODO
@@ -315,6 +324,7 @@ namespace Transactions.Api.Controllers.External
                             var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
                             aggregatorRequest.AggregatorSettings = aggregatorSettings;
                             aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
+                            aggregatorRequest.IsBit = true;
 
                             var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
                             mapper.Map(aggregatorResponse, transaction);
@@ -350,6 +360,7 @@ namespace Transactions.Api.Controllers.External
                             var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
                             commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
+                            commitAggregatorRequest.IsBit = true;
 
                             var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
                             mapper.Map(commitAggregatorResponse, transaction);

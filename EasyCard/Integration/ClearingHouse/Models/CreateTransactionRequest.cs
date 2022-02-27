@@ -58,5 +58,11 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "easyCardTerminalReference")]
         public string EasyCardTerminalReference { get; set; }
+
+        /// <summary>
+        /// Is Bit Transaction
+        /// </summary>
+        [DataMember(Name = "isBit")]
+        public bool IsBit { get; set; }
     }
 }

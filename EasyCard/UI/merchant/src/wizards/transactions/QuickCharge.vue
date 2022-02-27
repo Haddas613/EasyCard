@@ -307,7 +307,14 @@ export default {
     },
     processCustomer(data) {
       this.customer = data;
-      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+      this.model.dealDetails = !data ? null : Object.assign(this.model.dealDetails, {
+        consumerEmail: data.consumerEmail,
+        consumerPhone: data.consumerPhone,
+        consumerID: data.consumerID,
+        consumerAddress: data.consumerAddress,
+        consumerNationalID: data.consumerNationalID,
+        consumerName: data.consumerName
+      });
       if(this.model.dealDetails){
         this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
       }

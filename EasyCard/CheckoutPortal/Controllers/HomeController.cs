@@ -176,7 +176,12 @@ namespace CheckoutPortal.Controllers
             {
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 
@@ -224,6 +229,9 @@ namespace CheckoutPortal.Controllers
 
             if (request.PayWithBit)
             {
+                request.PinPad = false;
+                request.PinPadDeviceID = null;
+
                 if (ModelState[nameof(request.Cvv)] != null)
                 {
                     ModelState[nameof(request.Cvv)]?.Errors?.Clear();
@@ -242,7 +250,7 @@ namespace CheckoutPortal.Controllers
             }
             else if (request.CreditCardToken.HasValue || request.PinPad) // If token is present and correct, credit card validation is removed from model state
             {
-                if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                if (!request.PayWithBit && !request.PinPad && !request.SavedTokens.Any(t => t.CreditCardTokenID == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
 
@@ -822,7 +830,12 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 
@@ -843,7 +856,12 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)
                 {
-                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new SavedTokenInfo
+                    {
+                        CreditCardTokenID = d.CreditCardTokenID,
+                        Label = $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}",
+                        Created = d.Created,
+                    });
                 }
             }
 

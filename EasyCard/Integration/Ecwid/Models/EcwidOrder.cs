@@ -9,6 +9,8 @@ namespace Ecwid.Models
     {
         public string Id { get; set; }
 
+        public string ReferenceTransactionId { get; set; }
+
         public decimal RefundedAmount { get; set; }
 
         /// <summary>
@@ -23,8 +25,6 @@ namespace Ecwid.Models
         public decimal Discount { get; set; }
 
         public string Email { get; set; }
-
-        public EcwidCart Cart { get; set; }
 
         /// <summary>
         /// E.g: CUSTOM_PAYMENT_APP-mollie-pg
@@ -57,7 +57,5 @@ namespace Ecwid.Models
         public EcwidAddressDetails BillingPerson { get; set; }
 
         public EcwidAddressDetails ShippingPerson { get; set; }
-
-        public EcwidMerchantSettings MerchantSettings { get; set; }
     }
 }

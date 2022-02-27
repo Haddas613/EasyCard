@@ -113,6 +113,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
             }
 
+            if (filter.ConsumerExternalReference != null)
+            {
+                src = src.Where(t => t.DealDetails.ConsumerExternalReference == filter.ConsumerExternalReference);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.CardNumber))
             {
                 var cardNumber = filter.CardNumber.Replace("*", string.Empty).Trim();

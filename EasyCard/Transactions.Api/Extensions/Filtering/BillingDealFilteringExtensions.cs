@@ -91,6 +91,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
             }
 
+            if (filter.ConsumerExternalReference != null)
+            {
+                src = src.Where(t => t.DealDetails.ConsumerExternalReference == filter.ConsumerExternalReference);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.CardNumber))
             {
                 src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));

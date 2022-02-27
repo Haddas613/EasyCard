@@ -10,5 +10,7 @@ namespace Ecwid.Configuration
         /// Received from Ecwid team in email when registering the app 
         /// </summary>
         public string ClientSecret { get; set; }
+
+        public string ApiBaseAddress { get; set; }
     }
 }

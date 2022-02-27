@@ -100,9 +100,18 @@
                         <div class="form-check">
                             @foreach (var savedToken in Model.SavedTokens)
                             {
-                                <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" />
-                                <span dir="ltr">@savedToken.Value</span>
-                                <br />
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.CreditCardTokenID" />
+                                        <span dir="ltr">@savedToken.Label</span>
+                                    </div>
+                                    @if (savedToken.Created.HasValue)
+                                    {
+                                        <span class="align-self-end">
+                                            <small>@(savedToken.Created?.ToString("dd/MM/yyyy"))</small>
+                                        </span>
+                                    }    
+                                </div>
                             }
                             <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />@localizer.Get("EnterNewCard")<br />
                         </div>
@@ -340,6 +349,7 @@
             } else {
                 $("#card-info-group-area").attr("hidden", true);
             }
+            $("#pin-pad-deal").attr('checked', false);
         });
 
         $("#cancel-btn").on('click', function (e) {
@@ -371,14 +381,6 @@
             })
         </text>
         }
-
-        $("#paywithbit").on("click", function () {
-            if (!$("#checkout-form").valid()) {
-                return;
-            }
-            $("#PayWithBit").val(true);
-            $("#checkout-form").submit();
-        })
 
         //$("#Amount").on("focus", function () {
         //    if ($("#SaveCreditCard").is(":checked")) {

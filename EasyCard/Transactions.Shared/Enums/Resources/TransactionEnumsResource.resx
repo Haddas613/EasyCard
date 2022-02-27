@@ -135,6 +135,9 @@
   <data name="Device" xml:space="preserve">
     <value>Device</value>
   </data>
+  <data name="Ecwid" xml:space="preserve">
+    <value>Ecwid</value>
+  </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed to cancel by Aggregator</value>
   </data>

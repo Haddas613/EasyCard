@@ -573,7 +573,7 @@
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <bank-select 
                 v-model="model.bankDetails.bank"
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -604,7 +604,7 @@
                 :rules="editBankDetails ? [vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)] : []"
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
           </template>
         </v-row>
       </v-card-text>

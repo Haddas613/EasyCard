@@ -83,7 +83,7 @@ namespace CheckoutPortal
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API")); 
-            services.Configure<EcwidGlobalSettings>(Configuration.GetSection("Ecwid"));
+            services.Configure<EcwidGlobalSettings>(Configuration.GetSection("EcwidGlobalSettings"));
 
             services.AddHttpContextAccessor();
 

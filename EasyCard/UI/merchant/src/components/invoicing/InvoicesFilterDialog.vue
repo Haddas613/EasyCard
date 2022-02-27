@@ -62,7 +62,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="12" class="py-0">
+            <v-col cols="12" md="6" class="py-0">
               <v-select
                 :items="dictionaries.quickDateFilterTypeEnum"
                 item-text="description"
@@ -72,6 +72,13 @@
                 outlined
                 clearable
               ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.consumerExternalReference"
+                :label="$t('CustomerExternalReference')"
+                outlined
+              ></v-text-field>
             </v-col>
            <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
           </v-row>

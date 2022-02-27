@@ -103,6 +103,13 @@
               </template>
             </v-switch>
           </v-col>
+          <v-col cols="4" md="3">
+          <v-switch v-model="billingDealsFilter.creditCardExpired" @change="switchFilterChanged('creditCardExpired')">
+            <template v-slot:label>
+              <small>{{$t('CreditCardExpired')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -388,7 +395,7 @@ export default {
       }
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError', 'inProgress', 'creditCardExpired'].filter(v => v != type);
       for(var t of allTypes){
         if(t === "showDeleted"){
           this.$set(this.billingDealsFilter, t, 0);

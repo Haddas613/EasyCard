@@ -487,6 +487,7 @@ namespace Transactions.Api
             services.Configure<Upay.UpayGlobalSettings>(Configuration.GetSection("UpayGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
             services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
+            services.Configure<Ecwid.Configuration.EcwidGlobalSettings>(Configuration.GetSection("EcwidGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();
@@ -675,6 +676,17 @@ namespace Transactions.Api
                 var tokenSvc = new BitTokensService(webApiClient, bitOptionsConfig.Value);
 
                 return new Bit.BitProcessor(bitOptionsConfig, webApiClient, logger, storageService, tokenSvc);
+            });
+
+            services.AddSingleton<Ecwid.Api.IEcwidApiClient, Ecwid.Api.EcwidApiClient>(serviceProvider =>
+            {
+                var ecwidCfg = serviceProvider.GetRequiredService<IOptions<Ecwid.Configuration.EcwidGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Ecwid.Api.EcwidApiClient>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EcwidRequestsLogStorageTable, cfg.EcwidRequestsLogStorageTable);
+
+                return new Ecwid.Api.EcwidApiClient(webApiClient, storageService, logger, ecwidCfg);
             });
         }
 

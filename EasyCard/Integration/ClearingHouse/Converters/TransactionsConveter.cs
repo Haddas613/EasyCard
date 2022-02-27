@@ -55,6 +55,8 @@ namespace ClearingHouse.Converters
 
             chRequest.PaymentGatewayTransactionDetails = details;
 
+            chRequest.IsBit = createTransactionRequest.IsBit;
+
             return chRequest;
         }
 
@@ -77,6 +79,9 @@ namespace ClearingHouse.Converters
 
             chRequest.Solek = (int)chRequest.PaymentGatewayAdditionalDetails.Solek;
             chRequest.IsTourist = commitTransactionRequest.CreditCardDetails.CardVendor == Shared.Integration.Models.CardVendorEnum.UNKNOWN.ToString();
+
+            chRequest.IsBit = commitTransactionRequest.IsBit;
+
             return chRequest;
         }
 
