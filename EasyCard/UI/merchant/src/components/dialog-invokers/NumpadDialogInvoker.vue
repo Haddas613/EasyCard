@@ -114,6 +114,12 @@ export default {
         this.$refs.numpadRef.adjustItemsToAmount(this.amount);
       }
     },
+    refreshQuantity(){
+      //may have not been yet initialized
+      if(this.$refs.numpadRef){
+        this.$refs.numpadRef.refreshQuantity();
+      }
+    },
     ok(){
       //may have not been yet initialized. only recalculate if items were added
       if(this.$refs.numpadRef && this.data.dealDetails.items.length > 0){

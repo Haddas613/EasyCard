@@ -1,5 +1,13 @@
 <template>
   <v-flex fill-height>
+    <item-pricing-dialog
+      v-if="selectedItem"
+      :key="model.vatRate + '.' + selectedItem.itemID"
+      :item="selectedItem"
+      :basket="model"
+      :show.sync="itemPriceDialog"
+      v-on:ok="saveItem($event)"
+    ></item-pricing-dialog>
     <v-row no-gutters>
       <v-col :cols="supportQuickCharge ? 6 : 12">
         <v-btn
@@ -90,7 +98,7 @@
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
-              <!-- <span>{{item.quantity || ''}}</span> -->
+              <span v-if="itemsCountCache[item.$itemID]">{{itemsCountCache[item.$itemID]}}</span>
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money
@@ -101,11 +109,11 @@
           </template>
 
           <template v-slot:append="{ item }">
-            <v-btn v-on:click="itemSelected(item)" icon v-if="!item.quantity">
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-            <v-btn icon v-if="item.quantity" @click="editItemCnt(item)">
+            <v-btn icon v-if="itemsCountCache[item.$itemID]" @click="editItemCnt(item)">
               <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn v-on:click="itemSelected(item)" icon v-else>
+              <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
         </ec-list>
@@ -151,6 +159,7 @@ export default {
     return {
       total: 0,
       apiItems: [],
+      itemsCountCache: {},
       model: {
         amount: "0",
         discount: "0",
@@ -170,6 +179,8 @@ export default {
       activeArea: this.itemsOnly ? "items" : "calc",
       search: null,
       searchTimeout: null,
+      selectedItem: null,
+      itemPriceDialog: false,
     };
   },
   watch: {
@@ -328,6 +339,7 @@ export default {
     },
     calculatePricingForItem(item){
       itemPricingService.item.calculate(item, { vatRate: this.model.vatRate});
+      this.$set(this.itemsCountCache, item.itemID, item.quantity);
     },
     reset() {
       this.defaultItem.price = 0;
@@ -337,24 +349,76 @@ export default {
     },
     async resetItems() {
       this.model.dealDetails.items = [];
+      this.itemsCountCache = {};
       await this.getItems();
     },
     itemSelected(item) {
-      let newItem = {
-        itemID: item.$itemID,
-        itemName: item.itemName,
-        price: item.price,
-        discount: 0,
-        currency: item.$currency,
-        quantity: 1,
-        externalReference: item.externalReference
-      };
-      this.calculatePricingForItem(newItem);
-      this.model.dealDetails.items.push(newItem);
+      let entry = this.lodash.find(
+        this.model.dealDetails.items,
+        i => i.itemID === item.$itemID
+      );
+      if (entry) {
+        entry.quantity++;
+      } else {
+        entry = {
+          itemID: item.$itemID,
+          itemName: item.itemName,
+          price: item.price,
+          discount: 0,
+          currency: item.$currency,
+          quantity: 1,
+          externalReference: item.externalReference
+        };
+        this.model.dealDetails.items.push(entry);
+      }
+      if(!item.quantity){
+        this.$set(item, 'quantity', 0);
+      }
+      item.quantity += 1;
+      this.calculatePricingForItem(entry);
+    },
+    editItemCnt(item) {
+      let entry = this.lodash.find(
+        this.model.dealDetails.items,
+        i => i.itemID === item.$itemID
+      );
+      if (entry) {
+        this.selectedItem = this.lodash.cloneDeep(entry);
+        this.itemPriceDialog = true;
+      }
+    },
+    saveItem(item) {
+      // let entry = this.model.dealDetails.items[item.idx];
+      // if (entry) {
+      //   this.$set(this.model.dealDetails.items, item.idx, item);
+      // }
+      let idx = this.lodash.findIndex(
+        this.model.dealDetails.items,
+        i => i.itemID === item.itemID
+      );
+      if (idx < 0){
+        return;
+      }
+      this.$set(this.model.dealDetails.items, idx, item);
+      this.recalculate();
+      this.itemPriceDialog = false;
+    },
+    refreshQuantity(){
+      this.itemsCountCache = {};
+      for(var item of this.model.dealDetails.items){
+         itemPricingService.item.calculate(item, { vatRate: this.model.vatRate });
+         this.$set(this.itemsCountCache, item.itemID, item.quantity);
+       }
+    },
+    recalculate(){
+       this.refreshQuantity();
+       itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
+       this.$emit('update', this.model);
     },
     adjustItemsToAmount(amount){
       if(this.model.dealDetails.items.length == 0){
         this.defaultItem.price = amount;
+        this.itemsCountCache = {};
         return;
       }
 
@@ -388,6 +452,8 @@ export default {
         newItem.price = Math.abs(diff);
         this.model.dealDetails.items.push(newItem);
       }
+
+      this.refreshQuantity();
 
       itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
       this.$emit('update', this.model)
