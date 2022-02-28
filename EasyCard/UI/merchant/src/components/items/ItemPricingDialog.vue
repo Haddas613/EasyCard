@@ -16,6 +16,21 @@
             </v-col>
           </v-row>
           <v-row no-gutters>
+            <v-col cols="12" md="12">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-model.number="model.quantity"
+                outlined
+                :label="$t('Quantity')"
+                hide-details="true"
+                min="1"
+                max="100000"
+                step="1"
+                type="number"
+                :rules="[vr.primitives.required, vr.primitives.numeric()]"
+                @input="calculateItemPricing()"
+              ></v-text-field>
+            </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 class="mx-2 mt-4"
