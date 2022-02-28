@@ -588,6 +588,72 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create customer in Invoicing system
+        /// </summary>
+        /// <returns></returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        [HttpPost]
+        [Route("createConsumer")]
+        public async Task<ActionResult<OperationResponse>> GreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(consumerRequest.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+            if (terminalInvoicing == null)
+            {
+                return new OperationResponse(Messages.CannotCreateInvoicingConsumer, StatusEnum.Error);
+            }
+
+            var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+
+            if (!invoicing.CanCreateConsumer())
+            {
+                return new OperationResponse(Messages.CannotCreateInvoicingConsumer, StatusEnum.Error);
+            }
+
+            var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+
+            try
+            {
+                var invoicingRequest = new CreateConsumerRequest
+                {
+                     CellPhone = consumerRequest.CellPhone,
+                     ConsumerName = consumerRequest.ConsumerName,
+                     Email = consumerRequest.Email,
+                     NationalID = consumerRequest.NationalID
+                };
+                invoicingRequest.InvoiceingSettings = invoicingSettings;
+
+                var invoicingResponse = await invoicing.CreateConsumerOrGetExisting(invoicingRequest);
+
+                if (!invoicingResponse.Success)
+                {
+                    logger.LogError($"Cannot create invoicing consumer. ConsumerID: {consumerRequest.ConsumerID}, response: {invoicingResponse.ErrorMessage}");
+
+                    return BadRequest(new OperationResponse($"{Messages.CannotCreateInvoicingConsumer}: {invoicingResponse.ErrorMessage}", StatusEnum.Error, consumerRequest.ConsumerID));
+                }
+                else
+                {
+                    return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, consumerRequest.ConsumerID) { EntityReference = invoicingResponse.ConsumerReference };
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Cannot create invoicing consumer. ConsumerID: {consumerRequest.ConsumerID}, response: {ex.Message}");
+
+                return BadRequest(new OperationResponse($"{Messages.CannotCreateInvoicingConsumer}", StatusEnum.Error, consumerRequest.ConsumerID));
+            }
+        }
+
         [NonAction]
         public async Task SendInvoiceEmail(string emailTo, Invoice invoice, Terminal terminal)
         {

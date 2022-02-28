@@ -92,6 +92,7 @@ namespace CheckoutPortal.Controllers
             Guid? consumerID = null;
 
             var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
+            var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
 
             if (customerPayload != null)
             {
@@ -109,17 +110,18 @@ namespace CheckoutPortal.Controllers
                 }
                 else if (exisingConsumers.NumberOfRecords > 1)
                 {
-                    throw new ApplicationException("There are several consumers with same card code in ECNG");
+                    throw new ApplicationException("There are several consumers with same Consumer code in ECNG");
                 }
 
                 if (consumerID == null)
                 {
                     var createConsumerResponse = await merchantMetadataApiClient.CreateConsumer(customerPayload);
-                    consumerID = createConsumerResponse.EntityUID;
+                    var existingConsumer = await merchantMetadataApiClient.GetConsumer(createConsumerResponse.EntityUID.GetValueOrDefault());
+                    consumerID = existingConsumer.ConsumerID;
+                    paymentRequestPayload.DealDetails.ConsumerExternalReference = existingConsumer.ExternalReference;
                 }
             }
 
-            var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
             paymentRequestPayload.DealDetails.ConsumerID = consumerID;
 
             var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);

@@ -23,6 +23,7 @@ using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using Transactions.Api.Models.Invoicing;
 using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
@@ -126,14 +127,39 @@ namespace MerchantProfileApi.Controllers
         {
             var newConsumer = mapper.Map<Consumer>(model);
 
-            // NOTE: this is security assignment
-            //mapper.Map(terminal, newConsumer);
-
             newConsumer.MerchantID = User.GetMerchantID().GetValueOrDefault();
 
             newConsumer.ApplyAuditInfo(httpContextAccessor);
 
             await consumersService.CreateEntity(newConsumer);
+
+            // external system
+
+            try
+            {
+                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync());
+                var invreq = new CreateInvoicingConsumerRequest
+                {
+                    ConsumerID = newConsumer.ConsumerID,
+                    TerminalID = terminal.TerminalID,
+                    ConsumerName = newConsumer.ConsumerName,
+                    NationalID = newConsumer.ConsumerNationalID,
+                    CellPhone = newConsumer.ConsumerPhone,
+                    Email = newConsumer.ConsumerEmail
+                };
+                var invresp = await transactionsApiClient.GreateInvoicingConsumer(invreq);
+                if (!string.IsNullOrWhiteSpace(invresp.EntityReference))
+                {
+                    newConsumer.ExternalReference = invresp.EntityReference;
+                    await consumersService.UpdateEntity(newConsumer);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, $"Not posible to create consumer in invoicing system. ConsumerID {newConsumer.ConsumerID}");
+            }
+
+            // return
 
             return CreatedAtAction(nameof(GetConsumer), new { consumerID = newConsumer.ConsumerID }, new OperationResponse(Messages.ConsumerCreated, StatusEnum.Success, newConsumer.ConsumerID));
         }

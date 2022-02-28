@@ -20,6 +20,7 @@
     <Compile Include="..\Transactions.Api\Models\Checkout\PinPadDevice.cs" Link="Models\PinPadDevice.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TokenInfo.cs" Link="Models\TokenInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
+    <Compile Include="..\Transactions.Api\Models\Invoicing\CreateInvoicingConsumerRequest.cs" Link="Models\CreateInvoicingConsumerRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\Enums\PayReqQuickStatusFilterTypeEnum.cs" Link="Models\PayReqQuickStatusFilterTypeEnum.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\PaymentRequestCreate.cs" Link="Models\PaymentRequestCreate.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\PaymentRequestInfo.cs" Link="Models\PaymentRequestInfo.cs" />

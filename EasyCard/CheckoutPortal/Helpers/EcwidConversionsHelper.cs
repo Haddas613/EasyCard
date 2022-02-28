@@ -9,6 +9,7 @@ using Transactions.Shared.Enums;
 
 namespace CheckoutPortal.Helpers
 {
+    // TODO: Please move it to ecwid dll
     public static class EcwidConversionsHelper
     {
         /// <summary>

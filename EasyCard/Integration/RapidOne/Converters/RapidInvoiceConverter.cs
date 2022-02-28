@@ -11,7 +11,6 @@ namespace RapidOne.Converters
 {
     public class RapidInvoiceConverter
     {
-
         public static CreateFinancialDocumentModelDto GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
         {
             var json = new CreateFinancialDocumentModelDto
@@ -34,6 +33,33 @@ namespace RapidOne.Converters
             };
 
             return json;
+        }
+
+        public static CustomerDto GetCustomerDto(CreateConsumerRequest consumerRequest)
+        {
+            var firstName = consumerRequest.ConsumerName;
+            string lastName = null;
+            var nameParts = consumerRequest.ConsumerName?.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            if (nameParts?.Count() > 0)
+            {
+                firstName = nameParts[0];
+
+                if (nameParts?.Count() > 1)
+                {
+                    lastName = string.Join(" ", nameParts.Skip(1));
+                }
+            }
+
+            var model = new CustomerDto
+            {
+                FirstName = firstName,
+                CellPhone = consumerRequest.CellPhone,
+                Email = consumerRequest.Email,
+                LastName = lastName,
+                NationalIDNumber = consumerRequest.NationalID
+            };
+
+            return model;
         }
 
         private static IEnumerable<FinDocItemDto> GetItems(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
