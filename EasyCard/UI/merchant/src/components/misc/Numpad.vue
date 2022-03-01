@@ -205,7 +205,7 @@ export default {
     totalAmount() {
       return (
         parseFloat(this.defaultItem.price) +
-        this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount)
+        this.lodash.sumBy(this.model.dealDetails.items, e => (e.price * e.quantity) - e.discount)
       );
     },
     ...mapState({
