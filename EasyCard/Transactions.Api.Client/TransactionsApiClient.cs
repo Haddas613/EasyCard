@@ -383,7 +383,7 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<OperationResponse> GreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
+        public async Task<OperationResponse> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
         {
             var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoicing/createConsumer", consumerRequest, BuildHeaders);
 

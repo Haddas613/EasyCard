@@ -596,7 +596,7 @@ namespace Transactions.Api.Controllers
         [Authorize(Policy = Policy.AnyAdmin)]
         [HttpPost]
         [Route("createConsumer")]
-        public async Task<ActionResult<OperationResponse>> GreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
+        public async Task<ActionResult<OperationResponse>> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(consumerRequest.TerminalID));
 

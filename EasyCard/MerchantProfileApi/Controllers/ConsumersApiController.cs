@@ -134,29 +134,34 @@ namespace MerchantProfileApi.Controllers
             await consumersService.CreateEntity(newConsumer);
 
             // external system
-
-            try
+            if (string.IsNullOrWhiteSpace(newConsumer.ExternalReference))
             {
-                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync());
-                var invreq = new CreateInvoicingConsumerRequest
+                try
                 {
-                    ConsumerID = newConsumer.ConsumerID,
-                    TerminalID = terminal.TerminalID,
-                    ConsumerName = newConsumer.ConsumerName,
-                    NationalID = newConsumer.ConsumerNationalID,
-                    CellPhone = newConsumer.ConsumerPhone,
-                    Email = newConsumer.ConsumerEmail
-                };
-                var invresp = await transactionsApiClient.GreateInvoicingConsumer(invreq);
-                if (!string.IsNullOrWhiteSpace(invresp.EntityReference))
-                {
-                    newConsumer.ExternalReference = invresp.EntityReference;
-                    await consumersService.UpdateEntity(newConsumer);
+                    var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync());
+                    if (terminal.Settings.CreateInvoicingConsumer)
+                    {
+                        var invreq = new CreateInvoicingConsumerRequest
+                        {
+                            ConsumerID = newConsumer.ConsumerID,
+                            TerminalID = terminal.TerminalID,
+                            ConsumerName = newConsumer.ConsumerName,
+                            NationalID = newConsumer.ConsumerNationalID,
+                            CellPhone = newConsumer.ConsumerPhone,
+                            Email = newConsumer.ConsumerEmail
+                        };
+                        var invresp = await transactionsApiClient.CreateInvoicingConsumer(invreq);
+                        if (!string.IsNullOrWhiteSpace(invresp.EntityReference))
+                        {
+                            newConsumer.ExternalReference = invresp.EntityReference;
+                            await consumersService.UpdateEntity(newConsumer);
+                        }
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, $"Not posible to create consumer in invoicing system. ConsumerID {newConsumer.ConsumerID}");
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, $"Not posible to create consumer in invoicing system. ConsumerID {newConsumer.ConsumerID}");
+                }
             }
 
             // return
