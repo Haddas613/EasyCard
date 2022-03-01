@@ -151,9 +151,10 @@ namespace MerchantProfileApi.Controllers
                             Email = newConsumer.ConsumerEmail
                         };
                         var invresp = await transactionsApiClient.CreateInvoicingConsumer(invreq);
-                        if (!string.IsNullOrWhiteSpace(invresp.EntityReference))
+                        if (!string.IsNullOrWhiteSpace(invresp.ConsumerReference))
                         {
-                            newConsumer.ExternalReference = invresp.EntityReference;
+                            newConsumer.ExternalReference = invresp.ConsumerReference;
+                            newConsumer.Origin = invresp.Origin;
                             await consumersService.UpdateEntity(newConsumer);
                         }
                     }

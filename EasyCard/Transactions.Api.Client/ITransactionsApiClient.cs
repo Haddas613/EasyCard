@@ -32,7 +32,7 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
 
-        Task<OperationResponse> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest);
+        Task<CreateInvoicingConsumerResponse> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest);
 
         Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
 

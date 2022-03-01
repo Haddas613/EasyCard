@@ -23,5 +23,7 @@ namespace Shared.Integration.Models.Invoicing
         public string ErrorMessage { get; set; }
 
         public JObject ExternalSystemData { get; set; }
+
+        public string Origin { get; set; }
     }
 }

@@ -342,7 +342,7 @@ namespace RapidOne
             try
             {
                 var res = await this.apiClient.Post<CreateCustomerResult>(terminal.BaseUrl, createCustomerUrl, model, () => Task.FromResult(headers));
-                return new CreateConsumerResponse { Success = res.Succeeded, ConsumerReference = res.CardCode, ErrorMessage = res.ErrorMessage };
+                return new CreateConsumerResponse { Success = res.Succeeded, ConsumerReference = res.CardCode, ErrorMessage = res.ErrorMessage, Origin = terminal.BaseUrl };
             }
             catch (WebApiClientErrorException wex)
             {

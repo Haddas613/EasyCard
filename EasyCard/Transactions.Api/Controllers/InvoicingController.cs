@@ -596,7 +596,7 @@ namespace Transactions.Api.Controllers
         [Authorize(Policy = Policy.AnyAdmin)]
         [HttpPost]
         [Route("createConsumer")]
-        public async Task<ActionResult<OperationResponse>> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
+        public async Task<ActionResult<CreateInvoicingConsumerResponse>> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(consumerRequest.TerminalID));
 
@@ -610,14 +610,14 @@ namespace Transactions.Api.Controllers
 
             if (terminalInvoicing == null)
             {
-                return new OperationResponse(Messages.CannotCreateInvoicingConsumer, StatusEnum.Error);
+                return new CreateInvoicingConsumerResponse { Message = Messages.CannotCreateInvoicingConsumer, Status = StatusEnum.Error };
             }
 
             var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
 
             if (!invoicing.CanCreateConsumer())
             {
-                return new OperationResponse(Messages.CannotCreateInvoicingConsumer, StatusEnum.Error);
+                return new CreateInvoicingConsumerResponse { Message = Messages.CannotCreateInvoicingConsumer, Status = StatusEnum.Error };
             }
 
             var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
@@ -643,7 +643,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, consumerRequest.ConsumerID) { EntityReference = invoicingResponse.ConsumerReference };
+                    return new CreateInvoicingConsumerResponse { ConsumerReference = invoicingResponse.ConsumerReference, Origin = invoicingResponse.Origin };
                 }
             }
             catch (Exception ex)
