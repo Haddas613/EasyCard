@@ -79,8 +79,8 @@ namespace CheckoutPortal.Helpers
                 ConsumerEmail = ecwidOrder.Email,
                 ConsumerName = ecwidOrder.BillingPerson.Name,
                 ConsumerNationalID = ecwidOrder.CustomerTaxId ?? ecwidOrder.BillingPerson.CompanyName,
-                ExternalReference = ecwidOrder.CustomerId,
-                Origin = DocumentOriginEnum.Ecwid.ToString(),
+                //ExternalReference = ecwidOrder.CustomerId,
+                //Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
             };
 
