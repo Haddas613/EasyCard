@@ -435,6 +435,7 @@
   "FailedAttemptsCount": "ספירת ניסיונות כושלים",
   "SelectForTrigger": "חיובי בילינג",
   "CustomerExternalReference": "מזהה חיצוני",
+  "CreateInvoicingConsumer": "צור לקוח חשבונית",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
