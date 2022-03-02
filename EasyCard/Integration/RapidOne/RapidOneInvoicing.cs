@@ -59,6 +59,30 @@ namespace RapidOne
         {
             var terminal = documentCreationRequest.InvoiceingSettings as RapidOneTerminalSettings;
 
+            if (string.IsNullOrWhiteSpace(documentCreationRequest.DealDetails?.ConsumerExternalReference))
+            {
+                var cres = await CreateConsumerOrGetExisting(new CreateConsumerRequest {
+                     ConsumerName = documentCreationRequest.ConsumerName ?? documentCreationRequest.DealDetails?.ConsumerName,
+                     Email = documentCreationRequest.DealDetails?.ConsumerEmail,
+                     CellPhone = documentCreationRequest.DealDetails?.ConsumerPhone,
+                     NationalID = documentCreationRequest.ConsumerNationalID ?? documentCreationRequest.DealDetails?.ConsumerNationalID,
+                });
+
+                if (!string.IsNullOrWhiteSpace(cres.ConsumerReference))
+                {
+                    if (documentCreationRequest.DealDetails == null)
+                    {
+                        documentCreationRequest.DealDetails = new Shared.Integration.Models.DealDetails();
+                    }
+
+                    documentCreationRequest.DealDetails.ConsumerExternalReference = cres.ConsumerReference;
+                }
+                else
+                {
+                    throw new IntegrationException("Cannot create RapidOne document because CardCode is empty", null);
+                }
+            }
+
             var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest, terminal);
             json.BranchId = terminal.Branch;
             json.Company = terminal.Company;
