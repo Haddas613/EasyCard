@@ -11,5 +11,10 @@ namespace Ecwid.Models
         public string StoreID { get; set; }
 
         public string Token { get; set; }
+
+        public bool Valid()
+        {
+            return ReferenceTransactionID != null && StoreID != null && Token != null;
+        }
     }
 }
