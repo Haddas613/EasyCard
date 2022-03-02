@@ -26,6 +26,7 @@ using Shared.Api.Configuration;
 using Transactions.Api.Models.External.Bit;
 using System.Web;
 using Shared.Api.Utilities;
+using CheckoutPortal.Services;
 
 namespace CheckoutPortal.Controllers
 {
@@ -39,6 +40,7 @@ namespace CheckoutPortal.Controllers
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
+        private readonly MemoryPaymentRequestStorage requestStorage;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -47,7 +49,8 @@ namespace CheckoutPortal.Controllers
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
             IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            IOptions<ApiSettings> apiSettings)
+            IOptions<ApiSettings> apiSettings,
+            MemoryPaymentRequestStorage requestStorage)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -56,6 +59,7 @@ namespace CheckoutPortal.Controllers
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
+            this.requestStorage = requestStorage;
         }
 
         /// <summary>
@@ -145,9 +149,13 @@ namespace CheckoutPortal.Controllers
             CheckoutData checkoutConfig;
             bool isPaymentIntent = request.PaymentIntent != null;
 
+            //TODO: temporary. ChargeViewModel will be stored with this key to be used later
+            string storageKey = null;
+
             if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+                storageKey = request.ApiKey;
             }
             else
             {
@@ -157,6 +165,7 @@ namespace CheckoutPortal.Controllers
                 }
 
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+                storageKey = id.ToString();
             }
 
             if (checkoutConfig == null)
@@ -406,6 +415,9 @@ namespace CheckoutPortal.Controllers
                 }
 
                 result = await transactionsApiClient.InitiateBitTransaction(mdel);
+
+                //TODO: Temporary solution. Storing ChargeViewModel to be used in later bit steps where it is not available
+                requestStorage.AddOrUpdate(storageKey, request);
             }
             else if (checkoutConfig.PaymentRequest != null)
             {
@@ -646,18 +658,24 @@ namespace CheckoutPortal.Controllers
 
             CheckoutData checkoutConfig;
 
+            string storageKey = null;
+
             if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, null, null, request.RedirectUrl);
+                storageKey = request.ApiKey;
             }
             else if (request.PaymentIntent != null)
             {
                 checkoutConfig = await GetCheckoutData(request.PaymentIntent.Value, request.RedirectUrl, true);
+                storageKey = request.PaymentIntent.ToString();
             }
             else if (request.PaymentRequest != null)
             {
                 checkoutConfig = await GetCheckoutData(request.PaymentRequest.Value, request.RedirectUrl, false);
-            }else
+                storageKey = request.PaymentRequest.ToString();
+            }
+            else
             {
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
@@ -690,10 +708,14 @@ namespace CheckoutPortal.Controllers
                 {
                     var paymentTransaction = await transactionsApiClient.GetTransaction(request.PaymentTransactionID);
 
-                    //TODO: not supported for bit?
-                    //redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+                    var chargeViewModel = requestStorage.Get(storageKey, true);
 
-                    return Redirect(redirectUrl);
+                    if (chargeViewModel != null)
+                    {
+                        redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(chargeViewModel, paymentTransaction));
+                        return Redirect(redirectUrl);
+                    }
+                    return RedirectToAction("PaymentResult");
                 }
                 else
                 {

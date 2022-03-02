@@ -136,7 +136,7 @@ namespace Transactions.Api.Controllers
                 try
                 {
                     ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
-                    if (ecwidPayload != null && ecwidPayload.Token != null)
+                    if (ecwidPayload != null && ecwidPayload.Valid())
                     {
                         transaction.DocumentOrigin = DocumentOriginEnum.Ecwid;
                     }
@@ -627,7 +627,7 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            if (ecwidPayload != null)
+            if (ecwidPayload != null && ecwidPayload.Valid())
             {
                 try
                 {
