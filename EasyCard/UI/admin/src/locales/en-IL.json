@@ -431,6 +431,7 @@
   "FailedAttemptsCount": "Failed Attempts Count",
   "SelectForTrigger": "Select for Trigger",
   "CustomerExternalReference": "Customer External Reference",
+  "CreateInvoicingConsumer": "Create Invoicing Consumer",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
