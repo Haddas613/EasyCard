@@ -234,11 +234,11 @@ namespace Transactions.Business.Entities
             LastError = errorMessage;
             LastErrorCorrelationID = correlationID;
             FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
-            if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
-            {
-                Active = false;
-            }
-            else
+            //if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
+            //{
+            //    Active = false;
+            //}
+            //else
             {
                 NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
             }
