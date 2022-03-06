@@ -34,6 +34,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared.Enums;
 using Nayax.Converters;
+using Shared.Helpers.Events;
 using SharedApi = Shared.Api;
 using SharedIntegration = Shared.Integration;
 
@@ -52,7 +53,7 @@ namespace Transactions.Api.Controllers.External
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly INayaxTransactionsParametersService nayaxTransactionsService;
         private readonly ITransactionsService transactionsService;
-        private readonly IMetricsService metrics;
+        private readonly IEventsService events;
         private readonly ITerminalsService terminalsService;
         private readonly IPinPadDevicesService pinPadDevicesService;
         private readonly IMapper mapper;
@@ -66,7 +67,7 @@ namespace Transactions.Api.Controllers.External
              ITerminalsService terminalsService,
              IMapper mapper,
              ILogger<TransactionsApiController> logger,
-             IMetricsService metrics,
+             IEventsService events,
              IHttpContextAccessorWrapper httpContextAccessor,
              IOptions<NayaxGlobalSettings> configuration,
              IPinPadDevicesService pinPadDevicesService)
@@ -75,7 +76,7 @@ namespace Transactions.Api.Controllers.External
             this.aggregatorResolver = aggregatorResolver;
             this.nayaxTransactionsService = nayaxTransactionsService;
             this.transactionsService = transactionService;
-            this.metrics = metrics;
+            this.events = events;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.configuration = configuration.Value;
@@ -168,7 +169,7 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-                metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
+                events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
 

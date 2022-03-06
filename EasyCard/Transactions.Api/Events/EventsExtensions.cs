@@ -1,0 +1,42 @@
+﻿using Microsoft.ApplicationInsights;
+using Shared.Helpers.Events;
+using Shared.Helpers.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Transactions.Business.Entities;
+using Transactions.Shared.Enums;
+
+namespace Transactions.Api.Services
+{
+    public static class EventsExtensions
+    {
+        public static Task RaiseTransactionEvent(this IEventsService ms, PaymentTransaction paymentTransaction, TransactionOperationCodesEnum eventName)
+        {
+            try
+            {
+                return ms.Raise(
+                    new CustomEvent
+                    {
+                        MerchantID = paymentTransaction.MerchantID,
+                        TerminalID = paymentTransaction.TerminalID,
+                        CorrelationId = paymentTransaction.CorrelationId,
+                        Entity = paymentTransaction,
+                        EventName = eventName.ToString(),
+                        IsFailureEvent = false,
+                        EntityExternalReference = paymentTransaction.DealDetails?.DealReference,
+                        EntityReference = paymentTransaction.PaymentTransactionID.ToString(),
+                        EntityType = nameof(PaymentTransaction),
+                        EventTimestamp = DateTime.UtcNow
+                    }
+                    );
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to process event: {ex.Message}");
+                return Task.FromResult(true);
+            }
+        }
+    }
+}

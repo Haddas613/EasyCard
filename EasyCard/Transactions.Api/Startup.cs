@@ -688,6 +688,27 @@ namespace Transactions.Api
 
                 return new Ecwid.Api.EcwidApiClient(webApiClient, storageService, logger, ecwidCfg);
             });
+
+            services.AddSingleton<SharedHelpers.WebHooks.IWebHookService, SharedHelpers.WebHooks.WebHookService>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<SharedHelpers.WebHooks.WebHookService>>();
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
+
+                return new SharedHelpers.WebHooks.WebHookService(webApiClient, logger, metrics);
+            });
+
+            services.AddSingleton<SharedHelpers.Events.IEventsService, SharedHelpers.Events.EventsService>(serviceProvider =>
+            {
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
+                var webHooksService = serviceProvider.GetRequiredService<SharedHelpers.WebHooks.IWebHookService>();
+
+                var p1 = new Events.TransactionEventMetricsProcessor(metrics);
+
+                var p2 = new SharedHelpers.WebHooks.WebHooksEventProcessor(webHooksService);
+
+                return new SharedHelpers.Events.EventsService(p1, p2);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

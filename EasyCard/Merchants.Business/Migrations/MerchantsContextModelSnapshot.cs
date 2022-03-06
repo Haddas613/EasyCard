@@ -588,6 +588,11 @@ namespace Merchants.Business.Migrations
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("WebHooksConfiguration")
+                        .IsUnicode(false)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("WebHooksConfiguration");
+
                     b.HasKey("TerminalID");
 
                     b.HasIndex("MerchantID");

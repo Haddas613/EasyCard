@@ -44,6 +44,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.TerminalTemplateID, o => o.MapFrom(d => d.TerminalTemplateID))
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID))
+                .ForMember(d => d.WebHooksConfiguration, o => o.MapFrom(d => d.WebHooksConfiguration))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentTransaction, TransactionResponse>()

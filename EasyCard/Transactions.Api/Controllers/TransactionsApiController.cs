@@ -55,6 +55,7 @@ using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 using Ecwid.Api;
+using Shared.Helpers.Events;
 
 namespace Transactions.Api.Controllers
 {
@@ -89,7 +90,7 @@ namespace Transactions.Api.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly IQueue invoiceQueue;
         private readonly IEmailSender emailSender;
-        private readonly IMetricsService metrics;
+        private readonly IEventsService events;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly InvoicingController invoicingController;
         private readonly BasicServices.Services.IExcelService excelService;
@@ -117,7 +118,7 @@ namespace Transactions.Api.Controllers
             IQueueResolver queueResolver,
             IEmailSender emailSender,
             IOptions<ApiSettings> apiSettings,
-            IMetricsService metrics,
+            IEventsService events,
             IPaymentIntentService paymentIntentService,
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
             BillingController billingController,
@@ -146,7 +147,7 @@ namespace Transactions.Api.Controllers
             this.merchantsService = merchantsService;
             this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
-            this.metrics = metrics;
+            this.events = events;
             this.paymentIntentService = paymentIntentService;
             this.transactionsHubContext = transactionsHubContext;
             this.invoicingController = invoicingController;

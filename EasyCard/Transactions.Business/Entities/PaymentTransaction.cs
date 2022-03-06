@@ -2,6 +2,7 @@
 using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -13,7 +14,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IWebHookEntity
     {
         public PaymentTransaction()
         {
@@ -327,5 +328,8 @@ namespace Transactions.Business.Entities
         /// Additional UUID used for authentication. When using web client application this ID, along with paymentInitiationId, should be sent upon opening bit payment page (openBitPaymentPage).
         /// </summary>
         public string BitTransactionSerialId { get; set; }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }
