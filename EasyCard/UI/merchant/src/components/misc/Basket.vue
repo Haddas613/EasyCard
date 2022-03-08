@@ -151,7 +151,9 @@ export default {
       return this.lodash.sumBy(this.model.dealDetails.items, "discount");
     },
     totalAmount() {
-      return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
+      //return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
+      this.recalculate();
+      return this.model.totalAmount;
     },
     ...mapState({
       currencyStore: state => state.settings.currency,
@@ -197,6 +199,7 @@ export default {
          itemPricingService.item.calculate(item, { vatRate: this.model.vatRate });
        }
        itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
+       console.log(this.model)
        this.$emit('update', this.model);
     }
   }

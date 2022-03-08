@@ -383,6 +383,7 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
+
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;

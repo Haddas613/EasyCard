@@ -215,7 +215,7 @@ export default {
     },
     applyPercentageDiscount(){
       if (!this.$refs.form.validate()) return;
-      this.discount = parseFloat((this.model.price * (this.percentageDiscount / 100)).toFixed(2));
+      this.discount = parseFloat((this.model.price * this.model.quantity * (this.percentageDiscount / 100)).toFixed(2));
       this.calculateItemPricing();
     },
     calculatePercentageDiscount(){
