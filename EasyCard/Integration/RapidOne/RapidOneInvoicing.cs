@@ -27,7 +27,7 @@ namespace RapidOne
         private const string getDepartmentsUrl = "/gateway/departments";
         private const string getItemsUrl = "/gateway/items";
         private const string getItemCategoriesUrl = "/gateway/itemcategories";
-
+        private const string createCustomerUrl = "/gateway/getorcreate";
         private const string createItemUrl = "/gateway/item";
         private const string createItemCategoryUrl = "/gateway/itemcategory";
 
@@ -58,6 +58,30 @@ namespace RapidOne
         public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
         {
             var terminal = documentCreationRequest.InvoiceingSettings as RapidOneTerminalSettings;
+
+            if (string.IsNullOrWhiteSpace(documentCreationRequest.DealDetails?.ConsumerExternalReference))
+            {
+                var cres = await CreateConsumerOrGetExisting(new CreateConsumerRequest {
+                     ConsumerName = documentCreationRequest.ConsumerName ?? documentCreationRequest.DealDetails?.ConsumerName,
+                     Email = documentCreationRequest.DealDetails?.ConsumerEmail,
+                     CellPhone = documentCreationRequest.DealDetails?.ConsumerPhone,
+                     NationalID = documentCreationRequest.ConsumerNationalID ?? documentCreationRequest.DealDetails?.ConsumerNationalID,
+                });
+
+                if (!string.IsNullOrWhiteSpace(cres.ConsumerReference))
+                {
+                    if (documentCreationRequest.DealDetails == null)
+                    {
+                        documentCreationRequest.DealDetails = new Shared.Integration.Models.DealDetails();
+                    }
+
+                    documentCreationRequest.DealDetails.ConsumerExternalReference = cres.ConsumerReference;
+                }
+                else
+                {
+                    throw new IntegrationException("Cannot create RapidOne document because CardCode is empty", null);
+                }
+            }
 
             var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest, terminal);
             json.BranchId = terminal.Branch;
@@ -329,6 +353,38 @@ namespace RapidOne
         public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
         {
             return storageService.GetAll(entityID);
+        }
+
+        public async Task<CreateConsumerResponse> CreateConsumerOrGetExisting(CreateConsumerRequest consumerRequest)
+        {
+            var terminal = consumerRequest.InvoiceingSettings as RapidOneTerminalSettings;
+
+            NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, null, null);
+
+            var model = RapidInvoiceConverter.GetCustomerDto(consumerRequest);
+
+            try
+            {
+                var res = await this.apiClient.Post<CreateCustomerResult>(terminal.BaseUrl, createCustomerUrl, model, () => Task.FromResult(headers));
+                return new CreateConsumerResponse { Success = res.Succeeded, ConsumerReference = res.CardCode, ErrorMessage = res.ErrorMessage, Origin = terminal.BaseUrl };
+            }
+            catch (WebApiClientErrorException wex)
+            {
+                this.logger.LogError(wex, $"RapidOne integration request failed. {wex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"RapidOne integration request failed. {ex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+        }
+
+        public bool CanCreateConsumer()
+        {
+            return true;
         }
 
         private string GetDocumentNumber(IEnumerable<DocumentItemModel> documents)

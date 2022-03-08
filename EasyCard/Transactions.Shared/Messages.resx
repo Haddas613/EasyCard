@@ -183,6 +183,9 @@
   <data name="CannotCancelInvoicedTransaction" xml:space="preserve">
     <value>Cannot cancel invoiced transaction</value>
   </data>
+  <data name="CannotCreateInvoicingConsumer" xml:space="preserve">
+    <value>Cannot create invoicing consumer</value>
+  </data>
   <data name="CanOnlyIssueInvoiceForILSTransactions" xml:space="preserve">
     <value>Can only issue invoice for ILS transactions</value>
   </data>

@@ -76,6 +76,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
             }
 
+            if (filter.ConsumerExternalReference != null)
+            {
+                src = src.Where(t => t.DealDetails.ConsumerExternalReference == filter.ConsumerExternalReference);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
             {
                 src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));

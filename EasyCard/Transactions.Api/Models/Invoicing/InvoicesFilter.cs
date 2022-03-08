@@ -44,5 +44,7 @@ namespace Transactions.Api.Models.Invoicing
         public string ConsumerEmail { get; set; }
 
         public decimal InvoiceAmount { get; set; }
+
+        public string ConsumerExternalReference { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Transactions.Shared.Enums;
 
 namespace CheckoutPortal.Helpers
 {
+    // TODO: Please move it to ecwid dll
     public static class EcwidConversionsHelper
     {
         /// <summary>
@@ -67,28 +68,28 @@ namespace CheckoutPortal.Helpers
         /// <returns>Consumer request</returns>
         public static ConsumerRequest GetConsumerRequest(this EcwidOrder ecwidOrder)
         {
-            if (ecwidOrder.CustomerId == null || ecwidOrder.BillingPerson == null)
+            if (ecwidOrder.BillingPerson == null)
             {
                 return null;
             }
 
             var request = new ConsumerRequest
             {
-                ConsumerPhone = ecwidOrder.ShippingPerson.Phone,
+                ConsumerPhone = ecwidOrder.BillingPerson.Phone,
                 ConsumerEmail = ecwidOrder.Email,
-                ConsumerName = ecwidOrder.ShippingPerson.Name,
-                ConsumerNationalID = ecwidOrder.CustomerTaxId,
-                ExternalReference = ecwidOrder.CustomerId,
-                Origin = DocumentOriginEnum.Ecwid.ToString(),
+                ConsumerName = ecwidOrder.BillingPerson.Name,
+                ConsumerNationalID = ecwidOrder.CustomerTaxId ?? ecwidOrder.BillingPerson.CompanyName,
+                //ExternalReference = ecwidOrder.CustomerId,
+                //Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
             };
 
             request.ConsumerAddress = new Address
             {
-                City = ecwidOrder.ShippingPerson.City,
-                CountryCode = ecwidOrder.ShippingPerson.CountryCode,
-                Street = ecwidOrder.ShippingPerson.Street,
-                Zip = ecwidOrder.ShippingPerson.PostalCode
+                City = ecwidOrder.BillingPerson.City,
+                CountryCode = ecwidOrder.BillingPerson.CountryCode,
+                Street = ecwidOrder.BillingPerson.Street,
+                Zip = ecwidOrder.BillingPerson.PostalCode
             };
 
             return request;
@@ -98,7 +99,7 @@ namespace CheckoutPortal.Helpers
         {
             return source.Select(e => new Item
             {
-                ExternalReference = e.ProductId.ToString(),
+                EcwidItemId = e.ProductId.ToString(),
                 Price = e.Price,
                 Quantity = e.Quantity,
                 ItemName = e.Name

@@ -533,6 +533,16 @@ namespace EasyInvoice
             return storageService.GetAll(entityID);
         }
 
+        public Task<CreateConsumerResponse> CreateConsumerOrGetExisting(CreateConsumerRequest consumerRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanCreateConsumer()
+        {
+            return false;
+        }
+
         private async Task<NameValueCollection> GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId, string entityId)
         {
             string requestUrl = null;

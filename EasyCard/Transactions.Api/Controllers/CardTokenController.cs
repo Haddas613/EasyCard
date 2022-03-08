@@ -188,9 +188,19 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
         {
             var guid = new Guid(key);
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
+            var query = creditCardTokenService.GetTokens();
 
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
+            if (User.IsTerminal())
+            {
+                var terminal = EnsureExists(await terminalsService.GetTerminal((User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault()));
+
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    query = creditCardTokenService.GetTokensShared(terminal.TerminalID);
+                }
+            }
+
+            var token = EnsureExists(await query.FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
 
             try
             {

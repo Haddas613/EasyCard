@@ -282,6 +282,14 @@ namespace Transactions.Api.Controllers.External
                     return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
                 }
 
+                if (!string.IsNullOrEmpty(bitCaptureResponse.SuffixPlasticCardNumber))
+                {
+                    transaction.CreditCardDetails = new Business.Entities.CreditCardDetails
+                    {
+                        CardNumber = $"000000000000{bitCaptureResponse.SuffixPlasticCardNumber}",
+                    };
+                }
+
                 //await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
 
                 //TODO

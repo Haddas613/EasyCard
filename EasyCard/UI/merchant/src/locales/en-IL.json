@@ -363,6 +363,7 @@
   "LastError": "Last Error",
   "LastErrorCorrelationID": "Last Error Correlation ID",
   "SelectForTrigger": "Select for Trigger",
+  "CustomerExternalReference": "Customer External Reference",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

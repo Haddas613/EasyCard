@@ -13,7 +13,7 @@
               color="primary"
               target="_blank"
               link
-              :href="$cfg.VUE_APP_PROFILE_API_BASE_ADDRESS + '/doc/index'"
+              :href="'https://github.com/HaddasEC/ECNG'"
               :block="$vuetify.breakpoint.smAndDown"
             >
               <v-icon left>mdi-file-document</v-icon>

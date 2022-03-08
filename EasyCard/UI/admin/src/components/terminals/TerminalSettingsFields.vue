@@ -151,6 +151,11 @@
               :label="$t('UseQuickChargeByDefault')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.createInvoicingConsumer"
+              :label="$t('CreateInvoicingConsumer')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col md="4" cols="12">
             <v-switch
@@ -573,7 +578,7 @@
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <bank-select 
                 v-model="model.bankDetails.bank"
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -604,7 +609,7 @@
                 :rules="editBankDetails ? [vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)] : []"
                 v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
           </template>
         </v-row>
       </v-card-text>

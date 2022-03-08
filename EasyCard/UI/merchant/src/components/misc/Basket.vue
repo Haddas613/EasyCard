@@ -67,8 +67,11 @@
         </template>
 
         <template v-slot:left="{ item }">
-          <v-col cols="12" class="text-align-initial">
+          <v-col cols="12" md="6" class="text-align-initial">
             <span class="body-2">{{item.itemName}}</span>
+          </v-col>
+          <v-col cols="12" md="6" class="text-align-initial">
+            
           </v-col>
         </template>
 
@@ -77,6 +80,8 @@
             <ec-money v-if="item.discount" :amount="-item.discount" :currency="item.currency"></ec-money>
           </v-col>
           <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
+          <v-chip x-small color="secondary" class="mx-1" v-if="item.quantity > 1">{{item.quantity}}
+          </v-chip>
             <ec-money
               :amount="item.price"
               :currency="item.$currency"
@@ -146,7 +151,9 @@ export default {
       return this.lodash.sumBy(this.model.dealDetails.items, "discount");
     },
     totalAmount() {
-      return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
+      //return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
+      this.recalculate();
+      return this.model.totalAmount;
     },
     ...mapState({
       currencyStore: state => state.settings.currency,
@@ -192,6 +199,7 @@ export default {
          itemPricingService.item.calculate(item, { vatRate: this.model.vatRate });
        }
        itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
+       console.log(this.model)
        this.$emit('update', this.model);
     }
   }

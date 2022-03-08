@@ -84,10 +84,17 @@
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" class="py-0">
+            <v-col cols="12" md="6" class="py-0">
               <v-text-field
                 v-model="model.consumerEmail"
                 :label="$t('CustomerEmail')"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.consumerExternalReference"
+                :label="$t('CustomerExternalReference')"
                 outlined
               ></v-text-field>
             </v-col>

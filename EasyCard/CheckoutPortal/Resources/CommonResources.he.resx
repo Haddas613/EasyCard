@@ -223,10 +223,10 @@
     <value>סכום תשלום ראשון</value>
   </data>
   <data name="AuthorizationCode" xml:space="preserve">
-    <value>קוד אימות</value>
+    <value>מספר אישור</value>
   </data>
   <data name="AuthorizationCodeOptional" xml:space="preserve">
-    <value>קוד אימות (אופציונאלי)</value>
+    <value>מספר אישור (אופציונאלי)</value>
   </data>
   <data name="ThisCreditCardIsAlreadyAddedAsToken" xml:space="preserve">
     <value>כרטיס האשראי כבר קיים כטוקן</value>

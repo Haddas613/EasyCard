@@ -315,8 +315,8 @@
   "ExternalReference": "מזהה חיצוני",
   "PaymentIntentURL": "קישור לכוונת תשלום",
   "AllowPinPad": "אפשר לבצע עסקאות פינפד",
-  "AuthorizationCode": "קוד אימות",
-  "AuthorizationCodeOptional": "קוד אימות (אופציונאלי)",
+  "AuthorizationCode": "מספר אישור",
+  "AuthorizationCodeOptional": "מספר אישור (אופציונאלי)",
   "PaymentType": "סוג תשלום",
   "ChequeNumber": "מספר המחאה",
   "Bank": "בנק",
@@ -363,6 +363,7 @@
   "LastError": "שגיאה אחרונה",
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
   "SelectForTrigger": "חיובי בילינג",
+  "CustomerExternalReference": "מזהה חיצוני",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

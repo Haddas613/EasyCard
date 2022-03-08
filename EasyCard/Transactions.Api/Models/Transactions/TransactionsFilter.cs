@@ -115,5 +115,7 @@ namespace Transactions.Api.Models.Transactions
         public string PaymentTransactionIDShort { get; set; }
 
         public bool? HasMasavFile { get; set; }
+
+        public string ConsumerExternalReference { get; set; }
     }
 }
