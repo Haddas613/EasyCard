@@ -124,6 +124,19 @@ namespace Transactions.Api.Controllers.External
                   terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
                   Transactions.Shared.Messages.AggregatorNotDefined);
 
+                var processorSettings = new BitTerminalSettings();
+
+                var bitProcessorConfig = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.VirtualWalletProcessor);
+
+                if (bitProcessorConfig?.Settings != null)
+                {
+                    var bitSettings = bitProcessorConfig.Settings.ToObject<BitTerminalSettings>();
+                    if (bitSettings != null)
+                    {
+                        processorSettings = bitSettings;
+                    }
+                }
+
                 //TODO: map terminal to model?
                 if (model.VATRate == null)
                 {
@@ -154,6 +167,9 @@ namespace Transactions.Api.Controllers.External
                 metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+
+                processorRequest.ProcessorSettings = processorSettings;
+
                 //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
                 var processorResponse = await bitProcessor.CreateTransaction(processorRequest);

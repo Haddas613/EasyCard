@@ -43,6 +43,9 @@ namespace Bit
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
+            var settings = paymentTransactionRequest.ProcessorSettings as BitTerminalSettings;
+            int.TryParse(settings?.BitMerchantNumber, out var providerNbr);
+
             var createRequest = new BitCreateRequest
             {
                 RequestAmount = paymentTransactionRequest.TotalAmount,
@@ -52,6 +55,7 @@ namespace Bit
                 RequestSubjectDescription = "Bit payment", //TODO
                 FranchisingId = 176, //TODO
                 UrlReturnAddress = paymentTransactionRequest.RedirectURL,
+                ProviderNbr = providerNbr
             };
 
             var createResponse = await CreateBitTransaction(createRequest, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
