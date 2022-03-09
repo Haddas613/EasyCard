@@ -241,6 +241,11 @@ namespace Transactions.Business.Entities
             //else
             {
                 NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
+
+                if (NextScheduledTransaction.Value.Day > 20)
+                {
+                    NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
+                }
             }
         }
     }
