@@ -1,4 +1,5 @@
-﻿@using Shared.Helpers
+﻿@using Newtonsoft.Json;
+@using Shared.Helpers
 @{
     ViewData["Title"] = "EasyCard";
 }
@@ -12,6 +13,10 @@
     <input type="hidden" asp-for="ApiKey" id="ApiKeyHidden" />
     <input type="hidden" asp-for="Currency" id="CurrencyHidden" />
     <input type="hidden" asp-for="Description" id="DescriptionHidden" />
+    <input type="hidden" asp-for="VersioningResponse" id="VersioningResponseHidden" />
+    <input type="hidden" asp-for="PassedInit3DMethod" id="PassedInit3DMethodHidden" />
+    <input type="hidden" name="ChargeModel" id="ChargeModel" value="@JsonConvert.SerializeObject(Model)" />
+
 </form>
 
 
@@ -50,7 +55,8 @@
                     <div class="form-area" id="bit" hidden>
                         <partial name="BitForm" />
                     </div>
-                }else
+                }
+                else
                 {
                     <div class="form-area" id="regular">
                         <partial name="RegularForm" />
@@ -64,18 +70,23 @@
 
 @section Scripts {
 
-@await Html.PartialAsync("_ValidationScriptsPartial")
-<script nws-csp-add-nonce="true">
-    (function() {
-        $(document).ready(function () {
-            $("input[name=formPaymentType]").on("change", function(e){
-                let selectedMethod = $("input[name=formPaymentType]:checked").val();
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script nws-csp-add-nonce="true">
+        (function () {
+            $(document).ready(function () {
+                $("input[name=formPaymentType]").on("change", function (e) {
+                    let selectedMethod = $("input[name=formPaymentType]:checked").val();
 
-                $("#bitlogo").attr("src", selectedMethod == "bit" ? "/img/bit-logo-white.svg" : "/img/bit-logo-gray.svg");
-                $(`.form-area`).attr('hidden', true);
-                $(`#${selectedMethod}`).attr('hidden', false);
-            });
-        })
-    })()
-</script>
+                    $("#bitlogo").attr("src", selectedMethod == "bit" ? "/img/bit-logo-white.svg" : "/img/bit-logo-gray.svg");
+                    $(`.form-area`).attr('hidden', true);
+                    $(`#${selectedMethod}`).attr('hidden', false);
+                });
+
+                /* if (("#VersioningResponseHidden").val() != null) {
+                     //call init3dmethod if it didn't fell on catch  PassedInit3DS is true, otherwise it's false
+         //post to Home/Charge with modified model PassedInit3DS
+                 }*/
+            })
+        })()
+    </script>
 }

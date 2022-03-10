@@ -10,7 +10,8 @@ namespace ThreeDS.Configuration
         public string Password { get; set; }
         public string PspID { get; set; } //Distributer ID 
 
-       public string BaseUrl { get; set; } = "https://3dsc-qa.shva.co.il/CreditCartPay/api"; // please do not end with slash
+       public string BaseUrl { get; set; } = "https://3dsc-qa.shva.co.il"; // please do not end with slash
+        public string CertificateThumbprint { get; set; }
 
 
     }

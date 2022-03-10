@@ -4,6 +4,9 @@
     $('.cc-exp').payment('formatCardExpiry');
     $('.cc-cvc').payment('formatCardCVC');
 
+
+    $(document).ready(function () {
+        
     //$.fn.toggleInputError = function (erred) {
     //    this.parent('.form-group').find('.control-validation').toggleClass('.field-validation-error', erred);
     //    return this;

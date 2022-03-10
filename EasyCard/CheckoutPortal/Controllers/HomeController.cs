@@ -1,34 +1,33 @@
-﻿using System;
+﻿using AutoMapper;
+using CheckoutPortal.Models;
+using Merchants.Api.Client;
+using Merchants.Business.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Shared.Api.Configuration;
+using Shared.Api.Utilities;
+using Shared.Helpers;
+using Shared.Helpers.Security;
+using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CheckoutPortal.Models;
-using Transactions.Api.Client;
-using Shared.Helpers.Security;
-using Shared.Helpers;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics;
-using System.IO;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Transactions.Api.Models.Checkout;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
-using Shared.Integration.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR;
-using Shared.Api.Configuration;
-using Transactions.Api.Models.External.Bit;
 using System.Web;
-using Shared.Api.Utilities;
 using ThreeDS;
 using ThreeDS.Models;
-using Merchants.Business.Services;
+using Transactions.Api.Client;
+using Transactions.Api.Models.Checkout;
+using Transactions.Api.Models.External.Bit;
 
 namespace CheckoutPortal.Controllers
 {
@@ -36,8 +35,9 @@ namespace CheckoutPortal.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
-        private readonly ITerminalsService terminalsService;
+        //private readonly ITerminalsService terminalsService;
         private readonly ITransactionsApiClient transactionsApiClient;
+        private readonly IMerchantsApiClient merchantsApiClient;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
@@ -53,17 +53,19 @@ namespace CheckoutPortal.Controllers
             IOptions<RequestLocalizationOptions> localizationOptions,
             IHubContext<Hubs.TransactionsHub,
                 Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-             ITerminalsService terminalsService,
-            IOptions<ApiSettings> apiSettings)
+            IMerchantsApiClient merchantsApiClient,
+            IOptions<ApiSettings> apiSettings,
+            ThreeDSService threeDSService)
         {
             this.logger = logger;
-            this.terminalsService = terminalsService;
+            this.merchantsApiClient = merchantsApiClient; 
             this.transactionsApiClient = transactionsApiClient;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
+            this.threeDSService = threeDSService;
         }
 
         /// <summary>
@@ -132,6 +134,15 @@ namespace CheckoutPortal.Controllers
         // TODO: preffered language parameter
         // TODO: issueInvoice flag
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Init3DS(ChargeViewModel request)
+        {
+            request.VersioningResponse = JsonConvert.DeserializeObject<VersioningResponse>(TempData["VersioningResponse"].ToString());
+            return View(request);
+           // return RedirectToAction(nameof(Charge), request);
+        }
+
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery] CardRequest request)
         {
 
@@ -145,8 +156,9 @@ namespace CheckoutPortal.Controllers
             return await IndexViewResult(checkoutConfig, request);
         }
 
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
@@ -450,27 +462,45 @@ namespace CheckoutPortal.Controllers
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
-                if (!(mdel.PinPad ?? false))
-                {
-                    var terminal = await terminalsService.GetTerminal(mdel.TerminalID);
 
-                    var VersioningResult = threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
-                    if (VersioningResult?.Result?.errorDetails == null)
+                if ((!(mdel.PinPad ?? false)) && (checkoutConfig.Settings.EnableThreeDS ?? false))
+                {
+                    var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
                     {
-                        string retailer = terminal.ProcessorTerminalReference;
+                        TerminalID = mdel.TerminalID
+                    };
+                    var terminal = (await merchantsApiClient.GetTerminals(filter)).Data?.FirstOrDefault();
+
+                    //terminal.Integrations
+                    if (!request.PassedInit3DMethod.HasValue)
+                    {
+                        var VersioningResult = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
+                        if (VersioningResult?.errorDetails == null)
+                        {
+                            request.VersioningResponse = VersioningResult.versioningResponse;
+                            //request.PassedInit3DMethod = true;
+                            TempData["VersioningResponse"] = JsonConvert.SerializeObject(request.VersioningResponse);
+                            return RedirectToAction(nameof(Init3DS), request);
+                        }
+                    }
+                    else if(request.PassedInit3DMethod.HasValue && (request.PassedInit3DMethod??false))
+                    {
+                        string retailer = terminal.ProcessorTerminalReference;//todo terminal.ProcessorTerminalReference;
                         AuthenticateReqModel req = new AuthenticateReqModel
                         {
-                            threeDSServerTransID = VersioningResult.Result.versioningResponse.threeDSServerTransID,
-                            Retailer = retailer
+                            threeDSServerTransID = request.VersioningResponse.threeDSServerTransID,
+                            Retailer = retailer,
                         };
-                        await threeDSService.Authentication(req);
+                        var AuthenticationRes = await threeDSService.Authentication(req);
                     }
-/*                    else
-                    { 
-                    return error 
-                    }*/
+                    /*                    else
+                                        { 
+                                        return error 
+                                        }*/
+                    //}
                 }
-                result = await transactionsApiClient.CreateTransactionPR(mdel);
+                    result = await transactionsApiClient.CreateTransactionPR(mdel);
+               
             }
             else//PR IS NULL
             {
@@ -494,10 +524,12 @@ namespace CheckoutPortal.Controllers
                 }
 
                 mdel.Calculate();
-                if(!(mdel.PinPad??false))
+               /* VersioningRestResponse resVersioning = null;
+                if (!(mdel.PinPad ?? false))//if terminal has settings to do so 
                 {
-                    threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
-                }
+                    resVersioning = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
+                    //redirect to Init3DS with resVersioning result, there call init3DMethod with this parameters.
+                }*/
                 result = await transactionsApiClient.CreateTransaction(mdel);
             }
 

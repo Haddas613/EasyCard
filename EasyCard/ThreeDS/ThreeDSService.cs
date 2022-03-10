@@ -18,17 +18,19 @@ namespace ThreeDS
         private readonly ThreedDSGlobalConfiguration configuration;
         public ThreeDSService(IOptions<ThreedDSGlobalConfiguration> configuration,
             IWebApiClient apiClient,
-            ILogger<ThreeDSService> logger,
-            IIntegrationRequestLogStorageService integrationRequestLogStorageService
+            ILogger<ThreeDSService> logger
+          //  IIntegrationRequestLogStorageService integrationRequestLogStorageService
            )
         {
             this.configuration = configuration.Value;
             this.apiClient = apiClient;
             this.logger = logger;
-            this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+          //  this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
         public async Task<VersioningRestResponse> Versioning( string cardNumber)
         {
+            string requestUrl = null;
+            string requestStr = null;
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
             VersioningRequest request = new VersioningRequest()
             {
@@ -37,13 +39,17 @@ namespace ThreeDS
                 Password = configuration.Password,
                 PspID = configuration.PspID
             };
-            var response = await apiClient.Post<VersioningRestResponse>(configuration.BaseUrl, "versioning", request
-                  );
+            var response = await apiClient.Post<VersioningRestResponse>(configuration.BaseUrl, "/CreditCartPay/api/Versioning", request, null,
+                (url, request) =>
+                {
+                    requestStr = request;
+                    requestUrl = url;
+                });
             return response;
         }
 
 
-        public async Task<OperationResponse> Authentication(AuthenticateReqModel request)
+        public async Task<AuthenticateResponse> Authentication(AuthenticateReqModel request)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
             AuthenticationRequest requestAuthen = new AuthenticationRequest()
@@ -51,9 +57,10 @@ namespace ThreeDS
                   UserName = configuration.UserName,
                   Password = configuration.Password,
                   PspID = configuration.PspID,
-                  Retailer =""//todo haddas need to be done  
+                  Retailer =request.Retailer,
+                   threeDSServerTransID = request.threeDSServerTransID
             };
-            var response = await apiClient.Post<OperationResponse>(configuration.BaseUrl, "authentication", requestAuthen
+            var response = await apiClient.Post<AuthenticateResponse>(configuration.BaseUrl, "/CreditCartPay/api/authentication", requestAuthen
                   );
             return response;
         }

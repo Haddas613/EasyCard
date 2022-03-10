@@ -199,7 +199,7 @@ namespace Transactions.Api.Controllers
             }
 
             response.Settings.AllowBit = terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID);
-
+            response.Settings.EnableThreeDS = terminal.CheckoutSettings.Support3DSecure;
             return response;
         }
     }

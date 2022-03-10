@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CheckoutPortal.Models._3DS
 {
-    public class VersioningResponse
+   /* public class VersioningResponse
     {
         /// <summary>
         /// like UID in proper SHVA transaction
@@ -26,4 +26,5 @@ namespace CheckoutPortal.Models._3DS
         public ThreeDSMethodDataForm threeDSMethodDataForm { get; set; }
         public ThreeDSMethodData threeDSMethodData { get; set; }
     }
+    */
 }

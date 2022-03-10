@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ThreeDS.Models;
 
 namespace CheckoutPortal.Models
 {
@@ -168,5 +169,9 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool? AllowBit { get; set; }
+
+        public VersioningResponse VersioningResponse { get; set; }
+        
+        public bool? PassedInit3DMethod { get; set; }
     }
 }

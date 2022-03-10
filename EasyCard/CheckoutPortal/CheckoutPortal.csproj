@@ -13,7 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\Ecwid\Ecwid.csproj" />
+    <ProjectReference Include="..\Merchants.Api.Client\Merchants.Api.Client.csproj" />
+    <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />
@@ -21,7 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\3DS\" />
     <Folder Include="wwwroot\lib\jquery-payment\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\JavaScript.js" />
   </ItemGroup>
 
   <ItemGroup>
