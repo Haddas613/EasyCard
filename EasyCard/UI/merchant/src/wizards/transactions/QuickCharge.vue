@@ -343,6 +343,7 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
+      this.$refs.numpadInvoker.refreshQuantity();
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;

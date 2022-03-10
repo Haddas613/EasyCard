@@ -14,5 +14,9 @@ namespace Shared.Integration.ExternalSystems
         Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings);
 
         Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID);
+
+        Task<CreateConsumerResponse> CreateConsumerOrGetExisting(CreateConsumerRequest consumerRequest);
+
+        bool CanCreateConsumer();
     }
 }

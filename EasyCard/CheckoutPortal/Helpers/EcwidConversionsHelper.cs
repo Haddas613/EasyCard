@@ -9,6 +9,7 @@ using Transactions.Shared.Enums;
 
 namespace CheckoutPortal.Helpers
 {
+    // TODO: Please move it to ecwid dll
     public static class EcwidConversionsHelper
     {
         /// <summary>
@@ -78,8 +79,8 @@ namespace CheckoutPortal.Helpers
                 ConsumerEmail = ecwidOrder.Email,
                 ConsumerName = ecwidOrder.BillingPerson.Name,
                 ConsumerNationalID = ecwidOrder.CustomerTaxId ?? ecwidOrder.BillingPerson.CompanyName,
-                ExternalReference = ecwidOrder.CustomerId,
-                Origin = DocumentOriginEnum.Ecwid.ToString(),
+                //ExternalReference = ecwidOrder.CustomerId,
+                //Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
             };
 
@@ -98,7 +99,7 @@ namespace CheckoutPortal.Helpers
         {
             return source.Select(e => new Item
             {
-                ExternalReference = e.ProductId.ToString(),
+                EcwidItemId = e.ProductId.ToString(),
                 Price = e.Price,
                 Quantity = e.Quantity,
                 ItemName = e.Name

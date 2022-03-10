@@ -1,5 +1,6 @@
 ﻿using Bit.Models;
 using Shared.Api.Models;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,7 @@ using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Currency;
 using Transactions.Api.Models.External.Bit;
+using Transactions.Api.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.UpdateParameters;
@@ -29,6 +31,8 @@ namespace Transactions.Api.Client
         Task<CheckoutData> GetCheckout(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey);
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
+
+        Task<CreateInvoicingConsumerResponse> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest);
 
         Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
 

@@ -700,6 +700,11 @@
               Looks up a localized string similar to Cannot cancel invoiced transaction.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.CannotCreateInvoicingConsumer">
+            <summary>
+              Looks up a localized string similar to Cannot create invoicing consumer.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CanOnlyIssueInvoiceForILSTransactions">
             <summary>
               Looks up a localized string similar to Can only issue invoice for ILS transactions.

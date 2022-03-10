@@ -279,6 +279,11 @@
             Amount of each additional payments
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.Invoicing.CreateConsumerResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.CorrelationId">
             <summary>
             Request ID

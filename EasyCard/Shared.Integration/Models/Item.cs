@@ -68,5 +68,8 @@ namespace Shared.Integration.Models
 
         [SwaggerExclude]
         public JObject Extension { get; set; }
+
+        [StringLength(50)]
+        public string EcwidItemId { get; set; }
     }
 }

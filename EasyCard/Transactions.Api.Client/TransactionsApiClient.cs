@@ -20,6 +20,7 @@ using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.External.Bit;
 using Bit.Models;
+using Transactions.Api.Models.Invoicing;
 
 namespace Transactions.Api.Client
 {
@@ -380,6 +381,13 @@ namespace Transactions.Api.Client
                 //logger.LogError(clientError.Message);
                 //return null;
             }
+        }
+
+        public async Task<CreateInvoicingConsumerResponse> CreateInvoicingConsumer(CreateInvoicingConsumerRequest consumerRequest)
+        {
+            var res = await webApiClient.Post<CreateInvoicingConsumerResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoicing/createConsumer", consumerRequest, BuildHeaders);
+
+            return res;
         }
     }
 }
