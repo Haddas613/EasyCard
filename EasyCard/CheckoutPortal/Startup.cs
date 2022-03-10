@@ -27,12 +27,9 @@ using SharedApi = Shared.Api;
 using CheckoutPortal.Services;
 using CheckoutPortal.Models;
 using Ecwid.Configuration;
-using Merchants.Business.Services;
 using ThreeDS;
 using ThreeDS.Configuration;
-using Merchants.Business.Data;
 using BasicServices;
-using Merchants.Api.Client;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 
@@ -109,24 +106,6 @@ namespace CheckoutPortal
                 var client = serviceProvider.GetRequiredService<IWebApiClient>();
                 return new WebApiClientTokenService(client.HttpClient, cfg);
             });
-            //services.AddScoped<ITerminalsService, TerminalsService>();
-            services.AddScoped<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
-            {
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
-                //var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
-
-                var webApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
-                var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
-
-                var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-                var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
-
-                var merchantsApiClient = new MerchantsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
-
-                merchantsApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
-
-                return merchantsApiClient;
-            });
 
             services.AddScoped<ITransactionsApiClient, TransactionsApiClient>((serviceProvider) =>
             {
@@ -161,9 +140,6 @@ namespace CheckoutPortal
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
                 return new TerminalApiKeyTokenServiceFactory(cfg);
             });
-
-            services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<ITerminalsService, TerminalsService>();
 
             // Bit integration
 

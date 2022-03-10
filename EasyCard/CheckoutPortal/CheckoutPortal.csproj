@@ -15,8 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\Ecwid\Ecwid.csproj" />
-    <ProjectReference Include="..\Merchants.Api.Client\Merchants.Api.Client.csproj" />
-    <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
+    <ProjectReference Include="..\MerchantProfileApi.Client\MerchantProfileApi.Client.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />

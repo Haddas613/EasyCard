@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using CheckoutPortal.Models;
-using Merchants.Api.Client;
-using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -28,8 +26,6 @@ using ThreeDS.Models;
 using Transactions.Api.Client;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.External.Bit;
-using System.Web;
-using Shared.Api.Utilities;
 using CheckoutPortal.Services;
 
 namespace CheckoutPortal.Controllers
@@ -38,9 +34,7 @@ namespace CheckoutPortal.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
-        //private readonly ITerminalsService terminalsService;
         private readonly ITransactionsApiClient transactionsApiClient;
-        private readonly IMerchantsApiClient merchantsApiClient;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
@@ -57,15 +51,11 @@ namespace CheckoutPortal.Controllers
             IOptions<RequestLocalizationOptions> localizationOptions,
             IHubContext<Hubs.TransactionsHub,
                 Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            IMerchantsApiClient merchantsApiClient,
             IOptions<ApiSettings> apiSettings,
-            ThreeDSService threeDSService)
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            IOptions<ApiSettings> apiSettings,
+            ThreeDSService threeDSService,
             MemoryPaymentRequestStorage requestStorage)
         {
             this.logger = logger;
-            this.merchantsApiClient = merchantsApiClient; 
             this.transactionsApiClient = transactionsApiClient;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
@@ -479,43 +469,43 @@ namespace CheckoutPortal.Controllers
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
 
-                if ((!(mdel.PinPad ?? false)) && (checkoutConfig.Settings.EnableThreeDS ?? false))
-                {
-                    var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
-                    {
-                        TerminalID = mdel.TerminalID
-                    };
-                    var terminal = (await merchantsApiClient.GetTerminals(filter)).Data?.FirstOrDefault();
+                //if ((!(mdel.PinPad ?? false)) && (checkoutConfig.Settings.EnableThreeDS ?? false))
+                //{
+                //    var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
+                //    {
+                //        TerminalID = mdel.TerminalID
+                //    };
+                //    var terminal = (await merchantsApiClient.GetTerminals(filter)).Data?.FirstOrDefault();
 
-                    //terminal.Integrations
-                    if (!request.PassedInit3DMethod.HasValue)
-                    {
-                        var VersioningResult = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
-                        if (VersioningResult?.errorDetails == null)
-                        {
-                            request.VersioningResponse = VersioningResult.versioningResponse;
-                            //request.PassedInit3DMethod = true;
-                            TempData["VersioningResponse"] = JsonConvert.SerializeObject(request.VersioningResponse);
-                            return RedirectToAction(nameof(Init3DS), request);
-                        }
-                    }
-                    else if(request.PassedInit3DMethod.HasValue && (request.PassedInit3DMethod??false))
-                    {
-                        string retailer = terminal.ProcessorTerminalReference;//todo terminal.ProcessorTerminalReference;
-                        AuthenticateReqModel req = new AuthenticateReqModel
-                        {
-                            threeDSServerTransID = request.VersioningResponse.threeDSServerTransID,
-                            Retailer = retailer,
-                        };
-                        var AuthenticationRes = await threeDSService.Authentication(req);
-                    }
-                    /*                    else
-                                        { 
-                                        return error 
-                                        }*/
-                    //}
-                }
-                    result = await transactionsApiClient.CreateTransactionPR(mdel);
+                //    //terminal.Integrations
+                //    if (!request.PassedInit3DMethod.HasValue)
+                //    {
+                //        var VersioningResult = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
+                //        if (VersioningResult?.errorDetails == null)
+                //        {
+                //            request.VersioningResponse = VersioningResult.versioningResponse;
+                //            //request.PassedInit3DMethod = true;
+                //            TempData["VersioningResponse"] = JsonConvert.SerializeObject(request.VersioningResponse);
+                //            return RedirectToAction(nameof(Init3DS), request);
+                //        }
+                //    }
+                //    else if(request.PassedInit3DMethod.HasValue && (request.PassedInit3DMethod??false))
+                //    {
+                //        string retailer = terminal.ProcessorTerminalReference;//todo terminal.ProcessorTerminalReference;
+                //        AuthenticateReqModel req = new AuthenticateReqModel
+                //        {
+                //            threeDSServerTransID = request.VersioningResponse.threeDSServerTransID,
+                //            Retailer = retailer,
+                //        };
+                //        var AuthenticationRes = await threeDSService.Authentication(req);
+                //    }
+                //    /*                    else
+                //                        { 
+                //                        return error 
+                //                        }*/
+                //    //}
+                //}
+                result = await transactionsApiClient.CreateTransactionPR(mdel);
                
             }
             else//PR IS NULL
