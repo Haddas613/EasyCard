@@ -79,6 +79,7 @@ namespace Bit
                 paymentTransactionRequest.CorrelationId,
                 silent: true);
 
+            // DO we really need this calidation?
             ValidateAgainstBitTransaction(paymentTransactionRequest, bitTransaction, integrationMessageId);
 
             var bitCaptureRequest = new BitCaptureRequest
@@ -244,11 +245,6 @@ namespace Bit
                         responseStr = response;
                         responseStatusStr = responseStatus.ToString();
                     });
-
-                if (response.MessageException != null)
-                {
-                    throw new IntegrationException($"{response.MessageCode}:{response.MessageException}", integrationMessageId);
-                }
 
                 return response;
             }

@@ -7,7 +7,6 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Shared.Enums;
 using TransactionTypeEnum = Shared.Integration.Models.TransactionTypeEnum;
 

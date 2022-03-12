@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Shared.Api;
 using Shared.Api.Attributes;
 using Shared.Api.Configuration;
+using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
@@ -30,7 +31,6 @@ using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
 using Transactions.Api.Models.External.Bit;
 using Transactions.Api.Models.Transactions;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
@@ -259,25 +259,6 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
-                PaymentRequest dbPaymentRequest = null;
-                bool isPaymentIntent = false;
-
-                if (model.PaymentIntentID != null)
-                {
-                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
-
-                    isPaymentIntent = true;
-                }
-                else
-                {
-                    dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == model.PaymentRequestID));
-
-                    if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
-                    {
-                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
-                    }
-                }
-
                 var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.PaymentTransactionID));
 
                 Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
@@ -285,201 +266,302 @@ namespace Transactions.Api.Controllers.External
                 //already updated
                 if (transaction.Status != TransactionStatusEnum.ConfirmedByAggregator && transaction.Status != TransactionStatusEnum.Initial)
                 {
-                    return new OperationResponse(Shared.Messages.TransactionStatusIsNotValid, StatusEnum.Error, model.PaymentTransactionID);
+                    // in this case transaction should be manually resolved in CH
+                    logger.LogError($"Failed to capture Transaction for Bit: transaction Status is invalid ({transaction.Status}). Transaction id: {transaction.PaymentTransactionID}");
+
+                    return BadRequest(new OperationResponse(Shared.Messages.TransactionStatusIsNotValid, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
                 processorRequest.CorrelationId = transaction.CorrelationId ?? GetCorrelationID();
+                bool sucessCapture = true;
 
-                var bitCaptureResponse = await bitProcessor.CaptureTransaction(processorRequest);
-
-                if (bitCaptureResponse == null || bitCaptureResponse.MessageCode != null)
+                try
                 {
-                    return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
-                }
+                    var bitCaptureResponse = await bitProcessor.CaptureTransaction(processorRequest);
 
-                if (!string.IsNullOrEmpty(bitCaptureResponse.SuffixPlasticCardNumber))
-                {
-                    transaction.CreditCardDetails = new Business.Entities.CreditCardDetails
+                    if (bitCaptureResponse == null || bitCaptureResponse.MessageCode != null)
                     {
-                        CardNumber = $"000000000000{bitCaptureResponse.SuffixPlasticCardNumber}",
-                    };
-                }
+                        logger.LogError($"Failed to capture Transaction for Bit: ({bitCaptureResponse?.MessageCode}). Transaction id: {transaction.PaymentTransactionID}");
 
-                //await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
-
-                //TODO
-                //if (!model.Success)
-                //{
-                //    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: model.ResultText/*, rejectionReason: model.ResultCode*/);
-                //}
-                //else
-                //{
-                //    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
-                //}
-
-                var terminalAggregator = ValidateExists(
-                   terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
-                   Transactions.Shared.Messages.AggregatorNotDefined);
-
-                var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-
-                var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
-                mapper.Map(aggregatorSettings, transaction);
-
-                var bitTransaction = await bitProcessor.GetBitTransaction(model.PaymentInitiationId, model.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
-
-                if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
-                {
-                    //TODO
-                    //// reject to clearing house in case of shva error
-                    if (!bitTransaction.Success)
-                    {
-                        try
-                        {
-                            var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
-                            aggregatorRequest.AggregatorSettings = aggregatorSettings;
-                            aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
-                            aggregatorRequest.IsBit = true;
-
-                            var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
-                            mapper.Map(aggregatorResponse, transaction);
-
-                            if (!aggregatorResponse.Success)
-                            {
-                                logger.LogError($"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
-
-                                await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
-
-                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
-                            }
-                            else
-                            {
-                                await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
-
-                                return new OperationResponse(Shared.Messages.BitPaymentFailed, StatusEnum.Error, model.PaymentTransactionID);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
-
-                            await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
-
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
-                        }
+                        sucessCapture = false;
                     }
-                    else  // commit transaction in aggregator (Clearing House or upay)
+                    else if (!string.IsNullOrEmpty(bitCaptureResponse.SuffixPlasticCardNumber))
                     {
-                        try
+                        transaction.CreditCardDetails = new Business.Entities.CreditCardDetails
                         {
-                            var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
-
-                            commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
-                            commitAggregatorRequest.IsBit = true;
-
-                            var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
-                            mapper.Map(commitAggregatorResponse, transaction);
-
-                            if (!commitAggregatorResponse.Success)
-                            {
-                                // NOTE: In case of failed commit, transaction should not be transmitted to Shva
-
-                                logger.LogError($"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Commit Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
-
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
-
-                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
-                            }
-                            else
-                            {
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
-
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
-
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
-                        }
+                            CardNumber = $"000000000000{bitCaptureResponse.SuffixPlasticCardNumber}",
+                        };
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+                    logger.LogError(ex, $"Failed to capture Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
+                    sucessCapture = false;
                 }
 
-                if (isPaymentIntent)
-                {
-                    await paymentIntentService.DeletePaymentIntent(model.PaymentIntentID.GetValueOrDefault());
-                }
-                else
-                {
-                    await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: model.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
-                }
-
-                if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
-                {
-                    if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
-                    {
-                        using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-                        {
-                            try
-                            {
-                                Invoice invoiceRequest = new Invoice();
-                                mapper.Map(transaction, invoiceRequest);
-                                invoiceRequest.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
-                                {
-                                    InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.Invoice,
-                                    InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                                    SendCCTo = terminal.InvoiceSettings.SendCCTo
-                                };
-
-                                // in case if consumer name/natid is not specified in deal details, get it from credit card details
-                                invoiceRequest.DealDetails = transaction.DealDetails;
-
-                                invoiceRequest.MerchantID = terminal.MerchantID;
-
-                                invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                                invoiceRequest.Calculate();
-
-                                await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                                transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                                await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                                var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                                // TODO: validate, rollback
-                                if (invoicesToResend.Count() > 0)
-                                {
-                                    await invoiceQueue.PushToQueue(invoicesToResend.First());
-                                }
-
-                                await dbTransaction.CommitAsync();
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-                                await dbTransaction.RollbackAsync();
-                            }
-                        }
-                    }
-                }
-
-                return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, model.PaymentTransactionID);
+                return await PostProcessTransaction(transaction, terminal, sucessCapture);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to capture Transaction for Bit. Transaction id: {model.PaymentTransactionID}");
-                return new OperationResponse(ex.Message, StatusEnum.Error);
+                return BadRequest(new OperationResponse($"Failed to capture Transaction for Bit. Transaction id: {model.PaymentTransactionID}", StatusEnum.Error));
             }
         }
 
-    }
+        [HttpPost]
+        [Route("cancelOrConfirmPending")]
+        public async Task<ActionResult<OperationResponse>> CancelOrConfirmPending([FromQuery] Guid? transactionID)
+        {
+            var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
 
+            if (transaction.QuickStatus != QuickStatusFilterTypeEnum.Pending)
+            {
+                return new OperationResponse($"Transaction {transactionID} is in final state {transaction.Status}", StatusEnum.Error);
+            }
+
+            if (string.IsNullOrWhiteSpace(transaction.BitPaymentInitiationId))
+            {
+                return new OperationResponse($"Transaction {transactionID} has no Bit details", StatusEnum.Error);
+            }
+
+            Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            return await PostProcessTransaction(transaction, terminal, true);
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessByAggregator(PaymentTransaction transaction, SharedIntegration.ExternalSystems.IAggregator aggregator, object aggregatorSettings, bool success)
+        {
+            // reject to clearing house in case of bit error
+            if (!success)
+            {
+                try
+                {
+                    var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                    aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                    aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
+                    aggregatorRequest.IsBit = true;
+
+                    var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                    mapper.Map(aggregatorResponse, transaction);
+
+                    if (!aggregatorResponse.Success)
+                    {
+                        logger.LogError($"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToCancelByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    }
+                    else
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
+
+                        return new OperationResponse(Shared.Messages.CanceledByAggregator, StatusEnum.Error, transaction.PaymentTransactionID);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                }
+            }
+            else // commit transaction in aggregator (Clearing House or upay)
+            {
+                try
+                {
+                    var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
+
+                    commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
+                    commitAggregatorRequest.IsBit = true;
+
+                    var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
+                    mapper.Map(commitAggregatorResponse, transaction);
+
+                    if (!commitAggregatorResponse.Success)
+                    {
+                        logger.LogError($"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Commit Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
+
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToCommitByAggregator}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
+                    }
+                    else
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+
+                        return new OperationResponse(Shared.Messages.ConfirmedByAggregator, StatusEnum.Error, transaction.PaymentTransactionID);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                }
+            }
+        }
+
+        private async Task CreateInvoice(PaymentTransaction transaction, Terminal terminal)
+        {
+            if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
+            {
+                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
+                {
+                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                    {
+                        try
+                        {
+                            Invoice invoiceRequest = new Invoice();
+                            mapper.Map(transaction, invoiceRequest);
+                            invoiceRequest.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
+                            {
+                                InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.Invoice,
+                                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
+                                SendCCTo = terminal.InvoiceSettings.SendCCTo
+                            };
+
+                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
+                            invoiceRequest.DealDetails = transaction.DealDetails;
+
+                            invoiceRequest.MerchantID = terminal.MerchantID;
+
+                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                            invoiceRequest.Calculate();
+
+                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                            transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                            // TODO: validate, rollback
+                            if (invoicesToResend.Count() > 0)
+                            {
+                                await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            }
+
+                            await dbTransaction.CommitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+                            await dbTransaction.RollbackAsync();
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task<ActionResult<OperationResponse>> PostProcessTransaction(PaymentTransaction transaction, Terminal terminal, bool sucessCapture)
+        {
+            // process will be stoped if transaction does not exist
+            var bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+
+            if (bitTransaction == null)
+            {
+                logger.LogError($"Failed to finalize Transaction for Bit: Bit deal {transaction.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}");
+                return NotFound(new OperationResponse($"Bit deal {transaction.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}", StatusEnum.Error));
+            }
+
+            if (bitTransaction.RequestStatusCodeResult == null)
+            {
+                logger.LogError($"Failed to finalize Transaction for Bit: cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
+
+                return BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+            }
+
+            if (!bitTransaction.RequestStatusCodeResult.Final)
+            {
+                logger.LogError($"Failed to finalize Transaction for Bit: Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
+
+                return BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+            }
+
+            sucessCapture = sucessCapture && bitTransaction?.Success == true;
+
+            if (sucessCapture)
+            {
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+            }
+            else
+            {
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: bitTransaction.RequestStatusDescription, rejectionReason: RejectionReasonEnum.Unknown);
+            }
+
+            var terminalAggregator = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+               Transactions.Shared.Messages.AggregatorNotDefined);
+
+            var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+            var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+            mapper.Map(aggregatorSettings, transaction);
+
+            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+            {
+                var aggregatorResponseContent = await ProcessByAggregator(transaction, aggregator, aggregatorSettings, sucessCapture);
+                var aggregatorResponse = aggregatorResponseContent.GetOperationResponse();
+
+                if (aggregatorResponse?.Status != StatusEnum.Success)
+                {
+                    return aggregatorResponseContent;
+                }
+            }
+
+            if (sucessCapture)
+            {
+                await CreateInvoice(transaction, terminal);
+            }
+
+            try
+            {
+                if (transaction.PaymentIntentID != null)
+                {
+                    await paymentIntentService.DeletePaymentIntent(transaction.PaymentIntentID.GetValueOrDefault());
+                }
+                else if (transaction.PaymentRequestID != null)
+                {
+                    var dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
+
+                    if (dbPaymentRequest != null)
+                    {
+                        if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                        {
+                            logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} status not valid ({dbPaymentRequest.Status}). Transaction id: {transaction.PaymentTransactionID}");
+                        }
+                        else
+                        {
+                            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, sucessCapture ? PaymentRequestStatusEnum.Payed : PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: transaction.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                        }
+                    }
+                    else
+                    {
+                        logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} not found. Transaction id: {transaction.PaymentTransactionID}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
+            }
+
+            if (sucessCapture)
+            {
+                return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, transaction.PaymentTransactionID);
+            }
+            else
+            {
+                return BadRequest(new OperationResponse($"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}", StatusEnum.Error, transaction.PaymentTransactionID));
+            }
+        }
+    }
 }

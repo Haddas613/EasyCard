@@ -87,6 +87,11 @@ namespace CheckoutPortal.Controllers
 
             var checkoutConfig = await GetCheckoutData(paymentRequestId);
 
+            if (checkoutConfig == null)
+            {
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
@@ -117,6 +122,12 @@ namespace CheckoutPortal.Controllers
             Guid paymentIntentID = new Guid(paymentIntentDecrypted);
 
             var checkoutConfig = await GetCheckoutData(paymentIntentID, null, true);
+
+            if (checkoutConfig == null)
+            {
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
+            }
+
             checkoutConfig.PaymentIntentID = paymentIntentID;
 
             // TODO: add merchant site origin instead of unsafe-inline
@@ -137,6 +148,11 @@ namespace CheckoutPortal.Controllers
             }
 
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+
+            if (checkoutConfig == null)
+            {
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
+            }
 
             return await IndexViewResult(checkoutConfig, request);
         }
@@ -165,12 +181,13 @@ namespace CheckoutPortal.Controllers
                 }
 
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+
                 storageKey = id.ToString();
             }
 
             if (checkoutConfig == null)
             {
-                throw new ApplicationException("Checkout data is null");
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
             }
 
             if (checkoutConfig.Consumer != null)
@@ -579,6 +596,11 @@ namespace CheckoutPortal.Controllers
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, false);
             }
 
+            if (checkoutConfig == null)
+            {
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
+            }
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 // TODO: cancel payment intent
@@ -680,6 +702,11 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
+            if (checkoutConfig == null)
+            {
+                return RedirectToAction("PaymentLinkNoLongerAvailable");
+            }
+
             var bitRequest = new CaptureBitTransactionRequest
             {
                 PaymentInitiationId = request.PaymentInitiationId,
@@ -734,6 +761,13 @@ namespace CheckoutPortal.Controllers
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult PaymentCanceled()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult PaymentLinkNoLongerAvailable()
         {
             return View();
         }
@@ -883,7 +917,15 @@ namespace CheckoutPortal.Controllers
             {
                 if (ex is WebApiClientErrorException webEx)
                 {
-                    logger.LogError(ex, $"Failed to get checkout data. Reason: {webEx.Response}");
+                    if (webEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        logger.LogWarning(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                        return null;
+                    }
+                    else
+                    {
+                        logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                    }
                 }
                 else
                 {
@@ -983,7 +1025,15 @@ namespace CheckoutPortal.Controllers
             {
                 if (ex is WebApiClientErrorException webEx)
                 {
-                    logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                    if (webEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        logger.LogWarning(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                        return null;
+                    }
+                    else
+                    {
+                        logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                    }
                 }
                 else
                 {

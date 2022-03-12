@@ -28,7 +28,6 @@ using System.Threading.Tasks;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
 using Transactions.Api.Models.Transactions;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;

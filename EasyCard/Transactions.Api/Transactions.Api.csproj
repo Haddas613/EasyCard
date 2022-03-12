@@ -198,5 +198,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Transactions\Enums\" />
+  </ItemGroup>
+
 
 </Project>

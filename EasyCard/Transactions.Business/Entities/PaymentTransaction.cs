@@ -93,6 +93,12 @@ namespace Transactions.Business.Entities
         /// </summary>
         public TransactionStatusEnum Status { get; set; }
 
+        [NotMapped]
+        public QuickStatusFilterTypeEnum QuickStatus
+        {
+            get { return GetQuickStatus(Status, JDealType); }
+        }
+
         /// <summary>
         /// Payment Type
         /// </summary>
@@ -318,14 +324,46 @@ namespace Transactions.Business.Entities
 
         public JObject Extension { get; set; }
 
+        // TODO: move to BitDetails
         /// <summary>
         /// Resource ID created by bit backend. ID represents the payment initiation. Used for Get /Delete, etc.
         /// </summary>
         public string BitPaymentInitiationId { get; set; }
 
+        // TODO: move to BitDetails
         /// <summary>
         /// Additional UUID used for authentication. When using web client application this ID, along with paymentInitiationId, should be sent upon opening bit payment page (openBitPaymentPage).
         /// </summary>
         public string BitTransactionSerialId { get; set; }
+
+        public static QuickStatusFilterTypeEnum GetQuickStatus(TransactionStatusEnum @enum, JDealTypeEnum jDealType)
+        {
+            if (@enum == Shared.Enums.TransactionStatusEnum.CancelledByMerchant)
+            {
+                return QuickStatusFilterTypeEnum.Canceled;
+            }
+
+            if (@enum == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission)
+            {
+                return QuickStatusFilterTypeEnum.AwaitingForTransmission;
+            }
+
+            if ((int)@enum > 0 && (int)@enum < 40)
+            {
+                return QuickStatusFilterTypeEnum.Pending;
+            }
+
+            if (@enum == Shared.Enums.TransactionStatusEnum.Completed)
+            {
+                return QuickStatusFilterTypeEnum.Completed;
+            }
+
+            if ((int)@enum < 0)
+            {
+                return QuickStatusFilterTypeEnum.Failed;
+            }
+
+            return QuickStatusFilterTypeEnum.Pending;
+        }
     }
 }

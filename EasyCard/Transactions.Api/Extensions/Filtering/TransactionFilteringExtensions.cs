@@ -5,8 +5,8 @@ using Shared.Helpers.Models;
 using System;
 using System.Linq;
 using Transactions.Api.Models.Transactions;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
+using Transactions.Shared.Enums;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions.Filtering

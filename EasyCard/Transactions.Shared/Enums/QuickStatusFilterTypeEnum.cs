@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions.Enums
+namespace Transactions.Shared.Enums
 {
     public enum QuickStatusFilterTypeEnum : short
     {

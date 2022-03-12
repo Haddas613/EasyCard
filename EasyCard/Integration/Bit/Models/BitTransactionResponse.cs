@@ -69,11 +69,19 @@ namespace Bit.Models
         /// </summary>
         public string RequestStatusCode { get; set; }
 
+        public BitRequestStatusCodeResult RequestStatusCodeResult
+        {
+            get
+            {
+                return BitRequestStatusCodeResult.ParseResult(RequestStatusCode);
+            }
+        }
+
         public bool Success
         {
             get
             {
-                return RequestStatusCode == "11";
+                return RequestStatusCodeResult?.Final == true && RequestStatusCodeResult?.Failed == false;
             }
         }
 
