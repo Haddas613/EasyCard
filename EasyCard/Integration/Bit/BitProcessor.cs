@@ -123,6 +123,11 @@ namespace Bit
                 $"/payments/bit/v2/single-payments" : $"/payments/bit/v2/single-payments/{paymentInitiationId}";
         }
 
+        private string GetBitRefundUrl()
+        {
+            return $"/payments/bit/v2/refund";
+        }
+
         public async Task<BitTransactionResponse> GetBitTransaction(string paymentInitiationId, string paymentTransactionID, string integrationMessageId, string correlationID, bool silent = false)
         {
             string requestUrl = null;
@@ -161,6 +166,48 @@ namespace Bit
 
                     await integrationRequestLogStorageService.Save(integrationMessage);
                 }
+            }
+        }
+
+        public async Task<BitRefundResponse> RefundBitTransaction(BitRefundRequest request, string paymentTransactionID, string integrationMessageId, string correlationID)
+        {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            try
+            {
+                var response = await apiClient.Post<BitRefundResponse>(configuration.BaseUrl, $"{GetBitRefundUrl()}", request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Bit integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
             }
         }
 
@@ -291,6 +338,11 @@ namespace Bit
         }
 
         Task<ProcessorUpdateParamteresResponse> IProcessor.ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParametersRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Refund(Guid? transactionID)
         {
             throw new NotImplementedException();
         }

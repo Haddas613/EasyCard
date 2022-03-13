@@ -26,8 +26,12 @@ namespace DesktopEasyCardConvertorECNG
 
         public async Task<TokenResponse> GetToken(NameValueCollection headers = null)
         {
+            //var tokenResponse = await webApiClient.PostRawFormRawResponse(configuration.IdentityApiAddress, "/connect/token",
+            //    new Dictionary<string, string> { { "client_id", "terminal" }, { "grant_type", "terminal_rest_api" }, { "authorizationKey", privateKey } });
+
             var tokenResponse = await webApiClient.PostRawFormRawResponse(configuration.IdentityApiAddress, "/connect/token",
-                new Dictionary<string, string> { { "client_id", "terminal" }, { "grant_type", "terminal_rest_api" }, { "authorizationKey", privateKey } });
+    new Dictionary<string, string> { { "client_id", "management_api" }, { "grant_type", "client_credentials" }, { "client_secret", privateKey } });
+
             var res = await TokenResponse.FromHttpResponseAsync<TokenResponse>(tokenResponse);
             
             return res;

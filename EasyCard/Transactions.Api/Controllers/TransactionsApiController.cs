@@ -95,6 +95,7 @@ namespace Transactions.Api.Controllers
         private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly IEcwidApiClient ecwidApiClient;
+        private readonly External.BitApiController bitController;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -123,7 +124,8 @@ namespace Transactions.Api.Controllers
             BillingController billingController,
             InvoicingController invoicingController,
             BasicServices.Services.IExcelService excelService,
-            IEcwidApiClient ecwidApiClient)
+            IEcwidApiClient ecwidApiClient,
+            External.BitApiController bitController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -152,6 +154,7 @@ namespace Transactions.Api.Controllers
             this.invoicingController = invoicingController;
             this.excelService = excelService;
             this.ecwidApiClient = ecwidApiClient;
+            this.bitController = bitController;
         }
 
         [HttpGet]
@@ -743,6 +746,68 @@ namespace Transactions.Api.Controllers
             {
                 return await ProcessTransaction(terminal, transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
             }
+        }
+
+        /// <summary>
+        /// This is Bit's refund
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
+        [Route("chargeback")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> Chargeback([FromBody] ChargebackRequest request)
+        {
+            var transaction = EnsureExists(
+                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == request.ExistingPaymentTransactionID));
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            if (string.IsNullOrWhiteSpace(transaction.BitPaymentInitiationId) || transaction.DocumentOrigin != DocumentOriginEnum.Bit)
+            {
+                return BadRequest(new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error));
+            }
+
+            if (transaction.QuickStatus != QuickStatusFilterTypeEnum.Completed)
+            {
+                return BadRequest(new OperationResponse($"It is possible to make refund only for completed Bit transactions", StatusEnum.Error));
+            }
+
+            if (transaction.Amount < request.Amount)
+            {
+                return BadRequest(new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error));
+            }
+
+            PaymentTransaction refundEntity = new PaymentTransaction();
+            refundEntity.TerminalID = transaction.TerminalID;
+            refundEntity.MerchantID = transaction.MerchantID;
+            refundEntity.InitialTransactionID = transaction.PaymentTransactionID;
+            refundEntity.SpecialTransactionType = SpecialTransactionTypeEnum.Refund;
+            refundEntity.Status = TransactionStatusEnum.Initial;
+            refundEntity.TransactionAmount = request.Amount;
+            refundEntity.DealDetails = Clone(transaction.DealDetails);
+            refundEntity.BitPaymentInitiationId = transaction.BitPaymentInitiationId;
+            refundEntity.MerchantIP = GetIP();
+            refundEntity.CorrelationId = GetCorrelationID();
+
+            await transactionsService.CreateEntity(refundEntity);
+
+            var res = await bitController.RefundInternal(refundEntity);
+            if (res.Status == StatusEnum.Success)
+            {
+                return res;
+            }
+            else
+            {
+                return BadRequest(res);
+            }
+        }
+
+        public static T Clone<T>(T source)
+        {
+            var serialized = JsonConvert.SerializeObject(source);
+            return JsonConvert.DeserializeObject<T>(serialized);
         }
 
         /// <summary>

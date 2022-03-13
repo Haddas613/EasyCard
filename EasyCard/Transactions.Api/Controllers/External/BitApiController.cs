@@ -330,6 +330,33 @@ namespace Transactions.Api.Controllers.External
             return await PostProcessTransaction(transaction, terminal, true);
         }
 
+        internal async Task<OperationResponse> RefundInternal(PaymentTransaction refundEntity)
+        {
+            var refundRequest = new BitRefundRequest
+            {
+                CreditAmount = refundEntity.TransactionAmount,
+                ExternalSystemReference = refundEntity.InitialTransactionID.ToString(),
+                RefundExternalSystemReference = refundEntity.PaymentTransactionID.ToString(),
+                PaymentInitiationId = refundEntity.BitPaymentInitiationId,
+            };
+
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var res = await bitProcessor.RefundBitTransaction(refundRequest, refundEntity.InitialTransactionID.ToString(), integrationMessageId, refundEntity.CorrelationId);
+
+            if (res.Success)
+            {
+                await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed);
+                return new OperationResponse("Refund request created", StatusEnum.Success);
+            }
+            else
+            {
+                logger.LogWarning($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}");
+                await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.RejectedByProcessor, rejectionMessage: res.RequestStatusDescription, rejectionReason: RejectionReasonEnum.Unknown);
+                return new OperationResponse($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}", StatusEnum.Error);
+            }
+        }
+
         private async Task<ActionResult<OperationResponse>> ProcessByAggregator(PaymentTransaction transaction, SharedIntegration.ExternalSystems.IAggregator aggregator, object aggregatorSettings, bool success)
         {
             // reject to clearing house in case of bit error

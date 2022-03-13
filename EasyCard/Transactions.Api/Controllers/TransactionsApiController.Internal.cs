@@ -131,6 +131,7 @@ namespace Transactions.Api.Controllers
 
             EcwidTransactionExtension ecwidPayload = null;
 
+            // TODO: this should be reworked
             if (transaction.Extension != null)
             {
                 try

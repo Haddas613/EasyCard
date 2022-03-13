@@ -453,6 +453,7 @@ namespace Transactions.Api
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
             services.AddTransient<BillingController, BillingController>();
+            services.AddTransient<Controllers.External.BitApiController, Controllers.External.BitApiController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
