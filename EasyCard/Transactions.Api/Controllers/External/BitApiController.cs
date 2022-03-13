@@ -347,13 +347,13 @@ namespace Transactions.Api.Controllers.External
             if (res.Success)
             {
                 await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed);
-                return new OperationResponse("Refund request created", StatusEnum.Success);
+                return new OperationResponse("Refund request created", StatusEnum.Success, refundEntity.PaymentTransactionID);
             }
             else
             {
                 logger.LogWarning($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}");
                 await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.RejectedByProcessor, rejectionMessage: res.RequestStatusDescription, rejectionReason: RejectionReasonEnum.Unknown);
-                return new OperationResponse($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}", StatusEnum.Error);
+                return new OperationResponse($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}", StatusEnum.Error, refundEntity.PaymentTransactionID);
             }
         }
 

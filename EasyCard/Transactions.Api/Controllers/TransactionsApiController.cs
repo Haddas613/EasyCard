@@ -786,7 +786,7 @@ namespace Transactions.Api.Controllers
             refundEntity.SpecialTransactionType = SpecialTransactionTypeEnum.Refund;
             refundEntity.Status = TransactionStatusEnum.Initial;
             refundEntity.TransactionAmount = request.Amount;
-            refundEntity.DealDetails = Clone(transaction.DealDetails);
+            refundEntity.DealDetails = ReflectionHelpers.Clone(transaction.DealDetails);
             refundEntity.BitPaymentInitiationId = transaction.BitPaymentInitiationId;
             refundEntity.MerchantIP = GetIP();
             refundEntity.CorrelationId = GetCorrelationID();
@@ -802,12 +802,6 @@ namespace Transactions.Api.Controllers
             {
                 return BadRequest(res);
             }
-        }
-
-        public static T Clone<T>(T source)
-        {
-            var serialized = JsonConvert.SerializeObject(source);
-            return JsonConvert.DeserializeObject<T>(serialized);
         }
 
         /// <summary>
