@@ -686,8 +686,15 @@ namespace Transactions.Api.Controllers
                 };
             }
 
-            // send expiration emails
-            await ProcessExpiredCardsBillingDeals(terminal);
+            try
+            {
+                // send expiration emails
+                await ProcessExpiredCardsBillingDeals(terminal);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not posible to send expiration emails: {ex.Message}");
+            }
 
             if (terminal.BillingSettings?.CreateRecurrentPaymentsAutomatically == true)
             {
