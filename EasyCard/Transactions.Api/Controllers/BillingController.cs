@@ -686,8 +686,15 @@ namespace Transactions.Api.Controllers
                 };
             }
 
-            // send expiration emails
-            await ProcessExpiredCardsBillingDeals(terminal);
+            try
+            {
+                // send expiration emails
+                await ProcessExpiredCardsBillingDeals(terminal);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not posible to send expiration emails: {ex.Message}");
+            }
 
             if (terminal.BillingSettings?.CreateRecurrentPaymentsAutomatically == true)
             {
@@ -927,7 +934,7 @@ namespace Transactions.Api.Controllers
             {
                 if (dealEntity != null)
                 {
-                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
+                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails?.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails?.CardExpiration}). Setting it as inactive.");
 
                     try
                     {
