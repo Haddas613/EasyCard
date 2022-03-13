@@ -927,7 +927,7 @@ namespace Transactions.Api.Controllers
             {
                 if (dealEntity != null)
                 {
-                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
+                    logger.LogWarning($"Billing Deal {dealEntity.BillingDeal?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity.BillingDeal?.CreditCardDetails?.CardNumber)} has expired ({dealEntity.BillingDeal?.CreditCardDetails?.CardExpiration}). Setting it as inactive.");
 
                     try
                     {
