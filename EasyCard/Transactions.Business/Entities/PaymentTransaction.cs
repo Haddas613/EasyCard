@@ -336,6 +336,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string BitTransactionSerialId { get; set; }
 
+        public decimal TotalRefund { get; set; }
+
         public static QuickStatusFilterTypeEnum GetQuickStatus(TransactionStatusEnum @enum, JDealTypeEnum jDealType)
         {
             if (@enum == Shared.Enums.TransactionStatusEnum.CancelledByMerchant)

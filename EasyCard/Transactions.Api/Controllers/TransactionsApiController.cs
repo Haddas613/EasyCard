@@ -774,10 +774,13 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"It is possible to make refund only for completed Bit transactions", StatusEnum.Error));
             }
 
-            if (transaction.Amount < request.Amount)
+            if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
             {
                 return BadRequest(new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error));
             }
+
+            // TODO: do in transaction
+            // TODO: transaction origin
 
             PaymentTransaction refundEntity = new PaymentTransaction();
             refundEntity.TerminalID = transaction.TerminalID;
@@ -785,7 +788,7 @@ namespace Transactions.Api.Controllers
             refundEntity.InitialTransactionID = transaction.PaymentTransactionID;
             refundEntity.SpecialTransactionType = SpecialTransactionTypeEnum.Refund;
             refundEntity.Status = TransactionStatusEnum.Initial;
-            refundEntity.TransactionAmount = request.Amount;
+            refundEntity.TransactionAmount = request.RefundAmount;
             refundEntity.DealDetails = ReflectionHelpers.Clone(transaction.DealDetails);
             refundEntity.BitPaymentInitiationId = transaction.BitPaymentInitiationId;
             refundEntity.MerchantIP = GetIP();
@@ -796,6 +799,8 @@ namespace Transactions.Api.Controllers
             var res = await bitController.RefundInternal(refundEntity);
             if (res.Status == StatusEnum.Success)
             {
+                transaction.TotalRefund += request.RefundAmount;
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
                 return res;
             }
             else

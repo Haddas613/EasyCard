@@ -215,8 +215,6 @@ namespace Transactions.Business.Data
                     s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
-            
-
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
                     s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(30).IsUnicode(false);
@@ -278,6 +276,8 @@ namespace Transactions.Business.Data
                // builder.HasIndex(b => b.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
+
+                builder.Property(b => b.TotalRefund).HasColumnType("decimal(19,4)").IsRequired(false);
             }
         }
 

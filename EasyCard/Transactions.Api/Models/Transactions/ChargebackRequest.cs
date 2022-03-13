@@ -14,6 +14,6 @@ namespace Transactions.Api.Models.Transactions
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
         [Required]
-        public decimal Amount { get; set; }
+        public decimal RefundAmount { get; set; }
     }
 }
