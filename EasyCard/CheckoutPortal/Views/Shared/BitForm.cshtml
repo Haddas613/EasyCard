@@ -97,7 +97,14 @@
 </div>
 
 <script nws-csp-add-nonce="true">
-    document.addEventListener("DOMContentLoaded", function() {
+    if( document.readyState !== 'loading' ) {
+        init();
+    } else {
+        document.addEventListener('DOMContentLoaded', function () {
+            init();
+        });
+    }
+    function init(){
         let amt = parseFloat($("#Bit_Amount").val());
         if (!amt) {
             $("#Bit_Amount").val(amt.toFixed(2))
@@ -169,15 +176,5 @@
                 }).render('#bitcom-button-container');
             });
         };
-
-        //$("#bit-form").on("submit", function (e) {
-        //    if (!$("#bit-form").valid()) {
-        //        e.preventDefault();
-        //        return;
-        //    }
-
-        //    document.getElementById("loading-spinner").hidden = false;
-        //    document.getElementsByTagName("body")[0].classList.add("no-scroll")
-        //})
-    });
+    }
 </script>
