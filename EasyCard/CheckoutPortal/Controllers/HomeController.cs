@@ -40,7 +40,6 @@ namespace CheckoutPortal.Controllers
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
-        private readonly MemoryPaymentRequestStorage requestStorage;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -49,8 +48,7 @@ namespace CheckoutPortal.Controllers
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
             IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            IOptions<ApiSettings> apiSettings,
-            MemoryPaymentRequestStorage requestStorage)
+            IOptions<ApiSettings> apiSettings)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -59,7 +57,6 @@ namespace CheckoutPortal.Controllers
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
-            this.requestStorage = requestStorage;
         }
 
         /// <summary>
@@ -165,13 +162,9 @@ namespace CheckoutPortal.Controllers
             CheckoutData checkoutConfig;
             bool isPaymentIntent = request.PaymentIntent != null;
 
-            //TODO: temporary. ChargeViewModel will be stored with this key to be used later
-            string storageKey = null;
-
             if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
-                storageKey = request.ApiKey;
             }
             else
             {
@@ -181,8 +174,6 @@ namespace CheckoutPortal.Controllers
                 }
 
                 checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
-
-                storageKey = id.ToString();
             }
 
             if (checkoutConfig == null)
@@ -432,9 +423,6 @@ namespace CheckoutPortal.Controllers
                 }
 
                 result = await transactionsApiClient.InitiateBitTransaction(mdel);
-
-                //TODO: Temporary solution. Storing ChargeViewModel to be used in later bit steps where it is not available
-                requestStorage.AddOrUpdate(storageKey, request);
             }
             else if (checkoutConfig.PaymentRequest != null)
             {
@@ -518,17 +506,54 @@ namespace CheckoutPortal.Controllers
 
             if (request.PayWithBit)
             {
-                var bitResult = result as Transactions.Api.Models.External.Bit.InitialBitOperationResponse;
+                var bitResult = result as InitialBitOperationResponse;
 
-                return RedirectToAction(nameof(BitPayment), new BitPaymentViewModel {
+                if (DeviceDetectUtilities.IsMobileBrowser(Request))
+                {
+                    var bitTransaction = await transactionsApiClient.GetBitTransaction(new GetBitTransactionQuery
+                    {
+                        PaymentInitiationId = bitResult.BitPaymentInitiationId,
+                        TransactionSerialId = bitResult.BitTransactionSerialId,
+                        PaymentTransactionID = result.EntityUID.Value,
+                    });
+                    var bitCompletedUrl = HttpUtility.UrlEncode($"{apiSettings.CheckoutPortalUrl}/bit-completed" +
+                       $"?PaymentInitiationId={bitTransaction.PaymentInitiationId}&TransactionSerialId={bitTransaction.TransactionSerialId}" +
+                       $"&PaymentIntent={request.PaymentIntent}&PaymentRequest={request.PaymentRequest}&ApiKey={request.ApiKey}" +
+                       $"&PaymentTransactionID={result.EntityUID.Value}&RedirectUrl={request.RedirectUrl}");
+
+                    //URL needs to be double encoded
+                    var scheme = HttpUtility.UrlEncode($"&return_scheme={bitCompletedUrl}");
+
+                    if (Request.IsIOS())
+                    {
+                        return Redirect(bitTransaction.ApplicationSchemeIos + scheme);
+                    }
+                    else if (Request.IsAndroid())
+                    {
+                        return Redirect(bitTransaction.ApplicationSchemeAndroid + scheme);
+                    }
+                }
+
+                return Json(new BitPaymentViewModel
+                {
                     PaymentInitiationId = bitResult.BitPaymentInitiationId,
                     TransactionSerialId = bitResult.BitTransactionSerialId,
                     RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
                     PaymentTransactionID = result.EntityUID.Value,
-                    PaymentIntent = checkoutConfig.PaymentIntentID,
+                    PaymentIntent = checkoutConfig.PaymentIntentID?.ToString(),
                     ApiKey = request.ApiKey,
-                    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID,
+                    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID.ToString(),
                 });
+
+                //return RedirectToAction(nameof(BitPayment), new BitPaymentViewModel {
+                //    PaymentInitiationId = bitResult.BitPaymentInitiationId,
+                //    TransactionSerialId = bitResult.BitTransactionSerialId,
+                //    RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
+                //    PaymentTransactionID = result.EntityUID.Value,
+                //    PaymentIntent = checkoutConfig.PaymentIntentID,
+                //    ApiKey = request.ApiKey,
+                //    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID,
+                //});
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest?.RedirectUrl;
@@ -628,6 +653,7 @@ namespace CheckoutPortal.Controllers
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("bit")]
+        [Obsolete("No longer in use. To be removed")]
         public async Task<IActionResult> BitPayment([FromQuery] BitPaymentViewModel request)
         {
             var bitTransaction = await transactionsApiClient.GetBitTransaction(new GetBitTransactionQuery
@@ -671,31 +697,25 @@ namespace CheckoutPortal.Controllers
         [Route("bit-completed")]
         public async Task<IActionResult> BitPaymentCompleted([FromQuery] BitPaymentViewModel request)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(request.TransactionSerialId) || string.IsNullOrWhiteSpace(request.PaymentInitiationId))
             {
-                var errorMessage = string.Join(",", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-                logger.LogError($"{nameof(BitPaymentCompleted)}: {errorMessage}");
-                return PaymentError(errorMessage);
+                logger.LogError($"{nameof(BitPaymentCompleted)}: Incorrect request");
+                return PaymentError("Incorrect request");
             }
 
             CheckoutData checkoutConfig;
 
-            string storageKey = null;
-
             if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, null, null, request.RedirectUrl);
-                storageKey = request.ApiKey;
             }
             else if (request.PaymentIntent != null)
             {
-                checkoutConfig = await GetCheckoutData(request.PaymentIntent.Value, request.RedirectUrl, true);
-                storageKey = request.PaymentIntent.ToString();
+                checkoutConfig = await GetCheckoutData(Guid.Parse(request.PaymentIntent), request.RedirectUrl, true);
             }
             else if (request.PaymentRequest != null)
             {
-                checkoutConfig = await GetCheckoutData(request.PaymentRequest.Value, request.RedirectUrl, false);
-                storageKey = request.PaymentRequest.ToString();
+                checkoutConfig = await GetCheckoutData(Guid.Parse(request.PaymentRequest), request.RedirectUrl, false);
             }
             else
             {
@@ -711,8 +731,8 @@ namespace CheckoutPortal.Controllers
             {
                 PaymentInitiationId = request.PaymentInitiationId,
                 PaymentTransactionID = request.PaymentTransactionID,
-                PaymentIntentID = request.PaymentIntent,
-                PaymentRequestID = request.PaymentRequest
+                PaymentIntentID = string.IsNullOrEmpty(request.PaymentIntent) ? default : Guid.Parse(request.PaymentIntent),
+                PaymentRequestID = string.IsNullOrEmpty(request.PaymentRequest) ? default : Guid.Parse(request.PaymentRequest),
             };
 
             var captureResult = await transactionsApiClient.CaptureBitTransaction(bitRequest);
@@ -734,14 +754,17 @@ namespace CheckoutPortal.Controllers
                 if (checkoutConfig.Settings?.LegacyRedirectResponse == true)
                 {
                     var paymentTransaction = await transactionsApiClient.GetTransaction(request.PaymentTransactionID);
-
-                    var chargeViewModel = requestStorage.Get(storageKey, true);
-
-                    if (chargeViewModel != null)
+                    try
                     {
-                        redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(chargeViewModel, paymentTransaction));
+                        redirectUrl = UrlHelper.BuildUrl(
+                            redirectUrl,
+                            null,
+                            LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+
                         return Redirect(redirectUrl);
                     }
+                    catch { }
+
                     return RedirectToAction("PaymentResult");
                 }
                 else
