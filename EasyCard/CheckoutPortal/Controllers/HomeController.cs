@@ -523,15 +523,21 @@ namespace CheckoutPortal.Controllers
 
                     //URL needs to be double encoded
                     var scheme = HttpUtility.UrlEncode($"&return_scheme={bitCompletedUrl}");
+                    string mobileRedirectUrl = null;
 
                     if (Request.IsIOS())
                     {
-                        return Redirect(bitTransaction.ApplicationSchemeIos + scheme);
+                        mobileRedirectUrl = bitTransaction.ApplicationSchemeIos + scheme;
                     }
-                    else if (Request.IsAndroid())
+                    else
                     {
-                        return Redirect(bitTransaction.ApplicationSchemeAndroid + scheme);
+                        mobileRedirectUrl = bitTransaction.ApplicationSchemeAndroid + scheme;
                     }
+                    
+                    return Json(new BitPaymentMobileModel
+                    {
+                        MobileRedirectUrl = mobileRedirectUrl,
+                    });
                 }
 
                 return Json(new BitPaymentViewModel
