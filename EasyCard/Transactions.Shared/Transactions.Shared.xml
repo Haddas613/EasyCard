@@ -125,6 +125,11 @@
               Looks up a localized string similar to Day.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.HalfYear">
+            <summary>
+              Looks up a localized string similar to Half-Year.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Month">
             <summary>
               Looks up a localized string similar to Month.
