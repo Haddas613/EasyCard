@@ -323,11 +323,6 @@ namespace Transactions.Api.Controllers.External
                 return new OperationResponse($"Transaction {transactionID} is in final state {transaction.Status}", StatusEnum.Error);
             }
 
-            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails.BitPaymentInitiationId))
-            {
-                return new OperationResponse($"Transaction {transactionID} has no Bit details", StatusEnum.Error);
-            }
-
             Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
             return await PostProcessTransaction(transaction, terminal, true);
@@ -496,31 +491,44 @@ namespace Transactions.Api.Controllers.External
 
         private async Task<ActionResult<OperationResponse>> PostProcessTransaction(PaymentTransaction transaction, Terminal terminal, bool sucessCapture)
         {
-            // process will be stoped if transaction does not exist
-            var bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+            ActionResult<OperationResponse> failedResponse = null;
+            BitTransactionResponse bitTransaction = null;
 
-            if (bitTransaction == null)
+            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails.BitPaymentInitiationId))
             {
-                logger.LogError($"Failed to finalize Transaction for Bit: Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}");
-                return NotFound(new OperationResponse($"Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}", StatusEnum.Error));
+                sucessCapture = false;
+                failedResponse = new OperationResponse($"Transaction {transaction.PaymentTransactionID} has no Bit details", StatusEnum.Error);
             }
-
-            if (bitTransaction.RequestStatusCodeResult == null)
+            else
             {
-                logger.LogError($"Failed to finalize Transaction for Bit: cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
+                bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
 
-                return BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+                if (bitTransaction == null)
+                {
+                    sucessCapture = false;
+                    logger.LogError($"Failed to finalize Transaction for Bit: Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}");
+                    failedResponse = NotFound(new OperationResponse($"Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}", StatusEnum.Error));
+                }
+                else if (bitTransaction.RequestStatusCodeResult == null)
+                {
+                    sucessCapture = false;
+                    logger.LogError($"Failed to finalize Transaction for Bit: cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
+
+                    failedResponse = BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} cannot parse Bit status {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+                }
+                else if (!bitTransaction.RequestStatusCodeResult.Final)
+                {
+                    sucessCapture = false;
+                    logger.LogError($"Failed to finalize Transaction for Bit: Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
+                    failedResponse = BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+                }
+
+                if (bitTransaction != null)
+                {
+                    transaction.BitTransactionDetails.RequestStatusCode = bitTransaction.RequestStatusCode;
+                    transaction.BitTransactionDetails.RequestStatusDescription = bitTransaction.RequestStatusDescription;
+                }
             }
-
-            if (!bitTransaction.RequestStatusCodeResult.Final)
-            {
-                logger.LogError($"Failed to finalize Transaction for Bit: Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
-
-                return BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
-            }
-
-            transaction.BitTransactionDetails.RequestStatusCode = bitTransaction.RequestStatusCode;
-            transaction.BitTransactionDetails.RequestStatusDescription = bitTransaction.RequestStatusDescription;
 
             sucessCapture = sucessCapture && bitTransaction?.Success == true;
 
@@ -530,7 +538,8 @@ namespace Transactions.Api.Controllers.External
             }
             else
             {
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: bitTransaction.RequestStatusDescription, rejectionReason: RejectionReasonEnum.Unknown);
+                // Introduce status: Rejected by Bit
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: bitTransaction?.RequestStatusDescription ?? "processing error", rejectionReason: RejectionReasonEnum.Unknown);
             }
 
             var terminalAggregator = ValidateExists(
@@ -596,7 +605,14 @@ namespace Transactions.Api.Controllers.External
             }
             else
             {
-                return BadRequest(new OperationResponse($"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}", StatusEnum.Error, transaction.PaymentTransactionID));
+                if (failedResponse != null)
+                {
+                    return failedResponse;
+                }
+                else
+                {
+                    return BadRequest(new OperationResponse($"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}", StatusEnum.Error, transaction.PaymentTransactionID));
+                }
             }
         }
     }

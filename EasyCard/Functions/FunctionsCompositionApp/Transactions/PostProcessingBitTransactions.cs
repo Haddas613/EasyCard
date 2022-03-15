@@ -33,7 +33,12 @@ namespace FunctionsCompositionApp.Transactions
 
             var response = await transactionsApiClient.GetTransactions(new TransactionsFilter { DocumentOrigin = TransactionsShared.Enums.DocumentOriginEnum.Bit, QuickStatusFilter = TransactionsShared.Enums.QuickStatusFilterTypeEnum.Pending });
 
-            foreach (var transaction in response.Data.Where(t => t.TransactionTimestamp < DateTime.UtcNow.AddMinutes(-15)))
+            var toBeProcessed = response.Data.Where(t => t.TransactionTimestamp < DateTime.UtcNow.AddMinutes(-15));
+            log.LogInformation($"Should be post-processed {toBeProcessed.Count()} Bit transactions");
+            int successCount = 0;
+            int failedCount = 0;
+
+            foreach (var transaction in toBeProcessed)
             {
                 try
                 {
@@ -41,18 +46,23 @@ namespace FunctionsCompositionApp.Transactions
 
                     if (res.Status != SharedApi.Models.Enums.StatusEnum.Success)
                     {
+                        failedCount++;
                         log.LogError($"Failed to process Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
                     }
                     else
                     {
+                        successCount++;
                         log.LogInformation($"Successfully processed Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
                     }
                 }
                 catch (Exception ex)
                 {
+                    failedCount++;
                     log.LogError(ex, $"Failed to process Bit transaction {transaction.PaymentTransactionID}: {ex.Message}");
                 }
             }
+
+            log.LogInformation($"Post-processed {successCount} Bit transactions; failed {failedCount} Bit transactions");
         }
     }
 }
