@@ -961,18 +961,6 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("BillingDealID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BitPaymentInitiationId")
-                        .HasMaxLength(64)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("BitPaymentInitiationId");
-
-                    b.Property<string>("BitTransactionSerialId")
-                        .HasMaxLength(64)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("BitTransactionSerialId");
-
                     b.Property<string>("CardExpiration")
                         .HasMaxLength(5)
                         .IsUnicode(false)
@@ -1097,6 +1085,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.Property<decimal>("TotalDiscount")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<decimal?>("TotalRefund")
                         .HasColumnType("decimal(19,4)");
 
                     b.Property<decimal>("TransactionAmount")
@@ -1769,6 +1760,49 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.OwnsOne("Transactions.Business.Entities.BitTransactionDetails", "BitTransactionDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("BitMerchantNumber")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("BitMerchantNumber");
+
+                            b1.Property<string>("BitPaymentInitiationId")
+                                .HasMaxLength(64)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(64)")
+                                .HasColumnName("BitPaymentInitiationId");
+
+                            b1.Property<string>("BitTransactionSerialId")
+                                .HasMaxLength(64)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(64)")
+                                .HasColumnName("BitTransactionSerialId");
+
+                            b1.Property<string>("RequestStatusCode")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("BitRequestStatusCode");
+
+                            b1.Property<string>("RequestStatusDescription")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BitRequestStatusDescription");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.ClearingHouseTransactionDetails", "ClearingHouseTransactionDetails", b1 =>
                         {
                             b1.Property<Guid>("PaymentTransactionID")
@@ -2063,6 +2097,8 @@ namespace Transactions.Business.Migrations
                         });
 
                     b.Navigation("BankTransferDetails");
+
+                    b.Navigation("BitTransactionDetails");
 
                     b.Navigation("ClearingHouseTransactionDetails");
 

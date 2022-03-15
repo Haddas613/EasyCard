@@ -764,7 +764,7 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            if (string.IsNullOrWhiteSpace(transaction.BitPaymentInitiationId) || transaction.DocumentOrigin != DocumentOriginEnum.Bit)
+            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) || transaction.DocumentOrigin != DocumentOriginEnum.Bit)
             {
                 return BadRequest(new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error));
             }
@@ -790,7 +790,7 @@ namespace Transactions.Api.Controllers
             refundEntity.Status = TransactionStatusEnum.Initial;
             refundEntity.TransactionAmount = request.RefundAmount;
             refundEntity.DealDetails = ReflectionHelpers.Clone(transaction.DealDetails);
-            refundEntity.BitPaymentInitiationId = transaction.BitPaymentInitiationId;
+            refundEntity.BitTransactionDetails = ReflectionHelpers.Clone(transaction.BitTransactionDetails);
             refundEntity.MerchantIP = GetIP();
             refundEntity.CorrelationId = GetCorrelationID();
 
@@ -799,7 +799,7 @@ namespace Transactions.Api.Controllers
             var res = await bitController.RefundInternal(refundEntity);
             if (res.Status == StatusEnum.Success)
             {
-                transaction.TotalRefund += request.RefundAmount;
+                transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
                 return res;
             }

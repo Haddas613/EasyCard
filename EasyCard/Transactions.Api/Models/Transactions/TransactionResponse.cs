@@ -276,5 +276,7 @@ namespace Transactions.Api.Models.Transactions
         /// Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
         /// </summary>
         public JObject Extension { get; set; }
+
+        public object BitTransactionDetails { get; set; }
     }
 }

@@ -539,6 +539,11 @@
             Shva transmision is done
             </summary>
         </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Refund">
+            <summary>
+            Refund is done for this transaction
+            </summary>
+        </member>
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">
             <summary>
             Transaction is rejeced by Clearing House

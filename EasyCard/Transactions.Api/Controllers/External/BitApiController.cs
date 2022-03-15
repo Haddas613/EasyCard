@@ -128,9 +128,11 @@ namespace Transactions.Api.Controllers.External
 
                 var bitProcessorConfig = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.VirtualWalletProcessor);
 
+                BitTerminalSettings bitSettings = null;
+
                 if (bitProcessorConfig?.Settings != null)
                 {
-                    var bitSettings = bitProcessorConfig.Settings.ToObject<BitTerminalSettings>();
+                    bitSettings = bitProcessorConfig.Settings.ToObject<BitTerminalSettings>();
                     if (bitSettings != null)
                     {
                         processorSettings = bitSettings;
@@ -151,6 +153,7 @@ namespace Transactions.Api.Controllers.External
                 transaction.DocumentOrigin = DocumentOriginEnum.Bit;
                 transaction.PaymentRequestID = model.PaymentRequestID;
                 transaction.PaymentIntentID = model.PaymentIntentID;
+                transaction.BitTransactionDetails.BitMerchantNumber = bitSettings?.BitMerchantNumber;
 
                 //if (transaction.ShvaTransactionDetails == null)
                 //{
@@ -180,8 +183,8 @@ namespace Transactions.Api.Controllers.External
                     return BadRequest(new OperationResponse($"Bit error. Response is null ", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
                 }
 
-                transaction.BitPaymentInitiationId = bitResponse.PaymentInitiationId;
-                transaction.BitTransactionSerialId = bitResponse.TransactionSerialId;
+                transaction.BitTransactionDetails.BitPaymentInitiationId = bitResponse.PaymentInitiationId;
+                transaction.BitTransactionDetails.BitTransactionSerialId = bitResponse.TransactionSerialId;
                 await transactionsService.UpdateEntity(transaction);
 
                 var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
@@ -238,8 +241,8 @@ namespace Transactions.Api.Controllers.External
 
                 var response = new InitialBitOperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID)
                 {
-                    BitPaymentInitiationId = transaction.BitPaymentInitiationId,
-                    BitTransactionSerialId = transaction.BitTransactionSerialId,
+                    BitPaymentInitiationId = transaction.BitTransactionDetails.BitPaymentInitiationId,
+                    BitTransactionSerialId = transaction.BitTransactionDetails.BitTransactionSerialId,
                     RedirectURL = bitResponse.PaymentPageUrlAddress
                 };
 
@@ -320,7 +323,7 @@ namespace Transactions.Api.Controllers.External
                 return new OperationResponse($"Transaction {transactionID} is in final state {transaction.Status}", StatusEnum.Error);
             }
 
-            if (string.IsNullOrWhiteSpace(transaction.BitPaymentInitiationId))
+            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails.BitPaymentInitiationId))
             {
                 return new OperationResponse($"Transaction {transactionID} has no Bit details", StatusEnum.Error);
             }
@@ -337,12 +340,15 @@ namespace Transactions.Api.Controllers.External
                 CreditAmount = refundEntity.TransactionAmount,
                 ExternalSystemReference = refundEntity.InitialTransactionID.ToString(),
                 RefundExternalSystemReference = refundEntity.PaymentTransactionID.ToString(),
-                PaymentInitiationId = refundEntity.BitPaymentInitiationId,
+                PaymentInitiationId = refundEntity.BitTransactionDetails.BitPaymentInitiationId,
             };
 
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             var res = await bitProcessor.RefundBitTransaction(refundRequest, refundEntity.InitialTransactionID.ToString(), integrationMessageId, refundEntity.CorrelationId);
+
+            refundEntity.BitTransactionDetails.RequestStatusCode = res.RequestStatusCode;
+            refundEntity.BitTransactionDetails.RequestStatusDescription = res.RequestStatusDescription;
 
             if (res.Success)
             {
@@ -491,12 +497,12 @@ namespace Transactions.Api.Controllers.External
         private async Task<ActionResult<OperationResponse>> PostProcessTransaction(PaymentTransaction transaction, Terminal terminal, bool sucessCapture)
         {
             // process will be stoped if transaction does not exist
-            var bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+            var bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
 
             if (bitTransaction == null)
             {
-                logger.LogError($"Failed to finalize Transaction for Bit: Bit deal {transaction.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}");
-                return NotFound(new OperationResponse($"Bit deal {transaction.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}", StatusEnum.Error));
+                logger.LogError($"Failed to finalize Transaction for Bit: Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}");
+                return NotFound(new OperationResponse($"Bit deal {transaction.BitTransactionDetails.BitPaymentInitiationId} does not exist. Transaction id: {transaction.PaymentTransactionID}", StatusEnum.Error));
             }
 
             if (bitTransaction.RequestStatusCodeResult == null)
@@ -512,6 +518,9 @@ namespace Transactions.Api.Controllers.External
 
                 return BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
             }
+
+            transaction.BitTransactionDetails.RequestStatusCode = bitTransaction.RequestStatusCode;
+            transaction.BitTransactionDetails.RequestStatusDescription = bitTransaction.RequestStatusDescription;
 
             sucessCapture = sucessCapture && bitTransaction?.Success == true;
 
