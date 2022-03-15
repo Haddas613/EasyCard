@@ -351,6 +351,11 @@ namespace Transactions.Business.Entities
                 return QuickStatusFilterTypeEnum.Completed;
             }
 
+            if (@enum == Shared.Enums.TransactionStatusEnum.Refund)
+            {
+                return QuickStatusFilterTypeEnum.Refund;
+            }
+
             if ((int)@enum < 0)
             {
                 return QuickStatusFilterTypeEnum.Failed;

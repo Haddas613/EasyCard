@@ -22,5 +22,8 @@ namespace Transactions.Shared.Enums
 
         [EnumMember(Value = "AwaitingForTransmission")]
         AwaitingForTransmission = 5,
+
+        [EnumMember(Value = "Refund")]
+        Refund = 6,
     }
 }

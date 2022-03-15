@@ -223,6 +223,15 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refund.
+        /// </summary>
+        public static string Refund {
+            get {
+                return ResourceManager.GetString("Refund", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This Month.
         /// </summary>
         public static string ThisMonth {
