@@ -426,7 +426,7 @@ namespace Transactions.Api.Controllers.External
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
 
-                        return new OperationResponse(Shared.Messages.ConfirmedByAggregator, StatusEnum.Error, transaction.PaymentTransactionID);
+                        return new OperationResponse(Shared.Messages.ConfirmedByAggregator, StatusEnum.Success, transaction.PaymentTransactionID);
                     }
                 }
                 catch (Exception ex)
