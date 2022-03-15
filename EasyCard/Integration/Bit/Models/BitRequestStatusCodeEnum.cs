@@ -24,7 +24,7 @@ namespace Bit.Models
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.RequestPending,  false, false),
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.CanceledByBit,  true, true),
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Expired,  true, true),
-                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.CreditExtensionPerformed,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.CreditExtensionPerformed,  true, true),
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Refunded,  true, false),
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Charged,  true, false),
                 new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.RequestWasMade,  false, false),
