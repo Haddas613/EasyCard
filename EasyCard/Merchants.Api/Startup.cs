@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using SharedApi = Shared.Api;
 
 namespace Merchants.Api
@@ -282,10 +283,37 @@ namespace Merchants.Api
                 return new RapidOne.RapidOneInvoicing(webApiClient, ecCfg, logger, storageService);
             });
 
+            X509Certificate2 shvaCertificate = null;
+
+            var shvaConfig = Configuration.GetSection("ShvaGlobalSettings").Get<Shva.ShvaGlobalSettings>();
+
+            if (!string.IsNullOrWhiteSpace(shvaConfig.CertificateThumbprint))
+            {
+                try
+                {
+                    using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                    {
+                        certStore.Open(OpenFlags.ReadOnly);
+                        X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                            X509FindType.FindByThumbprint,
+                            shvaConfig.CertificateThumbprint,
+                            false);
+                        if (certCollection.Count > 0)
+                        {
+                            shvaCertificate = certCollection[0];
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Cannot load Shva certificate {shvaConfig.CertificateThumbprint}: {ex.Message}");
+                }
+            }
+
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
                 var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.ShvaGlobalSettings>>();
-                var webApiClient = new WebApiClient();
+                var webApiClient = new WebApiClient(shvaCertificate);
                 var logger = serviceProvider.GetRequiredService<ILogger<Shva.ShvaProcessor>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ShvaRequestsLogStorageTable, cfg.ShvaRequestsLogStorageTable);
