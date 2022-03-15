@@ -278,5 +278,7 @@ namespace Transactions.Api.Models.Transactions
         public JObject Extension { get; set; }
 
         public object BitTransactionDetails { get; set; }
+
+        public decimal? TotalRefund { get; set; }
     }
 }

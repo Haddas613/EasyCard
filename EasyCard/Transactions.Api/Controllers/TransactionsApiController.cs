@@ -769,9 +769,9 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error));
             }
 
-            if (transaction.QuickStatus != QuickStatusFilterTypeEnum.Completed)
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
             {
-                return BadRequest(new OperationResponse($"It is possible to make refund only for completed Bit transactions", StatusEnum.Error));
+                return BadRequest(new OperationResponse($"It is possible to make refund only for completed or partially refunded Bit transactions", StatusEnum.Error));
             }
 
             if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
