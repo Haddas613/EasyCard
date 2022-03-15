@@ -199,7 +199,6 @@ export default {
          itemPricingService.item.calculate(item, { vatRate: this.model.vatRate });
        }
        itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
-       console.log(this.model)
        this.$emit('update', this.model);
     }
   }

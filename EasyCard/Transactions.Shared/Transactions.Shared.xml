@@ -449,6 +449,11 @@
               Looks up a localized string similar to Initial.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Refund">
+            <summary>
+              Looks up a localized string similar to Refund.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
             <summary>
               Looks up a localized string similar to Rejected by aggregator.
