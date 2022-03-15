@@ -781,6 +781,8 @@ namespace Transactions.Api.Controllers
 
             // TODO: do in transaction
             // TODO: transaction origin
+            // TODO: audit details
+
 
             PaymentTransaction refundEntity = new PaymentTransaction();
             refundEntity.TerminalID = transaction.TerminalID;
