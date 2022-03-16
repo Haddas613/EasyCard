@@ -79,10 +79,11 @@
         <button class="btn btn-outline-danger mx-1" id="bit-cancel-btn">
             @localizer.Get("CancelPayment")
         </button>
-        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+        @*<button class="btn btn-secondary mx-1" type="button" id="paywithbit" data-invokebit="false">
             <img height="20px" src="~/img/bit-logo-white.svg" />
             @localizer.Get("PayWithBit")
-        </button>
+        </button>*@
+        <img class="cursor-pointer" height="47px" src="~/img/button_desktop.svg" role="button" id="paywithbit"/>
     </div>
 </form>
 
@@ -117,19 +118,26 @@
 
         $("#paywithbit").on("click", function (e) {
             e.preventDefault();
+            if (window.bitdata){
+                invokeBit();
+            }
+
             if (!$("#bit-form").valid()) {
                 return;
             }
+
+            if (e.target.dataset['loading'] == 'true'){
+                return;
+            }
+            e.target.dataset['loading'] = 'true';
+
+            
             $("#PayWithBit").val(true);
             initiateBit();
+            
         })
 
-        let initiateBit = function(){
-            if (!$("#bit-form").valid()) {
-                e.preventDefault();
-                return;
-            }
-
+        function initiateBit() {
             //extend bit completed form with every field of bit form
             $("#bit-completed-form").append($("#bit-form").html());
 
@@ -157,24 +165,41 @@
 
                 document.getElementById("loading-spinner").hidden = true;
                 document.getElementsByTagName("body")[0].classList.remove("no-scroll")
-                $("#bit-payment-area").attr('hidden', false);
-                $("#bit-form").attr('hidden', true);
-                $("#payment-type-area").attr('hidden', true);
+                //$("#bit-payment-area").attr('hidden', false);
+                //$("#bit-form").attr('hidden', true);
+                //$("#payment-type-area").attr('hidden', true);
 
-                let transaction = {
+                document.getElementById("paywithbit").dataset['invokebit'] = true;
+
+                window.bitdata = {
                     transactionSerialId: data.transactionSerialId,
                     paymentInitiationId: data.paymentInitiationId,
                 };
-                BitPayment.pay(transaction);
-                BitPayment.Buttons({
-                    onCreate: function(openBitPaymentPage){
-                        openBitPaymentPage(transaction);
-                    },
-                    onApproved: function(details){
-                        $("#bit-completed-form").submit();
-                    }
-                }).render('#bitcom-button-container');
+                invokeBit();
+                
+                //BitPayment.Buttons({
+                //    onCreate: function(openBitPaymentPage){
+                //        openBitPaymentPage(transaction);
+                //    },
+                //    onApproved: function(details){
+                //        $("#bit-completed-form").submit();
+                //    }
+                //}).render('#bitcom-button-container');
             });
+        };
+
+        function invokeBit(){
+            BitPayment.pay({
+                transactionSerialId: window.bitdata.transactionSerialId,
+                paymentInitiationId: window.bitdata.paymentInitiationId,
+                onCreate: function(openBitPaymentPage){
+                    openBitPaymentPage(transaction);
+                },
+                onApproved: function(details){
+                    $("#bit-completed-form").submit();
+                }
+            });
+            document.getElementById("paywithbit").dataset['loading'] = false;
         };
     }
 </script>
