@@ -509,6 +509,11 @@ namespace Transactions.Api.Controllers.External
                                 SendCCTo = terminal.InvoiceSettings.SendCCTo
                             };
 
+                            if (invoiceRequest.InvoiceDetails.InvoiceType == SharedIntegration.Models.Invoicing.InvoiceTypeEnum.InvoiceWithPaymentInfo && transaction != null && transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+                            {
+                                invoiceRequest.InvoiceDetails.InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.RefundInvoice;
+                            }
+
                             // in case if consumer name/natid is not specified in deal details, get it from credit card details
                             invoiceRequest.DealDetails = transaction.DealDetails;
 
