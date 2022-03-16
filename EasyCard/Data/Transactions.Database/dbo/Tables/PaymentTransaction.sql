@@ -93,8 +93,16 @@
     [ClearingHouseConcurrencyToken]  NVARCHAR (50)    NULL,
     [BitPaymentInitiationId]         VARCHAR (64)     NULL,
     [BitTransactionSerialId]         VARCHAR (64)     NULL,
+    [BitMerchantNumber]              VARCHAR (20)     NULL,
+    [BitRequestStatusCode]           VARCHAR (20)     NULL,
+    [BitRequestStatusDescription]    NVARCHAR (50)    NULL,
+    [TotalRefund]                    DECIMAL (19, 4)  NULL,
+    [OperationDoneBy]                NVARCHAR (50)    NULL,
+    [OperationDoneByID]              UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 
