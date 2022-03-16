@@ -504,14 +504,14 @@ namespace Transactions.Api.Controllers.External
                             mapper.Map(transaction, invoiceRequest);
                             invoiceRequest.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
                             {
-                                InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.Invoice,
+                                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
                                 InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
                                 SendCCTo = terminal.InvoiceSettings.SendCCTo
                             };
 
-                            if (invoiceRequest.InvoiceDetails.InvoiceType == SharedIntegration.Models.Invoicing.InvoiceTypeEnum.InvoiceWithPaymentInfo && transaction != null && transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+                            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
                             {
-                                invoiceRequest.InvoiceDetails.InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.RefundInvoice;
+                                invoiceRequest.InvoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
                             }
 
                             // in case if consumer name/natid is not specified in deal details, get it from credit card details

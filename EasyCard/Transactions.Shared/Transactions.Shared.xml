@@ -335,7 +335,7 @@
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Bit">
             <summary>
-              Looks up a localized string similar to Bit.
+              Looks up a localized string similar to bit.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.CanceledByAggregator">
