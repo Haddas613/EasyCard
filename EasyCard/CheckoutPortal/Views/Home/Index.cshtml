@@ -33,13 +33,13 @@
                             <h3>Choose payment method</h3>
                         </div>
                         <div class="col-md-12">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div class="btn-group btn-group-toggle payment-type-select" data-toggle="buttons">
                                 <label class="btn btn-outline-primary">
                                     <input type="radio" name="formPaymentType" id="formPaymentType_regular" autocomplete="off" value="regular"> @localizer.Get("CreditCardPayment")
                                 </label>
                                 <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="formPaymentType" id="formPaymentType_bit" autocomplete="off" value="bit">
                                     <img id="bitlogo" height="20px" src="~/img/bit-logo-gray.svg" />
-                                    <input type="radio" name="formPaymentType" id="formPaymentType_bit" autocomplete="off" value="bit"> @localizer.Get("BitPayment")
                                 </label>
                             </div>
                         </div>
