@@ -1042,6 +1042,14 @@ namespace Transactions.Business.Migrations
                     b.Property<int>("NumberOfPayments")
                         .HasColumnType("int");
 
+                    b.Property<string>("OperationDoneBy")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PaymentIntentID")
                         .HasColumnType("uniqueidentifier");
 

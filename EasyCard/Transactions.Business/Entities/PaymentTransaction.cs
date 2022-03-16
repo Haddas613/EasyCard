@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Financial;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
@@ -13,7 +14,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity
     {
         public PaymentTransaction()
         {
@@ -328,6 +329,13 @@ namespace Transactions.Business.Entities
         public BitTransactionDetails BitTransactionDetails { get; set; }
 
         public decimal? TotalRefund { get; set; }
+
+        public string OperationDoneBy { get; set; }
+
+        public Guid? OperationDoneByID { get; set; }
+
+        [NotMapped]
+        public string SourceIP { get { return MerchantIP; } set { MerchantIP = value; } }
 
         public static QuickStatusFilterTypeEnum GetQuickStatus(TransactionStatusEnum @enum, JDealTypeEnum jDealType)
         {

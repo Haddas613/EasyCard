@@ -147,6 +147,8 @@ namespace Transactions.Api.Controllers.External
 
                 var transaction = mapper.Map<PaymentTransaction>(model);
 
+                transaction.ApplyAuditInfo(httpContextAccessor);
+
                 transaction.SpecialTransactionType = SpecialTransactionTypeEnum.RegularDeal;
                 transaction.JDealType = JDealTypeEnum.J4;
                 transaction.CardPresence = CardPresenceEnum.CardNotPresent;
@@ -328,8 +330,43 @@ namespace Transactions.Api.Controllers.External
             return await PostProcessTransaction(transaction, terminal, true);
         }
 
-        internal async Task<OperationResponse> RefundInternal(PaymentTransaction refundEntity)
+        internal async Task<OperationResponse> RefundInternal(PaymentTransaction transaction, Terminal terminal, ChargebackRequest request)
         {
+            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) || transaction.DocumentOrigin != DocumentOriginEnum.Bit)
+            {
+                return new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error);
+            }
+
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
+            {
+                return new OperationResponse($"It is possible to make refund only for completed or partially refunded Bit transactions", StatusEnum.Error);
+            }
+
+            if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
+            {
+                return new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error);
+            }
+
+            PaymentTransaction refundEntity = new PaymentTransaction();
+            refundEntity.TerminalID = transaction.TerminalID;
+            refundEntity.MerchantID = transaction.MerchantID;
+            refundEntity.InitialTransactionID = transaction.PaymentTransactionID;
+            refundEntity.SpecialTransactionType = SpecialTransactionTypeEnum.Refund;
+            refundEntity.Status = TransactionStatusEnum.Initial;
+            refundEntity.TransactionAmount = request.RefundAmount;
+            refundEntity.DealDetails = ReflectionHelpers.Clone(transaction.DealDetails);
+            refundEntity.BitTransactionDetails = ReflectionHelpers.Clone(transaction.BitTransactionDetails);
+            refundEntity.IssueInvoice = transaction.IssueInvoice;
+            refundEntity.VATRate = transaction.VATRate;
+            refundEntity.DocumentOrigin = DocumentOriginEnum.Bit; // really it can be UI but "Bit" used for consistency in search
+            refundEntity.CreditCardDetails = ReflectionHelpers.Clone(transaction.CreditCardDetails);
+
+            refundEntity.ApplyAuditInfo(httpContextAccessor);
+
+            refundEntity.Calculate();
+
+            await transactionsService.CreateEntity(refundEntity);
+
             var refundRequest = new BitRefundRequest
             {
                 CreditAmount = refundEntity.TransactionAmount,
@@ -345,17 +382,34 @@ namespace Transactions.Api.Controllers.External
             refundEntity.BitTransactionDetails.RequestStatusCode = res.RequestStatusCode;
             refundEntity.BitTransactionDetails.RequestStatusDescription = res.RequestStatusDescription;
 
-            if (res.Success)
-            {
-                await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed);
-                return new OperationResponse("Refund request created", StatusEnum.Success, refundEntity.PaymentTransactionID);
-            }
-            else
+            if (!res.Success)
             {
                 logger.LogWarning($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}");
                 await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.RejectedByProcessor, rejectionMessage: res.RequestStatusDescription, rejectionReason: RejectionReasonEnum.Unknown);
                 return new OperationResponse($"Refund attempt is failed for {refundEntity.PaymentTransactionID}: {res.RequestStatusCode} {res.RequestStatusDescription}", StatusEnum.Error, refundEntity.PaymentTransactionID);
             }
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed);
+
+                    transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(RefundInternal)}: Failed to commitd db transaction. TransactionID: {transaction.PaymentTransactionID}");
+                    await dbTransaction.RollbackAsync();
+                }
+            }
+
+            // TODO: inner response
+            await CreateInvoice(refundEntity, terminal);
+
+            return new OperationResponse("Refund request created", StatusEnum.Success, refundEntity.PaymentTransactionID);
         }
 
         private async Task<ActionResult<OperationResponse>> ProcessByAggregator(PaymentTransaction transaction, SharedIntegration.ExternalSystems.IAggregator aggregator, object aggregatorSettings, bool success)
@@ -435,6 +489,7 @@ namespace Transactions.Api.Controllers.External
             }
         }
 
+        // TODO: return
         private async Task CreateInvoice(PaymentTransaction transaction, Terminal terminal)
         {
             if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
@@ -538,7 +593,7 @@ namespace Transactions.Api.Controllers.External
             }
             else
             {
-                // Introduce status: Rejected by Bit
+                // TODO: Introduce status: Rejected by Bit
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: bitTransaction?.RequestStatusDescription ?? "processing error", rejectionReason: RejectionReasonEnum.Unknown);
             }
 

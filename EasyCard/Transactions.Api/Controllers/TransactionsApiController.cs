@@ -764,45 +764,19 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            if (string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) || transaction.DocumentOrigin != DocumentOriginEnum.Bit)
-            {
-                return BadRequest(new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error));
-            }
+            var res = await bitController.RefundInternal(transaction, terminal, request);
 
-            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
-            {
-                return BadRequest(new OperationResponse($"It is possible to make refund only for completed or partially refunded Bit transactions", StatusEnum.Error));
-            }
-
-            if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
-            {
-                return BadRequest(new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error));
-            }
-
-            // TODO: do in transaction
-            // TODO: transaction origin
-            // TODO: audit details
-
-
-            PaymentTransaction refundEntity = new PaymentTransaction();
-            refundEntity.TerminalID = transaction.TerminalID;
-            refundEntity.MerchantID = transaction.MerchantID;
-            refundEntity.InitialTransactionID = transaction.PaymentTransactionID;
-            refundEntity.SpecialTransactionType = SpecialTransactionTypeEnum.Refund;
-            refundEntity.Status = TransactionStatusEnum.Initial;
-            refundEntity.TransactionAmount = request.RefundAmount;
-            refundEntity.DealDetails = ReflectionHelpers.Clone(transaction.DealDetails);
-            refundEntity.BitTransactionDetails = ReflectionHelpers.Clone(transaction.BitTransactionDetails);
-            refundEntity.MerchantIP = GetIP();
-            refundEntity.CorrelationId = GetCorrelationID();
-
-            await transactionsService.CreateEntity(refundEntity);
-
-            var res = await bitController.RefundInternal(refundEntity);
             if (res.Status == StatusEnum.Success)
             {
-                transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                try
+                {
+                    await SendTransactionSuccessEmails(transaction, terminal);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
+                }
+
                 return res;
             }
             else

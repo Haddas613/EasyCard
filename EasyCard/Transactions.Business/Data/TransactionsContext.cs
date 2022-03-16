@@ -282,6 +282,10 @@ namespace Transactions.Business.Data
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
 
                 builder.Property(b => b.TotalRefund).HasColumnType("decimal(19,4)").IsRequired(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false);
             }
         }
 
