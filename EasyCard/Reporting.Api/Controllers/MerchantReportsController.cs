@@ -40,6 +40,7 @@ namespace Reporting.Api.Controllers
             this.terminalsService = terminalsService;
         }
 
+        // TODO: this is temporary implementation
         [HttpGet]
         [Route("billings")]
         public async Task<ActionResult<IEnumerable<BillingSummaryReport>>> GetBillingSummaryReport()

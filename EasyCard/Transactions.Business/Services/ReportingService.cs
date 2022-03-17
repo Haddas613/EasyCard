@@ -26,12 +26,12 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        // TODO: this is temporary implementation
         public IQueryable<BillingSummaryReport> GetBillingSummaryReport(bool sharedTerminal)
         {
             return GetBillingDeals(sharedTerminal)
-                .Where(d => d.DealDetails.ConsumerExternalReference != null)
-                .GroupBy(d => d.DealDetails.ConsumerExternalReference, d => d.TransactionAmount, (d1, d2) =>
-                new BillingSummaryReport { ExternalReference = d1, BillingDealsNumber = d2.Count(), TotalTransactionsAmounts = d2.Sum() });
+                .Select(d =>
+                new BillingSummaryReport { BillingDealID = d.BillingDealID, ConsumerExternalReference = d.DealDetails.ConsumerExternalReference, NextScheduledTransaction = d.NextScheduledTransaction, TransactionAmount = d.TransactionAmount });
         }
 
         public IQueryable<BillingDeal> GetBillingDeals(bool sharedTerminal)
