@@ -7,7 +7,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/EasyCard.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   buildNumber: $[ variables['Build.BuildNumber'] ]
