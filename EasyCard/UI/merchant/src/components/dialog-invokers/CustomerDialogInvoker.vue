@@ -82,6 +82,10 @@ export default {
     show: {
       type: Boolean,
       default: false
+    },
+    fullCustomerInfo: {
+      type: Boolean,
+      default: false,
     }
   },
   components: {
@@ -120,7 +124,10 @@ export default {
     }
   },
   methods: {
-    processCustomer(data) {
+    async processCustomer(data) {
+      if (this.fullCustomerInfo){
+        data = await this.$api.consumers.getConsumer(data.consumerID);
+      }
       this.selectedCustomer = data;
       this.$emit("update", data);
       this.visible = false;
