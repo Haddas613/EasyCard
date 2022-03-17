@@ -40,7 +40,11 @@
             ></v-select>
           </v-col>
           <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
+            <v-text-field
+              v-model.number="documentNumberModel.currentNum"
+              :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]"
+              :label="$t('Number')"
+            ></v-text-field>
           </v-col>
         </v-row>
         </v-form>

@@ -173,7 +173,21 @@ export default {
     async loadMore() {
       this.paymentRequestsFilter.skip += this.paymentRequestsFilter.take;
       await this.getDataFromApi(true);
-    }
+    },
+    async initThreeDotMenu(){
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Create"),
+              fn: () => {
+                this.$router.push({ name: "CreatePaymentRequest" });
+              }
+            }
+          ]
+        }
+      });
+    },
   },
   computed: {
     ...mapState({
@@ -187,23 +201,21 @@ export default {
       );
     }
   },
+  watch:{
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
+      }
+    }
+  },
   async mounted() {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Create"),
-            fn: () => {
-              this.$router.push({ name: "CreatePaymentRequest" });
-            }
-          }
-        ]
-      }
-    });
+    this.initThreeDotMenu();  
   }
 };
 </script>

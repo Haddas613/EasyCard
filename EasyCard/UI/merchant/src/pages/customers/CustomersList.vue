@@ -69,6 +69,14 @@ export default {
   watch: {
     showDeletedCustomers(newValue, oldValue) {
       this.initThreeDotMenu();
+    },
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
+      }
     }
   }
 };

@@ -176,6 +176,47 @@
               Looks up a localized string similar to Document Types Get Successfully.
             </summary>
         </member>
+        <member name="T:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.CREDIT_NOTE">
+            <summary>
+              Looks up a localized string similar to Credit note.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.INVOICE">
+            <summary>
+              Looks up a localized string similar to Invoice.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.INVOICE_WITH_PAYMENT_INFO">
+            <summary>
+              Looks up a localized string similar to Invoice with Payment Info.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.PAYMENT_INFO">
+            <summary>
+              Looks up a localized string similar to Payment Info.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.REFUND_INVOICE_WITH_PAYMENT_INFO">
+            <summary>
+              Looks up a localized string similar to Refund Invoice with Payment Info.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

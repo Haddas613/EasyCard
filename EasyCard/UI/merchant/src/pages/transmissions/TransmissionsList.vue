@@ -178,7 +178,31 @@ export default {
       for(var i of this.transmissions){
           this.$set(i, 'selected', this.selectAll);
       }
-    }
+    },
+    async initThreeDotMenu(){
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Charge"),
+              fn: () => {
+                this.$router.push({ name: "Charge" });
+              }
+            },
+            // {
+            //   text: this.$t("Transmit"),
+            //   fn: async () => await this.transmitSelected()
+            // },
+            // {
+            //   text: this.$t("SelectAll"),
+            //   fn: () => {
+            //     this.switchSelectAll();
+            //   }
+            // }
+          ]
+        }
+      });
+    },
   },
   computed: {
     canLoadMore() {
@@ -194,29 +218,17 @@ export default {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Charge"),
-            fn: () => {
-              this.$router.push({ name: "Charge" });
-            }
-          },
-          // {
-          //   text: this.$t("Transmit"),
-          //   fn: async () => await this.transmitSelected()
-          // },
-          // {
-          //   text: this.$t("SelectAll"),
-          //   fn: () => {
-          //     this.switchSelectAll();
-          //   }
-          // }
-        ]
+    this.initThreeDotMenu();
+  },
+  watch: {
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
       }
-    });
-  }
+    },
+  },
 };
 </script>
