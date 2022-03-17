@@ -123,6 +123,7 @@
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
   "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
+  "Number": "Number",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
