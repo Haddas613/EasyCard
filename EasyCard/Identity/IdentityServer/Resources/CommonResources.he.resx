@@ -357,4 +357,10 @@
   <data name="NotValidEmailField" xml:space="preserve">
     <value>כתובת האימייל אינה כתובת אימייל תקינה</value>
   </data>
+  <data name="RegistrationRequestReceived" xml:space="preserve">
+    <value>התקבלה בקשת רישום</value>
+  </data>
+  <data name="RegistrationSuccessMessage" xml:space="preserve">
+    <value>אנו ניצור איתך קשר בהקדם לגבי אופן ההצטרפות לאיזי קארד.</value>
+  </data>
 </root>
