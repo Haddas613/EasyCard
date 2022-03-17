@@ -36,22 +36,29 @@ namespace Transactions.Business.Services
 
         public IQueryable<BillingDeal> GetBillingDeals(bool sharedTerminal)
         {
-            var tokens = context.BillingDeals.AsNoTracking();
+            var billings = context.BillingDeals.AsNoTracking();
 
-            tokens = tokens.Where(t => t.Active);
+            billings = billings.Where(t => t.Active);
 
             if (user.IsAdmin())
             {
                 throw new ApplicationException("This method should not be used by Admin");
             }
-            else if (user.IsTerminal() && !sharedTerminal)
+            else if (user.IsTerminal())
             {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return tokens.Where(t => t.TerminalID == terminalID);
+                if (!sharedTerminal)
+                {
+                    var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                    return billings.Where(t => t.TerminalID == terminalID);
+                }
+                else
+                {
+                    return billings.Where(t => t.MerchantID == user.GetMerchantID());
+                }
             }
             else
             {
-                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = billings.Where(t => t.MerchantID == user.GetMerchantID());
                 var terminals = user.GetTerminalID()?.Cast<Guid?>();
                 if (terminals?.Count() > 0)
                 {
