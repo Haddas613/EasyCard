@@ -311,7 +311,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.FirstName">
             <summary>
-              Looks up a localized string similar to FirstName.
+              Looks up a localized string similar to First name.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.FirstNameValidationMessage">
@@ -366,7 +366,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LastName">
             <summary>
-              Looks up a localized string similar to LastName.
+              Looks up a localized string similar to Last name.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LastNameValidationMessage">

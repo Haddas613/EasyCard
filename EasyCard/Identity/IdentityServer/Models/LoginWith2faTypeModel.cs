@@ -9,5 +9,7 @@ namespace IdentityServer.Models
     public class LoginWith2faTypeModel
     {
         public TwoFactorAuthTypeEnum LoginType { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }
