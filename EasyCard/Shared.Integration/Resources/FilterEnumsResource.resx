@@ -171,6 +171,9 @@
   <data name="Pending" xml:space="preserve">
     <value>Pending</value>
   </data>
+  <data name="Refund" xml:space="preserve">
+    <value>Refund</value>
+  </data>
   <data name="ThisMonth" xml:space="preserve">
     <value>This Month</value>
   </data>

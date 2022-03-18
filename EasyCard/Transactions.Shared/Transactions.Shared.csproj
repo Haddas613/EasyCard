@@ -42,6 +42,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TransactionEnumsResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Enums\Resources\TransactionStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransactionStatusResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Messages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

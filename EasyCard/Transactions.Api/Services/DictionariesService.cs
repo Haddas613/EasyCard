@@ -13,7 +13,6 @@ using Transactions.Api.Models.Dictionaries;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Enums.Resources;
 using Shared.Helpers.Resources;
-using Transactions.Api.Models.Transactions.Enums;
 using Shared.Integration.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests.Enums;
 using Shared.Api.Models.Enums;

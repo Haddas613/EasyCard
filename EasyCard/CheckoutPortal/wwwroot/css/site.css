@@ -168,6 +168,16 @@ input[type="checkbox"].input-validation-error {
     background-color: #0f99c7;
     opacity: 1 !important;
 }
-.text-end{
+.text-end {
     text-align: end !important;
+}
+
+.payment-type-select label {
+   width: 175px;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.form-area{
+    padding-top: 1rem;
 }

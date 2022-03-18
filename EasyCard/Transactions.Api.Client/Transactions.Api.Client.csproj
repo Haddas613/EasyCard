@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Integration\Bit\Models\BitRequestStatusCodeEnum.cs" Link="Models\BitRequestStatusCodeEnum.cs" />
     <Compile Include="..\Shared.Api\Models\Enums\QuickDateFilterTypeEnum.cs" Link="Models\QuickDateFilterTypeEnum.cs" />
     <Compile Include="..\Shared.Api\UI\MetadataOptionsAttribute.cs" Link="MetadataOptionsAttribute.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealInvoiceOnlyRequest.cs" Link="Models\BillingDealInvoiceOnlyRequest.cs" />
@@ -30,13 +31,13 @@
     <Compile Include="..\Transactions.Api\Models\Tokens\TokenRequest.cs" Link="Models\TokenRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\CreateTransactionRequest.cs" Link="Models\CreateTransactionRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\CreditCardDetails.cs" Link="Models\CreditCardDetails.cs" />
-    <Compile Include="..\Transactions.Api\Models\Transactions\Enums\QuickStatusFilterTypeEnum.cs" Link="Models\QuickStatusFilterTypeEnum.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\PRCreateTransactionRequest.cs" Link="Models\PRCreateTransactionRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionRequestBase.cs" Link="Models\TransactionRequestBase.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionResponse.cs" Link="Models\TransactionResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionResponseAdmin.cs" Link="Models\TransactionResponseAdmin.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionsFilter.cs" Link="Models\TransactionsFilter.cs" />
-    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummary.cs" Link="Models\TransactionSummary.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummary.cs" Link="TransactionSummary.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummaryAdmin.cs" Link="TransactionSummaryAdmin.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransmitTransactionResponse.cs" Link="Models\TransmitTransactionResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsRequest.cs" Link="Models\CreateTransactionFromBillingDealsRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsResponse.cs" Link="Models\CreateTransactionFromBillingDealsResponse.cs" />

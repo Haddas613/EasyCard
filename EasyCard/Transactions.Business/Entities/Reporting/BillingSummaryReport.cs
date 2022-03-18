@@ -6,10 +6,12 @@ namespace Transactions.Business.Entities.Reporting
 {
     public class BillingSummaryReport
     {
-        public string ExternalReference { get; set; }
+        public Guid BillingDealID { get; set; }
 
-        public int BillingDealsNumber { get; set; }
+        public string ConsumerExternalReference { get; set; }
 
-        public decimal TotalTransactionsAmounts { get; set; }
+        public DateTime? NextScheduledTransaction { get; set; }
+
+        public decimal TransactionAmount { get; set; }
     }
 }

@@ -39,9 +39,15 @@ namespace Shared.Helpers
 
         public static void CheckRedirectUrls(this IEnumerable<string> baseRedirectUrls, string redirectUrlPartial)
         {
+            //Workaround so Ecwid works without additional setup
+            if ("https://app.ecwid.com".CheckRedirectUrl(redirectUrlPartial))
+            {
+                return;
+            }
+
             if (baseRedirectUrls == null)
             {
-                throw new BusinessException("Pleas configure redirect urls");
+                throw new BusinessException("Please configure redirect urls");
             }
 
             var baseUrls = baseRedirectUrls.Select(d => d.CheckRedirectUrl());

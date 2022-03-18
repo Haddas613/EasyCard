@@ -5,8 +5,8 @@ using Shared.Helpers.Models;
 using System;
 using System.Linq;
 using Transactions.Api.Models.Transactions;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
+using Transactions.Shared.Enums;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions.Filtering
@@ -308,8 +308,9 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<PaymentTransaction> FilterByQuickStatus(IQueryable<PaymentTransaction> src, QuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
             {
-                QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
+                QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 0 && (int)t.Status < 40),
                 QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Completed),
+                QuickStatusFilterTypeEnum.Refund => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Refund),
                 QuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CancelledByMerchant),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
                 QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission),

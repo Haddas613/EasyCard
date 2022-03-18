@@ -176,7 +176,35 @@ export default {
           this.$set(i, "selected", this.selectAll);
         }
       }
-    }
+    },
+    async initThreeDotMenu(){
+      if(!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing)) return;
+    
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Create"),
+              fn: () => {
+                this.$router.push({ name: "CreateInvoice" });
+              }
+            },
+            {
+              text: this.$t("ResendInvoices"),
+              fn: async () => {
+                await this.resendSelectedInvoices();
+              }
+            },
+            // {
+            //   text: this.$t("SelectAll"),
+            //   fn: () => {
+            //     this.switchSelectAll();
+            //   }
+            // }
+          ]
+        }
+      });
+    },
   },
   computed: {
     ...mapState({
@@ -190,37 +218,21 @@ export default {
       );
     }
   },
+  watch:{
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
+      }
+    }
+  },
   async mounted() {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-    const vm = this;
-    if(!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing)) return;
-    
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Create"),
-            fn: () => {
-              this.$router.push({ name: "CreateInvoice" });
-            }
-          },
-          {
-            text: this.$t("ResendInvoices"),
-            fn: async () => {
-              await vm.resendSelectedInvoices();
-            }
-          },
-          // {
-          //   text: this.$t("SelectAll"),
-          //   fn: () => {
-          //     vm.switchSelectAll();
-          //   }
-          // }
-        ]
-      }
-    });
+    this.initThreeDotMenu();
   }
 };
 </script>

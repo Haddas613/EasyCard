@@ -215,8 +215,6 @@ namespace Transactions.Business.Data
                     s.Property(p => p.PinPadCorrelationID).HasColumnName("PinPadCorrelationID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
-            
-
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
                     s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(30).IsUnicode(false);
@@ -266,18 +264,28 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                //builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(p => p.BitPaymentInitiationId).HasColumnName("BitPaymentInitiationId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
-                builder.Property(p => p.BitTransactionSerialId).HasColumnName("BitTransactionSerialId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
+                builder.OwnsOne(b => b.BitTransactionDetails, s =>
+                {
+                    s.Property(p => p.BitPaymentInitiationId).HasColumnName("BitPaymentInitiationId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
+                    s.Property(p => p.BitTransactionSerialId).HasColumnName("BitTransactionSerialId").IsRequired(false).HasMaxLength(64).IsUnicode(false);
+
+                    s.Property(p => p.RequestStatusCode).HasColumnName("BitRequestStatusCode").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.BitMerchantNumber).HasColumnName("BitMerchantNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.RequestStatusDescription).HasColumnName("BitRequestStatusDescription").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                });
 
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
 
-                //builder.HasIndex(b => new { b.PinPadTransactionDetails.PinPadTransactionID});
-               // builder.HasIndex(b => b.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
+
+                builder.Property(b => b.TotalRefund).HasColumnType("decimal(19,4)").IsRequired(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false);
             }
         }
 

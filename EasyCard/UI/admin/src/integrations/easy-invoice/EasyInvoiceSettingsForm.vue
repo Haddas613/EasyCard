@@ -28,20 +28,24 @@
       <template>
         <v-form ref="documentNumberFormRef" lazy-validation>
           <v-row>
-            <v-col cols="12" md="4" class="py-0">
-              <v-select
-                :items="ecInvoiceTypes"
-                item-text="description"
-                item-value="code"
-                v-model="documentNumberModel.docType"
-                :label="$t('InvoiceType')"
-                :rules="[vr.primitives.required]"
-                @change="getDocumentNumber()"
-              ></v-select>
-            </v-col>
-            <v-col cols="12" md="4" class="py-0">
-              <v-text-field v-model.number="documentNumberModel.currentNum" :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]" :label="$t('Number')"></v-text-field>
-            </v-col>
+          <v-col cols="12" md="4" class="py-0">
+            <v-select
+              :items="ecInvoiceTypes"
+              item-text="description"
+              item-value="code"
+              v-model="documentNumberModel.docType"
+              :label="$t('InvoiceType')"
+              :rules="[vr.primitives.required]"
+              @change="getDocumentNumber()"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="4" class="py-0">
+            <v-text-field
+              v-model.number="documentNumberModel.currentNum"
+              :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.biggerThan(documentNumberModel.minNum, true)]"
+              :label="$t('Number')"
+            ></v-text-field>
+          </v-col>
         </v-row>
         </v-form>
         <div class="d-flex justify-end">

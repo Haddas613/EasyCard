@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Invoicing;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
 
 namespace Transactions.Api.Extensions.Filtering

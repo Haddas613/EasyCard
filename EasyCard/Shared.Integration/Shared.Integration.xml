@@ -833,6 +833,11 @@
               Looks up a localized string similar to Pending.
             </summary>
         </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Refund">
+            <summary>
+              Looks up a localized string similar to Refund.
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Resources.FilterEnumsResource.ThisMonth">
             <summary>
               Looks up a localized string similar to This Month.

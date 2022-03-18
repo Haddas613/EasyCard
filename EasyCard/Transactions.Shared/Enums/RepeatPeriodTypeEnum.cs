@@ -19,6 +19,9 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "quarter")]
         Quarter = 3,
 
+        [EnumMember(Value = "halfYear")]
+        HalfYear = 6,
+
         [EnumMember(Value = "year")]
         Year = 12,
     }

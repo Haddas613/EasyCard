@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Financial;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
@@ -13,7 +14,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity
     {
         public PaymentTransaction()
         {
@@ -26,6 +27,7 @@ namespace Transactions.Business.Entities
             ShvaTransactionDetails = new ShvaTransactionDetails();
             PinPadTransactionDetails = new PinPadTransactionsDetails();
             DealDetails = new DealDetails();
+            BitTransactionDetails = new BitTransactionDetails();
         }
 
         /// <summary>
@@ -92,6 +94,12 @@ namespace Transactions.Business.Entities
         /// Processing status
         /// </summary>
         public TransactionStatusEnum Status { get; set; }
+
+        [NotMapped]
+        public QuickStatusFilterTypeEnum QuickStatus
+        {
+            get { return GetQuickStatus(Status, JDealType); }
+        }
 
         /// <summary>
         /// Payment Type
@@ -318,14 +326,50 @@ namespace Transactions.Business.Entities
 
         public JObject Extension { get; set; }
 
-        /// <summary>
-        /// Resource ID created by bit backend. ID represents the payment initiation. Used for Get /Delete, etc.
-        /// </summary>
-        public string BitPaymentInitiationId { get; set; }
+        public BitTransactionDetails BitTransactionDetails { get; set; }
 
-        /// <summary>
-        /// Additional UUID used for authentication. When using web client application this ID, along with paymentInitiationId, should be sent upon opening bit payment page (openBitPaymentPage).
-        /// </summary>
-        public string BitTransactionSerialId { get; set; }
+        public decimal? TotalRefund { get; set; }
+
+        public string OperationDoneBy { get; set; }
+
+        public Guid? OperationDoneByID { get; set; }
+
+        [NotMapped]
+        public string SourceIP { get { return MerchantIP; } set { MerchantIP = value; } }
+
+        public static QuickStatusFilterTypeEnum GetQuickStatus(TransactionStatusEnum @enum, JDealTypeEnum jDealType)
+        {
+            if (@enum == Shared.Enums.TransactionStatusEnum.CancelledByMerchant)
+            {
+                return QuickStatusFilterTypeEnum.Canceled;
+            }
+
+            if (@enum == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission)
+            {
+                return QuickStatusFilterTypeEnum.AwaitingForTransmission;
+            }
+
+            if ((int)@enum > 0 && (int)@enum < 40)
+            {
+                return QuickStatusFilterTypeEnum.Pending;
+            }
+
+            if (@enum == Shared.Enums.TransactionStatusEnum.Completed)
+            {
+                return QuickStatusFilterTypeEnum.Completed;
+            }
+
+            if (@enum == Shared.Enums.TransactionStatusEnum.Refund)
+            {
+                return QuickStatusFilterTypeEnum.Refund;
+            }
+
+            if ((int)@enum < 0)
+            {
+                return QuickStatusFilterTypeEnum.Failed;
+            }
+
+            return QuickStatusFilterTypeEnum.Pending;
+        }
     }
 }

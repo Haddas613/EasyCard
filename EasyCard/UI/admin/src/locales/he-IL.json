@@ -123,6 +123,7 @@
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
   "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
   "TransmitTransactionsByTerminal": "שידור עסקאות מאת מסוף",
+  "Number": "מספר",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

@@ -297,7 +297,41 @@ export default {
       );
       this.loadingTransaction = false;
       this.transactionSlipDialog = true;
-    }
+    },
+    async initThreeDotMenu(){
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Charge"),
+              fn: () => {
+                this.$router.push({ name: "Charge" });
+              }
+            },
+            {
+              text: this.$t("TransmitSelected"),
+              fn: async () => await this.transmitSelected()
+            },
+            {
+              text: this.$t("TransmitAll"),
+              fn: () => this.showTransmitDialog = true
+            },
+            // {
+            //   text: this.$t("SelectAll"),
+            //   fn: () => {
+            //     this.switchSelectAll();
+            //   }
+            // },
+            {
+              text: this.$t("Excel"),
+              fn: () => {
+                this.exportExcel();
+              }
+            }
+          ]
+        }
+      });
+    },
   },
   computed: {
     canLoadMore() {
@@ -308,43 +342,21 @@ export default {
       terminalStore: state => state.settings.terminal,
     })
   },
+  watch:{
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
+      }
+    }
+  },
   async mounted() {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Charge"),
-            fn: () => {
-              this.$router.push({ name: "Charge" });
-            }
-          },
-          {
-            text: this.$t("TransmitSelected"),
-            fn: async () => await this.transmitSelected()
-          },
-          {
-            text: this.$t("TransmitAll"),
-            fn: () => this.showTransmitDialog = true
-          },
-          // {
-          //   text: this.$t("SelectAll"),
-          //   fn: () => {
-          //     this.switchSelectAll();
-          //   }
-          // },
-          {
-            text: this.$t("Excel"),
-            fn: () => {
-              this.exportExcel();
-            }
-          }
-        ]
-      }
-    });
+    this.initThreeDotMenu();
   }
 };
 </script>

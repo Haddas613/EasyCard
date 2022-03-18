@@ -54,8 +54,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID))
                 .ForMember(m => m.PinpadDeviceID, s => s.MapFrom(src => src.PinPadDeviceID))
                 .ForMember(m => m.OKNumber, s => s.MapFrom(src => src.OKNumber))
-                .ForMember(m => m.BitPaymentInitiationId, s => s.MapFrom(src => src.BitPaymentInitiationId))
-                .ForMember(m => m.BitTransactionSerialId, s => s.MapFrom(src => src.BitTransactionSerialId))
+                .ForMember(m => m.BitPaymentInitiationId, s => s.MapFrom(src => src.BitTransactionDetails.BitPaymentInitiationId))
+                .ForMember(m => m.BitTransactionSerialId, s => s.MapFrom(src => src.BitTransactionDetails.BitTransactionSerialId))
                 .ForMember(m => m.PinPadTransactionID, s => s.Ignore());
 
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>()

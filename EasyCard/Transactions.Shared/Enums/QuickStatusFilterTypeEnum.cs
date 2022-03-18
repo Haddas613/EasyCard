@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions.Enums
+namespace Transactions.Shared.Enums
 {
     public enum QuickStatusFilterTypeEnum : short
     {
@@ -22,5 +22,8 @@ namespace Transactions.Api.Models.Transactions.Enums
 
         [EnumMember(Value = "AwaitingForTransmission")]
         AwaitingForTransmission = 5,
+
+        [EnumMember(Value = "Refund")]
+        Refund = 6,
     }
 }

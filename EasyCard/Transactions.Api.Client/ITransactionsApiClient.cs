@@ -24,6 +24,8 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> CaptureBitTransaction(CaptureBitTransactionRequest model);
 
+        Task<OperationResponse> BitTransactionPostProcessing(Guid? transactionID);
+
         Task<BitTransactionResponse> GetBitTransaction(GetBitTransactionQuery request);
 
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
@@ -57,5 +59,7 @@ namespace Transactions.Api.Client
         Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request);
 
         Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model);
+
+        Task<SummariesAmountResponse<TransactionSummaryAdmin>> GetTransactions(TransactionsFilter filter);
     }
 }
