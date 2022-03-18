@@ -72,6 +72,7 @@
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
+    <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />
     <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
   </ItemGroup>
 

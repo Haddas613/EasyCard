@@ -21,6 +21,8 @@
     <Compile Include="..\Transactions.Api\Models\Checkout\PinPadDevice.cs" Link="Models\PinPadDevice.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TokenInfo.cs" Link="Models\TokenInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Versioning3DsRequest.cs" Link="Models\Versioning3DsRequest.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Versioning3DsResponse.cs" Link="Models\Versioning3DsResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Invoicing\CreateInvoicingConsumerRequest.cs" Link="Models\CreateInvoicingConsumerRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Invoicing\CreateInvoicingConsumerResponse.cs" Link="Models\CreateInvoicingConsumerResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\Enums\PayReqQuickStatusFilterTypeEnum.cs" Link="Models\PayReqQuickStatusFilterTypeEnum.cs" />
@@ -36,8 +38,8 @@
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionResponse.cs" Link="Models\TransactionResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionResponseAdmin.cs" Link="Models\TransactionResponseAdmin.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionsFilter.cs" Link="Models\TransactionsFilter.cs" />
-    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummary.cs" Link="TransactionSummary.cs" />
-    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummaryAdmin.cs" Link="TransactionSummaryAdmin.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummary.cs" Link="Models\TransactionSummary.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummaryAdmin.cs" Link="Models\TransactionSummaryAdmin.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransmitTransactionResponse.cs" Link="Models\TransmitTransactionResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsRequest.cs" Link="Models\CreateTransactionFromBillingDealsRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsResponse.cs" Link="Models\CreateTransactionFromBillingDealsResponse.cs" />

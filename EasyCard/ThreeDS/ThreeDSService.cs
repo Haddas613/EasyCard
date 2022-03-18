@@ -18,16 +18,16 @@ namespace ThreeDS
         private readonly ThreedDSGlobalConfiguration configuration;
         public ThreeDSService(IOptions<ThreedDSGlobalConfiguration> configuration,
             IWebApiClient apiClient,
-            ILogger<ThreeDSService> logger
-          //  IIntegrationRequestLogStorageService integrationRequestLogStorageService
+            ILogger<ThreeDSService> logger,
+            IIntegrationRequestLogStorageService integrationRequestLogStorageService
            )
         {
             this.configuration = configuration.Value;
             this.apiClient = apiClient;
             this.logger = logger;
-          //  this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+            this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
-        public async Task<VersioningRestResponse> Versioning( string cardNumber)
+        public async Task<VersioningRestResponse> Versioning(string cardNumber)
         {
             string requestUrl = null;
             string requestStr = null;
@@ -53,12 +53,12 @@ namespace ThreeDS
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
             AuthenticationRequest requestAuthen = new AuthenticationRequest()
-                {
-                  UserName = configuration.UserName,
-                  Password = configuration.Password,
-                  PspID = configuration.PspID,
-                  Retailer =request.Retailer,
-                   threeDSServerTransID = request.threeDSServerTransID
+            {
+                UserName = configuration.UserName,
+                Password = configuration.Password,
+                PspID = configuration.PspID,
+                Retailer = request.Retailer,
+                threeDSServerTransID = request.threeDSServerTransID
             };
             var response = await apiClient.Post<AuthenticateResponse>(configuration.BaseUrl, "/CreditCartPay/api/authentication", requestAuthen
                   );

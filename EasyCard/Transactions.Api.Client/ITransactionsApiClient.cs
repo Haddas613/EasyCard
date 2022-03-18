@@ -9,6 +9,7 @@ using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Currency;
 using Transactions.Api.Models.External.Bit;
+using Transactions.Api.Models.External.ThreeDS;
 using Transactions.Api.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.Transactions;
@@ -61,5 +62,7 @@ namespace Transactions.Api.Client
         Task<OperationResponse> PauseBillingDeal(Guid billingDealID, PauseBillingDealRequest model);
 
         Task<SummariesAmountResponse<TransactionSummaryAdmin>> GetTransactions(TransactionsFilter filter);
+
+        Task<Versioning3DsResponse> Versioning3Ds(Versioning3DsRequest request);
     }
 }

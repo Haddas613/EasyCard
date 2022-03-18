@@ -54,6 +54,7 @@ namespace Transactions.Api.Models.Checkout
         public ICollection<FeatureEnum> EnabledFeatures { get; set; }
 
         public bool? AllowBit { get; set; }
+
         public bool? EnableThreeDS { get; set; }
     }
 }

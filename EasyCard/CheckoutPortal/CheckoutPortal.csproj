@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Helpers\Attributes\**" />
+    <Compile Remove="Views\3DS\**" />
     <Content Remove="Helpers\Attributes\**" />
+    <Content Remove="Views\3DS\**" />
     <EmbeddedResource Remove="Helpers\Attributes\**" />
+    <EmbeddedResource Remove="Views\3DS\**" />
     <None Remove="Helpers\Attributes\**" />
+    <None Remove="Views\3DS\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,17 +22,11 @@
     <ProjectReference Include="..\MerchantProfileApi.Client\MerchantProfileApi.Client.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
-    <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />
     <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\3DS\" />
     <Folder Include="wwwroot\lib\jquery-payment\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\JavaScript.js" />
   </ItemGroup>
 
   <ItemGroup>

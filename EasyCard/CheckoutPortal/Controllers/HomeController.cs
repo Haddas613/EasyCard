@@ -21,8 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ThreeDS;
-using ThreeDS.Models;
 using Transactions.Api.Client;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.External.Bit;
@@ -41,8 +39,6 @@ namespace CheckoutPortal.Controllers
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly ApiSettings apiSettings;
 
-        private readonly ThreeDSService threeDSService;
-
         public HomeController(
             ILogger<HomeController> logger,
             ITransactionsApiClient transactionsApiClient,
@@ -59,8 +55,6 @@ namespace CheckoutPortal.Controllers
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
             this.apiSettings = apiSettings.Value;
-            this.threeDSService = threeDSService;
-
         }
 
         /// <summary>
@@ -136,17 +130,6 @@ namespace CheckoutPortal.Controllers
 
             return await IndexViewResult(checkoutConfig);
         }
-
-        // TODO: preffered language parameter
-        // TODO: issueInvoice flag
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Init3DS(ChargeViewModel request)
-        {
-            request.VersioningResponse = JsonConvert.DeserializeObject<VersioningResponse>(TempData["VersioningResponse"].ToString());
-            return View(request);
-           // return RedirectToAction(nameof(Charge), request);
-        }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery] CardRequest request)
@@ -834,6 +817,18 @@ namespace CheckoutPortal.Controllers
                     return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = request.PaymentTransactionID }));
                 }
             }
+        }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Versioning3Ds(ChargeViewModel request)
+        {
+            var validationResponse = await transactionsApiClient.Versioning3Ds(new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest { }
+            );
+
+            return Json(validationResponse);
         }
 
         [HttpGet]

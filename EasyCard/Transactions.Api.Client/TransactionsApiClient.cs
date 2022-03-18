@@ -21,6 +21,7 @@ using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.External.Bit;
 using Bit.Models;
 using Transactions.Api.Models.Invoicing;
+using Transactions.Api.Models.External.ThreeDS;
 
 namespace Transactions.Api.Client
 {
@@ -400,6 +401,18 @@ namespace Transactions.Api.Client
             var res = await webApiClient.Post<CreateInvoicingConsumerResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoicing/createConsumer", consumerRequest, BuildHeaders);
 
             return res;
+        }
+
+        public async Task<Versioning3DsResponse> Versioning3Ds(Versioning3DsRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<Versioning3DsResponse>(apiConfiguration.TransactionsApiAddress, $"api/external/3ds/versioning", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+            }
         }
     }
 }

@@ -27,8 +27,6 @@ using SharedApi = Shared.Api;
 using CheckoutPortal.Services;
 using CheckoutPortal.Models;
 using Ecwid.Configuration;
-using ThreeDS;
-using ThreeDS.Configuration;
 using BasicServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
@@ -90,7 +88,7 @@ namespace CheckoutPortal
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API")); 
             services.Configure<EcwidGlobalSettings>(Configuration.GetSection("EcwidGlobalSettings"));
-            services.Configure<ThreedDSGlobalConfiguration>(Configuration.GetSection("ThreedDSGlobalConfiguration"));
+
             services.AddHttpContextAccessor();
 
             services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
@@ -139,47 +137,6 @@ namespace CheckoutPortal
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
                 return new TerminalApiKeyTokenServiceFactory(cfg);
-            });
-
-            // Bit integration
-
-            X509Certificate2 threesDSCertificate = null;
-
-            services.Configure<ThreedDSGlobalConfiguration>(Configuration.GetSection("ThreedDSGlobalConfiguration"));
-            var threedDSGlobalConfig = Configuration.GetSection("ThreedDSGlobalConfiguration").Get<ThreedDSGlobalConfiguration>();
-
-            try
-            {
-                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
-                {
-                    certStore.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection certCollection = certStore.Certificates.Find(
-                        X509FindType.FindByThumbprint,
-                        threedDSGlobalConfig.CertificateThumbprint,
-                        false);
-                    if (certCollection.Count > 0)
-                    {
-                        threesDSCertificate = certCollection[0];
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Cannot load ThreeDS certificate {threedDSGlobalConfig.CertificateThumbprint}: {ex.Message}");
-            }
-
-            services.AddSingleton<ThreeDSService, ThreeDSService>(serviceProvider =>
-            {
-                //var threedsCfg = services.Configure<ThreedDSGlobalConfiguration>(Configuration.GetSection("ThreedDSGlobalConfiguration")); //serviceProvider.GetRequiredService<ThreedDSGlobalConfiguration>();
-                var threedsCfg = serviceProvider.GetRequiredService<IOptions<ThreedDSGlobalConfiguration>>();
-                var webApiClient = new WebApiClient(threesDSCertificate);
-                var logger = serviceProvider.GetRequiredService<ILogger<ThreeDSService>>();
-                // var storageService = new IntegrationRequestLogStorageService(threedsCfg.DefaultStorageConnectionString, cfg.ShvaRequestsLogStorageTable, cfg.ShvaRequestsLogStorageTable);
-
-                /*serviceProvider.GetRequiredService<IOptions<Shva.ShvaGlobalSettings>>();
-                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
-                 */
-                return new ThreeDSService(threedsCfg, webApiClient, logger/*, storageService*/);
             });
 
             services.Configure<RequestLocalizationOptions>(options =>
