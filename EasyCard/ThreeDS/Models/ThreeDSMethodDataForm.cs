@@ -6,6 +6,6 @@ namespace ThreeDS.Models
 {
     public class ThreeDSMethodDataForm
     {
-        public string threeDSMethodData { get; set; }
+        public string ThreeDSMethodData { get; set; }
     }
 }

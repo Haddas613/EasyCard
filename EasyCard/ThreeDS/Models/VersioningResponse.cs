@@ -9,20 +9,24 @@ namespace ThreeDS.Models
         /// <summary>
         /// like UID in proper SHVA transaction
         /// </summary>
-        public string threeDSServerTransID { get; set; }
-        public string acsStartProtocolVersion { get; set; }
-        public string acsEndProtocolVersion { get; set; }
+        public string ThreeDSServerTransID { get; set; }
 
-        public string dsStartProtocolVersion { get; set; }
+        public string AcsStartProtocolVersion { get; set; }
 
-        public string dsEndProtocolVersion { get; set; }
+        public string AcsEndProtocolVersion { get; set; }
 
-        public string highestCommonSupportedProtocolVersion { get; set; }
+        public string DsStartProtocolVersion { get; set; }
 
-        public string acsInfoInd { get; set; }
+        public string DsEndProtocolVersion { get; set; }
 
-        public string threeDSMethodURL { get; set; }
-        public ThreeDSMethodDataForm threeDSMethodDataForm { get; set; }
-        public ThreeDSMethodData threeDSMethodData { get; set; }
+        public string HighestCommonSupportedProtocolVersion { get; set; }
+
+        public string AcsInfoInd { get; set; }
+
+        public string ThreeDSMethodURL { get; set; }
+
+        public ThreeDSMethodDataForm ThreeDSMethodDataForm { get; set; }
+
+        public ThreeDSMethodData ThreeDSMethodData { get; set; }
     }
 }

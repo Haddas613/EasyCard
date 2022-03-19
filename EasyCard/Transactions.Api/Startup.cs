@@ -720,36 +720,12 @@ namespace Transactions.Api
             });
 
             // 3DS integration
-
-            X509Certificate2 threesDSCertificate = null;
-
             services.Configure<ThreedDSGlobalConfiguration>(Configuration.GetSection("ThreedDSGlobalConfiguration"));
-            var threedDSGlobalConfig = Configuration.GetSection("ThreedDSGlobalConfiguration").Get<ThreedDSGlobalConfiguration>();
-
-            try
-            {
-                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
-                {
-                    certStore.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection certCollection = certStore.Certificates.Find(
-                        X509FindType.FindByThumbprint,
-                        threedDSGlobalConfig.CertificateThumbprint,
-                        false);
-                    if (certCollection.Count > 0)
-                    {
-                        threesDSCertificate = certCollection[0];
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Cannot load ThreeDS certificate {threedDSGlobalConfig.CertificateThumbprint}: {ex.Message}");
-            }
 
             services.AddSingleton<ThreeDSService, ThreeDSService>(serviceProvider =>
             {
                 var threedsCfg = serviceProvider.GetRequiredService<IOptions<ThreedDSGlobalConfiguration>>();
-                var webApiClient = new WebApiClient(threesDSCertificate);
+                var webApiClient = new WebApiClient(shvaCertificate);
                 var logger = serviceProvider.GetRequiredService<ILogger<ThreeDSService>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, "threeds", "threeds");

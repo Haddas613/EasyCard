@@ -7,6 +7,6 @@ namespace ThreeDS.Models
    public class AuthenticateReqModel
     {
         public string Retailer { get; set; }
-        public string threeDSServerTransID { get; set; }
+        public string ThreeDSServerTransID { get; set; }
     }
 }

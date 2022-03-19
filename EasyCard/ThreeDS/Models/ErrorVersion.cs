@@ -6,9 +6,12 @@ namespace ThreeDS.Models
 {
 	public class ErrorVersion
 	{
-		public string threeDSServerTransID { get; set; }
-		public string errorCode { get; set; }
-		public string errorComponent { get; set; }
-		public string errorDescription { get; set; }
+		public string ThreeDSServerTransID { get; set; }
+
+		public string ErrorCode { get; set; }
+
+		public string ErrorComponent { get; set; }
+
+		public string ErrorDescription { get; set; }
 	}
 }

@@ -6,7 +6,8 @@ namespace ThreeDS.Models
 {
     public class ThreeDSMethodData
     {
-        public string threeDSMethodNotificationURL { get; set; }
-        public string threeDSServerTransID { get; set; }
+        public string ThreeDSMethodNotificationURL { get; set; }
+
+        public string ThreeDSServerTransID { get; set; }
     }
 }

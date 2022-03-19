@@ -12,7 +12,7 @@ namespace ThreeDS.Models
 		public string Password { get; set; }
 		public string MerchantUrl { get; set; }
 		public string notificationURL { get; set; }
-		public string threeDSServerTransID { get; set; }
+		public string ThreeDSServerTransID { get; set; }
 		public string acctType { get; set; }// try just with parameters until here leave all the rest empty
 
 		public string acctInfo_chAccAgeInd { get; set; }
@@ -36,7 +36,7 @@ namespace ThreeDS.Models
 		public string acctInfo_paymentAccInd { get; set; }
 		public string acctInfo_paymentAccAge { get; set; }
 
-		public string acctNumber { get; set; }
+		public string acctNumber { get; set; } // required (card number)
 		public string cardExpiryDateYear { get; set; }
 
 		public string cardExpiryDateMonth { get; set; }
