@@ -813,6 +813,7 @@ namespace CheckoutPortal.Controllers
             var authResponse = await transactionsApiClient.Authenticate3Ds(
                 new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
                 {
+                    Currency = request.Currency,
                     CardNumber = request.CardNumber,
                     TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
                     ThreeDSServerTransID = request.ThreeDSServerTransID

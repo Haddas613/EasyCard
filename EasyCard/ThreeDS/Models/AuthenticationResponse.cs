@@ -19,6 +19,23 @@ namespace ThreeDS.Models
         public string MessageVersion { get; set; }
         public string TransStatus { get; set; }
         public string TransStatusReason { get; set; }
-        public string BroadInfo { get; set; }
+
+        public TransStatusEnum TransStatusEnum
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(TransStatus))
+                {
+                    return TransStatusEnum.N;
+                }
+
+                if (Enum.TryParse<TransStatusEnum>(TransStatus, true, out var res))
+                {
+                    return res;
+                }
+
+                return TransStatusEnum.N;
+            }
+        }
     }
 }

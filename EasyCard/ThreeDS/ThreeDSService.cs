@@ -102,7 +102,7 @@ namespace ThreeDS
                 AcquirerMerchantId = "1",
                 Brand = "2",
                 MessageType = "ARes",
-                PurchaseCurrency = "376",
+                PurchaseCurrency = CurrencyHelper.GetCurrencyISONumber(model.Currency).ToString(),
                 PurchaseDate = DateTime.Today.ToString("yyyyMMddHHmmss"),
                 Merchant_mcc = "1234",
                 MerchantName = "Test",

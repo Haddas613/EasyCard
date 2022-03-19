@@ -102,16 +102,17 @@ namespace Transactions.Api.Controllers.External
             {
                 MerchantNumber = settings.MerchantNumber,
                 ThreeDSServerTransID = request.ThreeDSServerTransID,
-                CardNumber = request.CardNumber
+                CardNumber = request.CardNumber,
+                Currency = request.Currency
             };
 
             var res = await threeDSService.Authentication(model, GetCorrelationID());
 
-            if (res.ErrorDetails != null)
+            if (res.ErrorDetails != null || res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.N)
             {
                 return new Authenticate3DsResponse
                 {
-                    ErrorMessage = res.ErrorDetails.ErrorDescription,
+                    ErrorMessage = res.ErrorDetails.ErrorDescription ?? "rejected",
                     ErrorDetail = res.ErrorDetails.ErrorDetail
                 };
             }
@@ -119,9 +120,10 @@ namespace Transactions.Api.Controllers.External
             {
                 return new Authenticate3DsResponse
                 {
-                     AcsURL = res.ResponseData.AcsURL,
+                     ChalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C,
+                     AcsURL = res.ResponseData?.AuthenticationResponse?.AcsURL,
                      Base64EncodedChallengeRequest = res.Base64EncodedChallengeRequest,
-                     ThreeDSServerTransID = res.ResponseData.ThreeDSServerTransID
+                     ThreeDSServerTransID = res.ResponseData?.ThreeDSServerTransID
                 };
             }
         }

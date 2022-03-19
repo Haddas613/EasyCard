@@ -388,14 +388,16 @@
                         }
                     }
 
-                    $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
+                    if (data.chalengeRequired) {
+                        $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
 
-                    let container = document.getElementById('threeDSMethodIFrameContainer');
+                        let container = document.getElementById('threeDSMethodIFrameContainer');
 
-                    nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSMethodIframe', container,
-                        console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
-
-
+                        nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSMethodIframe', container,
+                            console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
+                    } else {
+                        return $("#checkout-form").submit();
+                    }
                 });
             }
 

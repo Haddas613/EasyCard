@@ -16,5 +16,7 @@ namespace Transactions.Api.Models.External.ThreeDS
         public string Base64EncodedChallengeRequest { get; set; }
 
         public string ThreeDSServerTransID { get; set; }
+
+        public bool ChalengeRequired { get; set; }
     }
 }

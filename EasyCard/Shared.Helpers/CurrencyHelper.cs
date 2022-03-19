@@ -17,5 +17,10 @@ namespace Shared.Helpers
                 _ => string.Empty,
             };
         }
+
+        public static int? GetCurrencyISONumber(CurrencyEnum currency)
+        {
+            return CurrencyDto.GetCurrencyISONumber(currency);
+        }
     }
 }

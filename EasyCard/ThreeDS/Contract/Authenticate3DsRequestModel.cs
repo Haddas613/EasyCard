@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,5 +12,7 @@ namespace ThreeDS.Contract
         public string ThreeDSServerTransID { get; set; }
 
         public string CardNumber { get; set; }
+
+        public CurrencyEnum Currency { get; set; }
     }
 }

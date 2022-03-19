@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace Transactions.Api.Models.External.ThreeDS
 
         [JsonConverter(typeof(TrimmingJsonConverter), true, true)]
         public string CardNumber { get; set; }
+
+        public CurrencyEnum Currency { get; set; }
     }
 }
