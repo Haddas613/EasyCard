@@ -1,8 +1,6 @@
 ﻿@using Shared.Helpers
-@inject CommonLocalizationService localizer
-
 @{
-    ViewData["Title"] = localizer.Get("RegistrationRequestReceived");
+    ViewData["Title"] = "Registration Success";
 }
 
 
@@ -11,11 +9,11 @@
         <div class="panel panel-default">
 
             <div class="panel-heading">
-                <h3 class="panel-title">@localizer.Get("RegistrationRequestReceived")</h3>
+                <h3 class="panel-title">Registration has been completed successfully</h3>
             </div>
 
             <div class="panel-body">
-                @localizer.Get("RegistrationSuccessMessage")
+                Follow this <a asp-controller="Account" asp-action="Login">link</a> to login in EasyCard;
             </div>
         </div>
     </div>

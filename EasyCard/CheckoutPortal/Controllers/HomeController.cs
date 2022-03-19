@@ -589,16 +589,6 @@ namespace CheckoutPortal.Controllers
                     ApiKey = request.ApiKey,
                     PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID.ToString(),
                 });
-
-                //return RedirectToAction(nameof(BitPayment), new BitPaymentViewModel {
-                //    PaymentInitiationId = bitResult.BitPaymentInitiationId,
-                //    TransactionSerialId = bitResult.BitTransactionSerialId,
-                //    RedirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl,
-                //    PaymentTransactionID = result.EntityUID.Value,
-                //    PaymentIntent = checkoutConfig.PaymentIntentID,
-                //    ApiKey = request.ApiKey,
-                //    PaymentRequest = checkoutConfig.PaymentRequest?.PaymentRequestID,
-                //});
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest?.RedirectUrl;
@@ -693,48 +683,6 @@ namespace CheckoutPortal.Controllers
 
                 return Redirect(redirectUrl);
             }
-        }
-
-        [HttpGet]
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [Route("bit")]
-        [Obsolete("No longer in use. To be removed")]
-        public async Task<IActionResult> BitPayment([FromQuery] BitPaymentViewModel request)
-        {
-            var bitTransaction = await transactionsApiClient.GetBitTransaction(new GetBitTransactionQuery
-            {
-                PaymentInitiationId = request.PaymentInitiationId,
-                TransactionSerialId = request.TransactionSerialId,
-                PaymentTransactionID = request.PaymentTransactionID,
-            });
-
-            //string maScheme = $"%26return_scheme%3Dhttps%253A%252F%252Fecng-checkout.azurewebsites.net%252Fbit-completed";
-
-            var bitCompletedUrl = HttpUtility.UrlEncode($"{apiSettings.CheckoutPortalUrl}/bit-completed" +
-                $"?PaymentInitiationId={request.PaymentInitiationId}&TransactionSerialId={request.TransactionSerialId}" +
-                $"&PaymentIntent={request.PaymentIntent}&PaymentRequest={request.PaymentRequest}&ApiKey={request.ApiKey}" +
-                $"&PaymentTransactionID={request.PaymentTransactionID}&RedirectUrl={request.RedirectUrl}");
-
-            //URL needs to be double encoded
-            var scheme = HttpUtility.UrlEncode($"&return_scheme={bitCompletedUrl}");
-
-            request.ApplicationSchemeIos = bitTransaction.ApplicationSchemeIos + scheme;
-            request.ApplicationSchemeAndroid = bitTransaction.ApplicationSchemeAndroid + scheme;
-            request.IsMobile = DeviceDetectUtilities.IsMobileBrowser(Request);
-
-            if (DeviceDetectUtilities.IsMobileBrowser(Request))
-            {
-                if (Request.IsIOS())
-                {
-                    return Redirect(request.ApplicationSchemeIos);
-                }
-                else if (Request.IsAndroid())
-                {
-                    return Redirect(request.ApplicationSchemeAndroid);
-                }
-            }
-
-            return View(request);
         }
 
         [HttpGet]

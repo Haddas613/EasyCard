@@ -21,12 +21,13 @@ namespace IdentityServer.Mappings
 
         private void RegisterMerchantMappings()
         {
-            CreateMap<RegisterViewModel, Merchants.Api.Client.Models.MerchantRequest>()
-                .ForMember(d => d.BusinessID, o => o.MapFrom(src => src.BusinessID))
-                .ForMember(d => d.BusinessName, o => o.MapFrom(src => src.BusinessName))
-                .ForMember(d => d.MarketingName, o => o.MapFrom(src => src.MarketingName))
-                .ForMember(d => d.ContactPerson, o => o.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
-                .ForMember(d => d.PhoneNumber, o => o.MapFrom(src => src.PhoneNumber));
+            //TODO: obsolete
+            //CreateMap<RegisterViewModel, Merchants.Api.Client.Models.MerchantRequest>()
+            //    .ForMember(d => d.BusinessID, o => o.MapFrom(src => src.BusinessID))
+            //    .ForMember(d => d.BusinessName, o => o.MapFrom(src => src.BusinessName))
+            //    .ForMember(d => d.MarketingName, o => o.MapFrom(src => src.MarketingName))
+            //    .ForMember(d => d.ContactPerson, o => o.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
+            //    .ForMember(d => d.PhoneNumber, o => o.MapFrom(src => src.PhoneNumber));
         }
 
         private void RegisterUserMappings()
