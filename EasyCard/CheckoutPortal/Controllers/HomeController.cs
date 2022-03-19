@@ -773,11 +773,64 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Versioning3Ds(ChargeViewModel request)
         {
-            var validationResponse = await transactionsApiClient.Versioning3Ds(new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest { }
+            var validationResponse = await transactionsApiClient.Versioning3Ds(
+                new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest
+                {
+                    CardNumber = request.CardNumber
+                }
             );
 
             return Json(validationResponse);
         }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Authenticate3Ds(ChargeViewModel request)
+        {
+            CheckoutData checkoutConfig;
+            bool isPaymentIntent = request.PaymentIntent != null;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            if (checkoutConfig == null)
+            {
+                throw new BusinessException(Messages.InvalidCheckoutData);
+            }
+
+            var authResponse = await transactionsApiClient.Authenticate3Ds(
+                new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
+                {
+                    CardNumber = request.CardNumber,
+                    TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
+                    ThreeDSServerTransID = request.ThreeDSServerTransID
+                }
+            );
+
+            return Json(authResponse);
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Notification3Ds(Models.ThreeDS.Notification request)
+        {
+            return Ok();
+        }
+
+        
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

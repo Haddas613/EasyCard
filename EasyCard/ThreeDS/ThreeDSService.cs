@@ -7,6 +7,7 @@ using Shared.Integration.Exceptions;
 using System;
 using System.Threading.Tasks;
 using ThreeDS.Configuration;
+using ThreeDS.Contract;
 using ThreeDS.Models;
 
 namespace ThreeDS
@@ -41,7 +42,8 @@ namespace ThreeDS
                 CardNumber = cardNumber,
                 UserName = configuration.UserName,
                 Password = configuration.Password,
-                PspID = configuration.PspID
+                PspID = configuration.PspID,
+                NotificationURL = "https://localhost:44396/Home/Notification3Ds"
             };
 
             try
@@ -78,20 +80,73 @@ namespace ThreeDS
             }
         }
 
-        public async Task<AuthenticationResponseEnvelop> Authentication(AuthenticateReqModel request)
+        public async Task<AuthenticationResponseEnvelop> Authentication(Authenticate3DsRequestModel model, string correlationID)
         {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-            AuthenticationRequest requestAuthen = new AuthenticationRequest()
+
+            AuthenticationRequest request = new AuthenticationRequest()
             {
                 UserName = configuration.UserName,
                 Password = configuration.Password,
                 PspID = configuration.PspID,
-                Retailer = request.Retailer,
-                ThreeDSServerTransID = request.ThreeDSServerTransID
+                Retailer = model.MerchantNumber,
+                ThreeDSServerTransID = model.ThreeDSServerTransID,
+                AcctNumber = model.CardNumber,
+                NotificationURL = "https://localhost:44396/Home/Notification3Ds",
+                AcctType = "02",
+                AcquirerBin = "2",
+                AcquirerMerchantId = "1",
+                Brand = "2",
+                MessageType = "ARes",
+                PurchaseCurrency = "376",
+                PurchaseDate = DateTime.Today.ToString("yyyyMMddHHmmss"),
+                Merchant_mcc = "1234",
+                MerchantName = "Test",
+                BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
+                BrowserLanguage = "en",
+                BrowserColorDepth = "8", 
+                BrowserScreenHeight = "1050", 
+                BrowserScreenWidth = "1680", 
+                BrowserTZ = "1200", 
+                BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;"
             };
-            var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "/CreditCartPay/api/authentication", requestAuthen
-                  );
-            return response;
+
+            try
+            {
+                var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "/CreditCartPay/api/authentication", request, null,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"3DSecure integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("3DSecure integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, integrationMessageId, correlationID);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
+            }
         }
     }
 }

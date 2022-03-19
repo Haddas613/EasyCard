@@ -64,5 +64,9 @@ namespace Transactions.Api.Client
         Task<SummariesAmountResponse<TransactionSummaryAdmin>> GetTransactions(TransactionsFilter filter);
 
         Task<Versioning3DsResponse> Versioning3Ds(Versioning3DsRequest request);
+
+        Task<Authenticate3DsResponse> Authenticate3Ds(Authenticate3DsRequest request);
+
+        
     }
 }

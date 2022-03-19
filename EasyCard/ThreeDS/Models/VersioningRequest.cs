@@ -10,5 +10,6 @@ namespace ThreeDS.Models
         public string Password { get; set; }
         public string PspID { get; set; }
         public string CardNumber { get; set; }
+        public string NotificationURL { get; set; }
     }
 }

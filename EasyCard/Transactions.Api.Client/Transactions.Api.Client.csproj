@@ -21,6 +21,8 @@
     <Compile Include="..\Transactions.Api\Models\Checkout\PinPadDevice.cs" Link="Models\PinPadDevice.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TokenInfo.cs" Link="Models\TokenInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Authenticate3DsRequest.cs" Link="Models\Authenticate3DsRequest.cs" />
+    <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Authenticate3DsResponse.cs" Link="Models\Authenticate3DsResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Versioning3DsRequest.cs" Link="Models\Versioning3DsRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\External\ThreeDS\Versioning3DsResponse.cs" Link="Models\Versioning3DsResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Invoicing\CreateInvoicingConsumerRequest.cs" Link="Models\CreateInvoicingConsumerRequest.cs" />

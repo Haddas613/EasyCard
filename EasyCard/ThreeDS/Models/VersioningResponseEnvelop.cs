@@ -6,7 +6,7 @@ namespace ThreeDS.Models
 {
     public class VersioningResponseEnvelop
     {
-        public ErrorVersion ErrorDetails { get; set; }
+        public VersioningErrorDetails ErrorDetails { get; set; }
 
         public VersioningResponse VersioningResponse { get; set; }
     }

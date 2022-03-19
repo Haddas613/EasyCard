@@ -571,6 +571,11 @@
             End-customer Email
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings.ContinueInCaseOf3DSecureError">
+            <summary>
+            If 3DSecure raises error - continue flow without 3ds
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.External.Bit.GetBitTransactionQuery.PaymentTransactionID">
             <summary>
             ECNG transaction id

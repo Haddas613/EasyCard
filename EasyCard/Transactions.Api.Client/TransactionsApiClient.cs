@@ -414,5 +414,17 @@ namespace Transactions.Api.Client
                 throw;
             }
         }
+
+        public async Task<Authenticate3DsResponse> Authenticate3Ds(Authenticate3DsRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<Authenticate3DsResponse>(apiConfiguration.TransactionsApiAddress, $"api/external/3ds/authenticate", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -56,5 +56,10 @@ namespace Transactions.Api.Models.Checkout
         public bool? AllowBit { get; set; }
 
         public bool? EnableThreeDS { get; set; }
+
+        /// <summary>
+        /// If 3DSecure raises error - continue flow without 3ds
+        /// </summary>
+        public bool? ContinueInCaseOf3DSecureError { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ThreeDS.Models
 {
+	[JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
 	public class AuthenticationRequest
 	{
 		public string Retailer { get; set; }//shva client code
@@ -11,9 +13,20 @@ namespace ThreeDS.Models
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		public string MerchantUrl { get; set; }
-		public string notificationURL { get; set; }
+		public string NotificationURL { get; set; }
 		public string ThreeDSServerTransID { get; set; }
-		public string acctType { get; set; }// try just with parameters until here leave all the rest empty
+		public string AcctNumber { get; set; } // required (card number)
+		public string MessageType { get; set; }
+
+		public string cardExpiryDateYear { get; set; }
+
+		public string cardExpiryDateMonth { get; set; }
+
+		public string AcctType { get; set; }// try just with parameters until here leave all the rest empty
+
+		public string AcquirerBin { get; set; }
+		public string AcquirerMerchantId { get; set; }
+		public string Brand { get; set; }
 
 		public string acctInfo_chAccAgeInd { get; set; }
 
@@ -36,10 +49,7 @@ namespace ThreeDS.Models
 		public string acctInfo_paymentAccInd { get; set; }
 		public string acctInfo_paymentAccAge { get; set; }
 
-		public string acctNumber { get; set; } // required (card number)
-		public string cardExpiryDateYear { get; set; }
 
-		public string cardExpiryDateMonth { get; set; }
 		public string schemeId { get; set; }
 		public string payTokenInd { get; set; }
 		/// <summary>
@@ -79,29 +89,40 @@ namespace ThreeDS.Models
 		public string merchantRiskIndicator_giftCardCurr { get; set; }
 		public string merchantRiskIndicator_giftCardCount { get; set; }
 		public string purchaseAmount { get; set; }
-		public string purchaseCurrency { get; set; }
+
+		public string PurchaseCurrency { get; set; }
+
 		public string purchaseExponent { get; set; }
-		public string purchaseDate { get; set; }
+
+		public string PurchaseDate { get; set; }
+
 		public string recurringExpiry { get; set; }
 		public string recurringFrequency { get; set; }
 		public string transType { get; set; }
-		public string merchant_mcc { get; set; }
+
+		public string Merchant_mcc { get; set; }
+
 		public string merchantCountryCode { get; set; }
-		public string merchantName { get; set; }
+
+		public string MerchantName { get; set; }
+
 		public string threeDSRequestorId { get; set; }
 		public string threeDSRequestorName { get; set; }
-		public string browserAcceptHeader { get; set; }
+
+		public string BrowserAcceptHeader { get; set; }
+
 		public string browserIP { get; set; }
 		public bool browserJavaEnabled { get; set; }
-		public string browserLanguage { get; set; }
-		public string browserColorDepth { get; set; }
-		public string browserScreenHeight { get; set; }
-		public string browserScreenWidth { get; set; }
-		public string browserTZ { get; set; }
-		public string acquirerBin { get; set; }
-		public string acquirerMerchantId { get; set; }
-		public string brand { get;set;}
-		public string browserUserAgent { get; set; }
+
+		public string BrowserLanguage { get; set; }
+
+		public string BrowserColorDepth { get; set; }
+		public string BrowserScreenHeight { get; set; }
+		public string BrowserScreenWidth { get; set; }
+
+		public string BrowserTZ { get; set; }
+
+		public string BrowserUserAgent { get; set; }
 		public string challengeWindowSize { get; set; }
 	}
 }

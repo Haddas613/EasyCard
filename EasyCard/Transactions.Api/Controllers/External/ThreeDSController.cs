@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api;
 using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace Transactions.Api.Controllers.External
     [Consumes("application/json")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class ThreeDSController : Controller
+    public class ThreeDSController : ApiControllerBase
     {
         private readonly ThreeDSService threeDSService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
@@ -29,6 +31,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ILogger logger;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ApiSettings apiSettings;
+        private readonly IExternalSystemsService externalSystemsService;
 
         public ThreeDSController(
              ThreeDSService threeDSService,
@@ -36,7 +39,8 @@ namespace Transactions.Api.Controllers.External
              ILogger<ThreeDSController> logger,
              IHttpContextAccessorWrapper httpContextAccessor,
              ISystemSettingsService systemSettingsService,
-             IOptions<ApiSettings> apiSettings)
+             IOptions<ApiSettings> apiSettings,
+             IExternalSystemsService externalSystemsService)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.threeDSService = threeDSService;
@@ -44,6 +48,7 @@ namespace Transactions.Api.Controllers.External
             this.logger = logger;
             this.systemSettingsService = systemSettingsService;
             this.apiSettings = apiSettings.Value;
+            this.externalSystemsService = externalSystemsService;
         }
 
         [HttpPost]
@@ -51,7 +56,74 @@ namespace Transactions.Api.Controllers.External
         [Route("versioning")]
         public async Task<ActionResult<Versioning3DsResponse>> Versioning([FromBody] Versioning3DsRequest model)
         {
-            throw new NotImplementedException(); 
+            var res = await threeDSService.Versioning(model.CardNumber, GetCorrelationID());
+
+            if (res.ErrorDetails != null)
+            {
+                return new Versioning3DsResponse
+                {
+                    ErrorMessage = res.ErrorDetails.ErrorDescription
+                };
+            }
+            else
+            {
+                return new Versioning3DsResponse
+                {
+                    ThreeDSMethodUrl = res.VersioningResponse.ThreeDSMethodURL,
+                    ThreeDSMethodData = res.VersioningResponse.ThreeDSMethodDataForm.ThreeDSMethodData,
+                    ThreeDSServerTransID = res.VersioningResponse.ThreeDSServerTransID
+                };
+            }
+        }
+
+        [HttpPost]
+        [ValidateModelState]
+        [Route("authenticate")]
+        public async Task<ActionResult<Authenticate3DsResponse>> Authenticate([FromBody] Authenticate3DsRequest request)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+
+            var shvaIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
+
+            if (shvaIntegration == null)
+            {
+                return BadRequest("Shva is not connected to this terminal");
+            }
+
+            var settings = shvaIntegration.Settings.ToObject(typeof(Shva.ShvaTerminalSettings)) as Shva.ShvaTerminalSettings;
+
+            if (settings == null)
+            {
+                throw new ApplicationException($"Could not get Shva settings");
+            }
+
+            var model = new ThreeDS.Contract.Authenticate3DsRequestModel
+            {
+                MerchantNumber = settings.MerchantNumber,
+                ThreeDSServerTransID = request.ThreeDSServerTransID,
+                CardNumber = request.CardNumber
+            };
+
+            var res = await threeDSService.Authentication(model, GetCorrelationID());
+
+            if (res.ErrorDetails != null)
+            {
+                return new Authenticate3DsResponse
+                {
+                    ErrorMessage = res.ErrorDetails.ErrorDescription,
+                    ErrorDetail = res.ErrorDetails.ErrorDetail
+                };
+            }
+            else
+            {
+                return new Authenticate3DsResponse
+                {
+                     AcsURL = res.ResponseData.AcsURL,
+                     Base64EncodedChallengeRequest = res.Base64EncodedChallengeRequest,
+                     ThreeDSServerTransID = res.ResponseData.ThreeDSServerTransID
+                };
+            }
         }
     }
 }

@@ -172,18 +172,18 @@ namespace CheckoutPortal
             //app.UseXfo(options => options.SameOrigin());
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
-            app.UseCsp(options => options
-                .DefaultSources(s => s.Self()
-                    .CustomSources("data:", "https:", "wss:"))
-                .StyleSources(s => s.Self()
-                    .CustomSources("ecngpublic.blob.core.windows.net")
-                )
-                .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il", "d35z3p2poghz10.cloudfront.net")
-                )
-                //.FrameAncestors(s => s.Self())
-                //.FormActions(s => s.Self())
-            );
+            //app.UseCsp(options => options
+            //    .DefaultSources(s => s.Self()
+            //        .CustomSources("data:", "https:", "wss:"))
+            //    .StyleSources(s => s.Self()
+            //        .CustomSources("ecngpublic.blob.core.windows.net")
+            //    )
+            //    .ScriptSources(s => s.Self()
+            //        .CustomSources("az416426.vo.msecnd.net", "public.bankhapoalim.co.il", "d35z3p2poghz10.cloudfront.net")
+            //    )
+            //    //.FrameAncestors(s => s.Self())
+            //    //.FormActions(s => s.Self())
+            //);
 
             app.UseHttpsRedirection();
 

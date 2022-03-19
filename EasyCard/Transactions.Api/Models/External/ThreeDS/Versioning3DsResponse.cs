@@ -7,5 +7,12 @@ namespace Transactions.Api.Models.External.ThreeDS
 {
     public class Versioning3DsResponse
     {
+        public string ThreeDSMethodUrl { get; set; }
+
+        public string ThreeDSMethodData { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+        public string ThreeDSServerTransID { get; set; }
     }
 }

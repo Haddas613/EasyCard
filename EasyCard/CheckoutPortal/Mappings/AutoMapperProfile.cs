@@ -66,6 +66,8 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TransactionTypes, o => o.MapFrom(src => src.TransactionTypes))
                 .ForMember(d => d.PinPadDevices, o => o.MapFrom(src => src.PinPadDevices))
                 .ForMember(d => d.EnabledFeatures, o => o.MapFrom(src => src.EnabledFeatures))
+                .ForMember(d => d.EnableThreeDS, o => o.MapFrom(src => src.EnableThreeDS))
+                .ForMember(d => d.ContinueInCaseOf3DSecureError, o => o.MapFrom(src => src.ContinueInCaseOf3DSecureError))
                 .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => !d.IsRefund && (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
                 .ForAllOtherMembers(d => d.Ignore());
 
