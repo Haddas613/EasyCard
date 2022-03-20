@@ -10,6 +10,7 @@
         <div v-if="model">
           <transaction-printout ref="printout" :transaction="model"></transaction-printout>
           <transaction-slip-dialog ref="slipDialog" :transaction="model" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+          <bit-refund-dialog ref="bitRefundDialog" :transaction="model" :show.sync="bitRefundDialog" @refund="onBitRefundCompleted($event)"></bit-refund-dialog>
           <v-card flat class="mb-2">
             <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
             <v-divider></v-divider>
@@ -233,6 +234,8 @@ export default {
       import("../../components/integration-logs/IntegrationLogsList"),
     BankPaymentDetails: () =>
       import("../../components/details/BankPaymentDetails"),
+    BitRefundDialog: () =>
+      import("../../components/transactions/BitRefundDialog"),
   },
   data() {
     return {
@@ -246,6 +249,7 @@ export default {
       },
       tab: "info",
       transactionSlipDialog: false,
+      bitRefundDialog: false,
       dictionaries: null,
       appConstants: appConstants
     };
@@ -342,12 +346,23 @@ export default {
         });
       }
 
+      if(this.canPerformBitRefund){
+        threeDotMenu.push({
+          text: this.$t("Refund"),
+          fn: () => this.bitRefundDialog = true,
+        });
+      }
+
       this.$store.commit("ui/changeHeader", {
         value: {
           threeDotMenu: threeDotMenu
         }
       });
-    }
+    },
+    async onBitRefundCompleted(refundedAmount){
+      this.$set(this.model, 'totalRefund', refundedAmount);
+      await this.initThreeDotMenu();
+    },
   },
   computed: {
     isInstallmentTransaction() {
@@ -355,7 +370,13 @@ export default {
         this.model.$transactionType === "installments" ||
         this.model.$transactionType === "credit"
       );
-    }
+    },
+    canPerformBitRefund() {
+      return (
+        (this.model.status === "completed" || this.model.status === "refund")
+        && this.model.$documentOrigin === "bit" && (this.model.totalRefund || 0) < this.model.transactionAmount
+      );
+    },
   }
 };
 </script>

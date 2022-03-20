@@ -65,6 +65,6 @@ export default {
     getData() {
       return { ...this.model };
     }
-  }
+  },
 };
 </script>

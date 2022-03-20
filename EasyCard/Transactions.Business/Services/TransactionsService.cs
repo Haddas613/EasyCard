@@ -267,6 +267,11 @@ namespace Transactions.Business.Services
             await context.Entry(transaction).ReloadAsync();
         }
 
+        public PaymentTransaction Clone(PaymentTransaction transaction)
+        {
+            return (PaymentTransaction)context.Entry(transaction).CurrentValues.ToObject();
+        }
+
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)
         {
             var historyRecord = new TransactionHistory

@@ -172,7 +172,7 @@
     <value>An error occurred while processing your request</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>FirstName</value>
+    <value>First name</value>
   </data>
   <data name="FollowThisLinkToJoinEasyCard" xml:space="preserve">
     <value>Not yet registered? Follow this link to join EasyCard</value>
@@ -199,7 +199,7 @@
     <value>Join EasyCard</value>
   </data>
   <data name="LastName" xml:space="preserve">
-    <value>LastName</value>
+    <value>Last name</value>
   </data>
   <data name="LockedOut" xml:space="preserve">
     <value>Locked out</value>
@@ -356,5 +356,11 @@
   </data>
   <data name="FirstNameValidationMessage" xml:space="preserve">
     <value>First name should be at least 2 and at max 100 characters long</value>
+  </data>
+  <data name="RegistrationRequestReceived" xml:space="preserve">
+    <value>Registration request received</value>
+  </data>
+  <data name="RegistrationSuccessMessage" xml:space="preserve">
+    <value>We will contact you shortly about how you can join Easy Card.</value>
   </data>
 </root>

@@ -95,6 +95,7 @@ namespace Transactions.Api.Controllers
         private readonly BasicServices.Services.IExcelService excelService;
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly IEcwidApiClient ecwidApiClient;
+        private readonly External.BitApiController bitController;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -123,7 +124,8 @@ namespace Transactions.Api.Controllers
             BillingController billingController,
             InvoicingController invoicingController,
             BasicServices.Services.IExcelService excelService,
-            IEcwidApiClient ecwidApiClient)
+            IEcwidApiClient ecwidApiClient,
+            External.BitApiController bitController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -152,6 +154,7 @@ namespace Transactions.Api.Controllers
             this.invoicingController = invoicingController;
             this.excelService = excelService;
             this.ecwidApiClient = ecwidApiClient;
+            this.bitController = bitController;
         }
 
         [HttpGet]
@@ -742,6 +745,43 @@ namespace Transactions.Api.Controllers
             else
             {
                 return await ProcessTransaction(terminal, transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+            }
+        }
+
+        /// <summary>
+        /// This is Bit's refund
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
+        [Route("chargeback")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> Chargeback([FromBody] ChargebackRequest request)
+        {
+            var transaction = EnsureExists(
+                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == request.ExistingPaymentTransactionID));
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            var res = await bitController.RefundInternal(transaction, terminal, request);
+
+            if (res.Status == StatusEnum.Success)
+            {
+                try
+                {
+                    await SendTransactionSuccessEmails(transaction, terminal);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
+                }
+
+                return res;
+            }
+            else
+            {
+                return BadRequest(res);
             }
         }
 

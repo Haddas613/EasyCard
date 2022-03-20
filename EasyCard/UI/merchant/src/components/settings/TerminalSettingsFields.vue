@@ -526,7 +526,7 @@
             outlined
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <!-- <v-col cols="12" md="4">
           <v-text-field
             :label="$t('Bank')"
             outlined
@@ -549,7 +549,7 @@
             :value="model.bankDetails.bankAccount"
             disabled
           ></v-text-field>
-        </v-col>
+        </v-col> -->
       </template>
     </v-row>
   </div>

@@ -126,6 +126,9 @@
   <data name="Day" xml:space="preserve">
     <value>יום</value>
   </data>
+  <data name="HalfYear" xml:space="preserve">
+    <value>חצי שנה</value>
+  </data>
   <data name="Month" xml:space="preserve">
     <value>חודש</value>
   </data>

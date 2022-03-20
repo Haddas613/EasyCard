@@ -171,6 +171,9 @@
   <data name="Pending" xml:space="preserve">
     <value>ממתין</value>
   </data>
+  <data name="Refund" xml:space="preserve">
+    <value>הֶחזֵר</value>
+  </data>
   <data name="ThisMonth" xml:space="preserve">
     <value>החודש</value>
   </data>

@@ -29,6 +29,7 @@
           :terminal="model.terminalID" 
           :customer-id="model.dealDetails.consumerID" 
           @update="processCustomer($event)"
+          full-customer-info
           ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
@@ -37,7 +38,7 @@
       <template v-if="model.invoiceOnly">
         <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == $appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
         <cheque-details-fields ref="chequeDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.cheque"></cheque-details-fields>
-        <bank-transfer-details-fields ref="bankDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank"></bank-transfer-details-fields>
+        <bank-transfer-details-fields :key="customerID" ref="bankDetails" :data="model.paymentDetails[0]" v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank"></bank-transfer-details-fields>
       </template>
       <template v-else>
         <v-col
@@ -113,10 +114,12 @@
           </ec-dialog-invoker>
         </v-col>
         <v-col
+          :key="customerID"
           cols="12"
           class="pb-2"
           v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
           v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
+          {{customerID}}
           <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
         </v-col>
       </template>
@@ -291,6 +294,7 @@ export default {
       billingScheduleJSON: JSON.stringify(this.data.billingSchedule),
       issueInvoiceDisabled: false,
       customer: null,
+      customerID: null,
     };
   },
   computed: {
@@ -312,7 +316,7 @@ export default {
         this.selectedToken = nv;
         this.tokensDialog = false;
       }
-    }
+    },
   },
   methods: {
     async processCustomer(data) {
@@ -326,6 +330,8 @@ export default {
       });
       this.customer = data;
       await this.getCustomerTokens();
+      this.onPaymentTypeChanged(this.model.paymentType, true);
+      this.customerID = this.customer.consumerID;
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
@@ -473,10 +479,9 @@ export default {
         this.model.paymentDetails = null;
       }
     },
-    onPaymentTypeChanged(pt){
-      if (pt == this.$appConstants.transaction.paymentTypes.bank
-        && (this.customer && this.customer.bankDetails)
-        && (!this.model.paymentDetails || !this.model.paymentDetails.length)){
+    onPaymentTypeChanged(pt, forcePaymentDetailsChange = false){
+      if (pt == this.$appConstants.transaction.paymentTypes.bank){
+        if((this.customer && this.customer.bankDetails) && (!this.model.paymentDetails || !this.model.paymentDetails.length)){
           if(this.model.invoiceOnly){
             this.model.paymentDetails = [{
               ...this.customer.bankDetails,
@@ -485,6 +490,13 @@ export default {
           }else {
             this.model.bankDetails = { ...this.customer.bankDetails };
           }
+        } else if(forcePaymentDetailsChange){
+          if(this.model.invoiceOnly){
+            this.model.paymentDetails = [];
+          }else {
+            this.model.bankDetails = null;
+          }
+        }
       }
     },
   },

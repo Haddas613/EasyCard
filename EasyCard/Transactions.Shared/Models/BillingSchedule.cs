@@ -37,6 +37,7 @@ namespace Transactions.Shared.Models
                 RepeatPeriodTypeEnum.Monthly => fromDate.AddMonths(1),
                 RepeatPeriodTypeEnum.BiMonthly => fromDate.AddMonths(2),
                 RepeatPeriodTypeEnum.Quarter => fromDate.AddMonths(3),
+                RepeatPeriodTypeEnum.HalfYear => fromDate.AddMonths(6),
                 RepeatPeriodTypeEnum.Year => fromDate.AddYears(1),
                 _ => null
             };

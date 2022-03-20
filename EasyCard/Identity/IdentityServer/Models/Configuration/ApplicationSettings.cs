@@ -30,5 +30,7 @@ namespace IdentityServer.Models
         public string SmsFrom { get; set; }
 
         public bool TwoFactorAuthenticationDoNotSendSms { get; set; }
+
+        public string SendRegistrationRequestEmailsTo { get; set; }
     }
 }

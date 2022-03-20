@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Api.Models.PaymentRequests.Enums;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
 
 namespace Transactions.Api.Extensions.Filtering

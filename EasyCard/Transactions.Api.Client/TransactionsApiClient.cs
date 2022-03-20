@@ -338,9 +338,9 @@ namespace Transactions.Api.Client
             return res;
         }
 
-        public async Task<SummariesAmountResponse<TransactionSummary>> GetTransactions(TransactionsFilter filter)
+        public async Task<SummariesAmountResponse<TransactionSummaryAdmin>> GetTransactions(TransactionsFilter filter)
         {
-            return await webApiClient.Get<SummariesAmountResponse<TransactionSummary>>(apiConfiguration.TransactionsApiAddress, $"api/transactions", filter, BuildHeaders);
+            return await webApiClient.Get<SummariesAmountResponse<TransactionSummaryAdmin>>(apiConfiguration.TransactionsApiAddress, $"api/transactions", filter, BuildHeaders);
         }
 
         public async Task<InitialBitOperationResponse> InitiateBitTransaction(CreateTransactionRequest model)
@@ -365,6 +365,18 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
+        public async Task<OperationResponse> BitTransactionPostProcessing(Guid? transactionID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/external/bit/cancelOrConfirmPending?transactionID={transactionID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }

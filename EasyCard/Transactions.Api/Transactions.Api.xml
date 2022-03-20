@@ -120,6 +120,12 @@
             Refund request
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.Chargeback(Transactions.Api.Models.Transactions.ChargebackRequest)">
+            <summary>
+            This is Bit's refund
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
             <summary>
             Method used internally to generate transactions based on prepared billing deals

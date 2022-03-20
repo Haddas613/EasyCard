@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Transactions;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Business.Entities;
 
 namespace Transactions.Api.Extensions.Filtering

@@ -125,6 +125,11 @@
               Looks up a localized string similar to Day.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.HalfYear">
+            <summary>
+              Looks up a localized string similar to Half-Year.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.BillingDealEnumsResource.Month">
             <summary>
               Looks up a localized string similar to Month.
@@ -330,7 +335,7 @@
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.Bit">
             <summary>
-              Looks up a localized string similar to Bit.
+              Looks up a localized string similar to bit.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionEnumsResource.CanceledByAggregator">
@@ -449,6 +454,11 @@
               Looks up a localized string similar to Initial.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Refund">
+            <summary>
+              Looks up a localized string similar to Refund.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
             <summary>
               Looks up a localized string similar to Rejected by aggregator.
@@ -537,6 +547,11 @@
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.AwaitingForSelectJ5">
             <summary>
             Shva transmision is done
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Refund">
+            <summary>
+            Refund is done for this transaction
             </summary>
         </member>
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">

@@ -83,6 +83,23 @@ namespace IdentityServer
                     AlwaysIncludeUserClaimsInIdToken = true,
                 },
 
+                new Client
+                {
+                    ClientId = "merchant_frontend_mobile",
+                    ClientName = "Merchant's Frontend mobile",
+
+                    RedirectUris = { "com.ecng.ecng://login-callback" },
+
+                    ClientSecrets = { new Secret("secret".Sha256()) },
+
+                    AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+                    AllowedScopes = { "openid", "profile", "transactions_api", "roles" },
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    RefreshTokenExpiration = TokenExpiration.Sliding
+                },
+
                 // SPA client using code flow + pkce
                 new Client
                 {

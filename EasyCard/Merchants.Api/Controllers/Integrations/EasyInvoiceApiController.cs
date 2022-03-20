@@ -254,7 +254,11 @@ namespace Merchants.Api.Controllers.Integrations
         public async Task<ActionResult<IEnumerable<DictionaryDetails>>> GetDocumentTypes()
         {
             var response = Enum.GetNames(typeof(ECInvoiceDocumentType))
-                .Select(e => new DictionaryDetails { Code = e, Description = e });
+                .Select(e => new DictionaryDetails 
+                {
+                    Code = e,
+                    Description = ECInvoiceDocumentTypeResource.ResourceManager.GetString(e),
+                });
 
             return Ok(response);
         }

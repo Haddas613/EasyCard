@@ -18,36 +18,6 @@
 
             <div class="panel-body">
                 <form asp-action="Register" method="post">
-                    @if (Model.Plans?.Count() > 0)
-                    {
-                        <fieldset name="plans">
-                            <div class="row">
-                                @foreach (var plan in Model.Plans)
-                                {
-                                    <div class="col-md-3 col-xs-12">
-                                        <div class="card text-white bg-primary mb-3 plan-card">
-                                            <div class="card-header">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" asp-for="PlanId" name="PlanId" value="@plan.PlanID" id="plan-id-@plan.PlanID">
-                                                    <label class="form-check-label" for="plan-id-@plan.PlanID">
-                                                        @plan.Title
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-text">
-                                                    @plan.Description
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                <div class="col-md-12 col-xs-12">
-                                    <span asp-validation-for="PlanId"></span>
-                                </div>
-                            </div>
-                        </fieldset>
-                    }
                     <fieldset name="user-data">
                         <div class="row">
                             <div class="col-md-3 col-xs-12 form-group">
@@ -69,18 +39,6 @@
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">
-                                <label asp-for="MarketingName">@localizer.Get("MarketingName")</label>
-                                <input id="marketing-name" type="text" class="form-control" asp-for="MarketingName" autocomplete="off">
-                                <span asp-validation-for="MarketingName"></span>
-                            </div>
-
-                            <div class="col-md-6 col-xs-12 form-group">
-                                <label asp-for="BusinessID">@localizer.Get("BusinessID")</label>
-                                <input class="form-control" asp-for="BusinessID" autocomplete="off">
-                                <span asp-validation-for="BusinessID"></span>
-                            </div>
-
-                            <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="PhoneNumber">@localizer.Get("Phone")</label>
                                 <input type="tel" class="form-control" asp-for="PhoneNumber" autocomplete="off">
                                 <span asp-validation-for="PhoneNumber"></span>
@@ -90,18 +48,6 @@
                                 <label asp-for="Email">@localizer.Get("Email")</label>
                                 <input type="email" class="form-control" asp-for="Email" autocomplete="email">
                                 <span asp-validation-for="Email"></span>
-                            </div>
-
-                            <div class="col-md-6 col-xs-12 form-group">
-                                <label asp-for="Password">@localizer.Get("Password")</label>
-                                <input type="password" class="form-control" asp-for="Password" autocomplete="off">
-                                <span asp-validation-for="Password"></span>
-                            </div>
-
-                            <div class="col-md-6 col-xs-12 form-group">
-                                <label asp-for="PasswordRepeat">@localizer.Get("PasswordRepeat")</label>
-                                <input type="password" class="form-control" asp-for="PasswordRepeat" autocomplete="off">
-                                <span asp-validation-for="PasswordRepeat"></span>
                             </div>
 
                             <div class="col-md-12 col-xs-12 form-group text-end">

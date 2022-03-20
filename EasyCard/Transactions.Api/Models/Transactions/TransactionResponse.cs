@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Shared.Enums;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
@@ -277,5 +276,9 @@ namespace Transactions.Api.Models.Transactions
         /// Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
         /// </summary>
         public JObject Extension { get; set; }
+
+        public object BitTransactionDetails { get; set; }
+
+        public decimal? TotalRefund { get; set; }
     }
 }

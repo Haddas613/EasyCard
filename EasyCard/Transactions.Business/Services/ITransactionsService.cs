@@ -31,5 +31,7 @@ namespace Transactions.Business.Services
         Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction);
 
         Task Refresh(PaymentTransaction transaction);
+
+        PaymentTransaction Clone(PaymentTransaction transaction);
     }
 }

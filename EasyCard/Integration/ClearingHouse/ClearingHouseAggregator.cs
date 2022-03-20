@@ -124,6 +124,11 @@ namespace ClearingHouse
             string responseStr = null;
             string responseStatusStr = null;
 
+            if (string.IsNullOrWhiteSpace(transactionRequest.AggregatorTransactionID))
+            {
+                throw new BusinessException("Clearing House transaction ID is not provided");
+            }
+
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             try
