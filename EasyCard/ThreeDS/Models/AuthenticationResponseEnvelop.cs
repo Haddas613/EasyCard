@@ -12,8 +12,6 @@ namespace ThreeDS.Models
 
 
 
-        public ChallengeRequest ChallengeRequest { get; set; }
 
-        public string Base64EncodedChallengeRequest { get; set; }
     }
 }

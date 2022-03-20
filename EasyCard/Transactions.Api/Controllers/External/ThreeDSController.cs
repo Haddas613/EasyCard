@@ -103,7 +103,8 @@ namespace Transactions.Api.Controllers.External
                 MerchantNumber = settings.MerchantNumber,
                 ThreeDSServerTransID = request.ThreeDSServerTransID,
                 CardNumber = request.CardNumber,
-                Currency = request.Currency
+                Currency = request.Currency,
+                NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds"
             };
 
             var res = await threeDSService.Authentication(model, GetCorrelationID());
@@ -122,7 +123,7 @@ namespace Transactions.Api.Controllers.External
                 {
                      ChalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C,
                      AcsURL = res.ResponseData?.AuthenticationResponse?.AcsURL,
-                     Base64EncodedChallengeRequest = res.Base64EncodedChallengeRequest,
+                     Base64EncodedChallengeRequest = res.ResponseData?.Base64EncodedChallengeRequest,
                      ThreeDSServerTransID = res.ResponseData?.ThreeDSServerTransID
                 };
             }

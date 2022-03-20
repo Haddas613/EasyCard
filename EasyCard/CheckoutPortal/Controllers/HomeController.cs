@@ -826,9 +826,9 @@ namespace CheckoutPortal.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Notification3Ds(Models.ThreeDS.Notification request)
+        public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
         {
-            return Ok();
+            return View(request);
         }
 
         

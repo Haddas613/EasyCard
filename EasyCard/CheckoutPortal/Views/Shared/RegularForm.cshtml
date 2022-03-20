@@ -13,6 +13,7 @@
     <input type="hidden" asp-for="IssueInvoice" />
     <input type="hidden" asp-for="AllowPinPad" />
     <input type="hidden" asp-for="ThreeDSServerTransID" />
+    <input type="hidden" asp-for="ThreeDSCres" />
 
     @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
     {
@@ -261,6 +262,8 @@
     </div>
 
     <div id="threeDSMethodIFrameContainer"></div>
+    <div id="threeDSCReqIframeContainer" class="messagepop"></div>
+
 </form>
 
 
@@ -363,6 +366,15 @@
         @if(Model.EnableThreeDS == true) // TODO: case with pinpad
         {
         <text>
+            $.fn.slideFadeToggle = function (easing, callback) {
+                return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+            };
+
+            window.notification3Ds = function (cres) {
+                $("#ThreeDSCres").val();
+                $('#threeDSCReqIframeContainer').slideFadeToggle();
+            };
+
             const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());
 
             const authenticate3Ds = function () {
@@ -391,10 +403,12 @@
                     if (data.chalengeRequired) {
                         $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
 
-                        let container = document.getElementById('threeDSMethodIFrameContainer');
+                        let container = document.getElementById('threeDSCReqIframeContainer');
 
-                        nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSMethodIframe', container,
+                        nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSCReqIframe', container,
                             console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
+
+                        $('#threeDSCReqIframeContainer').slideFadeToggle();
                     } else {
                         return $("#checkout-form").submit();
                     }

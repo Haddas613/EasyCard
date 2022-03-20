@@ -7,6 +7,6 @@ namespace CheckoutPortal.Models.ThreeDS
 {
     public class Notification
     {
-        public string ThreeDSMethodData { get; set; }
+        public string Cres { get; set; }
     }
 }

@@ -1,0 +1,11 @@
+﻿@model CheckoutPortal.Models.ThreeDS.Notification
+
+<script nws-csp-add-nonce="true">
+    (function () {
+
+        const cres = "@Model.Cres";
+
+        window.parent.notification3Ds(cres);
+
+    })();
+</script>

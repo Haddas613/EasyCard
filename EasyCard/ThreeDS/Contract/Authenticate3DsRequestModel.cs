@@ -14,5 +14,7 @@ namespace ThreeDS.Contract
         public string CardNumber { get; set; }
 
         public CurrencyEnum Currency { get; set; }
+
+        public string NotificationURL { get; set; }
     }
 }

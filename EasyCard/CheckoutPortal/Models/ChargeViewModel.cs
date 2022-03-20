@@ -179,5 +179,7 @@ namespace CheckoutPortal.Models
         public bool? ContinueInCaseOf3DSecureError { get; set; }
 
         public string ThreeDSServerTransID { get; set; }
+
+        public string ThreeDSCres { get; set; }
     }
 }

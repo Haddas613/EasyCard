@@ -14,8 +14,12 @@ namespace ThreeDS.Models
 
         public string TransStatus { get; set; }
 
-        public string AuthenticationValue { get; set; }
+        public string AcsURL { get; set; }
 
-        public string Eci { get; set; }
+        public string AcsChallengeMandated { get; set; }
+
+        public ChallengeRequest ChallengeRequest { get; set; }
+
+        public string Base64EncodedChallengeRequest { get; set; }
     }
 }
