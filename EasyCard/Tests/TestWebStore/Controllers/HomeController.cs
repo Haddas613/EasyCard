@@ -89,7 +89,16 @@ namespace TestWebStore.Controllers
             {
                 var res = await reader.ReadToEndAsync();
 
-                System.IO.File.WriteAllText($"{DateTime.Now.ToString("yyyyMMddHHMMss")}-{Guid.NewGuid()}.txt", res);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(res);
+                sb.AppendLine();
+
+                foreach (var header in Request.Headers)
+                {
+                    sb.AppendLine($"{header.Key}:\t{header.Value}");
+                }
+
+                System.IO.File.WriteAllText($"{DateTime.Now.ToString("yyyyMMddHHMMss")}-{Guid.NewGuid()}.txt", sb.ToString());
             }
 
             return Ok();

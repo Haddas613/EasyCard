@@ -97,6 +97,7 @@ namespace ThreeDS
                 ThreeDSServerTransID = model.ThreeDSServerTransID,
                 AcctNumber = model.CardNumber,
                 NotificationURL = model.NotificationURL,
+                MerchantURL = "https://https://localhost:44300/Home/Notification3Ds",
                 AcctType = "02",
                 AcquirerBin = "2",
                 AcquirerMerchantId = "1",

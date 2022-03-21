@@ -12,7 +12,7 @@ namespace ThreeDS.Models
 		public string PspID { get; set; }// Distributer ID
 		public string UserName { get; set; }
 		public string Password { get; set; }
-		public string MerchantUrl { get; set; }
+		public string MerchantURL { get; set; }
 		public string NotificationURL { get; set; }
 		public string ThreeDSServerTransID { get; set; }
 		public string AcctNumber { get; set; } // required (card number)
