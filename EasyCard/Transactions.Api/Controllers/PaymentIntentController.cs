@@ -215,6 +215,22 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        [HttpDelete]
+        [Route("{paymentIntentID}")]
+        public async Task<ActionResult<OperationResponse>> DeletePaymentIntent([FromRoute] Guid paymentIntentID)
+        {
+            var paymentIntent = EnsureExists(await paymentIntentService.GetPaymentIntent(paymentIntentID));
+
+            if (paymentIntent.Status == PaymentRequestStatusEnum.Payed || (int)paymentIntent.Status < 0 || paymentIntent.PaymentTransactionID != null)
+            {
+                return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, paymentIntent.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
+            await paymentIntentService.DeletePaymentIntent(paymentIntentID);
+
+            return Ok(new OperationResponse { EntityUID = paymentIntentID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
+        }
+
         private async Task<Guid?> CreateConsumer(PaymentRequestCreate transaction, Guid merchantID)
         {
             try

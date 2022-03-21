@@ -48,6 +48,8 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
 
+        Task<OperationResponse> CancelPaymentIntent(Guid paymentIntentID);
+
         Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model);
 
         Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
