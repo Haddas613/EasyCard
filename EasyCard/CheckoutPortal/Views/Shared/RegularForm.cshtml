@@ -18,7 +18,6 @@
     {
         <input type="hidden" asp-for="ConnectionID" />
     }
-
     @if (Model.TransactionTypes.Count() > 1 && !Model.OnlyAddCard)
     {
         <div class="form-group">
@@ -265,12 +264,9 @@
 
 </form>
 
-
 @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
 {
 <script src="~/lib/signalr/signalr.min.js"></script>
-<script src="~/lib/toastr/toastr.min.js"></script>
-<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
 }
 
 <script nws-csp-add-nonce="true">
@@ -371,7 +367,7 @@
 
             window.notification3Ds = function (cres) {
                 $('#threeDSCReqIframeContainer').slideFadeToggle();
-                //return $("#checkout-form").submit();
+                return $("#checkout-form").submit();
             };
 
             const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());
@@ -385,7 +381,8 @@
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
                         else {
-                            alert("error"); // TODO;
+                            toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                            window.switchLoadingSpinner(false);
                             return;
                         }
                     }
@@ -394,7 +391,8 @@
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
                         else {
-                            alert(data.errorMessage); // TODO;
+                            toastr["error"](data.errorMessage);
+                            window.switchLoadingSpinner(false);
                             return;
                         }
                     }
@@ -406,17 +404,31 @@
 
                         nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSCReqIframe', container,
                             console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
-
+                        window.scrollTo(0, 0);
                         $('#threeDSCReqIframeContainer').slideFadeToggle();
                     } else {
+                        window.switchLoadingSpinner(false);
                         return $("#checkout-form").submit();
                     }
                 });
             }
 
             $("#submitbtn").on("click", function () {
+                var pinPadDeal = document.getElementById("pin-pad-deal");
+                if (pinPadDeal && pinPadDeal.checked == true) {
+                    signalRClient.establishSignalRConnection().then(r => {
+                        $("#checkout-form").submit();
+                    }, e => {
+                        $("#checkout-form").submit();
+                    });
+                }
+                if ($("#CreditCardToken:checked").val()){
+                    return $("#checkout-form").submit();
+                }
+
 
                 let payload = $('#checkout-form').serialize();
+                window.switchLoadingSpinner(true);
 
                 return $.post("/Home/Versioning3Ds", payload, function (data, status, xhr) {
                     if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
@@ -424,7 +436,7 @@
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
                         else {
-                            alert("error"); // TODO;
+                            toastr["error"]('@(localizer.Get("ThreeDSError"))');
                             return;
                         }
                     }
@@ -433,7 +445,7 @@
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
                         else {
-                            alert(data.errorMessage); // TODO;
+                            toastr["error"](data.errorMessage);
                             return;
                         }
                     }
@@ -446,7 +458,7 @@
                             console.log('Iframe loaded, form created and submitted');
                         });
 
-                    return authenticate3Ds();
+                    return authenticate3Ds();//.then((e) => window.switchLoadingSpinner(false));
                 });
             })
         </text>
@@ -526,8 +538,7 @@
                 $("#credit-card-info-area").remove();
             }
 
-            document.getElementById("loading-spinner").hidden = false;
-            document.getElementsByTagName("body")[0].classList.add("no-scroll")
+            window.switchLoadingSpinner(true);
         })
 
         window.onunload = function (e) {
@@ -682,7 +693,7 @@
                 }
                 let presence = tokens.reduce((acc, e) => {
                     if(acc){ return acc;}
-                    acc += e.value.split(' ')[0] == toBin ? 1 : 0;
+                    acc += e.value ? (e.value.split(' ')[0] == toBin ? 1 : 0) : 0;
                     return acc;
                 }, 0);
 

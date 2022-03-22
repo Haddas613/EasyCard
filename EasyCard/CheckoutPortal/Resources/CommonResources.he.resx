@@ -264,4 +264,7 @@
   <data name="ChoosePaymentMethod" xml:space="preserve">
     <value>בחר אמצעי תשלום</value>
   </data>
+  <data name="ThreeDSError" xml:space="preserve">
+    <value>3D Secure שגיא</value>
+  </data>
 </root>

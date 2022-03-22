@@ -149,8 +149,7 @@
                 return obj;
             }, {});
 
-            document.getElementById("loading-spinner").hidden = false;
-            document.getElementsByTagName("body")[0].classList.add("no-scroll");
+            window.switchLoadingSpinner(true);
 
             let url = $("#bit-form").attr('action');
             $.post(url, payload, function(data,status,xhr){
@@ -166,8 +165,7 @@
                 $("#TransactionSerialId").val(data.transactionSerialId);
                 $("#PaymentInitiationId").val(data.paymentInitiationId);
 
-                document.getElementById("loading-spinner").hidden = true;
-                document.getElementsByTagName("body")[0].classList.remove("no-scroll")
+                window.switchLoadingSpinner(false);
                 //$("#bit-payment-area").attr('hidden', false);
                 //$("#bit-form").attr('hidden', true);
                 //$("#payment-type-area").attr('hidden', true);
@@ -197,15 +195,13 @@
                     openBitPaymentPage(transaction);
                 },
                 onApproved: function(details){
-                    document.getElementById("loading-spinner").hidden = false;
-                    document.getElementsByTagName("body")[0].classList.add("no-scroll");
+                    window.switchLoadingSpinner(true);
                     $("#bit-completed-form").submit();
                 },
                 onCancel: function (data) {
                     window.bitdata = null;
-                    document.getElementById("loading-spinner").hidden = true;
                     window.bitloading = false;
-                    document.getElementsByTagName("body")[0].classList.remove("no-scroll")
+                    window.switchLoadingSpinner(false);
                 },
             });
             window.bitloading = false;

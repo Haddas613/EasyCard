@@ -193,8 +193,8 @@ input[type="checkbox"].input-validation-error {
     width: 600px;
     height: 400px;
     z-index: 50;
-    padding: 25px 25px 20px;
     top: 0px;
     left: 0px;
+    z-index: 1001; /**ensure it's above .overlay*/
 }
 

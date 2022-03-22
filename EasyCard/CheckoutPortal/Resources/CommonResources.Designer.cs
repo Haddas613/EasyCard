@@ -457,6 +457,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 3D Secure Error.
+        /// </summary>
+        public static string ThreeDSError {
+            get {
+                return ResourceManager.GetString("ThreeDSError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string Total {
