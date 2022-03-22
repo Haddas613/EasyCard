@@ -635,25 +635,20 @@ namespace CheckoutPortal.Controllers
         {
             CheckoutData checkoutConfig;
 
+            bool isPaymentIntent = request.PaymentIntent != null;
+
             if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
             }
             else
             {
-                //TODO
-                //bool isPaymentIntent = request.PaymentIntent != null;
-
-                //if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
-                //{
-                //    throw new BusinessException(Messages.InvalidCheckoutData);
-                //}
-
-                if (!Guid.TryParse(request.PaymentRequest, out var id))
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, false);
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
             }
 
             if (checkoutConfig == null)
@@ -661,16 +656,20 @@ namespace CheckoutPortal.Controllers
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
             }
 
-            if (checkoutConfig.PaymentRequest != null)
-            {
-                // TODO: cancel payment intent
-                var result = await transactionsApiClient.CancelPaymentRequest(checkoutConfig.PaymentRequest.PaymentRequestID);
+            var result = isPaymentIntent ? await transactionsApiClient.CancelPaymentIntent(Guid.Parse(request.PaymentIntent))
+                : await transactionsApiClient.CancelPaymentRequest(checkoutConfig.PaymentRequest.PaymentRequestID);
 
-                if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                if (isPaymentIntent)
+                {
+                    logger.LogError($"{nameof(CancelPayment)}: Could not cancel payment intent {request.PaymentIntent}. Reason: {result.Message}");
+                }
+                else
                 {
                     logger.LogError($"{nameof(CancelPayment)}: Could not cancel payment request {checkoutConfig.PaymentRequest.PaymentRequestID}. Reason: {result.Message}");
-                    return RedirectToAction("PaymentError");
                 }
+                return RedirectToAction("PaymentError");
             }
 
             if (string.IsNullOrWhiteSpace(request.RedirectUrl))

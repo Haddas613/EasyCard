@@ -7,6 +7,7 @@
     <input type="hidden" name="PaymentTransactionID" id="PaymentTransactionID" />
     <input type="hidden" name="TransactionSerialId" id="TransactionSerialId" />
     <input type="hidden" name="PaymentInitiationId" id="PaymentInitiationId" />
+    <div id="bit-completed-form-extension"></div> 
 </form>
 
 <form asp-action="Charge" method="post" id="bit-form">
@@ -122,14 +123,16 @@
                 invokeBit();
             }
 
+            //clear bit form to only validate initial bit form, not extended
+            $("#bit-completed-form-extension").html('');
             if (!$("#bit-form").valid()) {
                 return;
             }
 
-            if (e.target.dataset['loading'] == 'true'){
+            if (window.bitloading == true){
                 return;
             }
-            e.target.dataset['loading'] = 'true';
+            window.bitloading = true;
 
             
             $("#PayWithBit").val(true);
@@ -139,7 +142,7 @@
 
         function initiateBit() {
             //extend bit completed form with every field of bit form
-            $("#bit-completed-form").append($("#bit-form").html());
+            $("#bit-completed-form-extension").html($("#bit-form").html());
 
             let payload = $('#bit-form').serializeArray().reduce(function(obj, item) {
                 obj[item.name] = item.value;
@@ -169,8 +172,6 @@
                 //$("#bit-form").attr('hidden', true);
                 //$("#payment-type-area").attr('hidden', true);
 
-                document.getElementById("paywithbit").dataset['invokebit'] = true;
-
                 window.bitdata = {
                     transactionSerialId: data.transactionSerialId,
                     paymentInitiationId: data.paymentInitiationId,
@@ -196,10 +197,18 @@
                     openBitPaymentPage(transaction);
                 },
                 onApproved: function(details){
+                    document.getElementById("loading-spinner").hidden = false;
+                    document.getElementsByTagName("body")[0].classList.add("no-scroll");
                     $("#bit-completed-form").submit();
-                }
+                },
+                onCancel: function (data) {
+                    window.bitdata = null;
+                    document.getElementById("loading-spinner").hidden = true;
+                    window.bitloading = false;
+                    document.getElementsByTagName("body")[0].classList.remove("no-scroll")
+                },
             });
-            document.getElementById("paywithbit").dataset['loading'] = false;
+            window.bitloading = false;
         };
     }
 </script>
