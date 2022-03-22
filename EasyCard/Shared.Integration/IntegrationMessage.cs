@@ -35,6 +35,8 @@ namespace Shared.Integration
             }
         }
 
+        public string Method { get; set; }
+
         public string EntityID { get; set; }
 
         public string Request { get; set; }
