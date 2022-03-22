@@ -13,7 +13,6 @@
     <input type="hidden" asp-for="IssueInvoice" />
     <input type="hidden" asp-for="AllowPinPad" />
     <input type="hidden" asp-for="ThreeDSServerTransID" />
-    <input type="hidden" asp-for="ThreeDSCres" />
 
     @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
     {
@@ -371,8 +370,8 @@
             };
 
             window.notification3Ds = function (cres) {
-                $("#ThreeDSCres").val();
                 $('#threeDSCReqIframeContainer').slideFadeToggle();
+                //return $("#checkout-form").submit();
             };
 
             const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());
