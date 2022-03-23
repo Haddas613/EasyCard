@@ -1020,6 +1020,11 @@
               Looks up a localized string similar to Processor is not defined.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.RejectedBy3DSecure">
+            <summary>
+              Looks up a localized string similar to Rejected by 3DSecure.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.RejectedByAggregator">
             <summary>
               Looks up a localized string similar to Failed To Process Transaction.

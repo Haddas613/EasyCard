@@ -18,6 +18,7 @@ namespace ThreeDS
         private readonly ILogger logger;
         private readonly IIntegrationRequestLogStorageService integrationRequestLogStorageService;
         private readonly ThreedDSGlobalConfiguration configuration;
+
         public ThreeDSService(IOptions<ThreedDSGlobalConfiguration> configuration,
             IWebApiClient apiClient,
             ILogger<ThreeDSService> logger,
@@ -29,7 +30,7 @@ namespace ThreeDS
             this.logger = logger;
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
-        public async Task<VersioningResponseEnvelop> Versioning(string cardNumber, string correlationID)
+        public async Task<VersioningResponseEnvelop> Versioning(ThreeDS.Contract.Versioning3DsRequestModel model, string correlationID)
         {
             string requestUrl = null;
             string requestStr = null;
@@ -39,11 +40,11 @@ namespace ThreeDS
 
             VersioningRequest request = new VersioningRequest()
             {
-                CardNumber = cardNumber,
+                CardNumber = model.CardNumber,
                 UserName = configuration.UserName,
                 Password = configuration.Password,
                 PspID = configuration.PspID,
-                NotificationURL = "https://localhost:44396/Home/Notification3Ds"
+                NotificationURL = model.NotificationURL
             };
 
             try
@@ -96,24 +97,30 @@ namespace ThreeDS
                 Retailer = model.MerchantNumber,
                 ThreeDSServerTransID = model.ThreeDSServerTransID,
                 AcctNumber = model.CardNumber,
+
                 NotificationURL = model.NotificationURL,
-                MerchantURL = "https://ecng-testwebstore.azurewebsites.net/Home/Notification3Ds",
+                MerchantURL = configuration.MerchantURL,
+
                 AcctType = "02",
                 AcquirerBin = "2",
                 AcquirerMerchantId = "1",
                 Brand = "2",
                 MessageType = "ARes",
+
+                Merchant_mcc = "1234",
+                MerchantName = model.MerchantName,
+
                 PurchaseCurrency = CurrencyHelper.GetCurrencyISONumber(model.Currency).ToString(),
                 PurchaseDate = DateTime.Today.ToString("yyyyMMddHHmmss"),
-                Merchant_mcc = "1234",
-                MerchantName = "Test",
-                BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
-                BrowserLanguage = "en",
-                BrowserColorDepth = "8", 
-                BrowserScreenHeight = "1050", 
-                BrowserScreenWidth = "1680", 
-                BrowserTZ = "1200", 
-                BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;"
+                PurchaseAmount = model.Amount == null ? null : model.Amount.GetValueOrDefault().ToString("F2"),
+
+                BrowserAcceptHeader = model.BrowserDetails?.BrowserAcceptHeader ?? "text/html,application/xhtml+xml,application/xml;",
+                BrowserLanguage = model.BrowserDetails?.BrowserLanguage ?? "en",
+                BrowserColorDepth = model.BrowserDetails?.BrowserColorDepth ?? "8", 
+                BrowserScreenHeight = model.BrowserDetails?.BrowserScreenHeight ?? "1050", 
+                BrowserScreenWidth = model.BrowserDetails?.BrowserScreenWidth ?? "1680", 
+                BrowserTZ = model.BrowserDetails?.BrowserTZ ?? "1200", 
+                BrowserUserAgent = model.BrowserDetails?.BrowserUserAgent ?? "Mozilla/5.0 (Windows NT 6.1; Win64; x64;"
             };
 
             try

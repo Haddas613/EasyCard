@@ -97,6 +97,7 @@ namespace Transactions.Api.Controllers
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
         private readonly IEcwidApiClient ecwidApiClient;
         private readonly External.BitApiController bitController;
+        private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -126,7 +127,8 @@ namespace Transactions.Api.Controllers
             InvoicingController invoicingController,
             BasicServices.Services.IExcelService excelService,
             IEcwidApiClient ecwidApiClient,
-            External.BitApiController bitController)
+            External.BitApiController bitController,
+            IThreeDSIntermediateStorage threeDSIntermediateStorage)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -156,6 +158,7 @@ namespace Transactions.Api.Controllers
             this.excelService = excelService;
             this.ecwidApiClient = ecwidApiClient;
             this.bitController = bitController;
+            this.threeDSIntermediateStorage = threeDSIntermediateStorage;
         }
 
         [HttpGet]

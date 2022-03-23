@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Transactions.Business.Entities;
 
 namespace Transactions.Business.Services
 {

@@ -64,5 +64,31 @@ namespace Shared.Helpers
                 return Convert.ToBase64String(bytes);
             }
         }
+
+        public static string ConvertFromBase64(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return null;
+            }
+
+            switch (str.Length % 4)
+            {
+                case 2: str += "=="; break;
+                case 3: str += "="; break;
+            }
+
+            try
+            {
+                var res = Convert.FromBase64String(str);
+
+                return Encoding.UTF8.GetString(res);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
     }
 }

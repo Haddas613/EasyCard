@@ -1,9 +1,9 @@
-﻿@model CheckoutPortal.Models.ThreeDS.Notification
+﻿@model CheckoutPortal.Models.ThreeDS.NotificationResult
 
 <script nws-csp-add-nonce="true">
     (function () {
 
-        const cres = "@Model.Cres";
+        const cres = @Model.Success.ToString().ToLower();
 
         window.parent.notification3Ds(cres);
 

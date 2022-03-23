@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Transactions.Business\Entities\ThreeDSIntermediateData.cs" Link="Models\ThreeDSIntermediateData.cs" />
+    <Compile Include="..\..\Shared.Integration\Models\ThreeDSIntermediateData.cs" Link="Models\ThreeDSIntermediateData.cs" />
+    <Compile Include="..\..\Transactions.Api\Models\External\ThreeDS\Authenticate3DsCallback.cs" Link="Models\Authenticate3DsCallback.cs" />
     <Compile Include="..\..\Transactions.Business\Services\IThreeDSIntermediateStorage.cs" Link="Models\IThreeDSIntermediateStorage.cs" />
     <Compile Include="..\..\Transactions.Business\Services\ThreeDSIntermediateStorage.cs" Link="Models\ThreeDSIntermediateStorage.cs" />
   </ItemGroup>

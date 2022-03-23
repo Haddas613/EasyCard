@@ -178,8 +178,7 @@ namespace CheckoutPortal.Models
         [BindNever]
         public bool? ContinueInCaseOf3DSecureError { get; set; }
 
+        [StringLength(50)]
         public string ThreeDSServerTransID { get; set; }
-
-        public string ThreeDSCres { get; set; }
     }
 }

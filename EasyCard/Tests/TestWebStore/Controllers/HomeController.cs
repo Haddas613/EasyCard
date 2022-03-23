@@ -7,18 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Shared.Helpers;
 using TestWebStore.Models;
+using Transactions.Business.Services;
 
 namespace TestWebStore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IThreeDSIntermediateStorage threeDSIntermediateStorage)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.threeDSIntermediateStorage = threeDSIntermediateStorage;
         }
 
         public IActionResult Index()
@@ -81,24 +85,34 @@ namespace TestWebStore.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Notification3Ds()
         {
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            try
             {
-                var res = await reader.ReadToEndAsync();
-
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(res);
-                sb.AppendLine();
-
-                foreach (var header in Request.Headers)
+                using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                 {
-                    sb.AppendLine($"{header.Key}:\t{header.Value}");
-                }
+                    var res = await reader.ReadToEndAsync();
 
-                System.IO.File.WriteAllText($"{DateTime.Now.ToString("yyyyMMddHHMMss")}-{Guid.NewGuid()}.txt", sb.ToString());
+                    var authRes = JsonConvert.DeserializeObject<Transactions.Api.Models.External.ThreeDS.Authenticate3DsCallback>(res);
+
+                    if (authRes != null)
+                    {
+                        await threeDSIntermediateStorage.StoreIntermediateData(new Shared.Integration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid)
+                        {
+                            TransStatus = authRes.TransStatus,
+                            Request = res
+                        });
+                    }
+                    else
+                    {
+                        logger.LogError($"ThreeDS AuthenticateCallback data is empty: {res}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"ThreeDS AuthenticateCallback error: {ex.Message}");
             }
 
             return Ok();

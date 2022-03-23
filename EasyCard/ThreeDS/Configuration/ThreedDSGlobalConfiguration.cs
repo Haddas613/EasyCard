@@ -15,5 +15,7 @@ namespace ThreeDS.Configuration
         public string BaseUrl { get; set; } = "https://3dsc-qa.shva.co.il"; // please do not end with slash
 
         public string CertificateThumbprint { get; set; }
+
+        public string MerchantURL { get; set; } = "https://ecng-testwebstore.azurewebsites.net/Home/Notification3Ds";
     }
 }

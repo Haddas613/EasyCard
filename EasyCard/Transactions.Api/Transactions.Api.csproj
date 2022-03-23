@@ -13,12 +13,16 @@
   <ItemGroup>
     <Compile Remove="Models\Converters\**" />
     <Compile Remove="Models\Settings\**" />
+    <Compile Remove="Models\Transactions\Enums\**" />
     <Content Remove="Models\Converters\**" />
     <Content Remove="Models\Settings\**" />
+    <Content Remove="Models\Transactions\Enums\**" />
     <EmbeddedResource Remove="Models\Converters\**" />
     <EmbeddedResource Remove="Models\Settings\**" />
+    <EmbeddedResource Remove="Models\Transactions\Enums\**" />
     <None Remove="Models\Converters\**" />
     <None Remove="Models\Settings\**" />
+    <None Remove="Models\Transactions\Enums\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -197,10 +201,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SMSResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Transactions\Enums\" />
   </ItemGroup>
 
 

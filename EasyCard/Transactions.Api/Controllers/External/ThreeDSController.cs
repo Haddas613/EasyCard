@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Configuration;
 using Shared.Api.Validation;
@@ -10,10 +11,14 @@ using Shared.Business.Security;
 using Shared.Integration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ThreeDS;
 using Transactions.Api.Models.External.ThreeDS;
+using Transactions.Business.Services;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers.External
 {
@@ -32,6 +37,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ApiSettings apiSettings;
         private readonly IExternalSystemsService externalSystemsService;
+        private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
 
         public ThreeDSController(
              ThreeDSService threeDSService,
@@ -40,7 +46,8 @@ namespace Transactions.Api.Controllers.External
              IHttpContextAccessorWrapper httpContextAccessor,
              ISystemSettingsService systemSettingsService,
              IOptions<ApiSettings> apiSettings,
-             IExternalSystemsService externalSystemsService)
+             IExternalSystemsService externalSystemsService,
+             IThreeDSIntermediateStorage threeDSIntermediateStorage)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.threeDSService = threeDSService;
@@ -49,6 +56,7 @@ namespace Transactions.Api.Controllers.External
             this.systemSettingsService = systemSettingsService;
             this.apiSettings = apiSettings.Value;
             this.externalSystemsService = externalSystemsService;
+            this.threeDSIntermediateStorage = threeDSIntermediateStorage;
         }
 
         [HttpPost]
@@ -56,13 +64,19 @@ namespace Transactions.Api.Controllers.External
         [Route("versioning")]
         public async Task<ActionResult<Versioning3DsResponse>> Versioning([FromBody] Versioning3DsRequest model)
         {
-            var res = await threeDSService.Versioning(model.CardNumber, GetCorrelationID());
+            var request = new ThreeDS.Contract.Versioning3DsRequestModel
+            {
+                CardNumber = model.CardNumber,
+                NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds"
+            };
+
+            var res = await threeDSService.Versioning(request, GetCorrelationID());
 
             if (res.ErrorDetails != null)
             {
                 return new Versioning3DsResponse
                 {
-                    ErrorMessage = res.ErrorDetails.ErrorDescription
+                    ErrorMessage = res.ErrorDetails.ErrorDescription,
                 };
             }
             else
@@ -104,12 +118,18 @@ namespace Transactions.Api.Controllers.External
                 ThreeDSServerTransID = request.ThreeDSServerTransID,
                 CardNumber = request.CardNumber,
                 Currency = request.Currency,
-                NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds"
+                NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds",
+                MerchantName = terminal.Merchant.BusinessName,
+                Amount = request.Amount,
+                BrowserDetails = request.BrowserDetails
             };
 
             var res = await threeDSService.Authentication(model, GetCorrelationID());
 
-            if (res.ErrorDetails != null || res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.N)
+            if (res.ErrorDetails != null ||
+                res.ResponseData?.AuthenticationResponse == null ||
+                string.IsNullOrWhiteSpace(res.ResponseData?.ThreeDSServerTransID) ||
+                res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.N)
             {
                 return new Authenticate3DsResponse
                 {
@@ -119,14 +139,64 @@ namespace Transactions.Api.Controllers.External
             }
             else
             {
+                bool chalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C;
+
+                if (!chalengeRequired)
+                {
+                    if (string.IsNullOrWhiteSpace(res.ResponseData.AuthenticationResponse.AuthenticationValue))
+                    {
+                        return new Authenticate3DsResponse
+                        {
+                            ErrorMessage = "AuthenticationValue is empty",
+                        };
+                    }
+
+                    await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(res.ResponseData.ThreeDSServerTransID, res.ResponseData.AuthenticationResponse.AuthenticationValue, res.ResponseData.AuthenticationResponse.Eci, res.ResponseData.AuthenticationResponse.Xid));
+                }
+
                 return new Authenticate3DsResponse
                 {
-                     ChalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C,
+                     ChalengeRequired = chalengeRequired,
                      AcsURL = res.ResponseData?.AuthenticationResponse?.AcsURL,
                      Base64EncodedChallengeRequest = res.ResponseData?.Base64EncodedChallengeRequest,
                      ThreeDSServerTransID = res.ResponseData?.ThreeDSServerTransID
                 };
             }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("authenticateCallback")]
+        public async Task<ActionResult<Authenticate3DsResponse>> AuthenticateCallback()
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                {
+                    var res = await reader.ReadToEndAsync();
+
+                    var authRes = JsonConvert.DeserializeObject<Transactions.Api.Models.External.ThreeDS.Authenticate3DsCallback>(res);
+
+                    if (authRes != null)
+                    {
+                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid)
+                        {
+                            TransStatus = authRes.TransStatus,
+                            Request = res
+                        });
+                    }
+                    else
+                    {
+                        logger.LogError($"ThreeDS AuthenticateCallback data is empty: {res}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"ThreeDS AuthenticateCallback error: {ex.Message}");
+            }
+
+            return Ok();
         }
     }
 }

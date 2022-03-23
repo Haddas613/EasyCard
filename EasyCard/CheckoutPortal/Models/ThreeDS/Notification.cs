@@ -9,4 +9,11 @@ namespace CheckoutPortal.Models.ThreeDS
     {
         public string Cres { get; set; }
     }
+
+    public class NotificationResult
+    {
+        public bool Success { get; set; }
+
+        public string ThreeDSServerTransID { get; set; }
+    }
 }

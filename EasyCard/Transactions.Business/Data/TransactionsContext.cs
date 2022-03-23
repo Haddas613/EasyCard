@@ -286,6 +286,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneByID).IsRequired(false);
+
+                builder.Property(p => p.ThreeDSServerTransID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 

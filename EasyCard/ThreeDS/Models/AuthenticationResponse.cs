@@ -20,6 +20,10 @@ namespace ThreeDS.Models
         public string TransStatus { get; set; }
         public string TransStatusReason { get; set; }
 
+        public string AuthenticationValue { get; set; }
+        public string Eci { get; set; }
+        public string Xid { get; set; }
+
         public TransStatusEnum TransStatusEnum
         {
             get

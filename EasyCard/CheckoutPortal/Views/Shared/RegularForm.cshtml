@@ -366,8 +366,13 @@
             };
 
             window.notification3Ds = function (cres) {
-                $('#threeDSCReqIframeContainer').slideFadeToggle();
-                return $("#checkout-form").submit();
+                if (cres) {
+                    $('#threeDSCReqIframeContainer').slideFadeToggle();
+                    return $("#checkout-form").submit();
+                } else {
+                    toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                    $('#threeDSCReqIframeContainer').slideFadeToggle();
+                }
             };
 
             const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());

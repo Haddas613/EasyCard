@@ -366,6 +366,9 @@
   <data name="ProcessorNotDefined" xml:space="preserve">
     <value>Processor is not defined</value>
   </data>
+  <data name="RejectedBy3DSecure" xml:space="preserve">
+    <value>Rejected by 3DSecure</value>
+  </data>
   <data name="RejectedByAggregator" xml:space="preserve">
     <value>Failed To Process Transaction</value>
   </data>

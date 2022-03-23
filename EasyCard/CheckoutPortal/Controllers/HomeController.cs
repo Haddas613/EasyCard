@@ -768,7 +768,7 @@ namespace CheckoutPortal.Controllers
 
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Versioning3Ds(ChargeViewModel request)
         {
@@ -783,7 +783,7 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Authenticate3Ds(ChargeViewModel request)
         {
@@ -809,13 +809,27 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
+            // TODO: get from real browser
+            var browserDetails = new BrowserDetails
+            {
+                BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
+                BrowserLanguage = "en",
+                BrowserColorDepth = "8",
+                BrowserScreenHeight = "1050",
+                BrowserScreenWidth = "1680",
+                BrowserTZ = "1200",
+                BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;)"
+            };
+
             var authResponse = await transactionsApiClient.Authenticate3Ds(
                 new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
                 {
                     Currency = request.Currency,
                     CardNumber = request.CardNumber,
                     TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
-                    ThreeDSServerTransID = request.ThreeDSServerTransID
+                    ThreeDSServerTransID = request.ThreeDSServerTransID,
+                    Amount = request.Amount,
+                    BrowserDetails = browserDetails
                 }
             );
 
@@ -823,11 +837,35 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
         {
-            return View(request);
+            var cresDecoded = request.Cres?.ConvertFromBase64();
+            if (!string.IsNullOrWhiteSpace(cresDecoded))
+            {
+                try
+                {
+                    var cresObj = JsonConvert.DeserializeObject<Transactions.Api.Models.External.ThreeDS.Capture3DsResponse>(cresDecoded);
+
+                    if (string.IsNullOrWhiteSpace(cresObj?.ThreeDSServerTransID))
+                    {
+                        logger.LogError($"Notification3Ds ThreeDSServerTransID is empty: {cresDecoded}");
+                        return View(new Models.ThreeDS.NotificationResult { Success = false });
+                    }
+
+                    return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID });
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Notification3Ds is not valid: {ex.Message}");
+                    return View(new Models.ThreeDS.NotificationResult { Success = false });
+                }
+            }
+            else
+            {
+                logger.LogError($"Notification3Ds is empty: {request.Cres}");
+                return View(new Models.ThreeDS.NotificationResult { Success = false });
+            }
         }
 
         

@@ -808,6 +808,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rejected by 3DSecure.
+        /// </summary>
+        public static string RejectedBy3DSecure {
+            get {
+                return ResourceManager.GetString("RejectedBy3DSecure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string RejectedByAggregator {

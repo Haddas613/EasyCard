@@ -1089,6 +1089,11 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("ThreeDSServerTransID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
 

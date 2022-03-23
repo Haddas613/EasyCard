@@ -315,6 +315,31 @@ namespace Transactions.Api.Controllers
             await transactionsService.CreateEntity(transaction);
             events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
+            ThreeDSIntermediateData threeDSecure = null;
+
+            if (terminal.CheckoutSettings.Support3DSecure == true && !(model.PinPad == true) && token == null)
+            {
+                if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
+                {
+                    threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
+                }
+
+                // TODO: add converter
+                if (threeDSecure?.TransStatus != "Y")
+                {
+                    if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: Transactions.Shared.Messages.RejectedBy3DSecure);
+
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    }
+                    else
+                    {
+                        threeDSecure = null;
+                    }
+                }
+            }
+
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
@@ -398,6 +423,8 @@ namespace Transactions.Api.Controllers
             try
             {
                 mapper.Map(transaction, processorRequest);
+
+                processorRequest.ThreeDSecure = threeDSecure;
 
                 if (!pinpadDeal)
                 {

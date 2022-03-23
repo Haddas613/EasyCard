@@ -129,5 +129,9 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [SwaggerExclude]
         public string BitTransactionSerialId { get; set; }
+
+        [SwaggerExclude]
+        [StringLength(50)]
+        public string ThreeDSServerTransID { get; set; }
     }
 }
