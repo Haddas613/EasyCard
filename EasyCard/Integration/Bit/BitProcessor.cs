@@ -163,6 +163,7 @@ namespace Bit
                     integrationMessage.Response = responseStr;
                     integrationMessage.ResponseStatus = responseStatusStr;
                     integrationMessage.Address = requestUrl;
+                    integrationMessage.Method = "GET";
 
                     await integrationRequestLogStorageService.Save(integrationMessage);
                 }
@@ -206,16 +207,56 @@ namespace Bit
                 integrationMessage.Response = responseStr;
                 integrationMessage.ResponseStatus = responseStatusStr;
                 integrationMessage.Address = requestUrl;
+                integrationMessage.Method = "POST";
 
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }
         }
 
-        private async Task<BitTransactionResponse> DeleteBitTransaction(string paymentInitiationId, string integrationMessageId)
+        public async Task<BitTransactionResponse> DeleteBitTransaction(string paymentInitiationId, string paymentTransactionID, string integrationMessageId, string correlationID)
         {
             try
             {
-                return await apiClient.Delete<BitTransactionResponse>(configuration.BaseUrl, GetBitTransactionUrl(paymentInitiationId), BuildHeaders);
+                string requestUrl = null;
+                string requestStr = null;
+                string responseStr = null;
+                string responseStatusStr = null;
+
+                try
+                {
+                    var response = await apiClient.Delete<BitTransactionResponse>(configuration.BaseUrl, GetBitTransactionUrl(paymentInitiationId), BuildHeaders,
+                        (url, request) =>
+                        {
+                            requestStr = request;
+                            requestUrl = url;
+                        },
+                        (response, responseStatus, responseHeaders) =>
+                        {
+                            responseStr = response;
+                            responseStatusStr = responseStatus.ToString();
+                        });
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Bit integration request failed ({integrationMessageId}): {ex.Message}");
+
+                    throw new IntegrationException("Bit integration request failed", integrationMessageId);
+                }
+                finally
+                {
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionID, integrationMessageId, correlationID);
+
+                    integrationMessage.Request = requestStr;
+                    integrationMessage.Response = responseStr;
+                    integrationMessage.ResponseStatus = responseStatusStr;
+                    integrationMessage.Address = requestUrl;
+                    integrationMessage.Method = "DELETE";
+
+                    await integrationRequestLogStorageService.Save(integrationMessage);
+                }
+
             }
             catch (Exception ex)
             {
@@ -267,6 +308,7 @@ namespace Bit
                 integrationMessage.Response = responseStr;
                 integrationMessage.ResponseStatus = responseStatusStr;
                 integrationMessage.Address = requestUrl;
+                integrationMessage.Method = "POST";
 
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }
@@ -309,6 +351,7 @@ namespace Bit
                 integrationMessage.Response = responseStr;
                 integrationMessage.ResponseStatus = responseStatusStr;
                 integrationMessage.Address = requestUrl;
+                integrationMessage.Method = "POST";
 
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }

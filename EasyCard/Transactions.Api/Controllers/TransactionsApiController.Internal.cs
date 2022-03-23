@@ -313,7 +313,7 @@ namespace Transactions.Api.Controllers
             }
 
             await transactionsService.CreateEntity(transaction);
-            metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
+            events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
@@ -717,7 +717,7 @@ namespace Transactions.Api.Controllers
             transaction.ApplyAuditInfo(httpContextAccessor);
 
             await transactionsService.CreateEntity(transaction);
-            metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
+            events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
             if (billingDeal != null)
             {

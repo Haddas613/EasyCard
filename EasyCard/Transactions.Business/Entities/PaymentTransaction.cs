@@ -3,6 +3,7 @@ using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -14,7 +15,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity, IWebHookEntity
     {
         public PaymentTransaction()
         {
@@ -371,5 +372,8 @@ namespace Transactions.Business.Entities
 
             return QuickStatusFilterTypeEnum.Pending;
         }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }

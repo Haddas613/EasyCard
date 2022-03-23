@@ -17,6 +17,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Events;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Resources;
 using Shared.Helpers.Services;
@@ -51,7 +52,7 @@ namespace Transactions.Api.Controllers.External
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly ITransactionsService transactionsService;
-        private readonly IMetricsService metrics;
+        private readonly IEventsService events;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
@@ -69,7 +70,7 @@ namespace Transactions.Api.Controllers.External
              ITerminalsService terminalsService,
              IMapper mapper,
              ILogger<BitApiController> logger,
-             IMetricsService metrics,
+             IEventsService events,
              IHttpContextAccessorWrapper httpContextAccessor,
              BitProcessor bitProcessor,
              ISystemSettingsService systemSettingsService,
@@ -82,7 +83,7 @@ namespace Transactions.Api.Controllers.External
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
             this.transactionsService = transactionService;
-            this.metrics = metrics;
+            this.events = events;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.mapper = mapper;
@@ -169,7 +170,7 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-                metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
+                events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
@@ -581,6 +582,8 @@ namespace Transactions.Api.Controllers.External
                     sucessCapture = false;
                     logger.LogError($"Failed to finalize Transaction for Bit: Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription}). Transaction id: {transaction.PaymentTransactionID}");
                     failedResponse = BadRequest(new OperationResponse($"Transaction {transaction.PaymentTransactionID} Bit state is not final {bitTransaction.RequestStatusCode} ({bitTransaction.RequestStatusDescription})", StatusEnum.Error));
+
+                    await bitProcessor.DeleteBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
                 }
 
                 if (bitTransaction != null)

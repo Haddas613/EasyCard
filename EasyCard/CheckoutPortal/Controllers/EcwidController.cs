@@ -110,6 +110,7 @@ namespace CheckoutPortal.Controllers
                 }
                 else if (exisingConsumers.NumberOfRecords > 1)
                 {
+                    // TODO: proper handler
                     throw new ApplicationException("There are several consumers with same Consumer code in ECNG");
                 }
 
