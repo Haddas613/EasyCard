@@ -96,6 +96,9 @@
   "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
   "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
   "TransmitTransactionsByTerminal": "שידור עסקאות מאת מסוף",
+  "SecurityHeader": "כותרת אבטחה",
+  "WebhookEvent": "Webhook אירוע",
+  "FailureEvent": "אירוע כשל",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -364,6 +367,8 @@
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
   "SelectForTrigger": "חיובי בילינג",
   "CustomerExternalReference": "מזהה חיצוני",
+  "Key": "מַפְתֵחַ",
+  "Value": "ערך",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

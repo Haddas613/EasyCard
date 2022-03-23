@@ -73,7 +73,7 @@
               </v-col>
             </template>
             <template v-slot:right="{ item }">
-              <v-col cols="12" md="9" class="text-start text-oneline">
+              <v-col cols="12" md="12" class="text-start text-oneline">
                 <span class="body-1"
                   ><v-text-field v-model="item.url" :label="$t('URL')"></v-text-field
                 ></span>
@@ -124,13 +124,9 @@ export default {
       webhookDialog: false,
       valid: false,
       vr: ValidationRules,
-      loading: false,
     };
   },
   async mounted() {
-    // let webhooks = await this.$api.terminals.getAvailableWebhooks({
-    //   //showForTemplatesOnly: this.isTemplate
-    // });
     if (!this.model.webHooksConfiguration) {
       this.$set(this.model, 'webHooksConfiguration', {
         securityHeader: {
@@ -190,9 +186,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.invalid-integration {
-  border: 1px solid var(--v-error-base);
-}
-</style>
