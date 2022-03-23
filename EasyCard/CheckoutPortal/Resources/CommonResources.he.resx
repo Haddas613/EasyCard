@@ -258,4 +258,10 @@
   <data name="SettingsWereSavedSuccessfully" xml:space="preserve">
     <value>ההגדרות נשמרו בהצלחה</value>
   </data>
+  <data name="PaymentLinkNoLongerAvailable" xml:space="preserve">
+    <value>קישור לתשלום אינו זמין יותר</value>
+  </data>
+  <data name="ChoosePaymentMethod" xml:space="preserve">
+    <value>בחר אמצעי תשלום</value>
+  </data>
 </root>

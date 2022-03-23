@@ -26,32 +26,39 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        // TODO: this is temporary implementation
         public IQueryable<BillingSummaryReport> GetBillingSummaryReport(bool sharedTerminal)
         {
             return GetBillingDeals(sharedTerminal)
-                .Where(d => d.DealDetails.ConsumerExternalReference != null)
-                .GroupBy(d => d.DealDetails.ConsumerExternalReference, d => d.TransactionAmount, (d1, d2) =>
-                new BillingSummaryReport { ExternalReference = d1, BillingDealsNumber = d2.Count(), TotalTransactionsAmounts = d2.Sum() });
+                .Select(d =>
+                new BillingSummaryReport { BillingDealID = d.BillingDealID, ConsumerExternalReference = d.DealDetails.ConsumerExternalReference, NextScheduledTransaction = d.NextScheduledTransaction, TransactionAmount = d.TransactionAmount });
         }
 
         public IQueryable<BillingDeal> GetBillingDeals(bool sharedTerminal)
         {
-            var tokens = context.BillingDeals.AsNoTracking();
+            var billings = context.BillingDeals.AsNoTracking();
 
-            tokens = tokens.Where(t => t.Active);
+            billings = billings.Where(t => t.Active);
 
             if (user.IsAdmin())
             {
                 throw new ApplicationException("This method should not be used by Admin");
             }
-            else if (user.IsTerminal() && !sharedTerminal)
+            else if (user.IsTerminal())
             {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return tokens.Where(t => t.TerminalID == terminalID);
+                if (!sharedTerminal)
+                {
+                    var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                    return billings.Where(t => t.TerminalID == terminalID);
+                }
+                else
+                {
+                    return billings.Where(t => t.MerchantID == user.GetMerchantID());
+                }
             }
             else
             {
-                var response = tokens.Where(t => t.MerchantID == user.GetMerchantID());
+                var response = billings.Where(t => t.MerchantID == user.GetMerchantID());
                 var terminals = user.GetTerminalID()?.Cast<Guid?>();
                 if (terminals?.Count() > 0)
                 {

@@ -3,6 +3,13 @@
 @inject CommonLocalizationService localizer
 
 
+<form asp-action="BitPaymentCompleted" method="get" hidden id="bit-completed-form">
+    <input type="hidden" name="PaymentTransactionID" id="PaymentTransactionID" />
+    <input type="hidden" name="TransactionSerialId" id="TransactionSerialId" />
+    <input type="hidden" name="PaymentInitiationId" id="PaymentInitiationId" />
+    <div id="bit-completed-form-extension"></div> 
+</form>
+
 <form asp-action="Charge" method="post" id="bit-form">
     <input type="hidden" asp-for="RedirectUrl" id="Bit_RedirectUrl" />
     <input type="hidden" asp-for="PaymentRequest" id="Bit_PaymentRequest" />
@@ -73,15 +80,33 @@
         <button class="btn btn-outline-danger mx-1" id="bit-cancel-btn">
             @localizer.Get("CancelPayment")
         </button>
-        <button class="btn btn-secondary mx-1" type="button" id="paywithbit">
+        @*<button class="btn btn-secondary mx-1" type="button" id="paywithbit" data-invokebit="false">
             <img height="20px" src="~/img/bit-logo-white.svg" />
             @localizer.Get("PayWithBit")
-        </button>
+        </button>*@
+        <img class="cursor-pointer" height="47px" src="~/img/button_desktop.svg" role="button" id="paywithbit"/>
     </div>
 </form>
 
+<div id="bit-payment-area" hidden class="row justify-content-center">
+    <div class="col-md-12">
+        <h3 class="text-center">@localizer.Get("BitPayment")</h3>
+    </div>
+
+    <div class="col-md-6">
+        <div id="bitcom-button-container"></div>
+    </div>
+</div>
+
 <script nws-csp-add-nonce="true">
-    document.addEventListener("DOMContentLoaded", function() {
+    if( document.readyState !== 'loading' ) {
+        init();
+    } else {
+        document.addEventListener('DOMContentLoaded', function () {
+            init();
+        });
+    }
+    function init(){
         let amt = parseFloat($("#Bit_Amount").val());
         if (!amt) {
             $("#Bit_Amount").val(amt.toFixed(2))
@@ -94,21 +119,96 @@
 
         $("#paywithbit").on("click", function (e) {
             e.preventDefault();
+            if (window.bitdata){
+                invokeBit();
+            }
+
+            //clear bit form to only validate initial bit form, not extended
+            $("#bit-completed-form-extension").html('');
             if (!$("#bit-form").valid()) {
                 return;
             }
+
+            if (window.bitloading == true){
+                return;
+            }
+            window.bitloading = true;
+
+            
             $("#PayWithBit").val(true);
-            $("#bit-form").submit();
+            initiateBit();
+            
         })
 
-        $("#bit-form").on("submit", function (e) {
-            if (!$("#bit-form").valid()) {
-                e.preventDefault();
-                return;
-            }
+        function initiateBit() {
+            //extend bit completed form with every field of bit form
+            $("#bit-completed-form-extension").html($("#bit-form").html());
+
+            let payload = $('#bit-form').serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
 
             document.getElementById("loading-spinner").hidden = false;
-            document.getElementsByTagName("body")[0].classList.add("no-scroll")
-        })
-    });
+            document.getElementsByTagName("body")[0].classList.add("no-scroll");
+
+            let url = $("#bit-form").attr('action');
+            $.post(url, payload, function(data,status,xhr){
+                if(xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json"){ //to display error, re-render the page
+                    return ("#bit-form").submit();
+                }
+
+                if(data.mobileRedirectUrl){ //mobile devices only
+                    return location.href = data.mobileRedirectUrl;
+                }
+
+                $("#PaymentTransactionID").val(data.paymentTransactionID);
+                $("#TransactionSerialId").val(data.transactionSerialId);
+                $("#PaymentInitiationId").val(data.paymentInitiationId);
+
+                document.getElementById("loading-spinner").hidden = true;
+                document.getElementsByTagName("body")[0].classList.remove("no-scroll")
+                //$("#bit-payment-area").attr('hidden', false);
+                //$("#bit-form").attr('hidden', true);
+                //$("#payment-type-area").attr('hidden', true);
+
+                window.bitdata = {
+                    transactionSerialId: data.transactionSerialId,
+                    paymentInitiationId: data.paymentInitiationId,
+                };
+                invokeBit();
+                
+                //BitPayment.Buttons({
+                //    onCreate: function(openBitPaymentPage){
+                //        openBitPaymentPage(transaction);
+                //    },
+                //    onApproved: function(details){
+                //        $("#bit-completed-form").submit();
+                //    }
+                //}).render('#bitcom-button-container');
+            });
+        };
+
+        function invokeBit(){
+            BitPayment.pay({
+                transactionSerialId: window.bitdata.transactionSerialId,
+                paymentInitiationId: window.bitdata.paymentInitiationId,
+                onCreate: function(openBitPaymentPage){
+                    openBitPaymentPage(transaction);
+                },
+                onApproved: function(details){
+                    document.getElementById("loading-spinner").hidden = false;
+                    document.getElementsByTagName("body")[0].classList.add("no-scroll");
+                    $("#bit-completed-form").submit();
+                },
+                onCancel: function (data) {
+                    window.bitdata = null;
+                    document.getElementById("loading-spinner").hidden = true;
+                    window.bitloading = false;
+                    document.getElementsByTagName("body")[0].classList.remove("no-scroll")
+                },
+            });
+            window.bitloading = false;
+        };
+    }
 </script>

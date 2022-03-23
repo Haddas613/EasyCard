@@ -261,4 +261,10 @@
   <data name="SettingsWereSavedSuccessfully" xml:space="preserve">
     <value>Settings were saved successfully</value>
   </data>
+  <data name="PaymentLinkNoLongerAvailable" xml:space="preserve">
+    <value>Payment link no longer available</value>
+  </data>
+  <data name="ChoosePaymentMethod" xml:space="preserve">
+    <value>Choose payment method</value>
+  </data>
 </root>

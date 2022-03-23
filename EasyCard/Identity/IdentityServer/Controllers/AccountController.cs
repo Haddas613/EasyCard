@@ -256,7 +256,7 @@ namespace IdentityServer.Controllers
                         return RedirectToAction(nameof(ForceUpdatePassword));
                     }
 
-                    return RedirectToAction(nameof(LoginWith2faChooseType));
+                    return RedirectToAction(nameof(LoginWith2faChooseType), new { ReturnUrl = model.ReturnUrl });
                 }
 
                 if (result.IsLockedOut)
@@ -341,7 +341,7 @@ namespace IdentityServer.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginWith2faChooseType()
+        public async Task<IActionResult> LoginWith2faChooseType(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -359,6 +359,7 @@ namespace IdentityServer.Controllers
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
 
             ViewBag.HasPhone = !string.IsNullOrWhiteSpace(phoneNumber);
+            ViewData["ReturnUrl"] = returnUrl;
 
             return View();
         }
@@ -416,7 +417,7 @@ namespace IdentityServer.Controllers
                 await emailSender.Send2faEmailAsync(user.Email, code);
             }
 
-            return RedirectToAction(nameof(LoginWith2fa), new { authType = request.LoginType });
+            return RedirectToAction(nameof(LoginWith2fa), new { authType = request.LoginType, returnUrl = request.ReturnUrl });
         }
 
         [HttpGet]

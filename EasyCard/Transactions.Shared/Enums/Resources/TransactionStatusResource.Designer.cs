@@ -169,6 +169,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refund.
+        /// </summary>
+        public static string Refund {
+            get {
+                return ResourceManager.GetString("Refund", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rejected by aggregator.
         /// </summary>
         public static string RejectedByAggregator {

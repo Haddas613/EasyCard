@@ -151,9 +151,6 @@ namespace CheckoutPortal
             services.AddMvc().AddViewLocalization();
             services.AddSingleton<CommonLocalizationService>();
 
-            // TODO: Temporary solution
-            services.AddSingleton<MemoryPaymentRequestStorage>();
-
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 

@@ -66,7 +66,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TransactionTypes, o => o.MapFrom(src => src.TransactionTypes))
                 .ForMember(d => d.PinPadDevices, o => o.MapFrom(src => src.PinPadDevices))
                 .ForMember(d => d.EnabledFeatures, o => o.MapFrom(src => src.EnabledFeatures))
-                .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
+                .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => !d.IsRefund && (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()

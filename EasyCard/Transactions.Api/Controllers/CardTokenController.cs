@@ -269,8 +269,7 @@ namespace Transactions.Api.Controllers
                 var transaction = new PaymentTransaction();
                 mapper.Map(terminal, transaction);
 
-                transaction.MerchantIP = GetIP();
-                transaction.CorrelationId = GetCorrelationID();
+                transaction.ApplyAuditInfo(httpContextAccessor);
 
                 transaction.CardPresence = CardPresenceEnum.CardNotPresent; // TODO
                 transaction.JDealType = JDealTypeEnum.J5;

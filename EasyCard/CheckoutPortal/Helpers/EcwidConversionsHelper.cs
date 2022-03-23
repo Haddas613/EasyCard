@@ -99,7 +99,7 @@ namespace CheckoutPortal.Helpers
         {
             return source.Select(e => new Item
             {
-                ExternalReference = e.ProductId.ToString(),
+                EcwidItemId = e.ProductId.ToString(),
                 Price = e.Price,
                 Quantity = e.Quantity,
                 ItemName = e.Name

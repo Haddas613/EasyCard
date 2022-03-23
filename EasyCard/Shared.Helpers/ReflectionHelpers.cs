@@ -1,4 +1,5 @@
-﻿using Shared.Helpers.Models.Attributes;
+﻿using Newtonsoft.Json;
+using Shared.Helpers.Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,12 @@ namespace Shared.Helpers
             }
 
             return mapping;
+        }
+
+        public static T Clone<T>(T source)
+        {
+            var serialized = JsonConvert.SerializeObject(source);
+            return JsonConvert.DeserializeObject<T>(serialized);
         }
     }
 }

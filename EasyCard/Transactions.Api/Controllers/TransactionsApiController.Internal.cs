@@ -131,6 +131,7 @@ namespace Transactions.Api.Controllers
 
             EcwidTransactionExtension ecwidPayload = null;
 
+            // TODO: this should be reworked
             if (transaction.Extension != null)
             {
                 try
@@ -246,8 +247,7 @@ namespace Transactions.Api.Controllers
             // map consumer name from card details if needed
             transaction.DealDetails.UpdateDealDetails(transaction.CreditCardDetails);
 
-            transaction.MerchantIP = GetIP();
-            transaction.CorrelationId = GetCorrelationID();
+            transaction.ApplyAuditInfo(httpContextAccessor);
 
             var terminalAggregator = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
@@ -654,7 +654,7 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
@@ -714,8 +714,7 @@ namespace Transactions.Api.Controllers
 
             transaction.Calculate();
 
-            transaction.MerchantIP = GetIP();
-            transaction.CorrelationId = GetCorrelationID();
+            transaction.ApplyAuditInfo(httpContextAccessor);
 
             await transactionsService.CreateEntity(transaction);
             events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);

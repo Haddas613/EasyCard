@@ -7,7 +7,7 @@ namespace TestAdminApiClient
     {
         static void Main(string[] args)
         {
-            var serviceFactory = new ServiceFactory("FLMpBqu8gD3UXw8AAWT+hZMHMCzz8WWR8nEOAhcR8tQwn/4/X4OSO1oQ+td7A3IuzUWhsdJfbQhH4QLfGsnA4w==", DesktopEasyCardConvertorECNG.Environment.LIVE);
+            var serviceFactory = new ServiceFactory("yuwsCT8cbJVgw2W6", DesktopEasyCardConvertorECNG.Environment.DEV);
 
 
             //var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
@@ -15,24 +15,27 @@ namespace TestAdminApiClient
 
             var trans = transactionsService.GetTransactions(new Transactions.Api.Models.Transactions.TransactionsFilter
             {
-                TerminalID = Guid.Parse("a773426f-acf4-41c9-8738-adef00cd9b21"),
-                Statuses = new System.Collections.Generic.List<Transactions.Shared.Enums.TransactionStatusEnum> { Transactions.Shared.Enums.TransactionStatusEnum.Completed },
-                Take = 1000
+                 DocumentOrigin = Transactions.Shared.Enums.DocumentOriginEnum.Bit, QuickStatusFilter = Transactions.Shared.Enums.QuickStatusFilterTypeEnum.Pending
             }).Result;
 
-            foreach (var tran in trans.Data)
+            foreach (var transaction in trans.Data)
             {
-                if (tran.InvoiceID == null)
+                try
                 {
-                    Console.WriteLine(tran.PaymentTransactionID);
+                    var res = transactionsService.BitTransactionPostProcessing(transaction.PaymentTransactionID).Result;
 
-                    var res = transactionsService.CreateInvoiceForTransaction(tran.PaymentTransactionID).Result;
-
-                    Console.WriteLine(res.EntityUID);
+                    if (res.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+                    {
+                       Console.WriteLine($"Failed to process Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Successfully processed Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine(tran.InvoiceID);
+                    Console.WriteLine($"Failed to process Bit transaction {transaction.PaymentTransactionID}: {ex.Message}");
                 }
             }
 

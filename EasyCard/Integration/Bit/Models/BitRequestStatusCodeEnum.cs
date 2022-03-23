@@ -1,9 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace Bit.Models
 {
+    public class BitRequestStatusCodeResult
+    {
+        public BitRequestStatusCodeResult(BitRequestStatusCodeEnum bitRequestStatusCode, bool final, bool failed)
+        {
+            BitRequestStatusCode = bitRequestStatusCode;
+            Final = final;
+            Failed = failed;
+        }
+
+        static BitRequestStatusCodeResult()
+        {
+            var allCodesList = new List<BitRequestStatusCodeResult>
+            {
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.FinalCanceled,  true, true),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.FinalDenied,  true, true),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.RequestPending,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.CanceledByBit,  true, true),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Expired,  true, true),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.CreditExtensionPerformed,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Refunded,  true, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.Charged,  true, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.RequestWasMade,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.ConfirmingInProcess,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.ConfirmingRefundInProcess,  false, false),
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.TransferredToManualBilling,  true, true), // ?
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.TransferredToManualRefund,  true, true), // ?
+                new BitRequestStatusCodeResult( BitRequestStatusCodeEnum.WaitingForCustomerToJoin,  false, false),
+            };
+
+            allCodes = new ReadOnlyDictionary<BitRequestStatusCodeEnum, BitRequestStatusCodeResult>(allCodesList.ToDictionary(d => d.BitRequestStatusCode));
+        }
+
+        public static BitRequestStatusCodeResult ParseResult(string resultCodeStr)
+        {
+            if (!int.TryParse(resultCodeStr, out var resultCode))
+            {
+                return null;
+            }
+
+            if (!Enum.IsDefined(typeof(BitRequestStatusCodeEnum), resultCode))
+            {
+                return null;
+            }
+
+            if (!allCodes.TryGetValue((BitRequestStatusCodeEnum)resultCode, out var res))
+            {
+                return null;
+            }
+
+            return res;
+        }
+
+        public BitRequestStatusCodeEnum BitRequestStatusCode { get; set; }
+
+        public bool Final { get; set; }
+
+        public bool Failed { get; set; }
+
+        private static readonly IReadOnlyDictionary<BitRequestStatusCodeEnum, BitRequestStatusCodeResult> allCodes;
+
+        public static IReadOnlyDictionary<BitRequestStatusCodeEnum, BitRequestStatusCodeResult> AllCodes { get { return allCodes; } }
+    }
+
     public enum BitRequestStatusCodeEnum
     {
         /// <summary>

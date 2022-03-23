@@ -123,6 +123,7 @@
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
   "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
+  "Number": "Number",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -431,6 +432,7 @@
   "FailedAttemptsCount": "Failed Attempts Count",
   "SelectForTrigger": "Select for Trigger",
   "CustomerExternalReference": "Customer External Reference",
+  "CreateInvoicingConsumer": "Create Invoicing Consumer",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

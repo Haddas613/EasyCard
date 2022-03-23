@@ -151,6 +151,11 @@
               :label="$t('UseQuickChargeByDefault')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.createInvoicingConsumer"
+              :label="$t('CreateInvoicingConsumer')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col md="4" cols="12">
             <v-switch

@@ -42,6 +42,8 @@ namespace Transactions.Shared.Enums
 
         InvoiceCreated = 17,
 
-        ProcessorPreTransmissionCommited = 18
+        ProcessorPreTransmissionCommited = 18,
+
+        RefundCreated = 19
     }
 }

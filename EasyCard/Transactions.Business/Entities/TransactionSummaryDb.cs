@@ -33,6 +33,11 @@ namespace Transactions.Business.Entities
         /// </summary>
         public TransactionStatusEnum Status { get; set; }
 
+        public QuickStatusFilterTypeEnum QuickStatus
+        {
+            get { return PaymentTransaction.GetQuickStatus(Status, JDealType); }
+        }
+
         public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
 
         /// <summary>

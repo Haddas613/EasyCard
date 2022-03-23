@@ -124,6 +124,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose payment method.
+        /// </summary>
+        public static string ChoosePaymentMethod {
+            get {
+                return ResourceManager.GetString("ChoosePaymentMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit.
         /// </summary>
         public static string Credit {
@@ -300,6 +309,15 @@ namespace CheckoutPortal.Resources {
         public static string PaymentError {
             get {
                 return ResourceManager.GetString("PaymentError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment link no longer available.
+        /// </summary>
+        public static string PaymentLinkNoLongerAvailable {
+            get {
+                return ResourceManager.GetString("PaymentLinkNoLongerAvailable", resourceCulture);
             }
         }
         

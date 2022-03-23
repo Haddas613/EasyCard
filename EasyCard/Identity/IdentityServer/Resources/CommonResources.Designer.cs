@@ -19,7 +19,7 @@ namespace IdentityServer.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CommonResources {
@@ -232,7 +232,7 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FirstName.
+        ///   Looks up a localized string similar to First name.
         /// </summary>
         public static string FirstName {
             get {
@@ -331,7 +331,7 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LastName.
+        ///   Looks up a localized string similar to Last name.
         /// </summary>
         public static string LastName {
             get {
@@ -570,6 +570,24 @@ namespace IdentityServer.Resources {
         public static string Register {
             get {
                 return ResourceManager.GetString("Register", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration request received.
+        /// </summary>
+        public static string RegistrationRequestReceived {
+            get {
+                return ResourceManager.GetString("RegistrationRequestReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We will contact you shortly about how you can join Easy Card..
+        /// </summary>
+        public static string RegistrationSuccessMessage {
+            get {
+                return ResourceManager.GetString("RegistrationSuccessMessage", resourceCulture);
             }
         }
         

@@ -75,4 +75,14 @@ export default class TransactionsApi {
   async selectJ5(transactionID){
     return await this.base.post(this.transactionsUrl + `/selectJ5/${transactionID}`);
   }
+
+  /** bit refund */
+  async chargeback(transactionID, amount){
+    let payload = {
+      existingPaymentTransactionID: transactionID,
+      refundAmount: amount,
+    };
+
+    return await this.base.post(this.transactionsUrl + '/chargeback', payload,  { showBadRequestToastr: false });
+  }
 }

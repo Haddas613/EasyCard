@@ -177,4 +177,7 @@
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>שודר ע"י המעבד</value>
   </data>
+  <data name="Refund" xml:space="preserve">
+    <value>הֶחזֵר</value>
+  </data>
 </root>

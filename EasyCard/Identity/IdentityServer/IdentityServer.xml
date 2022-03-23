@@ -178,7 +178,22 @@
             Last name
             </summary>
         </member>
-        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.MarketingName">
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel_old.BusinessName">
+            <summary>
+            Business name
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel_old.FirstName">
+            <summary>
+            First name
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel_old.LastName">
+            <summary>
+            Last name
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel_old.MarketingName">
             <summary>
             Marketing name
             </summary>
@@ -296,7 +311,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.FirstName">
             <summary>
-              Looks up a localized string similar to FirstName.
+              Looks up a localized string similar to First name.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.FirstNameValidationMessage">
@@ -351,7 +366,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LastName">
             <summary>
-              Looks up a localized string similar to LastName.
+              Looks up a localized string similar to Last name.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LastNameValidationMessage">
@@ -482,6 +497,16 @@
         <member name="P:IdentityServer.Resources.CommonResources.Register">
             <summary>
               Looks up a localized string similar to Register.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.RegistrationRequestReceived">
+            <summary>
+              Looks up a localized string similar to Registration request received.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.RegistrationSuccessMessage">
+            <summary>
+              Looks up a localized string similar to We will contact you shortly about how you can join Easy Card..
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.RequestID">

@@ -234,13 +234,18 @@ namespace Transactions.Business.Entities
             LastError = errorMessage;
             LastErrorCorrelationID = correlationID;
             FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
-            if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
-            {
-                Active = false;
-            }
-            else
+            //if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
+            //{
+            //    Active = false;
+            //}
+            //else
             {
                 NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
+
+                if (NextScheduledTransaction.Value.Day > 20)
+                {
+                    NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
+                }
             }
         }
     }

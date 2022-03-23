@@ -49,29 +49,24 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PaymentTransaction, TransactionResponse>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
-                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
 
             CreateMap<PaymentTransaction, TransactionResponseAdmin>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
-                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
 
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
-                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<PaymentTransaction, TransactionSummaryAdmin>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
-                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<TransactionSummaryDb, TransactionSummary>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CardOwnerName))
-                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CardOwnerName));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
                 .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress))
