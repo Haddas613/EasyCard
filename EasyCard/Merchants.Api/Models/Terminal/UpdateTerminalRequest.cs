@@ -2,6 +2,7 @@
 using Merchants.Shared.Models;
 using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
+using Shared.Helpers.WebHooks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -35,5 +36,7 @@ namespace Merchants.Api.Models.Terminal
         //public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
 
         public TerminalBankDetails BankDetails { get; set; }
+
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }

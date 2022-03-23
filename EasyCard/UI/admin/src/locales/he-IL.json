@@ -124,6 +124,12 @@
   "TriggerBillingDealsByTerminal": "הפעל עסקאות בילינג לפי מסוף",
   "TransmitTransactionsByTerminal": "שידור עסקאות מאת מסוף",
   "Number": "מספר",
+  "Webhooks": "Webhooks",
+  "SecurityHeader": "כותרת אבטחה",
+  "Key": "מַפְתֵחַ",
+  "Value": "ערך",
+  "WebhookEvent": "Webhook אירוע",
+  "FailureEvent": "אירוע כשל",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -505,6 +511,7 @@
   "TransmitAll": "שידר הכל",
   "DisableSelected": "עסקאות בילינג נחסמו",
   "Approve": "אישור",
+  "AddWebhookEvent": "Webhook הוסף אירוע",
 
   "--AUTH--": null,
   "Login": "כניסה",
