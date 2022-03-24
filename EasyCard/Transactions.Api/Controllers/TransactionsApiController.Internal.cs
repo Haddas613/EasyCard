@@ -995,7 +995,10 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
 
-                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty)
+                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty),
+
+                new TextSubstitution(nameof(transaction.SpecialTransactionType), SharedIntegration.Resources.SpecialTransactionTypeResource.ResourceManager.GetString(transaction.SpecialTransactionType.ToString())),
+                new TextSubstitution(nameof(transaction.DocumentOrigin), transaction.DocumentOrigin.ToString()),
             };
 
             var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
