@@ -36,7 +36,12 @@
           </router-link>
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
-          <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
+          <b
+            class="justify-currency"
+            :class="{'red--text': item.specialTransactionType == 'refund'}"
+          >
+          {{item.transactionAmount | currency(item.currency)}}
+          </b>
         </template>
         <template v-slot:item.transactionTimestamp="{ item }">
          {{item.$transactionTimestamp | ecdate}}

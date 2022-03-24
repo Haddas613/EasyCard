@@ -21,6 +21,21 @@
         </div>
       </div>
       <div class="print-entity">
+        <div>{{$t('SpecialTransactionType')}}</div>
+        <div>
+          <b v-if="dictionaries.specialTransactionTypeEnum">
+            {{dictionaries.specialTransactionTypeEnum[model.specialTransactionType]}}
+          </b>
+          <b v-else>{{ model.specialTransactionType }}</b>
+        </div>
+      </div>
+      <div class="print-entity">
+        <div>{{$t('Origin')}}</div>
+        <div>
+          <b>{{model.documentOrigin}}</b>
+        </div>
+      </div>
+      <div class="print-entity">
         <div>{{$t('TransactionTime')}}</div>
         <div>
           <b>{{model.$transactionTimestamp | ecdate('LLLL')}}</b>
@@ -164,8 +179,13 @@ export default {
   },
   data() {
     return {
-      model: this.transaction
+      model: this.transaction,
+      dictionaries: {},
     };
+  },
+  async mounted () {
+    let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+    this.dictionaries = $dictionaries;
   },
   methods: {
     print() {

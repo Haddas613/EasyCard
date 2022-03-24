@@ -79,7 +79,7 @@
             hide-details="true"
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" class="py-0">
+        <v-col cols="12" md="6" class="py-0">
           <v-switch :label="$t('UsePaymentInfoAsDonation')" v-model="model.settings.paymentInfoAsDonation"></v-switch>
         </v-col>
       </v-row>

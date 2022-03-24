@@ -443,6 +443,7 @@
   "SelectForTrigger": "חיובי בילינג",
   "CustomerExternalReference": "מזהה חיצוני",
   "CreateInvoicingConsumer": "צור לקוח חשבונית",
+  "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

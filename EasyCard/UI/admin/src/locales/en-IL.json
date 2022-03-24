@@ -439,6 +439,7 @@
   "SelectForTrigger": "Select for Trigger",
   "CustomerExternalReference": "Customer External Reference",
   "CreateInvoicingConsumer": "Create Invoicing Consumer",
+  "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
