@@ -102,6 +102,9 @@ const routes = [
                 name: 'Transactions',
                 path: 'transactions/list',
                 keepAlive: 'TransactionsFiltered',
+                meta: {
+                    keepAlive: 'ItemsList',
+                },
                 component: () =>
                     import ('../pages/transactions/TransactionsFiltered.vue'),
                     //import ('../pages/transactions/TransactionsList.vue'),
@@ -110,6 +113,9 @@ const routes = [
                 name: 'Transmissions',
                 path: 'transmissions/list',
                 keepAlive: 'TransmissionsList',
+                meta: {
+                    keepAlive: 'ItemsList',
+                },
                 component: () =>
                     import ('../pages/transmissions/TransmissionsList.vue'),
             },
@@ -129,14 +135,18 @@ const routes = [
                     backBtn: 'Dashboard'
                 },
                 props: true,
-                keepAlive: 'TransactionsFiltered',
+                meta: {
+                    keepAlive: 'TransactionsFiltered',
+                },
                 component: () =>
                     import ('../pages/transactions/TransactionsFiltered.vue'),
             },
             {
                 name: 'Items',
                 path: 'items/list',
-                keepAlive: 'ItemsList',
+                meta: {
+                    keepAlive: 'ItemsList',
+                },
                 component: () =>
                     import ('../pages/items/ItemsList.vue'),
             },
@@ -170,7 +180,9 @@ const routes = [
             {
                 name: 'Customers',
                 path: 'customers/list',
-                keepAlive: 'CustomersList',
+                meta: {
+                    keepAlive: 'CustomersList',
+                },
                 component: () =>
                     import ('../pages/customers/CustomersList.vue'),
             },
@@ -222,7 +234,9 @@ const routes = [
             {
                 name: 'BillingDeals',
                 path: 'billing-deals/list',
-                keepAlive: 'BillingDealsList',
+                meta: {
+                    keepAlive: 'BillingDealsList',
+                },
                 props: true,
                 meta: {
                     guard: allowedForManagerOrAdminGuard
@@ -233,7 +247,9 @@ const routes = [
             {
                 name: 'FutureBillingDeals',
                 path: 'future-billing-deals/list',
-                keepAlive: 'FutureBillingDealsList',
+                meta: {
+                    keepAlive: 'FutureBillingDealsList',
+                },
                 props: true,
                 meta: {
                     guard: allowedForManagerOrAdminGuard
@@ -274,7 +290,9 @@ const routes = [
             {
                 name: 'Invoices',
                 path: 'invoicing/list',
-                keepAlive: 'InvoicesList',
+                meta: {
+                    keepAlive: 'InvoicesList',
+                },
                 props: true,
                 component: () =>
                     import ('../pages/invoicing/InvoicesList.vue'),
@@ -291,7 +309,9 @@ const routes = [
             {
                 name: 'PaymentRequests',
                 path: 'payment-requests/list',
-                keepAlive: 'PaymentRequestsList',
+                meta: {
+                    keepAlive: 'PaymentRequestsList',
+                },
                 props: true,
                 component: () =>
                     import ('../pages/payment-requests/PaymentRequestsList.vue'),
@@ -317,7 +337,9 @@ const routes = [
             {
                 name: 'MasavFiles',
                 path: 'masav-files/list',
-                keepAlive: 'MasavFilesList',
+                meta: {
+                    keepAlive: 'MasavFilesList',
+                },
                 props: true,
                 meta: {
                     backBtn: 'Dashboard'

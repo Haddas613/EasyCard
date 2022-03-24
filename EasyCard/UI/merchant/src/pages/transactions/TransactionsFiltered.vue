@@ -347,7 +347,7 @@ export default {
     manually update menu on route change to make sure header has correct value*/
     $route (to, from){
       /** only update header if we returned to the same (cached) page */
-      if(to.name == this.$route.name){
+      if(to.meta.keepAlive == this.$options.name){
         this.initThreeDotMenu();
       }
     }

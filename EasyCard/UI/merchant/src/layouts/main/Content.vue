@@ -38,7 +38,7 @@ export default {
   },
   props: ["drawer"],
   mounted () {
-    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[1].children, r => r.keepAlive).map(r => r.keepAlive);
+    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[1].children, r => (r.meta && r.meta.keepAlive)).map(r => r.meta.keepAlive);
   },
   computed: {
     drawerObj: {
