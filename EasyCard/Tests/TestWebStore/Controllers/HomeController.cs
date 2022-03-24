@@ -18,11 +18,13 @@ namespace TestWebStore.Controllers
     {
         private readonly ILogger<HomeController> logger;
         private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
+        private readonly WebHookStorage webHookStorage;
 
-        public HomeController(ILogger<HomeController> logger, IThreeDSIntermediateStorage threeDSIntermediateStorage)
+        public HomeController(ILogger<HomeController> logger, IThreeDSIntermediateStorage threeDSIntermediateStorage, WebHookStorage webHookStorage)
         {
             this.logger = logger;
             this.threeDSIntermediateStorage = threeDSIntermediateStorage;
+            this.webHookStorage = webHookStorage;
         }
 
         public IActionResult Index()
@@ -116,6 +118,45 @@ namespace TestWebStore.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Webhook()
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                {
+                    var res = await reader.ReadToEndAsync();
+
+                    var wh = JsonConvert.DeserializeObject<WebHookData>(res);
+
+                    if (wh != null)
+                    {
+                        await webHookStorage.StoreData(wh);
+                    }
+                    else
+                    {
+                        logger.LogError($"Webhook data is empty: {res}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Webhook error: {ex.Message}");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Webhooks()
+        {
+            var res = await webHookStorage.GetData();
+
+            return View(res);
         }
     }
 }

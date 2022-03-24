@@ -1,4 +1,5 @@
 ﻿using Microsoft.ApplicationInsights;
+using Shared.Helpers;
 using Shared.Helpers.Events;
 using Shared.Helpers.Services;
 using System;
@@ -19,6 +20,7 @@ namespace Transactions.Api.Services
                 return ms.Raise(
                     new CustomEvent
                     {
+                        EventID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow),
                         MerchantID = paymentTransaction.MerchantID,
                         TerminalID = paymentTransaction.TerminalID,
                         CorrelationId = paymentTransaction.CorrelationId,

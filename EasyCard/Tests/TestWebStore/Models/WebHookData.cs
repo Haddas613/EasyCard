@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Azure;
+using Azure.Data.Tables;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Shared.Helpers.Events
+namespace TestWebStore.Models
 {
-    public class CustomEventBase
+    public class WebHookData : ITableEntity
     {
-        public Guid? EventID { get; set; }
-
         public Guid? MerchantID { get; set; }
 
         public Guid? TerminalID { get; set; }
@@ -27,5 +28,23 @@ namespace Shared.Helpers.Events
         public bool IsFailureEvent { get; set; }
 
         public string ErrorMesage { get; set; }
+
+        public string EventID
+        {
+            get => this.RowKey;
+
+            set
+            {
+                this.RowKey = value;
+            }
+        }
+
+        public string PartitionKey { get; set; } = "1";
+
+        public string RowKey { get; set; }
+
+        public DateTimeOffset? Timestamp { get; set; }
+
+        public ETag ETag { get; set; }
     }
 }
