@@ -406,12 +406,63 @@ export default {
       await this.getDataFromApi(false);
     },
     async exportExcel() {
-          let operation = await this.$api.billingDeals.getExcel({
-            ...this.billingDealsFilter
-          });
-          if(!this.$apiSuccess(operation)) return;
-          window.open(operation.entityReference, "_blank");
-    }
+      let operation = await this.$api.billingDeals.getExcel({
+        ...this.billingDealsFilter
+      });
+      if(!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, "_blank");
+    },
+    async initThreeDotMenu(){
+      const vm = this;
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Create"),
+              fn: () => {
+                this.$router.push({ name: "CreateBillingDeal" });
+              }
+            },
+            // {
+            //   text: this.$t("SelectAll"),
+            //   fn: () => {
+            //     vm.switchSelectAll();
+            //   }
+            // },
+            {
+              text: this.$t("TriggerSelected"),
+              fn: async () => {
+                await vm.createTransactions();
+              }
+            },
+            {
+              text: this.$t("DisableSelected"),
+              fn: async () => {
+                await vm.disableBillingDeals();
+              }
+            },
+            {
+              text: this.$t("ActivateSelected"),
+              fn: async () => {
+                await vm.activateBillingDeals();
+              }
+            },
+            {
+              text: this.$t("TriggerAll"),
+              fn: async () => {
+                vm.showTriggerDialog = true;
+              }
+            },
+            {
+              text: this.$t("Excel"),
+              fn: () => {
+                this.exportExcel();
+              }
+            }
+          ]
+        }
+      });
+    },
   },
   computed: {
     canLoadMore() {
@@ -429,56 +480,18 @@ export default {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-    const vm = this;
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Create"),
-            fn: () => {
-              this.$router.push({ name: "CreateBillingDeal" });
-            }
-          },
-          // {
-          //   text: this.$t("SelectAll"),
-          //   fn: () => {
-          //     vm.switchSelectAll();
-          //   }
-          // },
-          {
-            text: this.$t("TriggerSelected"),
-            fn: async () => {
-              await vm.createTransactions();
-            }
-          },
-          {
-            text: this.$t("DisableSelected"),
-            fn: async () => {
-              await vm.disableBillingDeals();
-            }
-          },
-          {
-            text: this.$t("ActivateSelected"),
-            fn: async () => {
-              await vm.activateBillingDeals();
-            }
-          },
-          {
-            text: this.$t("TriggerAll"),
-            fn: async () => {
-              vm.showTriggerDialog = true;
-            }
-          },
-          {
-            text: this.$t("Excel"),
-            fn: () => {
-              this.exportExcel();
-            }
-          }
-        ]
+    await this.initThreeDotMenu();
+  },
+  watch:{
+    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+    $route (to, from){
+      /** only update header if we returned to the same (cached) page */
+      if(to.name == this.$route.name){
+        this.initThreeDotMenu();
       }
-    });
-  }
+    }
+  },
 };
 </script>
 
