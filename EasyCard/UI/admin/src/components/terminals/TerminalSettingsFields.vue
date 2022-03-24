@@ -453,9 +453,18 @@
           </v-col>
           <v-col cols="12" md="5">
             <v-switch
-              class="pt-0"
               v-model="model.checkoutSettings.issueInvoice"
               :label="$t('IssueInvoice')"
+              hide-details
+            ></v-switch>
+            <v-switch
+              v-model="model.checkoutSettings.support3DSecure"
+              :label="$t('Support3DSecure')"
+              hide-details
+            ></v-switch>
+            <v-switch
+              v-model="model.checkoutSettings.continueInCaseOf3DSecureError"
+              :label="$t('ContinueInCaseOf3DSecureError')"
               hide-details
             ></v-switch>
           </v-col>

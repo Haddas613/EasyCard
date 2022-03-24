@@ -440,6 +440,8 @@
   "CustomerExternalReference": "Customer External Reference",
   "CreateInvoicingConsumer": "Create Invoicing Consumer",
   "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
+  "Support3DSecure": "Support 3D Secure",
+  "ContinueInCaseOf3DSecureError": "Continue in Case of 3D Secure Error",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
