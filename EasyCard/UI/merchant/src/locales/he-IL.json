@@ -316,7 +316,7 @@
   "WebUrl": "כתובת אינטרנטית",
   "ErrorDescription": "תיאור שגיאה",
   "ExternalReference": "מזהה חיצוני",
-  "PaymentIntentURL": "קישור לכוונת תשלום",
+  "PaymentIntentURL": "העתק קישור",
   "AllowPinPad": "אפשר לבצע עסקאות פינפד",
   "AuthorizationCode": "מספר אישור",
   "AuthorizationCodeOptional": "מספר אישור (אופציונאלי)",
