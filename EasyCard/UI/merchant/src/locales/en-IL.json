@@ -137,6 +137,8 @@
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "OnlyNumbersAreAllowed": "Only numbers are allowed",
   "PleaseSelectCardToken": "Please Select Card Token",
+  "Webhooks": "Webhooks",
+  "SecurityHeader": "Security Header",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -364,6 +366,10 @@
   "LastErrorCorrelationID": "Last Error Correlation ID",
   "SelectForTrigger": "Select for Trigger",
   "CustomerExternalReference": "Customer External Reference",
+  "Key": "Key",
+  "Value": "Value",
+  "WebhookEvent": "Webhook Event",
+  "FailureEvent": "Failure Event",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

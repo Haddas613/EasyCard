@@ -124,7 +124,13 @@
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
   "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
   "Number": "Number",
-    
+  "Webhooks": "Webhooks",
+  "SecurityHeader": "Security Header",
+  "Key": "Key",
+  "Value": "Value",
+  "WebhookEvent": "Webhook Event",
+  "FailureEvent": "Failure Event",
+
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
   "Invalid": "Invalid",
@@ -501,6 +507,7 @@
   "TransmitAll": "Transmit All",
   "DisableSelected": "Disable Selected",
   "Approve": "Approve",
+  "AddWebhookEvent": "Add Webhook Event",
 
   "--AUTH--": null,
   "Login": "Login",

@@ -1,6 +1,7 @@
 ﻿using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using Newtonsoft.Json.Linq;
+using Shared.Helpers.WebHooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,5 +52,7 @@ namespace MerchantProfileApi.Models.Terminal
         public TerminalBankDetails BankDetails { get; set; }
 
         public byte[] SharedApiKey { get; set; }
+
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }

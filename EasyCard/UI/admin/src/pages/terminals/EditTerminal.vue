@@ -4,6 +4,7 @@
       <v-tab key="settings">{{$t("TerminalSettings")}}</v-tab>
       <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
       <v-tab key="features">{{$t("Features")}}</v-tab>
+      <v-tab key="webhooks">{{$t("Webhooks")}}</v-tab>
     </v-tabs>
     <v-card-text>
       <v-tabs-items v-model="tab" class="bg-ecbg">
@@ -72,6 +73,9 @@
         <v-tab-item key="features">
           <terminal-features-form :terminal="terminal" v-if="terminal" @update="refreshTerminal()"></terminal-features-form>
         </v-tab-item>
+        <v-tab-item key="webhooks">
+          <terminal-webhooks-form :terminal="terminal" v-if="terminal" @save="saveWebhooks($event)"></terminal-webhooks-form>
+        </v-tab-item>
       </v-tabs-items>
     </v-card-text>
   </v-card>
@@ -85,7 +89,9 @@ export default {
     TerminalIntegrationsForm: () =>
       import("../../components/terminals/TerminalIntegrationsForm"),
     TerminalFeaturesForm: () =>
-      import("../../components/terminals/TerminalFeaturesForm")
+      import("../../components/terminals/TerminalFeaturesForm"),
+    TerminalWebhooksForm: () =>
+      import("../../components/terminals/TerminalWebhooksForm")
   },
   data() {
     return {
@@ -189,6 +195,18 @@ export default {
         this.$toasted.show(opResult.message, { type: "error" })
       }
     },
+    async saveWebhooks(data){
+      this.terminal.webHooksConfiguration = data;
+      let payload = this.$refs.terminalSettingsRef.getData();
+      payload.webHooksConfiguration = this.terminal.webHooksConfiguration;
+      let operationResult = await this.$api.terminals.updateTerminal(payload);
+      
+      if (operationResult.errors && operationResult.errors.length > 0) {
+        operationResult.errors.forEach(e => {
+          this.$toasted.show(e.description, { type: "error" });
+        })
+      }
+    }
   },
   beforeRouteLeave (to, from, next) { 
     if(this.confirmLeave()){

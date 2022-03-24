@@ -76,4 +76,12 @@ export default class DictionariesApi {
 
         return this.banks;
     }
+
+    async getWebhooks(){
+        if(!this.webhooks){
+            this.webhooks = await this.base.get(this.transactionDictionariesUrl + `/webhooks?lang=${this.locale}`);
+        }
+
+        return this.webhooks;
+    }
 }
