@@ -33,6 +33,7 @@ namespace Shared.Helpers.WebHooks
             {
                 return this.webHookService.ExecuteWebHook(new WebHookData
                 {
+                    EventID = evnt.EventID,
                     MerchantID = evnt.MerchantID,
                     TerminalID = evnt.TerminalID,
                     CorrelationId = evnt.CorrelationId,

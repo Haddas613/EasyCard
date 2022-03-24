@@ -32,6 +32,7 @@ namespace Transactions.Api.Events
                     eventName: evnt.EventName,
                     properties: new Dictionary<string, string>()
                     {
+                        { nameof(evnt.EventID), evnt.EventID.ToString() },
                         { nameof(paymentTransaction.PaymentTransactionID), paymentTransaction.PaymentTransactionID.ToString() },
                         { nameof(paymentTransaction.CorrelationId), paymentTransaction.CorrelationId },
                         { nameof(paymentTransaction.MerchantID), paymentTransaction.MerchantID.ToString() },

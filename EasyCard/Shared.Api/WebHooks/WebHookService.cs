@@ -28,6 +28,7 @@ namespace Shared.Helpers.WebHooks
             var payload = JsonConvert.SerializeObject(webHookData.Payload);
             var dimensions = new Dictionary<string, string>()
             {
+                { nameof(webHookData.EventID), webHookData.EventID.ToString() },
                 { nameof(webHookData.Url), webHookData.Url },
                 { nameof(webHookData.CorrelationId), webHookData.CorrelationId },
                 { nameof(webHookData.MerchantID), webHookData.MerchantID?.ToString() },

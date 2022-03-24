@@ -17,5 +17,7 @@ namespace Shared.Helpers.WebHooks
         public SecurityHeader SecurityHeader { get; set; }
 
         public string CorrelationId { get; set; }
+
+        public Guid? EventID { get; set; }
     }
 }
