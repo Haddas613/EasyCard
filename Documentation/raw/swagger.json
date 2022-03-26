@@ -1,0 +1,1417 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "MerchantProfile API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/consumers": {
+      "get": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "End-customers list (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConsumersID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "NationalID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Phone",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExternalReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDesktopRefNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumerSummarySummariesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Create end-customer record (Auth policies: terminal_or_merchant_frontend)",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/consumers/{consumerID}": {
+      "get": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "End-customer details (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Update end-customer details (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConsumerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Delete end-customer record (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/consumers/bulkdelete": {
+      "post": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Delete customers (Auth policies: terminal_or_merchant_frontend)",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/items": {
+      "get": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": " (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyEnum"
+            }
+          },
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ExternalReference",
+            "in": "query",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDesktopRefNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSummarySummariesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": " (Auth policies: terminal_or_merchant_frontend)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/items/{itemID}": {
+      "get": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": " (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": " (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": " (Auth policies: terminal_or_merchant_frontend)",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/items/bulkdelete": {
+      "post": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Delete items (Auth policies: terminal_or_merchant_frontend)",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "house": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "apartment": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BankDetails": {
+        "required": [
+          "bank",
+          "bankAccount",
+          "bankBranch"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "bank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankBranch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankAccount": {
+            "maxLength": 12,
+            "minLength": 6,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsumerRequest": {
+        "required": [
+          "consumerName"
+        ],
+        "type": "object",
+        "properties": {
+          "consumerEmail": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string",
+            "description": "End-customer name"
+          },
+          "consumerPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer National ID",
+            "nullable": true
+          },
+          "note": {
+            "maxLength": 256,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer note details",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in external system",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in BillingDesktop system",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Origin of customer",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "consumerSecondPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create consumer"
+      },
+      "ConsumerResponse": {
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerPhone": {
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "consumerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerSecondPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsumerSummary": {
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsumerSummarySummariesResponse": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConsumerSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CurrencyEnum": {
+        "enum": [
+          "ILS",
+          "USD",
+          "EUR"
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemRequest": {
+        "required": [
+          "itemName"
+        ],
+        "type": "object",
+        "properties": {
+          "itemName": {
+            "maxLength": 128,
+            "minLength": 3,
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemResponse": {
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemSummary": {
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemSummarySummariesResponse": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JToken": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/JToken"
+        }
+      },
+      "OperationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusEnum"
+          },
+          "entityID": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "entityUID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "entityReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "nullable": true
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "innerResponse": {
+            "$ref": "#/components/schemas/OperationResponse"
+          },
+          "additionalData": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentTypeEnum": {
+        "enum": [
+          "card",
+          "cheque",
+          "cash",
+          "bank"
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ShowDeletedEnum": {
+        "enum": [
+          "OnlyActive",
+          "OnlyDeleted",
+          "All"
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "StatusEnum": {
+        "enum": [
+          "success",
+          "warning",
+          "error"
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "UpdateConsumerRequest": {
+        "required": [
+          "consumerID",
+          "consumerName",
+          "updateTimestamp"
+        ],
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "description": "Target record ID",
+            "format": "uuid"
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "format": "email",
+            "nullable": true
+          },
+          "consumerName": {
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string",
+            "description": "End-customer name"
+          },
+          "consumerPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer National ID",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in external system",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Origin of customer",
+            "nullable": true
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "description": "Concurrency check",
+            "format": "byte"
+          },
+          "consumerSecondPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in BillingDesktop system",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Update end-customer info"
+      },
+      "UpdateItemRequest": {
+        "required": [
+          "itemName"
+        ],
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemName": {
+            "maxLength": 128,
+            "minLength": 3,
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "apiKey",
+        "description": "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -56,6 +56,7 @@ namespace Transactions.Api.Controllers
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Business.Entities.BillingDeal), EventName = CustomEvent.BillingDealUpdated, IsFailureEvent = false },
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Business.Entities.CreditCardTokenDetails), EventName = CustomEvent.CardTokenCreated, IsFailureEvent = false },
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Business.Entities.CreditCardTokenDetails), EventName = CustomEvent.CardTokenDeleted, IsFailureEvent = false },
+                new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Business.Entities.CreditCardTokenDetails), EventName = CustomEvent.CreditCardExpired, IsFailureEvent = false },
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Merchants.Business.Entities.Billing.Consumer), EventName = CustomEvent.ConsumerCreated, IsFailureEvent = false },
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Merchants.Business.Entities.Billing.Consumer), EventName = CustomEvent.ConsumerUpdated, IsFailureEvent = false },
                 new SharedHelpers.WebHooks.WebHookConfiguration { EntityType = nameof(Business.Entities.Invoice), EventName = CustomEvent.InvoiceGenerated, IsFailureEvent = false },

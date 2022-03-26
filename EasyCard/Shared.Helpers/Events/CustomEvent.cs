@@ -15,6 +15,8 @@ namespace Shared.Helpers.Events
 
         public const string CardTokenDeleted = "CardTokenDeleted";
 
+        public const string CreditCardExpired = "CreditCardExpired";
+
         public const string BillingDealCreated = "BillingDealCreated";
 
         public const string BillingDealUpdated = "BillingDealUpdated";

@@ -459,11 +459,17 @@ namespace ProfileApi
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MerchantProfile API V1");
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MerchantProfile API V1");
 
-                //c.RoutePrefix = string.Empty;
+            //    //c.RoutePrefix = string.Empty;
+            //});
+
+            app.UseReDoc(c =>
+            {
+                c.DocumentTitle = "EasyCard Transactions Api V1";
+                c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
             //app.UseXXssProtection(options => options.EnabledWithBlockMode());

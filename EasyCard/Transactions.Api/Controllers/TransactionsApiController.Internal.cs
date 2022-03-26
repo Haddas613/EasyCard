@@ -322,20 +322,20 @@ namespace Transactions.Api.Controllers
                 if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
                 {
                     threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
-                }
 
-                // TODO: add converter
-                if (threeDSecure?.TransStatus != "Y")
-                {
-                    if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
+                    // TODO: add converter
+                    if (threeDSecure?.TransStatus != "Y")
                     {
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: Transactions.Shared.Messages.RejectedBy3DSecure);
+                        if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: Transactions.Shared.Messages.RejectedBy3DSecure);
 
-                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
-                    }
-                    else
-                    {
-                        threeDSecure = null;
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                        }
+                        else
+                        {
+                            threeDSecure = null;
+                        }
                     }
                 }
             }
