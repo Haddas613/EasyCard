@@ -87,7 +87,7 @@
                   color="error"
                   outlined
                   small
-                  @click="deleteWebhookEvent(item.entityType)"
+                  @click="deleteWebhookEvent(item.eventName)"
                 >
                   <v-icon small>mdi-delete</v-icon>
                 </v-btn>
@@ -137,17 +137,19 @@ export default {
       });
     }
     let webhooks = await this.$api.dictionaries.getWebhooks();
+    console.log(webhooks);
     this.webhooks = webhooks.map((e) => {
       return {
         name: this.$t(e.eventName),
-        value: e.entityType,
+        value: e.eventName,
         ...e,
         disabled: this.lodash.some(
           this.model.webHooksConfiguration.webHooks,
-          (t) => t.entityType == e.entityType
+          (t) => t.eventName == e.eventName
         ),
       };
     });
+    console.log(this.webhooks);
   },
   methods: {
     async addWebhook() {
@@ -156,7 +158,7 @@ export default {
       }
       let wh = this.lodash.find(
         this.webhooks,
-        (t) => t.entityType == this.selectedWebhookEventType
+        (t) => t.eventName == this.selectedWebhookEventType
       );
       wh.disabled = true;
 
@@ -170,13 +172,13 @@ export default {
         url: wh.url,
       };
     },
-    async deleteWebhookEvent(entityType) {
+    async deleteWebhookEvent(eventName) {
       let idx = this.lodash.findIndex(
         this.model.webHooksConfiguration.webHooks,
-        (t) => t.entityType == entityType
+        (t) => t.eventName == eventName
       );
 
-      let wh = this.lodash.find(this.webhooks, (t) => t.entityType == entityType);
+      let wh = this.lodash.find(this.webhooks, (t) => t.eventName == eventName);
       wh.disabled = false;
       this.model.webHooksConfiguration.webHooks.splice(idx, 1);
     },
