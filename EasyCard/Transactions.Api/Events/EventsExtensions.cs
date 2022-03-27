@@ -13,7 +13,7 @@ namespace Transactions.Api.Services
 {
     public static class EventsExtensions
     {
-        public static Task RaiseTransactionEvent(this IEventsService ms, PaymentTransaction paymentTransaction, TransactionOperationCodesEnum eventName)
+        public static Task RaiseTransactionEvent(this IEventsService ms, PaymentTransaction paymentTransaction, string eventName, string errorMessage = null)
         {
             try
             {
@@ -25,12 +25,13 @@ namespace Transactions.Api.Services
                         TerminalID = paymentTransaction.TerminalID,
                         CorrelationId = paymentTransaction.CorrelationId,
                         Entity = paymentTransaction,
-                        EventName = eventName.ToString(),
+                        EventName = eventName,
                         IsFailureEvent = false,
                         EntityExternalReference = paymentTransaction.DealDetails?.DealReference,
                         EntityReference = paymentTransaction.PaymentTransactionID.ToString(),
                         EntityType = nameof(PaymentTransaction),
-                        EventTimestamp = DateTime.UtcNow
+                        EventTimestamp = DateTime.UtcNow,
+                        ErrorMesage = errorMessage
                     }
                     );
             }

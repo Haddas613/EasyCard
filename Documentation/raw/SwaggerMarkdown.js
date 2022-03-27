@@ -1,6 +1,6 @@
 const widdershins = require('widdershins');
 let options = {}; // defaults shown
-options.codeSamples = true;
+options.codeSamples = false;
 options.httpsnippet = false;
 options.language_tabs = [];
 //options.language_clients = [];
@@ -16,6 +16,12 @@ options.shallowSchemas = false;
 options.tocSummary = true;
 options.headings = 2;
 options.yaml = false;
+options.expandBody = false;
+options.omitBody = true;
+options.shallowSchemas = true;
+options.useBodyName = true;
+options.verbose = true;
+
 //options.resolve = false;
 //options.source = sourceUrl; // if resolve is true, must be set to full path or URL of the input document
 
@@ -29,5 +35,5 @@ widdershins.convert(swaggerFile, options)
   fs.writeFileSync('myOutput.md', markdownOutput, 'utf8');
 })
 .catch(err => {
-  // handle errors
+  console.log(err);
 });

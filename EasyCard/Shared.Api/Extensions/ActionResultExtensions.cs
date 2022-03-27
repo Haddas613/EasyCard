@@ -54,5 +54,17 @@ namespace Shared.Api.Extensions
                 return null;
             }
         }
+
+        public static OperationResponse GetOperationResponse(this BadRequestObjectResult result)
+        {
+            if (result.Value != null)
+            {
+                return result.Value as OperationResponse;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

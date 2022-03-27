@@ -7,6 +7,11 @@ namespace Shared.Helpers.Events
 {
     public class CustomEvent : CustomEventBase
     {
+        public CustomEvent()
+        {
+            EventID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow);
+        }
+
         public const string TransactionCreated = "TransactionCreated";
 
         public const string TransactionRejected = "TransactionRejected";

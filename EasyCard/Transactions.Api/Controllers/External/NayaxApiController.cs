@@ -168,7 +168,6 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-                events.RaiseTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
 

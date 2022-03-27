@@ -51,11 +51,11 @@ using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
+using Ecwid.Api;
+using Shared.Helpers.Events;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Ecwid.Api;
-using Shared.Helpers.Events;
 
 namespace Transactions.Api.Controllers
 {
