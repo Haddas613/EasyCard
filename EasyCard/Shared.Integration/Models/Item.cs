@@ -69,7 +69,16 @@ namespace Shared.Integration.Models
         [SwaggerExclude]
         public JObject Extension { get; set; }
 
+        /// <summary>
+        /// External ID inside https://woocommerce.com system
+        /// </summary>
         [StringLength(50)]
-        public string EcwidItemId { get; set; }
+        public string WoocommerceID { get; set; }
+
+        /// <summary>
+        /// External ID inside https://www.ecwid.com system
+        /// </summary>
+        [StringLength(50)]
+        public string EcwidID { get; set; }
     }
 }

@@ -53,5 +53,9 @@ namespace Merchants.Business.Entities.Billing
         {
             return ItemID;
         }
+
+        public string WoocommerceID { get; set; }
+
+        public string EcwidID { get; set; }
     }
 }

@@ -267,4 +267,7 @@
   <data name="ThreeDSError" xml:space="preserve">
     <value>3D Secure שגיא</value>
   </data>
+  <data name="PayersName" xml:space="preserve">
+    <value>שם המשלם</value>
+  </data>
 </root>

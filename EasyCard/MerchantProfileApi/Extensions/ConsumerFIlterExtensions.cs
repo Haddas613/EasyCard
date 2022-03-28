@@ -88,6 +88,16 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => c.Origin == filter.Origin);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.EcwidID))
+            {
+                src = src.Where(d => d.EcwidID == filter.EcwidID);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.WoocommerceID))
+            {
+                src = src.Where(d => d.WoocommerceID == filter.WoocommerceID);
+            }
+
             return src;
         }
     }

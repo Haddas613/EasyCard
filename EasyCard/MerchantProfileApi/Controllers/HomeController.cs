@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace MerchantProfileApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
         private readonly IHostEnvironment hostingEnvironment;

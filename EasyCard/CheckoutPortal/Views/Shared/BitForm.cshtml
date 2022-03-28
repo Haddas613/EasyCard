@@ -47,9 +47,9 @@
     }
     <fieldset class="border rounded p-2 m-2">
         <div class="form-group row">
-            <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardOwnerName")</label>
+            <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("PayersName")</label>
             <div class="col-sm-9">
-                <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" id="Bit_Name" autocomplete="off">
+                <input class="form-control form-control-sm" placeholder="@localizer.Get("PayersName")" asp-for="Name" id="Bit_Name" autocomplete="off">
                 <span asp-validation-for="Name"></span>
             </div>
         </div>

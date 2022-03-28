@@ -71,5 +71,9 @@ namespace Merchants.Business.Entities.Billing
         }
 
         public Guid? MergedFromConsumerID { get; set; }
+
+        public string WoocommerceID { get; set; }
+
+        public string EcwidID { get; set; }
     }
 }

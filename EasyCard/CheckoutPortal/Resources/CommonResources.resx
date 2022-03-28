@@ -270,4 +270,7 @@
   <data name="ThreeDSError" xml:space="preserve">
     <value>3D Secure Error</value>
   </data>
+  <data name="PayersName" xml:space="preserve">
+    <value>Payer's name</value>
+  </data>
 </root>

@@ -79,7 +79,8 @@ namespace CheckoutPortal.Helpers
                 ConsumerEmail = ecwidOrder.Email,
                 ConsumerName = ecwidOrder.BillingPerson.Name,
                 ConsumerNationalID = ecwidOrder.CustomerTaxId ?? ecwidOrder.BillingPerson.CompanyName,
-                //ExternalReference = ecwidOrder.CustomerId,
+                EcwidID = ecwidOrder.CustomerId,
+                //ExternalReference = ecwidOrder.CustomerId, - do not use ExternalReference fro Ecwid ID
                 //Origin = DocumentOriginEnum.Ecwid.ToString(),
                 Active = true,
             };
@@ -99,7 +100,7 @@ namespace CheckoutPortal.Helpers
         {
             return source.Select(e => new Item
             {
-                EcwidItemId = e.ProductId.ToString(),
+                EcwidID = e.ProductId.ToString(),
                 Price = e.Price,
                 Quantity = e.Quantity,
                 ItemName = e.Name

@@ -80,6 +80,11 @@ namespace Merchants.Business.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EcwidID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("ExternalReference")
                         .HasMaxLength(50)
                         .IsUnicode(true)
@@ -119,6 +124,11 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("WoocommerceID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("ConsumerID");
 
@@ -171,6 +181,11 @@ namespace Merchants.Business.Migrations
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("EcwidID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("ExternalReference")
                         .HasMaxLength(50)
                         .IsUnicode(true)
@@ -218,6 +233,11 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("WoocommerceID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("ItemID");
 

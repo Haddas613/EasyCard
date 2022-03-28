@@ -135,5 +135,12 @@ namespace Transactions.Api.Models.PaymentRequests
         /// Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
         /// </summary>
         public JObject Extension { get; set; }
+
+        // TODO: can be used for email template
+
+        /// <summary>
+        /// Default language to display checkout page
+        /// </summary>
+        public string Language { get; set; }
     }
 }

@@ -388,6 +388,9 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
+                builder.Property(b => b.WoocommerceID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.EcwidID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
                 builder.HasIndex(d => d.MerchantID);
             }
         }
@@ -432,6 +435,9 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.BillingDesktopRefNumber).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.WoocommerceID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.EcwidID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 //builder.HasIndex(d => d.TerminalID);
                 //builder.HasIndex(d => new { d.TerminalID, d.ConsumerID });

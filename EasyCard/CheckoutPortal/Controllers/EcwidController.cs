@@ -96,6 +96,7 @@ namespace CheckoutPortal.Controllers
 
             if (customerPayload != null)
             {
+                // TODO: can we use ecwid ID to find customer ?
                 var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter
                 {
                     NationalID = customerPayload.ConsumerNationalID,

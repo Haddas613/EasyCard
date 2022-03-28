@@ -38,5 +38,17 @@ namespace MerchantProfileApi.Models.Billing
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Origin { get; set; }
+
+        /// <summary>
+        /// External ID inside https://woocommerce.com system
+        /// </summary>
+        [StringLength(50)]
+        public string WoocommerceID { get; set; }
+
+        /// <summary>
+        /// External ID inside https://www.ecwid.com system
+        /// </summary>
+        [StringLength(50)]
+        public string EcwidID { get; set; }
     }
 }

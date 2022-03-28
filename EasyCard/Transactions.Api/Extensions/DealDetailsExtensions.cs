@@ -47,6 +47,16 @@ namespace Transactions.Api.Extensions
                 dealDetails.ConsumerAddress = consumer?.ConsumerAddress;
             }
 
+            if (dealDetails.ConsumerEcwidID == null)
+            {
+                dealDetails.ConsumerEcwidID = consumer?.EcwidID;
+            }
+
+            if (dealDetails.ConsumerWoocommerceID == null)
+            {
+                dealDetails.ConsumerWoocommerceID = consumer?.WoocommerceID;
+            }
+
             if (!(dealDetails.Items?.Count() > 0))
             {
                 dealDetails.Items = new List<SharedIntegration.Models.Item>

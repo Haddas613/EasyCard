@@ -374,6 +374,16 @@
             Discount
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.Item.WoocommerceID">
+            <summary>
+            External ID inside https://woocommerce.com system
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Item.EcwidID">
+            <summary>
+            External ID inside https://www.ecwid.com system
+            </summary>
+        </member>
         <member name="T:Shared.Integration.Models.PaymentDetails.BankDetails">
             <summary>
             For billing deal only. For invoice and payment transaction use <see cref="T:Shared.Integration.Models.PaymentDetails.BankTransferDetails"></see>

@@ -1109,6 +1109,11 @@
             Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.Language">
+            <summary>
+            Default language to display checkout page
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
             <summary>
             Primary reference

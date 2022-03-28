@@ -78,5 +78,11 @@ namespace Shared.Integration.Models
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerExternalReference { get; set; }
+
+        [StringLength(50)]
+        public string ConsumerWoocommerceID { get; set; }
+
+        [StringLength(50)]
+        public string ConsumerEcwidID { get; set; }
     }
 }

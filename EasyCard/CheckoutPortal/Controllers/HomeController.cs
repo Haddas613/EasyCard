@@ -90,6 +90,8 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
+            ChangeLocalizationInternal(checkoutConfig.Settings?.Language);
+
             return await IndexViewResult(checkoutConfig);
         }
 
@@ -128,12 +130,15 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
+            ChangeLocalizationInternal(checkoutConfig.Settings?.Language);
+
             return await IndexViewResult(checkoutConfig);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery] CardRequest request)
         {
+            ChangeLocalizationInternal(request?.Language);
 
             if (request == null || !Request.QueryString.HasValue || (Request.Query.Keys.Count == 1 && Request.Query.ContainsKey("culture")))
             {
@@ -916,22 +921,9 @@ namespace CheckoutPortal.Controllers
 
         public IActionResult ChangeLocalization(string culture)
         {
-            var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-
             if (!string.IsNullOrWhiteSpace(culture))
             {
-                var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
-
-                if (allowed)
-                {
-                    var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
-                    HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c, new CookieOptions
-                    {
-                        Expires = DateTimeOffset.UtcNow.AddYears(1),
-                        SameSite = SameSiteMode.None,
-                        Secure = true
-                    });
-                }
+                ChangeLocalizationInternal(culture);
             }
             else
             {
@@ -939,6 +931,27 @@ namespace CheckoutPortal.Controllers
             }
 
             return Ok();
+        }
+
+        private void ChangeLocalizationInternal(string culture)
+        {
+            if (string.IsNullOrWhiteSpace(culture))
+            {
+                return;
+            }
+
+            var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
+
+            if (allowed)
+            {
+                var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
+                HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    SameSite = SameSiteMode.None,
+                    Secure = true
+                });
+            }
         }
 
         private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)
