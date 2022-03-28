@@ -1320,6 +1320,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
 
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1353,6 +1359,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
+
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
 
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
@@ -1516,6 +1528,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
 
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1549,6 +1567,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
+
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
 
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
@@ -1659,6 +1683,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
 
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1692,6 +1722,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
+
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
 
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
@@ -1906,6 +1942,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
 
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1939,6 +1981,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
+
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
 
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)

@@ -26,5 +26,15 @@ namespace MerchantProfileApi.Models.Billing
         public Address ConsumerAddress { get; set; }
 
         public string ExternalReference { get; set; }
+
+        /// <summary>
+        /// External ID inside https://woocommerce.com system
+        /// </summary>
+        public string WoocommerceID { get; set; }
+
+        /// <summary>
+        /// External ID inside https://www.ecwid.com system
+        /// </summary>
+        public string EcwidID { get; set; }
     }
 }

@@ -31,5 +31,15 @@ namespace MerchantProfileApi.Models.Billing
         public string SKU { get; set; }
 
         public bool Active { get; set; }
+
+        /// <summary>
+        /// External ID inside https://woocommerce.com system
+        /// </summary>
+        public string WoocommerceID { get; set; }
+
+        /// <summary>
+        /// External ID inside https://www.ecwid.com system
+        /// </summary>
+        public string EcwidID { get; set; }
     }
 }

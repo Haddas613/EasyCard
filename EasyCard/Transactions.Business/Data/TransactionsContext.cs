@@ -244,6 +244,11 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
                 builder.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
@@ -431,6 +436,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -535,6 +542,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -645,6 +654,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
