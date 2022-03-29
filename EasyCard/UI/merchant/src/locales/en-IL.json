@@ -370,6 +370,7 @@
   "Value": "Value",
   "WebhookEvent": "Webhook Event",
   "FailureEvent": "Failure Event",
+  "WoocommerceID": "Woocommerce ID",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -435,6 +436,13 @@
   "RestoreItem": "Restore Item",
   "AddBankDetails": "Add Bank Details",
   "DeleteBankDetails": "Delete Bank Details",
+  "Completed": "Completed",
+  "Failed": "Failed",
+  "CardExpiredNoCard": "Card Expired/No Card",
+  "Tomorrow": "Tomorrow",
+  "ExpireNextMonth": "Expire Next Month",
+  "ManualTrigger": "Manual Trigger",
+  "Excel": "Excel",
 
   "--AUTH--": null,
   "Login": "Login",

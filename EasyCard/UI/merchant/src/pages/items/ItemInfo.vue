@@ -51,6 +51,10 @@
           </p>
           <p>{{ model.externalReference || "-" }}</p>
         </div>
+        <div class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('WoocommerceID')}}</p>
+          <p>{{model.woocommerceID || '-'}}</p>
+        </div>
         <div class="info-block" v-if="model.billingDesktopRefNumber">
           <p class="caption ecgray--text text--darken-2">
             {{ $t("BillingDesktopRefNumber") }}

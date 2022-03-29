@@ -1,21 +1,108 @@
 <template>
   <ec-dialog :dialog.sync="visible">
-    <template v-slot:title>{{$t('FilterBillingDeals')}}</template>
+    <template v-slot:title>{{ $t('FilterBillingDeals') }}</template>
     <template v-slot:right>
-      <v-btn color="primary" @click="apply()" :disabled="!formIsValid">{{$t('Apply')}}</v-btn>
+      <v-btn color="primary" @click="apply()" :disabled="!formIsValid">{{ $t('Apply') }}</v-btn>
     </template>
     <template>
       <div class="d-flex px-4 py-2 justify-end">
-        <v-btn color="primary" 
-          :block="$vuetify.breakpoint.smAndDown" 
+        <v-btn
+          color="primary"
+          :block="$vuetify.breakpoint.smAndDown"
           outlined
-          @click="model = {}">{{$t("Reset")}}</v-btn>
+          @click="model = {}"
+          >{{ $t('Reset') }}</v-btn
+        >
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
+          <v-row no-gutters class="d-flex px-1 body-2" align-content="center" v-if="!model.quickStatus">
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.actual"
+                @change="switchFilterChanged('actual')"
+                :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
+                :persistent-hint="true"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('SelectForTrigger') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch v-model="model.invoiceOnly" @change="getDataFromApi(false)">
+                <template v-slot:label>
+                  <small>{{ $t('InvoiceOnly') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.showDeleted"
+                @change="switchFilterChanged('showDeleted')"
+                true-value="1"
+                false-value="0"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('Inactive') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch v-model="model.paused" @change="switchFilterChanged('paused')">
+                <template v-slot:label>
+                  <small>{{ $t('Paused') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.finished"
+                @change="switchFilterChanged('finished')"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('Finished') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.hasError"
+                @change="switchFilterChanged('hasError')"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('HasError') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.inProgress"
+                @change="switchFilterChanged('inProgress')"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('InProgress') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="4" md="3">
+              <v-switch
+                v-model="model.creditCardExpired"
+                @change="switchFilterChanged('creditCardExpired')"
+              >
+                <template v-slot:label>
+                  <small>{{ $t('CreditCardExpired') }}</small>
+                </template>
+              </v-switch>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="12" md="12" class="py-0">
-              <payment-type v-model="model.paymentType" :exclude-types="['cash', 'cheque']" all></payment-type>
+              <payment-type
+                v-model="model.paymentType"
+                :exclude-types="['cash', 'cheque']"
+                all
+              ></payment-type>
             </v-col>
             <!-- <v-col cols="12" md="12" class="py-0">
               <v-switch
@@ -61,13 +148,21 @@
             <v-col class="pb-0 mb-0" cols="6" md="12">
               <v-switch v-model="model.filterDateByNextScheduledTransaction" hide-details>
                 <template v-slot:label>
-                  <small>{{$t('FilterDateByNextScheduledTransaction')}}</small>
+                  <small>{{ $t('FilterDateByNextScheduledTransaction') }}</small>
                 </template>
               </v-switch>
             </v-col>
-            <date-from-to-filter class="px-3" v-model="model" :from-today="model.filterDateByNextScheduledTransaction"
-              :date-from-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'"
-              :date-to-label="model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'"></date-from-to-filter>
+            <date-from-to-filter
+              class="px-3"
+              v-model="model"
+              :from-today="model.filterDateByNextScheduledTransaction"
+              :date-from-label="
+                model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'
+              "
+              :date-to-label="
+                model.filterDateByNextScheduledTransaction ? 'NextScheduledDateTo' : 'CreatedTo'
+              "
+            ></date-from-to-filter>
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-0">
@@ -106,33 +201,33 @@
 </template>
 
 <script>
-import ValidationRules from "../../helpers/validation-rules";
+import ValidationRules from '../../helpers/validation-rules';
 
 export default {
   components: {
-    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
-    EcDialog: () => import("../../components/ec/EcDialog"),
-    PaymentType: () => import("../transactions/PaymentType"),
-    DateFromToFilter: () => import("../filtering/DateFromToFilter")
+    EcRadioGroup: () => import('../../components/inputs/EcRadioGroup'),
+    EcDialog: () => import('../../components/ec/EcDialog'),
+    PaymentType: () => import('../transactions/PaymentType'),
+    DateFromToFilter: () => import('../filtering/DateFromToFilter'),
   },
   props: {
     show: {
       type: Boolean,
       default: false,
-      required: true
+      required: true,
     },
     filter: {
       type: Object,
       default: null,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       model: { ...this.filter },
       dictionaries: {},
       formIsValid: true,
-      vr: ValidationRules
+      vr: ValidationRules,
     };
   },
   async mounted() {
@@ -144,22 +239,39 @@ export default {
         return this.show;
       },
       set: function(val) {
-        this.$emit("update:show", val);
-      }
-    }
+        this.$emit('update:show', val);
+      },
+    },
   },
   methods: {
     apply() {
-      if(!this.$refs.form.validate()){
+      if (!this.$refs.form.validate()) {
         return;
       }
 
       this.$emit('ok', this.model);
       this.visible = false;
-    }
+    },
+    switchFilterChanged(type) {
+      let allTypes = [
+        'showDeleted',
+        'actual',
+        'paused',
+        'finished',
+        'hasError',
+        'inProgress',
+        'creditCardExpired',
+      ].filter((v) => v != type);
+      for (var t of allTypes) {
+        if (t === 'showDeleted') {
+          this.$set(this.model, t, 0);
+        } else {
+          this.$set(this.model, t, false);
+        }
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

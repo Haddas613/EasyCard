@@ -369,6 +369,7 @@
   "CustomerExternalReference": "מזהה חיצוני",
   "Key": "מַפְתֵחַ",
   "Value": "ערך",
+  "WoocommerceID": "Woocommerce ח.פ",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -434,6 +435,13 @@
   "RestoreItem": "שחזור פריט",
   "AddBankDetails": "הוסף פרטי בנק",
   "DeleteBankDetails": "מחק את פרטי הבנק",
+  "Completed": "הושלם",
+  "Failed": "נִכשָׁל",
+  "CardExpiredNoCard": "פג תוקף הכרטיס/ללא כרטיס",
+  "Tomorrow": "מָחָר",
+  "ExpireNextMonth": "יפוג בחודש הבא",
+  "ManualTrigger": "חיוב ידני",
+  "Excel": "Excel",
 
   "--AUTH--": null,
   "Login": "כניסה",
