@@ -35,6 +35,10 @@
               <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
               <p class="primary--text">{{model.consumerEmail}}</p>
             </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
+              <p>{{model.origin || '-'}}</p>
+            </div>
             <template v-if="model.consumerAddress">
               <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('City')}}</p>
@@ -77,8 +81,8 @@
               <p>{{model.externalReference || '-'}}</p>
             </div>
             <div class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
-              <p>{{model.origin || '-'}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('WoocommerceID')}}</p>
+              <p>{{model.woocommerceID || '-'}}</p>
             </div>
             <template v-if="model.consumerAddress">
               <div class="info-block">

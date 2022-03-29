@@ -370,6 +370,7 @@
   "Value": "Value",
   "WebhookEvent": "Webhook Event",
   "FailureEvent": "Failure Event",
+  "WoocommerceID": "Woocommerce ID",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

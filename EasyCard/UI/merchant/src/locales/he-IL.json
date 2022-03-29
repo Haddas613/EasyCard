@@ -369,6 +369,7 @@
   "CustomerExternalReference": "מזהה חיצוני",
   "Key": "מַפְתֵחַ",
   "Value": "ערך",
+  "WoocommerceID": "Woocommerce ח.פ",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
