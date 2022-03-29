@@ -38,6 +38,7 @@ using Newtonsoft.Json;
 using Transactions.Api.Validation;
 using Shared.Api.Swagger;
 using SharedIntegration = Shared.Integration;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Api.Controllers
 {
@@ -60,6 +61,7 @@ namespace Transactions.Api.Controllers
         private readonly IQueue queue;
         private readonly IEmailSender emailSender;
         private readonly ITransactionsService transactionsService;
+        private readonly BasicServices.Services.IExcelService excelService;
 
         public InvoicingController(
                     IInvoiceService invoiceService,
@@ -73,7 +75,8 @@ namespace Transactions.Api.Controllers
                     IOptions<ApplicationSettings> appSettings,
                     IQueueResolver queueResolver,
                     IEmailSender emailSender,
-                    ITransactionsService transactionsService)
+                    ITransactionsService transactionsService,
+                    BasicServices.Services.IExcelService excelService)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -88,6 +91,7 @@ namespace Transactions.Api.Controllers
             this.emailSender = emailSender;
             this.invoicingResolver = invoicingResolver;
             this.transactionsService = transactionsService;
+            this.excelService = excelService;
         }
 
         [HttpGet]
@@ -651,6 +655,53 @@ namespace Transactions.Api.Controllers
                 logger.LogError($"Cannot create invoicing consumer. ConsumerID: {consumerRequest.ConsumerID}, response: {ex.Message}");
 
                 return BadRequest(new OperationResponse($"{Messages.CannotCreateInvoicingConsumer}", StatusEnum.Error, consumerRequest.ConsumerID));
+            }
+        }
+
+        [HttpGet]
+        [Route("$excel")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> GetInvoicesExcel([FromQuery] InvoicesFilter filter)
+        {
+            var query = invoiceService.GetInvoices().Filter(filter);
+
+            using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<InvoiceSummaryAdmin>();
+
+                    var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
+                        {
+                            s.TerminalName = terminals[s.TerminalID.Value].Label;
+                            s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
+                        }
+                    });
+
+                    var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummaryAdmin>();
+                    var res = await excelService.GenerateFile($"Admin/Invoices-{Guid.NewGuid()}.xlsx", "Invoices", summary, mapping);
+                    return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
+                }
+                else
+                {
+                    var data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
+                    var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummary>();
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Invoices-{Guid.NewGuid()}.xlsx", "Invoices", data, mapping);
+                    return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
+                }
             }
         }
 

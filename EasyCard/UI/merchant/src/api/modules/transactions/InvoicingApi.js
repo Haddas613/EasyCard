@@ -65,4 +65,8 @@ export default class InvoicingApi {
     async createForTransaction(paymentTransactionID){
         return await this.base.post(this.invoicingUrl + `/transaction/${paymentTransactionID}`);
     }
+
+    async getExcel(params) {
+        return await this.base.get(this.invoicingUrl + '/$excel', params);
+    }
 }
