@@ -15,6 +15,7 @@
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealsFilter.cs" Link="Models\BillingDealsFilter.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealSummary.cs" Link="Models\BillingDealSummary.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealUpdateRequest.cs" Link="Models\BillingDealUpdateRequest.cs" />
+    <Compile Include="..\Transactions.Api\Models\Billing\BillingsQuickStatusFilterEnum.cs" Link="Models\BillingsQuickStatusFilterEnum.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\PauseBillingDealRequest.cs" Link="Models\PauseBillingDealRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\CheckoutData.cs" Link="Models\CheckoutData.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\ConsumerInfo.cs" Link="Models\ConsumerInfo.cs" />
