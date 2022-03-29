@@ -49,7 +49,7 @@ namespace ThreeDS
 
             try
             {
-                var response = await apiClient.Post<VersioningResponseEnvelop>(configuration.BaseUrl, "/CreditCartPay/api/Versioning", request, null,
+                var response = await apiClient.Post<VersioningResponseEnvelop>(configuration.BaseUrl, "/api/Versioning", request, null,
                     (url, request) =>
                     {
                         requestStr = request;
@@ -125,7 +125,7 @@ namespace ThreeDS
 
             try
             {
-                var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "/CreditCartPay/api/authentication", request, null,
+                var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "/api/authentication", request, null,
                     (url, request) =>
                     {
                         requestStr = request;
