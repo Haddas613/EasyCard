@@ -434,6 +434,12 @@
   "RestoreItem": "שחזור פריט",
   "AddBankDetails": "הוסף פרטי בנק",
   "DeleteBankDetails": "מחק את פרטי הבנק",
+  "Completed": "הושלם",
+  "Failed": "נִכשָׁל",
+  "CardExpiredNoCard": "פג תוקף הכרטיס/ללא כרטיס",
+  "Tomorrow": "מָחָר",
+  "ExpireNextMonth": "יפוג בחודש הבא",
+  "ManualTrigger": "חיוב ידני",
 
   "--AUTH--": null,
   "Login": "כניסה",

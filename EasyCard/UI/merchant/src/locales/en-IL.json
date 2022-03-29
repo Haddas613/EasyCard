@@ -435,6 +435,12 @@
   "RestoreItem": "Restore Item",
   "AddBankDetails": "Add Bank Details",
   "DeleteBankDetails": "Delete Bank Details",
+  "Completed": "Completed",
+  "Failed": "Failed",
+  "CardExpiredNoCard": "Card Expired/No Card",
+  "Tomorrow": "Tomorrow",
+  "ExpireNextMonth": "Expire Next Month",
+  "ManualTrigger": "Manual Trigger",
 
   "--AUTH--": null,
   "Login": "Login",
