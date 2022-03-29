@@ -35,6 +35,8 @@ namespace Transactions.Api.Mapping
                    .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
+            CreateMap<PaymentTransaction, CreateTransactionRequest>();
+
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));

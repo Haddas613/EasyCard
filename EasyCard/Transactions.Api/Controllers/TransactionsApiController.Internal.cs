@@ -151,26 +151,26 @@ namespace Transactions.Api.Controllers
                 {
                     if (User.IsAdmin())
                     {
-                        dbToken = EnsureExists(await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                        dbToken = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
                     }
                     else
                     {
-                        dbToken = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                        dbToken = await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
                     }
                 }
                 else
                 {
-                    dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+                    dbToken = await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
                 }
 
                 if (transaction.InitialTransactionID == null)
                 {
-                    transaction.InitialTransactionID = dbToken.InitialTransactionID;
+                    transaction.InitialTransactionID = dbToken?.InitialTransactionID;
                 }
 
                 if (transaction.DealDetails?.ConsumerID == null)
                 {
-                    transaction.DealDetails.ConsumerID = dbToken.ConsumerID;
+                    transaction.DealDetails.ConsumerID = dbToken?.ConsumerID;
                 }
             }
             else
@@ -423,7 +423,11 @@ namespace Transactions.Api.Controllers
                     if (token != null)
                     {
                         mapper.Map(token, processorRequest.CreditCardToken);
-                        mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
+
+                        if (dbToken != null)
+                        {
+                            mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
+                        }
                     }
                     else
                     {
@@ -1157,6 +1161,12 @@ namespace Transactions.Api.Controllers
                 logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {ex.Message}");
                 return new OperationResponse { Message = $"System error", Status = StatusEnum.Error };
             }
+        }
+
+        private CreateTransactionRequest ConvertTransactionRequestForRefund(PaymentTransaction transaction)
+        {
+            var res = mapper.Map<CreateTransactionRequest>(transaction);
+            return res;
         }
 
         /// <summary>

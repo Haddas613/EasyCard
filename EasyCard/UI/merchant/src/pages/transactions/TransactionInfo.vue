@@ -354,7 +354,7 @@ export default {
     canPerformBitRefund() {
       return (
         (this.model.status === "completed" || this.model.status === "refund")
-        && this.model.$documentOrigin === "bit" && (this.model.totalRefund || 0) < this.model.transactionAmount
+        && (this.model.totalRefund || 0) < this.model.transactionAmount
       );
     },
   }

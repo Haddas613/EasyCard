@@ -463,27 +463,28 @@ namespace Transactions.Api.Controllers
                 {
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
+            }
 
-                // TODO: what if consumer does not created
+            // TODO: what if consumer does not created
+            if (model.CreditCardToken == null || model.SaveCreditCard == true)
+            {
+                bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
-                if (model.DealDetails.ConsumerID != null)
+                var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
+                mapper.Map(model, tokenRequest);
+
+                DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin, doNotCreateInitialDealAndDbRecord: doNotCreateInitialDealAndDbRecord);
+
+                var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
                 {
-                    var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
-                    mapper.Map(model, tokenRequest);
-
-                    DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
-                    var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
-
-                    var tokenResponseOperation = tokenResponse.GetOperationResponse();
-
-                    if (!(tokenResponseOperation?.Status == StatusEnum.Success))
-                    {
-                        return tokenResponse;
-                    }
-
-                    model.CreditCardToken = tokenResponseOperation.EntityUID;
-                    model.CreditCardSecureDetails = null;
+                    return tokenResponse;
                 }
+
+                model.CreditCardToken = tokenResponseOperation.EntityUID;
+                model.CreditCardSecureDetails = null; // TODO
             }
 
             if (model.CreditCardToken != null)
@@ -753,7 +754,7 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
-        /// This is Bit's refund
+        /// Refund or chargeback of and existing transaction
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -768,24 +769,41 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            var res = await bitController.RefundInternal(transaction, terminal, request);
-
-            if (res.Status == StatusEnum.Success)
+            if (transaction.DocumentOrigin == DocumentOriginEnum.Bit)
             {
-                try
-                {
-                    await SendTransactionSuccessEmails(transaction, terminal);
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
-                }
+                var res = await bitController.RefundInternal(transaction, terminal, request);
 
-                return res;
+                if (res.Status == StatusEnum.Success)
+                {
+                    try
+                    {
+                        await SendTransactionSuccessEmails(transaction, terminal);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
+                    }
+
+                    return res;
+                }
+                else
+                {
+                    return BadRequest(res);
+                }
             }
             else
             {
-                return BadRequest(res);
+                var transactionRequest = ConvertTransactionRequestForRefund(transaction);
+
+                if (transaction.CreditCardToken != null)
+                {
+                    var token = EnsureExists(await keyValueStorage.Get(transaction.CreditCardToken.ToString()), "CreditCardToken");
+                    return await ProcessTransaction(terminal, transactionRequest, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+                }
+                else
+                {
+                    throw new BusinessException($"Saved CreditCardToken required");
+                }
             }
         }
 

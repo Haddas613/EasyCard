@@ -218,7 +218,7 @@ namespace Transactions.Api.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(Terminal terminal, TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(Terminal terminal, TokenRequest model, DocumentOriginEnum origin = DocumentOriginEnum.UI, bool doNotCreateInitialDealAndDbRecord = false)
         {
             //// TODO: caching
             //var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -256,7 +256,7 @@ namespace Transactions.Api.Controllers
             storageData.TerminalID = dbData.TerminalID = terminal.TerminalID;
             storageData.MerchantID = dbData.MerchantID = terminal.MerchantID;
 
-            if (!terminal.Settings.DoNotCreateSaveTokenInitialDeal)
+            if (!terminal.Settings.DoNotCreateSaveTokenInitialDeal && !doNotCreateInitialDealAndDbRecord)
             {
                 if (!(terminal.Settings.J5Allowed == true))
                 {
@@ -349,7 +349,10 @@ namespace Transactions.Api.Controllers
 
             await keyValueStorage.Save(dbData.CreditCardTokenID.ToString(), JsonConvert.SerializeObject(storageData));
 
-            await creditCardTokenService.CreateEntity(dbData);
+            if (!doNotCreateInitialDealAndDbRecord)
+            {
+                await creditCardTokenService.CreateEntity(dbData);
+            }
 
             return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) };
         }

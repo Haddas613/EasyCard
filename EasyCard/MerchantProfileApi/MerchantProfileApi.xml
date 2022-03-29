@@ -251,6 +251,16 @@
             End-customer Phone
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.WoocommerceID">
+            <summary>
+            External ID inside https://woocommerce.com system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.EcwidID">
+            <summary>
+            External ID inside https://www.ecwid.com system
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumersFilter.WoocommerceID">
             <summary>
             External ID inside https://woocommerce.com system
@@ -264,6 +274,16 @@
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerSummary.ConsumerEmail">
             <summary>
             End-customer Email
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerSummary.WoocommerceID">
+            <summary>
+            External ID inside https://woocommerce.com system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerSummary.EcwidID">
+            <summary>
+            External ID inside https://www.ecwid.com system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.ItemRequest.WoocommerceID">
@@ -312,12 +332,32 @@
               Looks up a localized string similar to Price.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResponse.WoocommerceID">
+            <summary>
+            External ID inside https://woocommerce.com system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResponse.EcwidID">
+            <summary>
+            External ID inside https://www.ecwid.com system
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ItemsFilter.WoocommerceID">
             <summary>
             External ID inside https://woocommerce.com system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.ItemsFilter.EcwidID">
+            <summary>
+            External ID inside https://www.ecwid.com system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemSummary.WoocommerceID">
+            <summary>
+            External ID inside https://woocommerce.com system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemSummary.EcwidID">
             <summary>
             External ID inside https://www.ecwid.com system
             </summary>
