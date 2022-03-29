@@ -13,6 +13,8 @@ namespace Transactions.Api.Models.Billing
 {
     public class BillingDealsFilter : FilterBase
     {
+        public BillingsQuickStatusFilterEnum QuickStatus { get; set; }
+
         public Guid? TerminalID { get; set; }
 
         [SwaggerExclude]
