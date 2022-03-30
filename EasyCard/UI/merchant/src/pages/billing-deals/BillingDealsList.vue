@@ -50,23 +50,14 @@
               v-model="billingDealsFilter.quickStatus"
               @change="getDataFromApi(false)"
             >
-              <v-btn class="mx-1" width="14rem" color="primary" value="completed">{{ $t('Completed') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="gray" value="inactive">{{ $t('Inactive') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="error" value="failed">{{ $t('Failed') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="orange" value="cardExpired">{{ $t('CardExpiredNoCard') }}</v-btn>
-            </v-btn-toggle>
-          </v-col>
-          <v-col cols="12" class="d-flex mt-2 justify-center">
-            <v-btn-toggle
-              class="d-flex"
-              :class="{ 'flex-column': $vuetify.breakpoint.smAndDown }"
-              v-model="billingDealsFilter.quickStatus"
-              @change="getDataFromApi(false)"
-            >
-              <v-btn class="mx-1" width="14rem" color="teal" value="triggeredTomorrow">{{ $t('Tomorrow') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="accent" value="paused">{{ $t('Paused') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="secondary" value="manualTrigger">{{ $t('ManualTrigger') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="deep-orange" value="expiredNextMonth">{{ $t('ExpireNextMonth') }}</v-btn>
+              <v-btn small outlined color="secondary" value="manualTrigger">{{ $t('ManualTrigger') }}</v-btn>
+              <v-btn small outlined color="primary" value="completed">{{ $t('Completed') }}</v-btn>
+              <v-btn small outlined color="teal" value="triggeredTomorrow">{{ $t('Tomorrow') }}</v-btn>
+              <v-btn small outlined color="accent" value="paused">{{ $t('Paused') }}</v-btn>
+              <v-btn small outlined color="orange" value="cardExpired">{{ $t('CardExpiredNoCard') }}</v-btn>
+              <v-btn small outlined color="deep-orange" value="expiredNextMonth">{{ $t('ExpireNextMonth') }}</v-btn>
+              <v-btn small outlined color="error" value="failed">{{ $t('Failed') }}</v-btn>
+              <v-btn small outlined color="gray" value="inactive">{{ $t('Inactive') }}</v-btn>
             </v-btn-toggle>
           </v-col>
         </v-row>

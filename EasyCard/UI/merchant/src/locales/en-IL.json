@@ -96,6 +96,7 @@
   "InvoiceOnlyBillingDeal": "Invoice Only Billing Deal",
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
   "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
+  "DeleteCustomerMessageTitle": "Are you sure you want to delete the customer?",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -529,5 +530,6 @@
   "NoAvailableTerminals": "No available terminals",
   "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
   "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
-  "FormInvalidSaveNotAllowed": "Can not save. Please check form values."
+  "FormInvalidSaveNotAllowed": "Can not save. Please check form values.",
+  "DeleteCustomerMessageText": "By deleting the customer you will also delete all his credit card tokens and deactivate all related billings"
 }
