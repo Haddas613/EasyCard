@@ -833,8 +833,9 @@ namespace CheckoutPortal.Controllers
                     CardNumber = request.CardNumber,
                     TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
                     ThreeDSServerTransID = request.ThreeDSServerTransID,
-                    Amount = request.Amount,
-                    BrowserDetails = browserDetails
+                    Amount = request.Amount ?? checkoutConfig.PaymentRequest?.PaymentRequestAmount,
+                    BrowserDetails = browserDetails,
+                    CardExpiration = CreditCardHelpers.ParseCardExpiration(request.CardExpiration)
                 }
             );
 
@@ -845,7 +846,8 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
         {
-            var cresDecoded = request.Cres?.ConvertFromBase64();
+            // TODO: log this message
+            var cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
             if (!string.IsNullOrWhiteSpace(cresDecoded))
             {
                 try
@@ -858,7 +860,7 @@ namespace CheckoutPortal.Controllers
                         return View(new Models.ThreeDS.NotificationResult { Success = false });
                     }
 
-                    return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID });
+                    return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID, Error = cresObj.ErrorDescription });
                 }
                 catch (Exception ex)
                 {

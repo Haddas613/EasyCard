@@ -102,11 +102,18 @@ namespace ThreeDS
                 MerchantURL = configuration.MerchantURL,
                 MessageType = "ARes",
 
-                //AcctType = "02",
-                //AcquirerBin = "2",
-                //AcquirerMerchantId = "1",
-                //Brand = "2",
-                //Merchant_mcc = "1234",
+                AcctType = "02",
+                AcquirerBin = "2",
+                AcquirerMerchantId = "1",
+                Brand = "2",
+                Merchant_mcc = "1234",
+                PurchaseExponent = "2",
+                TransType = "01",
+
+                //CardExpiryDate = "2408",
+
+                CardExpiryDateMonth = (model.CardExpiration?.Month).GetValueOrDefault().ToString("D2"),
+                CardExpiryDateYear = (model.CardExpiration?.Year).GetValueOrDefault().ToString("D2"),
 
                 MerchantName = model.MerchantName,
 
@@ -120,7 +127,9 @@ namespace ThreeDS
                 BrowserScreenHeight = model.BrowserDetails?.BrowserScreenHeight ?? "1050", 
                 BrowserScreenWidth = model.BrowserDetails?.BrowserScreenWidth ?? "1680", 
                 BrowserTZ = model.BrowserDetails?.BrowserTZ ?? "1200", 
-                BrowserUserAgent = model.BrowserDetails?.BrowserUserAgent ?? "Mozilla/5.0 (Windows NT 6.1; Win64; x64;"
+                BrowserUserAgent = model.BrowserDetails?.BrowserUserAgent ?? "Mozilla/5.0 (Windows NT 6.1; Win64; x64;",
+
+                ChallengeWindowSize = "02"
             };
 
             try

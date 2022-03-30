@@ -23,5 +23,7 @@ namespace ThreeDS.Contract
         public BrowserDetails BrowserDetails { get; set; }
 
         public decimal? Amount { get; set; }
+
+        public CardExpiration CardExpiration { get; set; }
     }
 }

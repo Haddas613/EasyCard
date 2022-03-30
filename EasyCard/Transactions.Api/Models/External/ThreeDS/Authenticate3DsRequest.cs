@@ -23,5 +23,8 @@ namespace Transactions.Api.Models.External.ThreeDS
         public decimal? Amount { get; set; }
 
         public BrowserDetails BrowserDetails { get; set; }
+
+        [JsonConverter(typeof(CardExpirationConverter))]
+        public CardExpiration CardExpiration { get; set; }
     }
 }

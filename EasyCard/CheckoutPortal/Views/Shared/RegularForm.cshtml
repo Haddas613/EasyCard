@@ -366,11 +366,12 @@
             };
 
             window.notification3Ds = function (cres) {
-                if (cres) {
+                if (cres.success) {
                     $('#threeDSCReqIframeContainer').slideFadeToggle();
                     return $("#checkout-form").submit();
                 } else {
-                    toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                    toastr["error"]('@(localizer.Get("ThreeDSError"))' + cres.error);
+                    window.switchLoadingSpinner(false);
                     $('#threeDSCReqIframeContainer').slideFadeToggle();
                 }
             };
@@ -442,6 +443,7 @@
                             return $("#checkout-form").submit();
                         else {
                             toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                            window.switchLoadingSpinner(false);
                             return;
                         }
                     }
@@ -451,6 +453,7 @@
                             return $("#checkout-form").submit();
                         else {
                             toastr["error"](data.errorMessage);
+                            window.switchLoadingSpinner(false);
                             return;
                         }
                     }

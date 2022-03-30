@@ -18,9 +18,11 @@ namespace ThreeDS.Models
 		public string AcctNumber { get; set; } // required (card number)
 		public string MessageType { get; set; }
 
-		public string cardExpiryDateYear { get; set; }
+		public string CardExpiryDateYear { get; set; }
 
-		public string cardExpiryDateMonth { get; set; }
+		public string CardExpiryDateMonth { get; set; }
+
+		//public string CardExpiryDate { get; set; }
 
 		public string AcctType { get; set; }// try just with parameters until here leave all the rest empty
 
@@ -93,13 +95,14 @@ namespace ThreeDS.Models
 
 		public string PurchaseCurrency { get; set; }
 
-		public string purchaseExponent { get; set; }
+		public string PurchaseExponent { get; set; }
 
 		public string PurchaseDate { get; set; }
 
 		public string recurringExpiry { get; set; }
 		public string recurringFrequency { get; set; }
-		public string transType { get; set; }
+
+		public string TransType { get; set; }
 
 		public string Merchant_mcc { get; set; }
 
@@ -124,6 +127,6 @@ namespace ThreeDS.Models
 		public string BrowserTZ { get; set; }
 
 		public string BrowserUserAgent { get; set; }
-		public string challengeWindowSize { get; set; }
+		public string ChallengeWindowSize { get; set; }
 	}
 }

@@ -19,6 +19,18 @@ namespace Transactions.Api.Models.External.ThreeDS
 
         public string TransStatus { get; set; }
 
+        public string DsTransID { get; set; }
+
+        public string ErrorComponent { get; set; }
+
+        public string ErrorMessageType { get; set; }
+
+        public string ErrorCode { get; set; }
+
+        public string ErrorDescription { get; set; }
+
+        public string ErrorDetail { get; set; }
+
         public bool Success
         {
             get { return TransStatus == "Y"; }

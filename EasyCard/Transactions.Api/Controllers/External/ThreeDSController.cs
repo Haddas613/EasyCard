@@ -121,7 +121,8 @@ namespace Transactions.Api.Controllers.External
                 NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds",
                 MerchantName = terminal.Merchant.BusinessName,
                 Amount = request.Amount,
-                BrowserDetails = request.BrowserDetails
+                BrowserDetails = request.BrowserDetails,
+                CardExpiration = request.CardExpiration
             };
 
             var res = await threeDSService.Authentication(model, GetCorrelationID());

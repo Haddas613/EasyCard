@@ -3,9 +3,10 @@
 <script nws-csp-add-nonce="true">
     (function () {
 
-        const cres = @Model.Success.ToString().ToLower();
+        const success = @Model.Success.ToString().ToLower();
+        const error = "@Model.Error";
 
-        window.parent.notification3Ds(cres);
+        window.parent.notification3Ds({ success: success, error: error });
 
     })();
 </script>
