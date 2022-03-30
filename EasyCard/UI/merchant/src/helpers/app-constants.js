@@ -16,6 +16,18 @@ const appConstants = {
         defaultDashboardAltQuickDateType: 'lastMonth',
         defaultDashboardAltGranularity: 'week',
         defaultDashboardAltQuickDateFilterAltEnum: 'noComparison',
+        billingDeals: {
+            quickStatus: {
+                completed: 'completed',
+                inactive: 'inactive',
+                failed: 'failed',
+                cardExpired: 'cardExpired',
+                triggeredTomorrow: 'triggeredTomorrow',
+                paused: 'paused',
+                expiredNextMonth: 'expiredNextMonth',
+                manualTrigger: 'manualTrigger',
+            },
+        },
     },
     misc: {
         uiDefaultVersion: '#{versionNumber}#'

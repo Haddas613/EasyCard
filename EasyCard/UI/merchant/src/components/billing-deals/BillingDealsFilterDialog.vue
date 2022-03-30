@@ -16,7 +16,7 @@
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
-          <v-row no-gutters class="d-flex px-1 body-2" align-content="center" v-if="!model.quickStatus">
+          <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
             <v-col cols="4" md="3">
               <v-switch
                 v-model="model.actual"

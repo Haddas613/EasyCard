@@ -3,7 +3,6 @@
     <billing-deals-filter-dialog
       :show.sync="showDialog"
       :filter="billingDealsFilter"
-      :key="billingDealsFilter.quickStatus"
       v-on:ok="applyFilters($event)"
     ></billing-deals-filter-dialog>
     <billing-deals-trigger-dialog
@@ -52,10 +51,10 @@
               v-model="billingDealsFilter.quickStatus"
               @change="getDataFromApi(false)"
             >
-              <v-btn class="mx-1" width="14rem" color="primary" value="1">{{ $t('Completed') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="gray" value="2">{{ $t('Inactive') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="error" value="3">{{ $t('Failed') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="orange" value="4">{{ $t('CardExpiredNoCard') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="primary" value="completed">{{ $t('Completed') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="gray" value="inactive">{{ $t('Inactive') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="error" value="failed">{{ $t('Failed') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="orange" value="cardExpired">{{ $t('CardExpiredNoCard') }}</v-btn>
             </v-btn-toggle>
           </v-col>
           <v-col cols="12" class="d-flex mt-2 justify-center">
@@ -65,10 +64,10 @@
               v-model="billingDealsFilter.quickStatus"
               @change="getDataFromApi(false)"
             >
-              <v-btn class="mx-1" width="14rem" color="teal" value="5">{{ $t('Tomorrow') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="accent" value="6">{{ $t('Paused') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="secondary" value="8">{{ $t('ManualTrigger') }}</v-btn>
-              <v-btn class="mx-1" width="14rem" color="deep-orange" value="7">{{ $t('ExpireNextMonth') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="teal" value="triggeredTomorrow">{{ $t('Tomorrow') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="accent" value="paused">{{ $t('Paused') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="secondary" value="manualTrigger">{{ $t('ManualTrigger') }}</v-btn>
+              <v-btn class="mx-1" width="14rem" color="deep-orange" value="expiredNextMonth">{{ $t('ExpireNextMonth') }}</v-btn>
             </v-btn-toggle>
           </v-col>
         </v-row>
@@ -294,6 +293,7 @@ export default {
         ...this.billingDealsFilter,
         ...data,
         skip: 0,
+        quickStatus: null, //quick status must be reset if filter is applied
       };
       await this.getDataFromApi();
     },
