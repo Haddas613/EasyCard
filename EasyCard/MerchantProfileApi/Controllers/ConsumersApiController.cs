@@ -81,8 +81,6 @@ namespace MerchantProfileApi.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<ConsumerSummary>>> GetConsumers([FromQuery] ConsumersFilter filter)
         {
-            var merchantID = User.GetMerchantID();
-
             var query = consumersService.GetConsumers().Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
@@ -192,7 +190,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Delete end-customer record
+        /// Delete end-customer record and all related data like card tokens, billings, etc.
         /// </summary>
         /// <param name="consumerID"></param>
         /// <returns></returns>

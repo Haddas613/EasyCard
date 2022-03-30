@@ -99,6 +99,7 @@
   "SecurityHeader": "כותרת אבטחה",
   "WebhookEvent": "Webhook אירוע",
   "FailureEvent": "אירוע כשל",
+  "DeleteCustomerMessageTitle": "?האם אתה בטוח שברצונך למחוק את הלקוח",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -528,5 +529,6 @@
   "NoAvailableTerminals": "מסוף אינו זמין",
   "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק.",
   "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
-  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות"
+  "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות",
+  "DeleteCustomerMessageText": "במחיקת הלקוח ימחקו גם כל פרטי כרטיס האשראי שלו וכל העסקאות המחזוריות יהיו לא פעילות."
 }
