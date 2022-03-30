@@ -23,7 +23,15 @@ namespace Transactions.Business.Services
         {
             ThreeDSIntermediateData response = null;
 
-            response = (await table.GetEntityAsync<ThreeDSIntermediateData>(PartitionKey, threeDSServerTransID)).Value;
+            try
+            {
+                response = (await table.GetEntityAsync<ThreeDSIntermediateData>(PartitionKey, threeDSServerTransID)).Value;
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return null;
+            }
 
             return response;
         }

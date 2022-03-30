@@ -20,6 +20,11 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
+            if (filter.QuickStatus != null)
+            {
+                return src.FilterByQuickStatus(filter.QuickStatus.GetValueOrDefault());
+            }
+
             if (filter.InvoiceOnly)
             {
                 src = src.Where(t => t.InvoiceOnly);
@@ -136,6 +141,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.Origin == filter.Origin);
             }
 
+            return src;
+        }
+
+        public static IQueryable<BillingDeal> FilterByQuickStatus(this IQueryable<BillingDeal> src, BillingsQuickStatusFilterEnum quickStatus)
+        {
             return src;
         }
 
