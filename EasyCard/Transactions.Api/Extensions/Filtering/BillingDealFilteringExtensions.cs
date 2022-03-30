@@ -14,15 +14,59 @@ namespace Transactions.Api.Extensions.Filtering
     {
         public static IQueryable<BillingDeal> Filter(this IQueryable<BillingDeal> src, BillingDealsFilter filter)
         {
+            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+            if (filter.QuickStatus != null)
+            {
+                return src.FilterByQuickStatus(filter.QuickStatus.GetValueOrDefault(), today);
+            }
+
             if (filter.BillingDealID != null)
             {
                 src = src.Where(t => t.BillingDealID == filter.BillingDealID);
                 return src;
             }
 
-            if (filter.QuickStatus != null)
+            if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyDeleted || filter.Finished == true)
             {
-                return src.FilterByQuickStatus(filter.QuickStatus.GetValueOrDefault());
+                src = src.Where(t => t.Active == false);
+            }
+            else
+            {
+                src = src.Where(t => t.Active == true);
+            }
+
+            if (filter.Finished == true)
+            {
+                src = src.Where(t => t.NextScheduledTransaction == null);
+            }
+
+            if (filter.Actual)
+            {
+                src = src
+                    .Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
+                    .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
+            }
+
+            if (filter.InProgress)
+            {
+                src = src
+                    .Where(t => t.InProgress != Shared.Enums.BillingProcessingStatusEnum.Pending);
+            }
+
+            if (filter.OnlyActive == true)
+            {
+                src = src.Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null);
+            }
+
+            if (filter.HasError == true)
+            {
+                src = src.Where(t => t.HasError);
+            }
+
+            if (filter.Paused == true)
+            {
+                src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
             }
 
             if (filter.InvoiceOnly)
@@ -33,44 +77,6 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.PaymentType != null)
             {
                 src = src.Where(t => t.PaymentType == filter.PaymentType);
-            }
-
-            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-            if (filter.Actual)
-            {
-                src = src
-                    .Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
-                    .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
-            }
-            else if (filter.Finished == true)
-            {
-                src = src.Where(t => t.NextScheduledTransaction == null);
-            }
-            else if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyDeleted)
-            {
-                src = src.Where(t => t.Active == false);
-            }
-            else if (filter.Paused == true)
-            {
-                src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
-            }
-            else if (filter.HasError == true)
-            {
-                src = src.Where(t => t.HasError);
-            }
-            else if (filter.OnlyActive == true)
-            {
-                src = src.Where(t => t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active && t.NextScheduledTransaction != null);
-            }
-            else if (filter.InProgress)
-            {
-                src = src
-                    .Where(t => t.InProgress != Shared.Enums.BillingProcessingStatusEnum.Pending);
-            }
-            else
-            {
-                src = src.Where(t => t.Active == true);
             }
 
             if (filter.TerminalID != null)
@@ -86,6 +92,12 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.Currency != null)
             {
                 src = src.Where(t => t.Currency == filter.Currency);
+            }
+
+            if (filter.CreditCardExpired)
+            {
+                var lastDayOfMonth = today.LastDayOfMonth();
+                return src.Where(t => t.Active && t.CardExpirationDate < lastDayOfMonth);
             }
 
             src = HandleDateFiltering(src, filter);
@@ -144,9 +156,38 @@ namespace Transactions.Api.Extensions.Filtering
             return src;
         }
 
-        public static IQueryable<BillingDeal> FilterByQuickStatus(this IQueryable<BillingDeal> src, BillingsQuickStatusFilterEnum quickStatus)
+        public static IQueryable<BillingDeal> FilterByQuickStatus(this IQueryable<BillingDeal> src, BillingsQuickStatusFilterEnum quickStatus, DateTime today)
         {
-            return src;
+            switch (quickStatus)
+            {
+                case BillingsQuickStatusFilterEnum.Completed:
+                    return src.Where(t => t.NextScheduledTransaction == null);
+                case BillingsQuickStatusFilterEnum.Failed:
+                    return src.Where(t => t.Active && t.HasError);
+                case BillingsQuickStatusFilterEnum.Inactive:
+                    return src.Where(t => t.Active == false);
+                case BillingsQuickStatusFilterEnum.Paused:
+                    return src.Where(t =>
+                        t.Active && (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
+                case BillingsQuickStatusFilterEnum.ManualTrigger:
+                    return src.Where(t =>
+                        t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active &&
+                        t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
+                    .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
+                case BillingsQuickStatusFilterEnum.TriggeredTomorrow:
+                    return src.Where(t =>
+                        t.Active &&
+                        t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date == today.AddDays(1))
+                    .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
+                case BillingsQuickStatusFilterEnum.CardExpired:
+                    var lastDayOfMonth = today.LastDayOfMonth();
+                    return src.Where(t => t.Active && t.CardExpirationDate < lastDayOfMonth);
+                case BillingsQuickStatusFilterEnum.ExpiredNextMonth:
+                    var lastDayOfNextMonth = today.AddMonths(1).LastDayOfMonth();
+                    return src.Where(t => t.Active && t.CardExpirationDate == lastDayOfNextMonth);
+                default:
+                    return src.Where(t => t.Active);
+            }
         }
 
         private static IQueryable<BillingDeal> HandleDateFiltering(IQueryable<BillingDeal> src, BillingDealsFilter filter)

@@ -481,6 +481,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(p => p.CardExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false).ValueGeneratedOnAddOrUpdate();
             }
         }
 
