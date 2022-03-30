@@ -697,8 +697,8 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    var data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
-                    var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummary>();
+                    var data = await mapper.ProjectTo<InvoiceExcelSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
+                    var mapping = InvoiceExcelSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceExcelSummary>();
                     var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Invoices-{Guid.NewGuid()}.xlsx", "Invoices", data, mapping);
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }

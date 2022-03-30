@@ -270,4 +270,7 @@
   <data name="PayersName" xml:space="preserve">
     <value>שם המשלם</value>
   </data>
+  <data name="GoBackToPayment" xml:space="preserve">
+    <value>חזור לתשלום</value>
+  </data>
 </root>

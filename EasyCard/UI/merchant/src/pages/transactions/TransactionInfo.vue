@@ -3,7 +3,7 @@
     <div v-if="model">
       <transaction-printout ref="printout" :transaction="model"></transaction-printout>
       <transaction-slip-dialog ref="slipDialog" :transaction="model" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
-      <bit-refund-dialog ref="bitRefundDialog" :transaction="model" :show.sync="bitRefundDialog" @refund="onBitRefundCompleted($event)"></bit-refund-dialog>
+      <refund-dialog ref="refundDialog" :transaction="model" :show.sync="refundDialog" @refund="onBitRefundCompleted($event)"></refund-dialog>
       <v-card flat class="mb-2">
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
@@ -197,8 +197,8 @@ export default {
       import("../../components/details/ClearingHouseTransactionDetails"),
     BankPaymentDetails: () =>
       import("../../components/details/BankPaymentDetails"),
-    BitRefundDialog: () =>
-      import("../../components/transactions/BitRefundDialog"),
+    RefundDialog: () =>
+      import("../../components/transactions/RefundDialog"),
   },
   data() {
     return {
@@ -212,7 +212,7 @@ export default {
         Canceled: "accent--text"
       },
       transactionSlipDialog: false,
-      bitRefundDialog: false,
+      refundDialog: false,
     };
   },
   async mounted() {
@@ -323,10 +323,10 @@ export default {
         });
       }
 
-      if(this.canPerformBitRefund){
+      if(this.model.allowRefund){
         threeDotMenu.push({
           text: this.$t("Refund"),
-          fn: () => this.bitRefundDialog = true,
+          fn: () => this.refundDialog = true,
         });
       }
 
@@ -351,12 +351,6 @@ export default {
     ...mapState({
       terminalStore: state => state.settings.terminal
     }),
-    canPerformBitRefund() {
-      return (
-        (this.model.status === "completed" || this.model.status === "refund")
-        && (this.model.totalRefund || 0) < this.model.transactionAmount
-      );
-    },
   }
 };
 </script>

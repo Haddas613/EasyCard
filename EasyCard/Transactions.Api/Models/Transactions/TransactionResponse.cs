@@ -205,6 +205,8 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public bool AllowTransmissionCancellation { get; set; }
 
+        public bool AllowRefund { get; set; }
+
         /// <summary>
         /// Reference to billing schedule which produced this transaction
         /// </summary>
