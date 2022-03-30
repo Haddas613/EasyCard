@@ -51,11 +51,17 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PaymentTransaction, TransactionResponse>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
+                .ForMember(d => d.AllowRefund, o => o.MapFrom(src =>
+                    (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
+                    && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount));
 
             CreateMap<PaymentTransaction, TransactionResponseAdmin>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
+                .ForMember(d => d.AllowRefund, o => o.MapFrom(src =>
+                    (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
+                    && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount));
 
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
