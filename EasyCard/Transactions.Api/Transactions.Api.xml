@@ -591,6 +591,137 @@
             Bit transaction serial id (BitTransactionSerialId)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.AmountWithoutVat">
+            <summary>
+              Looks up a localized string similar to Amount without VAT.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.AmountWithVat">
+            <summary>
+              Looks up a localized string similar to Amount with VAT.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner Name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.ConsumerID">
+            <summary>
+              Looks up a localized string similar to Consumer ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceAmount">
+            <summary>
+              Looks up a localized string similar to Invoice Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceDate">
+            <summary>
+              Looks up a localized string similar to Invoice Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceID">
+            <summary>
+              Looks up a localized string similar to Invoice ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceNumber">
+            <summary>
+              Looks up a localized string similar to Invoice Number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceTimestamp">
+            <summary>
+              Looks up a localized string similar to Invoice Timestamp.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.InvoiceType">
+            <summary>
+              Looks up a localized string similar to Invoice Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Transaction ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.PaymentType">
+            <summary>
+              Looks up a localized string similar to Payment Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
             <summary>
             Invoice details

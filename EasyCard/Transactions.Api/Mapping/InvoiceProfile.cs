@@ -70,6 +70,13 @@ namespace Transactions.Api.Mapping
 
                 .ForMember(d => d.Extension, o => o.MapFrom(d => d.Extension))
                 .ForMember(d => d.PaymentDetails, o => o.MapFrom<PaymentDetailsTransactionValueResolver>());
+
+            CreateMap<Invoice, InvoiceExcelSummary>()
+                  .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
+                  .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
+                  //.ForMember(d => d.PaymentType, o => o.MapFrom(d => d.PaymentDetails.AsEnumerable().Select(p => p.PaymentType).FirstOrDefault()))
+                  .ForMember(d => d.AmountWithVat, o => o.MapFrom(d => d.InvoiceAmount))
+                  .ForMember(d => d.AmountWithoutVat, o => o.MapFrom(d => d.InvoiceAmount - d.VATTotal));
         }
     }
 }
