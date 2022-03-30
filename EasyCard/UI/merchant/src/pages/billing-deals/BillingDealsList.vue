@@ -45,7 +45,6 @@
         <v-row no-gutters class="body-2 mt-2" align-content="center">
           <v-col cols="12" class="d-flex justify-center">
             <v-btn-toggle
-              color="primary"
               class="d-flex"
               :class="{ 'flex-column': $vuetify.breakpoint.smAndDown }"
               v-model="billingDealsFilter.quickStatus"
