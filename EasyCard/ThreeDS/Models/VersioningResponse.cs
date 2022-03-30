@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,8 +21,6 @@ namespace ThreeDS.Models
         public string DsEndProtocolVersion { get; set; }
 
         public string HighestCommonSupportedProtocolVersion { get; set; }
-
-        public string AcsInfoInd { get; set; }
 
         public string ThreeDSMethodURL { get; set; }
 

@@ -49,7 +49,7 @@ namespace ThreeDS
 
             try
             {
-                var response = await apiClient.Post<VersioningResponseEnvelop>(configuration.BaseUrl, "/api/Versioning", request, null,
+                var response = await apiClient.Post<VersioningResponseEnvelop>(configuration.BaseUrl, "api/Versioning", request, null,
                     (url, request) =>
                     {
                         requestStr = request;
@@ -100,14 +100,14 @@ namespace ThreeDS
 
                 NotificationURL = model.NotificationURL,
                 MerchantURL = configuration.MerchantURL,
-
-                AcctType = "02",
-                AcquirerBin = "2",
-                AcquirerMerchantId = "1",
-                Brand = "2",
                 MessageType = "ARes",
 
-                Merchant_mcc = "1234",
+                //AcctType = "02",
+                //AcquirerBin = "2",
+                //AcquirerMerchantId = "1",
+                //Brand = "2",
+                //Merchant_mcc = "1234",
+
                 MerchantName = model.MerchantName,
 
                 PurchaseCurrency = CurrencyHelper.GetCurrencyISONumber(model.Currency).ToString(),
@@ -125,7 +125,7 @@ namespace ThreeDS
 
             try
             {
-                var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "/api/authentication", request, null,
+                var response = await apiClient.Post<AuthenticationResponseEnvelop>(configuration.BaseUrl, "api/authentication", request, null,
                     (url, request) =>
                     {
                         requestStr = request;
