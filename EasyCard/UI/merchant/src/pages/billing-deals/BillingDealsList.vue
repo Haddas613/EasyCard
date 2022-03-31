@@ -66,7 +66,7 @@
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0 pt-0">
         <ec-list :items="billingDeals" v-if="billingDeals">
-          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.actual">
+          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.quickStatus == 'manualTrigger'">
             <div class="px-1">
               <v-checkbox v-model="item.selected" v-if="!item.processed"></v-checkbox>
               <v-icon v-else color="success">mdi-check-circle</v-icon>
@@ -328,7 +328,7 @@ export default {
       await this.refresh();
     },
     async createTransactions() {
-      if (!this.billingDealsFilter.actual) {
+      if (!this.billingDealsFilter.quickStatus == 'manualTrigger') {
         return this.$toasted.show(this.$t('PleaseEnableManualModeFirst'), {
           type: 'error',
         });
@@ -351,7 +351,7 @@ export default {
       //await this.switchFilterChanged('inProgress');
     },
     switchSelectAll() {
-      // if (!this.billingDealsFilter.actual) {
+      // if (!this.billingDealsFilter.quickStatus == 'manualTrigger') {
       //   return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
       //     type: "error"
       //   });

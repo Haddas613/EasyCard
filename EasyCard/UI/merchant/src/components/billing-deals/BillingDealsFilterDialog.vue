@@ -17,7 +17,7 @@
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
           <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
-            <v-col cols="4" md="3">
+            <!-- <v-col cols="4" md="3">
               <v-switch
                 v-model="model.actual"
                 @change="switchFilterChanged('actual')"
@@ -28,7 +28,7 @@
                   <small>{{ $t('SelectForTrigger') }}</small>
                 </template>
               </v-switch>
-            </v-col>
+            </v-col> -->
             <v-col cols="4" md="3">
               <v-switch v-model="model.invoiceOnly">
                 <template v-slot:label>
@@ -253,22 +253,22 @@ export default {
       this.visible = false;
     },
     switchFilterChanged(type) {
-      let allTypes = [
-        'showDeleted',
-        'actual',
-        'paused',
-        'finished',
-        'hasError',
-        'inProgress',
-        'creditCardExpired',
-      ].filter((v) => v != type);
-      for (var t of allTypes) {
-        if (t === 'showDeleted') {
-          this.$set(this.model, t, 0);
-        } else {
-          this.$set(this.model, t, false);
-        }
-      }
+      // let allTypes = [
+      //   'showDeleted',
+      //   'actual',
+      //   'paused',
+      //   'finished',
+      //   'hasError',
+      //   'inProgress',
+      //   'creditCardExpired',
+      // ].filter((v) => v != type);
+      // for (var t of allTypes) {
+      //   if (t === 'showDeleted') {
+      //     this.$set(this.model, t, 0);
+      //   } else {
+      //     this.$set(this.model, t, false);
+      //   }
+      // }
     },
   },
 };
