@@ -97,7 +97,7 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.CreditCardExpired)
             {
                 var lastDayOfMonth = today.LastDayOfMonth();
-                return src.Where(t => t.Active && t.CardExpirationDate < lastDayOfMonth);
+                return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate < lastDayOfMonth);
             }
 
             src = HandleDateFiltering(src, filter);
@@ -181,10 +181,10 @@ namespace Transactions.Api.Extensions.Filtering
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
                 case BillingsQuickStatusFilterEnum.CardExpired:
                     var lastDayOfMonth = today.LastDayOfMonth();
-                    return src.Where(t => t.Active && t.CardExpirationDate < lastDayOfMonth);
+                    return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate < lastDayOfMonth);
                 case BillingsQuickStatusFilterEnum.ExpiredNextMonth:
                     var lastDayOfNextMonth = today.AddMonths(1).LastDayOfMonth();
-                    return src.Where(t => t.Active && t.CardExpirationDate == lastDayOfNextMonth);
+                    return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate == lastDayOfNextMonth);
                 default:
                     return src.Where(t => t.Active);
             }

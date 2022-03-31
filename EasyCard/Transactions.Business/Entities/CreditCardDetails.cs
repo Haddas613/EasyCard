@@ -13,5 +13,14 @@ namespace Transactions.Business.Entities
     public class CreditCardDetails : CreditCardDetailsBase
     {
         public string CardBin { get; set; }
+
+        public override CardExpiration CardExpiration
+        {
+            get { return CreditCardHelpers.ParseCardExpiration(ExpirationDate); }
+            set { ExpirationDate = value?.ToDate(); }
+        }
+
+        [JsonIgnore]
+        public DateTime? ExpirationDate { get; set; }
     }
 }

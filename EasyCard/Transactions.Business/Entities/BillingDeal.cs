@@ -200,8 +200,6 @@ namespace Transactions.Business.Entities
 
         public int? FailedAttemptsCount { get; set; }
 
-        public DateTime? CardExpirationDate { get; set; }
-
         public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
             if (BillingSchedule == null)

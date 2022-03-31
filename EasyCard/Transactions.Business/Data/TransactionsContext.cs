@@ -166,9 +166,12 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                        .HasColumnName("CardExpirationDate")
-                        .HasColumnType("date");
+                    //s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                    //    .HasColumnName("CardExpirationDate")
+                    //    .HasColumnType("date");
+
+                    s.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
+                    s.Ignore(b => b.CardExpiration);
 
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -401,9 +404,12 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                        .HasColumnName("CardExpirationDate")
-                        .HasColumnType("date");
+                    //s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                    //    .HasColumnName("CardExpirationDate")
+                    //    .HasColumnType("date");
+
+                    s.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
+                    s.Ignore(b => b.CardExpiration);
 
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -482,7 +488,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
-                builder.Property(p => p.CardExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false).ValueGeneratedOnAddOrUpdate();
+
             }
         }
 
