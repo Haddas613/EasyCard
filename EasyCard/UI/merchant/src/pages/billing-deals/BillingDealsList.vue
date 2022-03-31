@@ -341,12 +341,14 @@ export default {
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
         this.lodash.map(selected, (i) => i.$billingDealID)
       );
-      this.switchFilterChanged('inProgress');
+      //this.switchFilterChanged('inProgress');
+      this.billingDealsFilter.inProgress = true;
       await this.refresh();
     },
     async onTriggerByTerminal() {
       this.billingDealsFilter.inProgress = true;
-      await this.switchFilterChanged('inProgress');
+      await this.refresh();
+      //await this.switchFilterChanged('inProgress');
     },
     switchSelectAll() {
       // if (!this.billingDealsFilter.actual) {

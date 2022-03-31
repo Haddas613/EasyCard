@@ -30,7 +30,7 @@
               </v-switch>
             </v-col>
             <v-col cols="4" md="3">
-              <v-switch v-model="model.invoiceOnly" @change="getDataFromApi(false)">
+              <v-switch v-model="model.invoiceOnly">
                 <template v-slot:label>
                   <small>{{ $t('InvoiceOnly') }}</small>
                 </template>

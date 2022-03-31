@@ -737,7 +737,7 @@ namespace CheckoutPortal.Controllers
             if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
-                return PaymentError(captureResult.Message);
+                return PaymentError(captureResult.Message, checkoutConfig?.PaymentRequest.PaymentRequestUrl);
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
@@ -907,9 +907,9 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError(string message)
+        public IActionResult PaymentError(string message, string returnUrl =  null)
         {
-            return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message });
+            return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message, ReturnURL = returnUrl });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
