@@ -16,10 +16,6 @@ namespace Transactions.Api.Models.Invoicing
 {
     public class InvoiceExcelSummary
     {
-        /// <summary>
-        /// Primary reference
-        /// </summary>
-        public Guid InvoiceID { get; set; }
 
         public string InvoiceNumber { get; set; }
 
@@ -32,11 +28,6 @@ namespace Transactions.Api.Models.Invoicing
         /// Legal invoice day
         /// </summary>
         public DateTime? InvoiceDate { get; set; }
-
-        /// <summary>
-        /// Terminal
-        /// </summary>
-        public Guid? TerminalID { get; set; }
 
         [EnumDataType(typeof(InvoiceTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -74,9 +65,5 @@ namespace Transactions.Api.Models.Invoicing
         public decimal? AmountWithoutVat { get; set; }
 
         public string CardOwnerName { get; set; }
-
-        public Guid? ConsumerID { get; set; }
-
-        public Guid? PaymentTransactionID { get; set; }
     }
 }
