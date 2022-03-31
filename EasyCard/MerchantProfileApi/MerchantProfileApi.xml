@@ -40,7 +40,7 @@
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.DeleteConsumer(System.Guid)">
             <summary>
-            Delete end-customer record
+            Delete end-customer record and all related data like card tokens, billings, etc.
             </summary>
             <param name="consumerID"></param>
             <returns></returns>
