@@ -629,40 +629,40 @@ namespace Transactions.Api.Controllers.External
                 await CreateInvoice(transaction, terminal);
             }
 
-            try
+            if (sucessCapture)
             {
-                if (transaction.PaymentIntentID != null)
+                try
                 {
-                    await paymentIntentService.DeletePaymentIntent(transaction.PaymentIntentID.GetValueOrDefault());
-                }
-                else if (transaction.PaymentRequestID != null)
-                {
-                    var dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
-
-                    if (dbPaymentRequest != null)
+                    if (transaction.PaymentIntentID != null)
                     {
-                        if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                        await paymentIntentService.DeletePaymentIntent(transaction.PaymentIntentID.GetValueOrDefault());
+                    }
+                    else if (transaction.PaymentRequestID != null)
+                    {
+                        var dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
+
+                        if (dbPaymentRequest != null)
                         {
-                            logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} status not valid ({dbPaymentRequest.Status}). Transaction id: {transaction.PaymentTransactionID}");
+                            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                            {
+                                logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} status not valid ({dbPaymentRequest.Status}). Transaction id: {transaction.PaymentTransactionID}");
+                            }
+                            else
+                            {
+                                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, sucessCapture ? PaymentRequestStatusEnum.Payed : PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: transaction.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                            }
                         }
                         else
                         {
-                            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, sucessCapture ? PaymentRequestStatusEnum.Payed : PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: transaction.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                            logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} not found. Transaction id: {transaction.PaymentTransactionID}");
                         }
                     }
-                    else
-                    {
-                        logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} not found. Transaction id: {transaction.PaymentTransactionID}");
-                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
-            }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
+                }
 
-            if (sucessCapture)
-            {
                 return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, transaction.PaymentTransactionID);
             }
             else
