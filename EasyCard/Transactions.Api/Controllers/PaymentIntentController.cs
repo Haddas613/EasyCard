@@ -100,8 +100,6 @@ namespace Transactions.Api.Controllers
 
             var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-            paymentRequest.PaymentRequestUrl = GetPaymentIntentShortUrl(dbPaymentRequest);
-
             paymentRequest.TerminalName = terminal.Label;
 
             return Ok(paymentRequest);
@@ -205,6 +203,8 @@ namespace Transactions.Api.Controllers
             }
 
             string url = GetPaymentIntentShortUrl(newPaymentRequest);
+
+            newPaymentRequest.PaymentRequestUrl = url;
 
             await paymentIntentService.SavePaymentIntent(newPaymentRequest);
 

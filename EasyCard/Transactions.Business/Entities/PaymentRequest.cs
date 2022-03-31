@@ -191,5 +191,7 @@ namespace Transactions.Business.Entities
 
         [NotMapped]
         public string Language { get; set; }
+
+        public string PaymentRequestUrl { get; set; }
     }
 }

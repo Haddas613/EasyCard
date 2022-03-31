@@ -696,6 +696,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.FromAddress).IsRequired(false).HasMaxLength(100).IsUnicode(true);
                 builder.Property(b => b.RequestSubject).IsRequired(false).HasMaxLength(250).IsUnicode(true);
 
+                builder.Property(b => b.PaymentRequestUrl).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
 

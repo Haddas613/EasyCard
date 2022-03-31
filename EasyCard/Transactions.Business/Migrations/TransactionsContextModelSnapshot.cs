@@ -846,6 +846,11 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("PaymentRequestTimestamp")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("PaymentRequestUrl")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -1268,10 +1273,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<DateTime?>("CardExpiration")
-                                .HasColumnType("date")
-                                .HasColumnName("CardExpirationDate");
-
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1295,6 +1296,10 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
+
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
 
                             b1.Property<string>("Solek")
                                 .HasMaxLength(20)
@@ -1476,6 +1481,9 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("CardOwnerName");
+
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("datetime2");
 
                             b1.HasKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
 
@@ -1896,10 +1904,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<DateTime?>("CardExpiration")
-                                .HasColumnType("date")
-                                .HasColumnName("CardExpirationDate");
-
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1923,6 +1927,10 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
+
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
 
                             b1.HasKey("PaymentTransactionID");
 
