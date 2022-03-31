@@ -320,6 +320,10 @@ export default {
   },
   methods: {
     async processCustomer(data) {
+      if (this.model.dealDetails.consumerID !== data.consumerID){
+        this.token = null;
+      }
+
       this.model.dealDetails = Object.assign(this.model.dealDetails, {
         consumerEmail: data.consumerEmail,
         consumerPhone: data.consumerPhone,

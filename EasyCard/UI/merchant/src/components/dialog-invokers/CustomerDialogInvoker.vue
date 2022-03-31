@@ -105,8 +105,14 @@ export default {
   },
   async mounted() {
     if (this.customerId) {
-      let customer = await this.$api.consumers.getConsumer(this.customerId);
-      this.processCustomer(customer);
+      if(this.fullCustomerInfo) {
+        this.processCustomer({
+          consumerID: this.customerId,
+        });
+      }else {
+        let customer = await this.$api.consumers.getConsumer(this.customerId);
+        this.processCustomer(customer);
+      }
     }
   },
   computed: {
