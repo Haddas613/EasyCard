@@ -66,7 +66,7 @@
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
               <v-btn x-small color="primary" 
-                v-else-if="canCreateInvoice()"
+                v-else-if="model.allowInvoiceCreation"
                 @click="createInvoice()" :loading="loading">
                   {{$t("CreateInvoice")}}
               </v-btn>
@@ -285,12 +285,6 @@ export default {
         this.$set(this.model, 'invoiceID', operation.entityReference);
       }
       this.loading = false;
-    },
-    canCreateInvoice(){
-      return (this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing) 
-        && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
-        && this.model.dealDetails.consumerEmail
-        && (this.model.currency =='ILS' || this.model.$currency =='ILS'))
     },
     async selectJ5(){
       let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);

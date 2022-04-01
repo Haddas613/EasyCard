@@ -2128,6 +2128,11 @@
             Transaction transmission cannot be canceled manually
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowInvoiceCreation">
+            <summary>
+            Invoice can be created for this transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingDealID">
             <summary>
             Reference to billing schedule which produced this transaction

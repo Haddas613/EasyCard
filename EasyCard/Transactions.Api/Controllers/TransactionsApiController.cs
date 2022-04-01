@@ -56,6 +56,7 @@ using Shared.Helpers.Events;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Merchants.Business.Extensions;
 
 namespace Transactions.Api.Controllers
 {
@@ -252,6 +253,14 @@ namespace Transactions.Api.Controllers
 
                 transaction.TerminalName = terminal.Label;
                 transaction.MerchantName = terminal.Merchant.BusinessName;
+
+                if (transaction.AllowInvoiceCreation)
+                {
+                    transaction.AllowInvoiceCreation =
+                        terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
+                        || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
+                }
+
                 return Ok(transaction);
             }
             else
@@ -271,6 +280,13 @@ namespace Transactions.Api.Controllers
                         var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
                         transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
                     }
+                }
+
+                if (transaction.AllowInvoiceCreation)
+                {
+                    transaction.AllowInvoiceCreation =
+                        terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
+                        || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
                 }
 
                 return Ok(transaction);

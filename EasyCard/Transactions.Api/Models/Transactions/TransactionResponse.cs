@@ -208,6 +208,11 @@ namespace Transactions.Api.Models.Transactions
         public bool AllowRefund { get; set; }
 
         /// <summary>
+        /// Invoice can be created for this transaction
+        /// </summary>
+        public bool AllowInvoiceCreation { get; set; }
+
+        /// <summary>
         /// Reference to billing schedule which produced this transaction
         /// </summary>
         public Guid? BillingDealID { get; set; }
