@@ -442,6 +442,12 @@
   "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
   "Support3DSecure": "Support 3D Secure",
   "ContinueInCaseOf3DSecureError": "Continue in Case of 3D Secure Error",
+  "BitDetails": "bit Details",
+  "PaymentInitiationId": "Payment Initiation ID",
+  "BitTransactionSerialId": "bit Transaction Serial ID",
+  "RequestStatusCode": "Request Status Code",
+  "RequestStatusDescription": "Request Status Description",
+  "BitMerchantNumber": "bit Merchant Number",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

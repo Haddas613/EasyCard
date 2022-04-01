@@ -163,6 +163,7 @@
           <clearing-house-transaction-details 
             v-if="model.clearingHouseTransactionDetails" 
             :model="model.clearingHouseTransactionDetails"></clearing-house-transaction-details>
+          <bit-transaction-details v-if="model.bitTransactionDetails" :model="model.bitTransactionDetails"></bit-transaction-details>
         </div>
         <v-row no-gutters v-if="model && model.allowTransmission" class="py-2">
           <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
@@ -234,6 +235,8 @@ export default {
       import("../../components/details/BankPaymentDetails"),
     RefundDialog: () =>
       import("../../components/transactions/RefundDialog"),
+    BitTransactionDetails: () =>
+      import("../../components/details/BitTransactionDetails"),
   },
   data() {
     return {

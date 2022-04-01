@@ -446,6 +446,12 @@
   "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
   "Support3DSecure": "3D Secure-תמיכה ב",
   "ContinueInCaseOf3DSecureError": "3D Secure המשך במקרה של שגיאת",
+  "BitDetails": "פרטי ב- bit",
+  "PaymentInitiationId": "מזהה ייזום תשלום",
+  "BitTransactionSerialId": "bit Transaction Serial Id",
+  "RequestStatusCode": "בקש קוד סטטוס",
+  "RequestStatusDescription": "תיאור סטטוס בקשה",
+  "BitMerchantNumber": "מספר לקוח ביט",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
