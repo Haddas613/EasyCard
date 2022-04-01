@@ -46,8 +46,10 @@
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
                   <p
+                    v-if="model.quickStatus"
                     v-bind:class="quickStatusesColors[model.quickStatus]"
-                  >{{$t(model.quickStatus || 'None')}}</p>
+                  >{{ `${$t(model.quickStatus)}: ${model.status}` }}</p>
+                  <p v-else>{{model.status}}</p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('TransactionTime')}}</p>
@@ -103,10 +105,6 @@
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
                   <p>{{model.documentOrigin}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
-                  <p>{{model.status}}</p>
                 </v-col>
               </v-row>
             </v-card-text>
