@@ -367,7 +367,8 @@ export default {
           discount: 0,
           currency: item.$currency,
           quantity: 1,
-          externalReference: item.externalReference
+          externalReference: item.externalReference,
+          woocommerceID: item.woocommerceID,
         };
         this.model.dealDetails.items.push(entry);
       }

@@ -103,7 +103,8 @@ namespace MerchantProfileApi.Controllers
                         ItemID = d.ItemID,
                         ItemName = d.ItemName,
                         Price = rates.Convert(d.Currency, d.Price, currency),
-                        ExternalReference = d.ExternalReference
+                        ExternalReference = d.ExternalReference,
+                        WoocommerceID = d.WoocommerceID
                     });
                 }
 

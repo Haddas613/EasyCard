@@ -591,11 +591,6 @@
             Bit transaction serial id (BitTransactionSerialId)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceID">
-            <summary>
-            Primary reference
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceTimestamp">
             <summary>
             Date-time when deal created initially in UTC
@@ -604,11 +599,6 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.InvoiceDate">
             <summary>
             Legal invoice day
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.TerminalID">
-            <summary>
-            Terminal
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.Status">
