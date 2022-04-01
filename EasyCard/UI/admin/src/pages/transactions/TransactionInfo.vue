@@ -205,6 +205,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import appConstants from "../../helpers/app-constants";
 
 export default {
@@ -354,6 +355,37 @@ export default {
         });
       }
 
+      if(this.model.$status == 'refund'){
+        threeDotMenu.push({
+          text: this.$t("ShowRefunds"),
+          fn: () => {
+              this.$router.push({
+                name: "TransactionsFiltered",
+                params: {
+                  filters: {
+                    initialTransactionID: this.$route.params.id,
+                    specialTransactionType: 'refund',
+                  }
+                }
+              });
+              
+              setTimeout(() => this.refreshKeepAlive(), 500);
+            },
+        });
+      }
+
+      if(this.model.specialTransactionType == 'refund' && this.model.initialTransactionID){
+        threeDotMenu.push({
+          text: this.$t("ShowInitialTransaction"),
+          fn: () => this.$router.push({
+            name: "Transaction",
+            params: {
+              id: this.model.initialTransactionID,
+            }
+          }),
+        });
+      }
+
       this.$store.commit("ui/changeHeader", {
         value: {
           threeDotMenu: threeDotMenu
@@ -364,6 +396,9 @@ export default {
       this.$set(this.model, 'totalRefund', refundedAmount);
       await this.initThreeDotMenu();
     },
+    ...mapMutations({
+      refreshKeepAlive: 'ui/refreshKeepAlive',
+    }),
   },
   computed: {
     isInstallmentTransaction() {

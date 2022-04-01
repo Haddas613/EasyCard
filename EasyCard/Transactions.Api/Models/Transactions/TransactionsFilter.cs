@@ -116,5 +116,10 @@ namespace Transactions.Api.Models.Transactions
         public bool? HasMasavFile { get; set; }
 
         public string ConsumerExternalReference { get; set; }
+
+        /// <summary>
+        /// Reference to initial transaction
+        /// </summary>
+        public Guid? InitialTransactionID { get; set; }
     }
 }

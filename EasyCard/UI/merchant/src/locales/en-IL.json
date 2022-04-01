@@ -444,6 +444,8 @@
   "ExpireNextMonth": "Expire Next Month",
   "ManualTrigger": "Manual Trigger",
   "Excel": "Excel",
+  "ShowInitialTransaction": "Show Initial Transaction",
+  "ShowRefunds": "Show Refunds",
 
   "--AUTH--": null,
   "Login": "Login",

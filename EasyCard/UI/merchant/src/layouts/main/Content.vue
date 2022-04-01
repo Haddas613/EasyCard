@@ -6,7 +6,7 @@
           <v-spacer></v-spacer>
         </v-col>
         <v-col class="d-flex justify-space-around">
-          <v-flex class="flex-column">
+          <v-flex class="flex-column" :key="keepAliveStateKey">
             <v-app-bar flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
               <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
             </v-app-bar>
@@ -50,7 +50,8 @@ export default {
       }
     },
     ...mapState({
-      headerStore: state => state.ui.header
+      headerStore: state => state.ui.header,
+      keepAliveStateKey: state => state.ui.keepAliveRenderState,
     }),
   }
 };

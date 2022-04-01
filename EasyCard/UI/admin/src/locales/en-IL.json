@@ -517,6 +517,8 @@
   "DisableSelected": "Disable Selected",
   "Approve": "Approve",
   "AddWebhookEvent": "Add Webhook Event",
+  "ShowInitialTransaction": "Show Initial Transaction",
+  "ShowRefunds": "Show Refunds",
 
   "--AUTH--": null,
   "Login": "Login",

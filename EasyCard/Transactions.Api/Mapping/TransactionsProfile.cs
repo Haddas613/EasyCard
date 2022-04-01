@@ -53,7 +53,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
                 .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.AllowRefund, o => o.MapFrom(src =>
-                    (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
+                    src.SpecialTransactionType != SpecialTransactionTypeEnum.Refund
+                    && (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
                     && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount))
 
                 // note: needs additional check performed that related terminal has invoicing integration enabled
@@ -66,7 +67,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
                 .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.AllowRefund, o => o.MapFrom(src =>
-                    (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
+                    src.SpecialTransactionType != SpecialTransactionTypeEnum.Refund
+                    && (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
                     && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount));
 
             CreateMap<PaymentTransaction, TransactionSummary>()

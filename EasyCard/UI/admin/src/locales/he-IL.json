@@ -521,6 +521,8 @@
   "DisableSelected": "עסקאות בילינג נחסמו",
   "Approve": "אישור",
   "AddWebhookEvent": "Webhook הוסף אירוע",
+  "ShowInitialTransaction": "הצג עסקה ראשונית",
+  "ShowRefunds": "הצג זיכוי",
 
   "--AUTH--": null,
   "Login": "כניסה",

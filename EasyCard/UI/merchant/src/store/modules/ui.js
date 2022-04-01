@@ -34,6 +34,9 @@ const state = () => ({
     },
     showDeletedItems: false,
     showDeletedCustomers: false,
+
+    //can be used to force re-render cached keep-alive components
+    keepAliveRenderState: 0,
 });
 
 const getters = {};
@@ -63,7 +66,10 @@ const mutations = {
     },
     setShowDeletedCustomers(state, value){
         state.showDeletedCustomers = value;
-    }
+    },
+    refreshKeepAlive(state){
+        state.keepAliveRenderState += 1;
+    },
 }
 
 export default {

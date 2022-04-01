@@ -2218,6 +2218,11 @@
             Merchant deal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.InitialTransactionID">
+            <summary>
+            Reference to initial transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.RejectionMessage">
             <summary>
             Rejection Reason Message (in case of rejected transaction)

@@ -443,6 +443,8 @@
   "ExpireNextMonth": "יפוג בחודש הבא",
   "ManualTrigger": "חיוב ידני",
   "Excel": "Excel",
+  "ShowInitialTransaction": "הצג עסקה ראשונית",
+  "ShowRefunds": "הצג זיכוי",
 
   "--AUTH--": null,
   "Login": "כניסה",
