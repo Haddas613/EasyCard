@@ -178,6 +178,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refund Failed.
+        /// </summary>
+        public static string RefundFailed {
+            get {
+                return ResourceManager.GetString("RefundFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rejected by aggregator.
         /// </summary>
         public static string RejectedByAggregator {

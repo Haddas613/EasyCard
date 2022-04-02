@@ -459,6 +459,11 @@
               Looks up a localized string similar to Refund.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RefundFailed">
+            <summary>
+              Looks up a localized string similar to Refund Failed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
             <summary>
               Looks up a localized string similar to Rejected by aggregator.
@@ -552,6 +557,11 @@
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Refund">
             <summary>
             Refund is done for this transaction
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RefundFailed">
+            <summary>
+            Refund attempt failed
             </summary>
         </member>
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
+using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions
@@ -151,16 +152,19 @@ namespace Transactions.Api.Extensions
             }
         }
 
-        public static void CheckConsumerDetails(this DealDetails dealDetails, Consumer consumer)
+        public static void CheckConsumerDetails(this DealDetails dealDetails, Consumer consumer, CreditCardTokenDetails dbToken)
         {
             if (consumer != null)
             {
-                // NOTE: consumer can pay using another person credit card
+                if (dbToken != null)
+                {
+                    if (consumer.ConsumerID != dbToken.ConsumerID)
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
 
-                //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID) && !consumer.ConsumerNationalID.Equals(dealDetails.ConsumerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                //}
+                    // NOTE: consumer can pay using another person credit card
+                }
             }
         }
 
@@ -200,6 +204,27 @@ namespace Transactions.Api.Extensions
             }
 
             return pinpadDetails;
+        }
+
+        public static void UpdateCreditCardDetails(this CreditCardDetails creditCardDetails, Consumer consumer, Models.Transactions.CreateTransactionRequest model)
+        {
+            if (string.IsNullOrWhiteSpace(creditCardDetails.CardOwnerName) && consumer != null)
+            {
+                creditCardDetails.CardOwnerName = consumer.ConsumerName;
+            }
+
+            if (model.PinPad == true)
+            {
+                if (!string.IsNullOrEmpty(model.CardOwnerNationalID))
+                {
+                    creditCardDetails.CardOwnerNationalID = model.CardOwnerNationalID;
+                }
+
+                if (!string.IsNullOrEmpty(model.CardOwnerName))
+                {
+                    creditCardDetails.CardOwnerName = model.CardOwnerName;
+                }
+            }
         }
     }
 }

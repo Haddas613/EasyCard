@@ -156,6 +156,9 @@
   <data name="Refund" xml:space="preserve">
     <value>Refund</value>
   </data>
+  <data name="RefundFailed" xml:space="preserve">
+    <value>Refund Failed</value>
+  </data>
   <data name="RejectedByAggregator" xml:space="preserve">
     <value>Rejected by aggregator</value>
   </data>

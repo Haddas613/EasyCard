@@ -265,7 +265,7 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID), "Consumer") : null;
 
-            newInvoice.DealDetails.CheckConsumerDetails(consumer);
+            newInvoice.DealDetails.CheckConsumerDetails(consumer, null);
 
             newInvoice.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newInvoice, null);
 
@@ -317,19 +317,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            var invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
-            {
-                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
-                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                SendCCTo = terminal.InvoiceSettings.SendCCTo
-            };
-
-            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
-            {
-                invoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
-            }
-
-            var endResponse = ProcessInvoice(terminal, transaction, invoiceDetails);
+            var endResponse = ProcessInvoice(terminal, transaction, null);
 
             if (endResponse == null)
             {
@@ -716,6 +704,16 @@ namespace Transactions.Api.Controllers
             // TODO: validate InvoiceDetails
             if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
             {
+                if (invoiceDetails == null)
+                {
+                    invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
+                    {
+                        InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
+                        InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
+                        SendCCTo = terminal.InvoiceSettings.SendCCTo
+                    };
+                }
+
                 invoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
 
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))

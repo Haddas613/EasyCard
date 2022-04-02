@@ -542,6 +542,11 @@ namespace Transactions.Api.Controllers
 
             // TODO: get from terminal
             var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
+            if (merchantID == null)
+            {
+                throw new ApplicationException("MerchantID is empty");
+            }
+
             CreateTransactionRequest model = new CreateTransactionRequest();
 
             mapper.Map(dbPaymentRequest, model);
@@ -556,49 +561,47 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
-                if (merchantID == null)
-                {
-                    throw new ApplicationException("MerchantID is empty");
-                }
-
                 if (model.DealDetails.ConsumerID == null)
                 {
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
+            }
+
+            if (model.CreditCardToken == null || model.SaveCreditCard == true)
+            {
+                bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
                 DocumentOriginEnum origin = isPaymentIntent ? DocumentOriginEnum.Checkout : DocumentOriginEnum.PaymentRequest;
-                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin, doNotCreateInitialDealAndDbRecord: doNotCreateInitialDealAndDbRecord);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
-                // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
-                if (tokenResponseOperation?.Status == StatusEnum.Success)
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
                 {
-                    if (model.TransactionAmount == 0)
-                    {
-                        if (isPaymentIntent)
-                        {
-                            await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
-                        }
-                        else if (prmodel.PaymentRequestID != null)
-                        {
-                            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
-                        }
-
-                        //If billingDealID is present that means it was renew request, we need to reactivate expired billing deal with new token
-                        if (dbPaymentRequest.BillingDealID.HasValue)
-                        {
-                            return await billingController.UpdateBillingDealToken(dbPaymentRequest.BillingDealID.Value, tokenResponse.Value.EntityUID.Value);
-                        }
-
-                        return tokenResponse;
-                    }
+                    return tokenResponse;
                 }
-                else
+
+                // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
+                if (model.TransactionAmount == 0)
                 {
+                    if (isPaymentIntent)
+                    {
+                        await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
+                    }
+                    else if (prmodel.PaymentRequestID != null)
+                    {
+                        await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                    }
+
+                    //If billingDealID is present that means it was renew request, we need to reactivate expired billing deal with new token
+                    if (dbPaymentRequest.BillingDealID.HasValue)
+                    {
+                        return await billingController.UpdateBillingDealToken(dbPaymentRequest.BillingDealID.Value, tokenResponse.Value.EntityUID.Value);
+                    }
+
                     return tokenResponse;
                 }
 
@@ -779,6 +782,16 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
+            {
+                return new OperationResponse($"It is possible to make refund only for completed or partially refunded transactions", StatusEnum.Error);
+            }
+
+            if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
+            {
+                return new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error);
+            }
+
             if (transaction.DocumentOrigin == DocumentOriginEnum.Bit)
             {
                 var res = await bitController.RefundInternal(transaction, terminal, request);
@@ -801,7 +814,22 @@ namespace Transactions.Api.Controllers
                 if (transaction.CreditCardToken != null)
                 {
                     var token = EnsureExists(await keyValueStorage.Get(transaction.CreditCardToken.ToString()), "CreditCardToken");
-                    return await ProcessTransaction(terminal, transactionRequest, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+
+                    return await ProcessTransaction(terminal, transactionRequest, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund,
+                        initialTransactionID: transaction.PaymentTransactionID,
+                        initialTransactionProcess: async () =>
+                        {
+                            transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                        },
+                        compensationTransactionProcess: async() =>
+                        {
+                            transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() - request.RefundAmount;
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RefundFailed, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                        }
+                        );
                 }
                 else
                 {

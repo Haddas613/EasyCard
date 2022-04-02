@@ -65,6 +65,12 @@ namespace Transactions.Shared.Enums
         Refund = 50,
 
         /// <summary>
+        /// Refund attempt failed
+        /// </summary>
+        [EnumMember(Value = "refundFailed")]
+        RefundFailed = -90,
+
+        /// <summary>
         /// Transaction is rejeced by Clearing House
         /// </summary>
         [EnumMember(Value = "rejectedByAggregator")]
