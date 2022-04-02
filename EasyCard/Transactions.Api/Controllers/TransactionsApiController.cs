@@ -53,10 +53,10 @@ using Microsoft.AspNetCore.SignalR;
 using Shared.Helpers.Services;
 using Ecwid.Api;
 using Shared.Helpers.Events;
+using Merchants.Business.Extensions;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Merchants.Business.Extensions;
 
 namespace Transactions.Api.Controllers
 {
@@ -86,10 +86,8 @@ namespace Transactions.Api.Controllers
         private readonly BillingController billingController;
         private readonly IPaymentRequestsService paymentRequestsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
-        private readonly IInvoiceService invoiceService;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IMerchantsService merchantsService;
-        private readonly IQueue invoiceQueue;
         private readonly IEmailSender emailSender;
         private readonly IEventsService events;
         private readonly IPaymentIntentService paymentIntentService;
@@ -113,12 +111,10 @@ namespace Transactions.Api.Controllers
             IBillingDealService billingDealService,
             IConsumersService consumersService,
             CardTokenController cardTokenController,
-            IInvoiceService invoiceService,
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
             IMerchantsService merchantsService,
-            IQueueResolver queueResolver,
             IEmailSender emailSender,
             IOptions<ApiSettings> apiSettings,
             IEventsService events,
@@ -145,12 +141,10 @@ namespace Transactions.Api.Controllers
             this.consumersService = consumersService;
             this.cardTokenController = cardTokenController;
             this.billingController = billingController;
-            this.invoiceService = invoiceService;
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
             this.merchantsService = merchantsService;
-            this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
             this.events = events;
             this.paymentIntentService = paymentIntentService;
@@ -791,14 +785,7 @@ namespace Transactions.Api.Controllers
 
                 if (res.Status == StatusEnum.Success)
                 {
-                    try
-                    {
-                        await SendTransactionSuccessEmails(transaction, terminal);
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
-                    }
+                    _ = SendTransactionSuccessEmails(transaction, terminal);
 
                     return res;
                 }
@@ -1009,7 +996,7 @@ namespace Transactions.Api.Controllers
             terminal.Settings.SendTransactionSlipEmailToConsumer = true;
             terminal.Settings.SendTransactionSlipEmailToMerchant = false;
 
-            await SendTransactionSuccessEmails(transaction, terminal);
+            _ = SendTransactionSuccessEmails(transaction, terminal);
 
             return Ok(response);
         }

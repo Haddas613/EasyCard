@@ -61,8 +61,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ApiSettings apiSettings;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly IPaymentRequestsService paymentRequestsService;
-        private readonly IInvoiceService invoiceService;
-        private readonly IQueue invoiceQueue;
+        private readonly InvoicingController invoicingController;
 
         public BitApiController(
              IAggregatorResolver aggregatorResolver,
@@ -77,8 +76,7 @@ namespace Transactions.Api.Controllers.External
              IOptions<ApiSettings> apiSettings,
              IPaymentIntentService paymentIntentService,
              IPaymentRequestsService paymentRequestsService,
-             IInvoiceService invoiceService,
-             IQueueResolver queueResolver)
+             InvoicingController invoicingController)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
@@ -92,8 +90,7 @@ namespace Transactions.Api.Controllers.External
             this.apiSettings = apiSettings.Value;
             this.paymentIntentService = paymentIntentService;
             this.paymentRequestsService = paymentRequestsService;
-            this.invoiceService = invoiceService;
-            this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
+            this.invoicingController = invoicingController;
         }
 
         [HttpGet]
@@ -492,61 +489,19 @@ namespace Transactions.Api.Controllers.External
         // TODO: return
         private async Task CreateInvoice(PaymentTransaction transaction, Terminal terminal)
         {
-            if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
+            var invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
             {
-                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
-                {
-                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-                    {
-                        try
-                        {
-                            Invoice invoiceRequest = new Invoice();
-                            mapper.Map(transaction, invoiceRequest);
-                            invoiceRequest.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
-                            {
-                                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
-                                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                                SendCCTo = terminal.InvoiceSettings.SendCCTo
-                            };
+                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
+                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
+                SendCCTo = terminal.InvoiceSettings.SendCCTo
+            };
 
-                            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
-                            {
-                                invoiceRequest.InvoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
-                            }
-
-                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
-                            invoiceRequest.DealDetails = transaction.DealDetails;
-
-                            invoiceRequest.MerchantID = terminal.MerchantID;
-
-                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                            invoiceRequest.Calculate();
-
-                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                            transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                            // TODO: validate, rollback
-                            if (invoicesToResend.Count() > 0)
-                            {
-                                await invoiceQueue.PushToQueue(invoicesToResend.First());
-                            }
-
-                            await dbTransaction.CommitAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-                            await dbTransaction.RollbackAsync();
-                        }
-                    }
-                }
+            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+            {
+                invoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
             }
+
+            await invoicingController.ProcessInvoice(terminal, transaction, invoiceDetails);
         }
 
         private async Task<ActionResult<OperationResponse>> PostProcessTransaction(PaymentTransaction transaction, Terminal terminal, bool sucessCapture)

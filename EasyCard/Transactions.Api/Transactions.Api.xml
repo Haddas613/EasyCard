@@ -140,14 +140,6 @@
             <param name="transaction">Transaction data</param>
             <param name="message">Message to display</param>
         </member>
-        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateConsumer(Transactions.Api.Models.Transactions.CreateTransactionRequest,System.Guid)">
-            <summary>
-            Creates consumer based on transaction data. To be used when "SaveCreditCard" flag is true, but no customer is supplied
-            </summary>
-            <param name="transaction">Transaction</param>
-            <param name="merchantID">Merchant ID</param>
-            <returns>New customer ID</returns>
-        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet

@@ -213,10 +213,6 @@ namespace Transactions.Api.Controllers
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, transaction.CreditCardDetails);
-            if (model.IssueInvoice.GetValueOrDefault())
-            {
-                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
-            }
 
             if (string.IsNullOrWhiteSpace(transaction.CreditCardDetails.CardOwnerName) && consumer != null)
             {
@@ -293,36 +289,14 @@ namespace Transactions.Api.Controllers
 
             await transactionsService.CreateEntity(transaction);
 
-            ThreeDSIntermediateData threeDSecure = null;
-
-            if (terminal.CheckoutSettings.Support3DSecure == true && !(model.PinPad == true) && token == null)
-            {
-                if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
-                {
-                    threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
-
-                    // TODO: add converter
-                    if (threeDSecure?.TransStatus != "Y")
-                    {
-                        if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
-                        {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: Transactions.Shared.Messages.RejectedBy3DSecure);
-
-                            _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, $"{Transactions.Shared.Messages.RejectedBy3DSecure}");
-
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
-                        }
-                        else
-                        {
-                            threeDSecure = null;
-                        }
-                    }
-                }
-            }
-
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+
+            await Process3dSecure(terminal, model, token, transaction, processorRequest);
+
+            // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
+
             if (pinpadDeal)
             {
                 try
@@ -416,8 +390,6 @@ namespace Transactions.Api.Controllers
             {
                 mapper.Map(transaction, processorRequest);
 
-                processorRequest.ThreeDSecure = threeDSecure;
-
                 if (!pinpadDeal)
                 {
                     if (token != null)
@@ -454,7 +426,7 @@ namespace Transactions.Api.Controllers
                     if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
                     {
                         var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
-                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) } );
+                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
                     }
                     else
                     {
@@ -586,6 +558,7 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            // TODO: move to event handler
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
                 billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
@@ -600,64 +573,20 @@ namespace Transactions.Api.Controllers
                 endResponse.InnerResponse = new OperationResponse(string.Format(Transactions.Shared.Messages.J5ExpirationDate, transaction.TransactionTimestamp.Value.AddDays(terminal.Settings.J5ExpirationDays)), StatusEnum.Success);
             }
 
-            // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
-            {
-                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
-                {
-                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-                    {
-                        try
-                        {
-                            Invoice invoiceRequest = new Invoice();
-                            mapper.Map(transaction, invoiceRequest);
-                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+            endResponse.InnerResponse = await invoicingController.ProcessInvoice(terminal, transaction, model.InvoiceDetails);
 
-                            var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
+            _ = ProcessEcwid(transaction, ecwidPayload, endResponse);
 
-                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
-                            invoiceRequest.DealDetails.UpdateDealDetails(creditCardDetails);
+            _ = SendTransactionSuccessEmails(transaction, terminal);
 
-                            invoiceRequest.MerchantID = terminal.MerchantID;
+            _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionCreated);
 
-                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+            return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
+        }
 
-                            invoiceRequest.Calculate();
-
-                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                            transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                            // TODO: validate, rollback
-                            if (invoicesToResend.Count() > 0)
-                            {
-                                await invoiceQueue.PushToQueue(invoicesToResend.First());
-                            }
-
-                            await dbTransaction.CommitAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                            await dbTransaction.RollbackAsync();
-                        }
-                    }
-                }
-                else
-                {
-                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice} - {Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired);
-                }
-            }
-
+        private async Task ProcessEcwid(PaymentTransaction transaction, EcwidTransactionExtension ecwidPayload, OperationResponse endResponse)
+        {
+            // TODO: move to Ecwid Handler, add ecwidPayload explicitly to transaction details
             if (ecwidPayload != null && ecwidPayload.Valid())
             {
                 try
@@ -678,21 +607,37 @@ namespace Transactions.Api.Controllers
                     logger.LogError(ex, $"Ecwid update order status failed: {ex.Message}. TransactionID: {transaction.PaymentTransactionID}");
                 }
             }
-
-            try
-            {
-                await SendTransactionSuccessEmails(transaction, terminal);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
-            }
-
-            _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionCreated);
-
-            return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
+        private async Task Process3dSecure(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, ProcessorCreateTransactionRequest processorRequest)
+        {
+            if (terminal.CheckoutSettings.Support3DSecure == true && !(model.PinPad == true) && token == null)
+            {
+                if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
+                {
+                    var threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
+
+                    // TODO: add converter
+                    if (threeDSecure?.TransStatus != "Y")
+                    {
+                        if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: Transactions.Shared.Messages.RejectedBy3DSecure);
+
+                            _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, $"{Transactions.Shared.Messages.RejectedBy3DSecure}");
+
+                            throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}");
+                        }
+                    }
+                    else
+                    {
+                        processorRequest.ThreeDSecure = threeDSecure;
+                    }
+                }
+            }
+        }
+
+        // TODO: extract controller
         private async Task<ActionResult<OperationResponse>> ProcessBankTransaction(CreateTransactionRequest model, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, BillingDeal billingDeal = null)
         {
             // TODO: caching
@@ -740,10 +685,6 @@ namespace Transactions.Api.Controllers
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
-            if (model.IssueInvoice.GetValueOrDefault())
-            {
-                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
-            }
 
             transaction.Calculate();
 
@@ -760,177 +701,11 @@ namespace Transactions.Api.Controllers
 
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
-            // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
-            {
-                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
-                {
-                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-                    {
-                        try
-                        {
-                            Invoice invoiceRequest = new Invoice();
-                            mapper.Map(transaction, invoiceRequest);
-                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+            endResponse.InnerResponse = await invoicingController.ProcessInvoice(terminal, transaction, model.InvoiceDetails);
 
-                            invoiceRequest.MerchantID = terminal.MerchantID;
-
-                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                            invoiceRequest.Calculate();
-
-                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                            transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                            // TODO: validate, rollback
-                            if (invoicesToResend.Count() > 0)
-                            {
-                                await invoiceQueue.PushToQueue(invoicesToResend.First());
-                            }
-
-                            await dbTransaction.CommitAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                            await dbTransaction.RollbackAsync();
-                        }
-                    }
-                }
-                else
-                {
-                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
-                }
-            }
-
-            try
-            {
-                await SendTransactionSuccessEmails(transaction, terminal);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
-            }
+            _ = SendTransactionSuccessEmails(transaction, terminal);
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
-        }
-
-        private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
-        {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
-
-            // TODO: caching
-            var systemSettings = await systemSettingsService.GetSystemSettings();
-
-            // merge system settings with terminal settings
-            mapper.Map(systemSettings, terminal);
-
-            if (model.Currency != CurrencyEnum.ILS)
-            {
-                return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
-                    httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Only ILS invoices allowed");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerName))
-            {
-                return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
-                    httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Both ConsumerEmail and ConsumerName must be specified");
-            }
-
-            Invoice invoiceRequest = new Invoice();
-            mapper.Map(model, invoiceRequest);
-
-            invoiceRequest.DocumentOrigin = GetDocumentOrigin(model?.BillingDealID, null, false);
-
-            if (invoiceRequest.DealDetails == null)
-            {
-                invoiceRequest.DealDetails = new Business.Entities.DealDetails();
-            }
-
-            if (model.InvoiceDetails == null)
-            {
-                //TODO: Handle refund & credit default invoice types
-                model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
-            }
-
-            // Check consumer
-            var consumer = model.DealDetails.ConsumerID != null ?
-                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
-
-            // Update details if needed
-            invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
-
-            model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, null);
-
-            invoiceRequest.Calculate();
-
-            //invoiceRequest.MerchantIP = GetIP();
-            invoiceRequest.CorrelationId = GetCorrelationID();
-
-            model.UpdateNextScheduledDatAfterSuccess(invoiceRequest.InvoiceID, invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
-
-            await billingDealService.UpdateEntity(model);
-
-            OperationResponse endResponse = null;
-            Guid? invoiceID = null;
-
-            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-            {
-                try
-                {
-                    invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                    invoiceRequest.MerchantID = terminal.MerchantID;
-
-                    invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                    invoiceRequest.Calculate();
-
-                    await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                    invoiceID = invoiceRequest.InvoiceID;
-
-                    endResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceID);
-
-                    //await nayaxTransactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                    var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                    // TODO: validate, rollback
-                    if (invoicesToResend.Count() > 0)
-                    {
-                        await invoiceQueue.PushToQueue(invoicesToResend.First());
-                    }
-
-                    await dbTransaction.CommitAsync();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Failed to create invoice. BillingDealID: {model.BillingDealID}");
-
-                    endResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                    await dbTransaction.RollbackAsync();
-                }
-            }
-
-            return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID, invoiceID }, endResponse);
         }
 
         private async Task<ShvaTransactionDetails> GetLastShvaTransactionDetails(string shvaTerminalNumber)
@@ -975,80 +750,87 @@ namespace Transactions.Api.Controllers
 
         private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Terminal terminal, string emailTo = null)
         {
-            if (terminal.Settings.SendTransactionSlipEmailToConsumer != true && terminal.Settings.SendTransactionSlipEmailToMerchant != true)
+            try
             {
-                return;
-            }
-
-            var settings = terminal.PaymentRequestSettings;
-
-            var emailSubject = "Payment Success";
-            var emailTemplateCode = nameof(PaymentTransaction);
-            var substitutions = new List<TextSubstitution>
-            {
-                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"),
-                new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
-                new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
-                new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
-                new TextSubstitution(nameof(transaction.NumberOfPayments), transaction.NumberOfPayments.ToString()),
-                new TextSubstitution(nameof(transaction.InitialPaymentAmount), $"{transaction.InitialPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
-                new TextSubstitution(nameof(transaction.InstallmentPaymentAmount), $"{transaction.InstallmentPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
-
-                new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty),
-                new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty),
-
-                new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
-                new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
-
-                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty),
-
-                new TextSubstitution(nameof(transaction.SpecialTransactionType), SharedIntegration.Resources.SpecialTransactionTypeResource.ResourceManager.GetString(transaction.SpecialTransactionType.ToString())),
-                new TextSubstitution(nameof(transaction.DocumentOrigin), transaction.DocumentOrigin.ToString()),
-            };
-
-            var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
-
-            var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
-            var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
-            var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(transaction.DocumentOrigin.ToString());
-
-            var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
-            var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
-            var originStr = dictionaries.DocumentOriginEnum[originKey];
-
-            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
-            substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
-            substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
-
-            if (transaction.DealDetails?.ConsumerEmail != null && terminal.Settings.SendTransactionSlipEmailToConsumer == true)
-            {
-                var email = new Email
+                if (terminal.Settings.SendTransactionSlipEmailToConsumer != true && terminal.Settings.SendTransactionSlipEmailToMerchant != true)
                 {
-                    EmailTo = transaction.DealDetails.ConsumerEmail,
-                    Subject = emailSubject,
-                    TemplateCode = emailTemplateCode,
-                    Substitutions = substitutions.ToArray()
+                    return;
+                }
+
+                var settings = terminal.PaymentRequestSettings;
+
+                var emailSubject = "Payment Success";
+                var emailTemplateCode = nameof(PaymentTransaction);
+                var substitutions = new List<TextSubstitution>
+                {
+                    new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"),
+                    new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
+                    new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
+                    new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                    new TextSubstitution(nameof(transaction.NumberOfPayments), transaction.NumberOfPayments.ToString()),
+                    new TextSubstitution(nameof(transaction.InitialPaymentAmount), $"{transaction.InitialPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+                    new TextSubstitution(nameof(transaction.InstallmentPaymentAmount), $"{transaction.InstallmentPaymentAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
+
+                    new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty),
+                    new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty),
+
+                    new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
+                    new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
+
+                    new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty),
+
+                    new TextSubstitution(nameof(transaction.SpecialTransactionType), SharedIntegration.Resources.SpecialTransactionTypeResource.ResourceManager.GetString(transaction.SpecialTransactionType.ToString())),
+                    new TextSubstitution(nameof(transaction.DocumentOrigin), transaction.DocumentOrigin.ToString()),
                 };
 
-                await emailSender.SendEmail(email);
-            }
+                var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
 
-            if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
-            {
-                var merchantEmailTemplateCode = nameof(PaymentTransaction) + "Merchant";
+                var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
+                var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
+                var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(transaction.DocumentOrigin.ToString());
 
-                foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
+                var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
+                var originStr = dictionaries.DocumentOriginEnum[originKey];
+
+                substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
+                substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
+                substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
+
+                if (transaction.DealDetails?.ConsumerEmail != null && terminal.Settings.SendTransactionSlipEmailToConsumer == true)
                 {
-                    var emailToMerchant = new Email
+                    var email = new Email
                     {
-                        EmailTo = notificationEmail,
+                        EmailTo = transaction.DealDetails.ConsumerEmail,
                         Subject = emailSubject,
-                        TemplateCode = merchantEmailTemplateCode,
+                        TemplateCode = emailTemplateCode,
                         Substitutions = substitutions.ToArray()
                     };
 
-                    await emailSender.SendEmail(emailToMerchant);
+                    await emailSender.SendEmail(email);
                 }
+
+                if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
+                {
+                    var merchantEmailTemplateCode = nameof(PaymentTransaction) + "Merchant";
+
+                    foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                    {
+                        var emailToMerchant = new Email
+                        {
+                            EmailTo = notificationEmail,
+                            Subject = emailSubject,
+                            TemplateCode = merchantEmailTemplateCode,
+                            Substitutions = substitutions.ToArray()
+                        };
+
+                        await emailSender.SendEmail(emailToMerchant);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: SendTransactionSuccessEmails failed");
             }
         }
 
@@ -1132,7 +914,7 @@ namespace Transactions.Api.Controllers
 
                 if (billingDeal.InvoiceOnly)
                 {
-                    actionResult = await ProcessBillingInvoice(billingDeal);
+                    actionResult = await invoicingController.ProcessBillingInvoice(billingDeal);
                 }
                 else if (billingDeal.BankDetails != null)
                 {
@@ -1169,6 +951,8 @@ namespace Transactions.Api.Controllers
             return res;
         }
 
+        // TODO: move to Signal-R service or event handler
+
         /// <summary>
         /// Notify SignalR (if needed) about transaction status change
         /// </summary>
@@ -1198,12 +982,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        /// <summary>
-        /// Creates consumer based on transaction data. To be used when "SaveCreditCard" flag is true, but no customer is supplied
-        /// </summary>
-        /// <param name="transaction">Transaction</param>
-        /// <param name="merchantID">Merchant ID</param>
-        /// <returns>New customer ID</returns>
+        // TODO: move to consumers's service call
         private async Task<Guid?> CreateConsumer(CreateTransactionRequest transaction, Guid merchantID)
         {
             var consumer = new Merchants.Business.Entities.Billing.Consumer();
