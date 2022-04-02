@@ -361,7 +361,7 @@ namespace Transactions.Api.Controllers
             {
                 if (!model.CreditCardToken.HasValue)
                 {
-                    EnsureExists(model.CreditCardToken);
+                    EnsureExists(model.CreditCardToken); // TODO: redo EnsureExists
                 }
 
                 CreditCardTokenDetails token = null;
@@ -382,6 +382,8 @@ namespace Transactions.Api.Controllers
 
                 if (billingDeal.CreditCardToken != token.CreditCardTokenID)
                 {
+                    billingDeal.HasError = false;
+
                     if (token.ReplacementOfTokenID == null && billingDeal.CreditCardToken != null)
                     {
                         token.ReplacementOfTokenID = billingDeal.CreditCardToken;
