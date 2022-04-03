@@ -17,48 +17,6 @@ namespace Transactions.Api.Validation
 {
     public class BillingDealTerminalSettingsValidator
     {
-        public static DateTime? ValidateSchedue(BillingSchedule billingSchedule, DateTime? existingTransaction)
-        {
-            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-            if (existingTransaction.HasValue)
-            {
-                var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransaction.Value, UserCultureInfo.TimeZone).Date;
-
-                if (billingSchedule?.StartAtType == StartAtTypeEnum.SpecifiedDate && billingSchedule?.StartAt.HasValue == true)
-                {
-                    if (lastTransactionDate.Month == billingSchedule.StartAt.Value.Month && lastTransactionDate.Year == billingSchedule.StartAt.Value.Year)
-                    {
-                        throw new BusinessException($"{nameof(billingSchedule.StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
-                    }
-                    else if (billingSchedule.StartAt.Value < today)
-                    {
-                        throw new BusinessException($"{nameof(billingSchedule.StartAt)} must be bigger than (or equal) {today}");
-                    }
-                    else
-                    {
-                        return billingSchedule.GetInitialScheduleDate();
-                    }
-                }
-                else
-                {
-                    if (lastTransactionDate.Month == today.Month && lastTransactionDate.Year == today.Year)
-                    {
-                        throw new BusinessException($"{nameof(billingSchedule.StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
-                    }
-                    else
-                    {
-                        return billingSchedule.GetInitialScheduleDate();
-                    }
-                }
-            }
-            else
-            {
-                // no transactions yet generated from billing
-                return billingSchedule.GetInitialScheduleDate();
-            }
-        }
-
         public static void Validate(TerminalSettings terminalSettings, BillingDealRequest request)
         {
             if (terminalSettings == null)

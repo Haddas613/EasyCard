@@ -88,7 +88,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Date-time when next transaction should be generated
         /// </summary>
-        public DateTime? NextScheduledTransaction { get; set; }
+        public DateTime? NextScheduledTransaction { get; internal set; }
 
         /// <summary>
         /// Reference to last deal
@@ -200,6 +200,23 @@ namespace Transactions.Business.Entities
 
         public int? FailedAttemptsCount { get; set; }
 
+        public void UpdateNextScheduledDatInitial(DateTime? existingTransactionTimestamp = null)
+        {
+            BillingSchedule.Validate(existingTransactionTimestamp);
+
+            NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
+
+            var legalDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+            if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments &&
+                BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
+                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue &&
+                BillingSchedule.EndAt <= legalDate))
+            {
+                NextScheduledTransaction = null;
+            }
+        }
+
         public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
             if (BillingSchedule == null)
@@ -234,18 +251,12 @@ namespace Transactions.Business.Entities
             LastError = errorMessage;
             LastErrorCorrelationID = correlationID;
             FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
-            //if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
-            //{
-            //    Active = false;
-            //}
-            //else
-            {
-                NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
 
-                if (NextScheduledTransaction.Value.Day > 20)
-                {
-                    NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
-                }
+            NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
+
+            if (NextScheduledTransaction.Value.Day > 20)
+            {
+                NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
             }
         }
     }

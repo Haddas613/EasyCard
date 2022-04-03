@@ -72,7 +72,7 @@ namespace ThreeDS
             {
                 IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, integrationMessageId, correlationID);
 
-                integrationMessage.Request = requestStr;
+                integrationMessage.Request = RemoveCardNumber(requestStr, model.CardNumber);
                 integrationMessage.Response = responseStr;
                 integrationMessage.ResponseStatus = responseStatusStr;
                 integrationMessage.Address = requestUrl;
@@ -157,13 +157,18 @@ namespace ThreeDS
             {
                 IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, integrationMessageId, correlationID);
 
-                integrationMessage.Request = requestStr;
+                integrationMessage.Request = RemoveCardNumber(requestStr, model.CardNumber);
                 integrationMessage.Response = responseStr;
                 integrationMessage.ResponseStatus = responseStatusStr;
                 integrationMessage.Address = requestUrl;
 
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }
+        }
+
+        private static string RemoveCardNumber(string content, string cardNumber)
+        {
+            return content.Replace(cardNumber, CreditCardHelpers.GetCardDigits(cardNumber));
         }
     }
 }
