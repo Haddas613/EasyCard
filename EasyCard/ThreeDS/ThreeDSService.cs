@@ -44,7 +44,7 @@ namespace ThreeDS
                 UserName = configuration.UserName,
                 Password = configuration.Password,
                 PspID = configuration.PspID,
-                NotificationURL = model.NotificationURL
+                // NotificationURL = model.NotificationURL
             };
 
             try
@@ -119,7 +119,7 @@ namespace ThreeDS
 
                 PurchaseCurrency = CurrencyHelper.GetCurrencyISONumber(model.Currency).ToString(),
                 PurchaseDate = DateTime.Today.ToString("yyyyMMddHHmmss"),
-                PurchaseAmount = model.Amount == null ? null : model.Amount.GetValueOrDefault().ToString("F2"),
+                PurchaseAmount = model.Amount == null ? null : (int?)(model.Amount.GetValueOrDefault() * 100),
 
                 BrowserAcceptHeader = model.BrowserDetails?.BrowserAcceptHeader ?? "text/html,application/xhtml+xml,application/xml;",
                 BrowserLanguage = model.BrowserDetails?.BrowserLanguage ?? "en",

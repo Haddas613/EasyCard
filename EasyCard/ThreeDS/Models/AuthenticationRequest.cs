@@ -91,7 +91,7 @@ namespace ThreeDS.Models
 		public string merchantRiskIndicator_giftCardCurr { get; set; }
 		public string merchantRiskIndicator_giftCardCount { get; set; }
 
-		public string PurchaseAmount { get; set; }
+		public int? PurchaseAmount { get; set; }
 
 		public string PurchaseCurrency { get; set; }
 
