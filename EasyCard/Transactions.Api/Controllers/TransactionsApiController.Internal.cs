@@ -214,8 +214,6 @@ namespace Transactions.Api.Controllers
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-            processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
-
             if (initialTransactionProcess != null)
             {
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
@@ -228,6 +226,8 @@ namespace Transactions.Api.Controllers
             {
                 await transactionsService.CreateEntity(transaction);
             }
+
+            processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
 
             // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
@@ -449,8 +449,6 @@ namespace Transactions.Api.Controllers
                 // reject to clearing house in case of shva error
                 if (processorFailedRsponse != null)
                 {
-                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, processorFailedRsponse.GetOperationResponse()?.Message ?? Transactions.Shared.Messages.FailedToProcessTransaction);
-
                     try
                     {
                         var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
@@ -510,6 +508,8 @@ namespace Transactions.Api.Controllers
                         else
                         {
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+
+                            return null;
                         }
                     }
                     catch (Exception ex)
@@ -522,8 +522,10 @@ namespace Transactions.Api.Controllers
                     }
                 }
             }
-
-            return null;
+            else
+            {
+                return processorFailedRsponse;
+            }
         }
 
         private async Task ProcessEcwid(PaymentTransaction transaction, OperationResponse endResponse)
@@ -567,7 +569,7 @@ namespace Transactions.Api.Controllers
                     {
                         if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
                         {
-                            throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}");
+                            throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}: {transaction.ThreeDSServerTransID}");
                         }
                     }
                     else

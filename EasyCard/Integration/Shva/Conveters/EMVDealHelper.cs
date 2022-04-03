@@ -124,8 +124,9 @@ namespace Shva.Conveters
             if (req.ThreeDSecure != null)
             {
                 inputObj.xid = req.ThreeDSecure.Xid;
-                inputObj.eci = req.ThreeDSecure.Eci;
+                inputObj.eci = req.ThreeDSecure.Eci.GetShvaEciBy3dsEci();
                 inputObj.cavvUcaf = req.ThreeDSecure.AuthenticationValue;
+                inputObj.addendum2 = req.ThreeDSecure.Eci.GetShvaAddendum2By3dsEci();
             }
 
             InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
