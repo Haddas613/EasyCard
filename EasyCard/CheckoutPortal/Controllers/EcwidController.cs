@@ -94,6 +94,8 @@ namespace CheckoutPortal.Controllers
             var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
             var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
 
+            paymentRequestPayload.Origin = ecwidPayload.ReturnUrl?.GetHostFromUrl() ?? Request.GetTypedHeaders().Referer?.Host;
+
             if (customerPayload != null)
             {
                 // TODO: can we use ecwid ID to find customer ?

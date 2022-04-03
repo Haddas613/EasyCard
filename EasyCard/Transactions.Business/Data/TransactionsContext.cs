@@ -296,6 +296,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.OperationDoneByID).IsRequired(false);
 
                 builder.Property(p => p.ThreeDSServerTransID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 
@@ -487,8 +489,6 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
-
-
             }
         }
 
@@ -707,6 +707,8 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
+
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 

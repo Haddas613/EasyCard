@@ -377,5 +377,7 @@ namespace Transactions.Business.Entities
         public WebHooksConfiguration WebHooksConfiguration { get; set; }
 
         public string ThreeDSServerTransID { get; set; }
+
+        public string Origin { get; set; }
     }
 }

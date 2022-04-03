@@ -44,11 +44,6 @@
             Document created by consumer using Bit
             </summary>
         </member>
-        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Ecwid">
-            <summary>
-            Document created by consumer using Ecwid
-            </summary>
-        </member>
         <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sending">
             <summary>
             Required because of technical reason - to do not send request twice

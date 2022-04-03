@@ -142,5 +142,8 @@ namespace Transactions.Api.Models.PaymentRequests
         /// Default language to display checkout page
         /// </summary>
         public string Language { get; set; }
+
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

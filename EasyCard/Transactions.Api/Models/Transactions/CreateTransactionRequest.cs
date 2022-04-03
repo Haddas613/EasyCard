@@ -186,5 +186,8 @@ namespace Transactions.Api.Models.Transactions
         [SwaggerExclude]
         [StringLength(50)]
         public string ThreeDSServerTransID { get; set; }
+
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

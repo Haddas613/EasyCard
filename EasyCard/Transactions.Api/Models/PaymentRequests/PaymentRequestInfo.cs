@@ -96,5 +96,7 @@ namespace Transactions.Api.Models.PaymentRequests
         {
             get { return TotalAmount == 0 && !UserAmount && DealDetails?.ConsumerID != null; }
         }
+
+        public string Origin { get; set; }
     }
 }

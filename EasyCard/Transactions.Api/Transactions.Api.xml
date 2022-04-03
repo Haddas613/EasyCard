@@ -2190,6 +2190,11 @@
             Any advanced payload which will be stored in EasyCard and then can be obtained using "GetTransaction"
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Origin">
+            <summary>
+            Origin site url or label
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">
             <summary>
             Payment transaction details

@@ -424,6 +424,8 @@ namespace CheckoutPortal.Controllers
                     mdel.Calculate();
                 }
 
+                mdel.Origin = checkoutConfig.PaymentRequest?.Origin ?? Request.GetTypedHeaders().Referer?.Host;
+
                 result = await transactionsApiClient.InitiateBitTransaction(mdel);
             }
             else if (checkoutConfig.PaymentRequest != null)
@@ -462,46 +464,11 @@ namespace CheckoutPortal.Controllers
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
 
-                //if ((!(mdel.PinPad ?? false)) && (checkoutConfig.Settings.EnableThreeDS ?? false))
-                //{
-                //    var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
-                //    {
-                //        TerminalID = mdel.TerminalID
-                //    };
-                //    var terminal = (await merchantsApiClient.GetTerminals(filter)).Data?.FirstOrDefault();
+                mdel.Origin = checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
 
-                //    //terminal.Integrations
-                //    if (!request.PassedInit3DMethod.HasValue)
-                //    {
-                //        var VersioningResult = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
-                //        if (VersioningResult?.errorDetails == null)
-                //        {
-                //            request.VersioningResponse = VersioningResult.versioningResponse;
-                //            //request.PassedInit3DMethod = true;
-                //            TempData["VersioningResponse"] = JsonConvert.SerializeObject(request.VersioningResponse);
-                //            return RedirectToAction(nameof(Init3DS), request);
-                //        }
-                //    }
-                //    else if(request.PassedInit3DMethod.HasValue && (request.PassedInit3DMethod??false))
-                //    {
-                //        string retailer = terminal.ProcessorTerminalReference;//todo terminal.ProcessorTerminalReference;
-                //        AuthenticateReqModel req = new AuthenticateReqModel
-                //        {
-                //            threeDSServerTransID = request.VersioningResponse.threeDSServerTransID,
-                //            Retailer = retailer,
-                //        };
-                //        var AuthenticationRes = await threeDSService.Authentication(req);
-                //    }
-                //    /*                    else
-                //                        { 
-                //                        return error 
-                //                        }*/
-                //    //}
-                //}
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
-               
             }
-            else//PR IS NULL
+            else //PR IS NULL
             {
                 var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
                 {
@@ -523,12 +490,9 @@ namespace CheckoutPortal.Controllers
                 }
 
                 mdel.Calculate();
-               /* VersioningRestResponse resVersioning = null;
-                if (!(mdel.PinPad ?? false))//if terminal has settings to do so 
-                {
-                    resVersioning = await threeDSService.Versioning(mdel.CreditCardSecureDetails.CardNumber);//todo also for token if token is used
-                    //redirect to Init3DS with resVersioning result, there call init3DMethod with this parameters.
-                }*/
+
+                mdel.Origin = Request.GetTypedHeaders().Referer?.Host;
+
                 result = await transactionsApiClient.CreateTransaction(mdel);
             }
 

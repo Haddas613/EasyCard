@@ -52,11 +52,5 @@ namespace Transactions.Shared.Enums
         /// </summary>
         [EnumMember(Value = "bit")]
         Bit = 6,
-
-        /// <summary>
-        /// Document created by consumer using Ecwid
-        /// </summary>
-        [EnumMember(Value = "ecwid")]
-        Ecwid = 7
     }
 }

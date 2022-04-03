@@ -840,6 +840,11 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<decimal>("PaymentRequestAmount")
                         .HasColumnType("decimal(19,4)");
 
@@ -1054,6 +1059,11 @@ namespace Transactions.Business.Migrations
 
                     b.Property<Guid?>("OperationDoneByID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("PaymentIntentID")
                         .HasColumnType("uniqueidentifier");

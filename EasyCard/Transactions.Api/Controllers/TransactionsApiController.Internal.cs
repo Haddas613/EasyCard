@@ -90,24 +90,6 @@ namespace Transactions.Api.Controllers
                 transaction.DealDetails = new Business.Entities.DealDetails();
             }
 
-            EcwidTransactionExtension ecwidPayload = null;
-
-            // TODO: this should be reworked
-            if (transaction.Extension != null)
-            {
-                try
-                {
-                    ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
-                    if (ecwidPayload != null && ecwidPayload.Valid())
-                    {
-                        transaction.DocumentOrigin = DocumentOriginEnum.Ecwid;
-                    }
-                }
-                catch
-                {
-                }
-            }
-
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
 
@@ -303,8 +285,10 @@ namespace Transactions.Api.Controllers
 
             endResponse.InnerResponse = await invoicingController.ProcessInvoice(terminal, transaction, model.InvoiceDetails);
 
-            _ = ProcessEcwid(transaction, ecwidPayload, endResponse);
+            // TODO: move to event handler
+            _ = ProcessEcwid(transaction, endResponse);
 
+            // TODO: move to event handler
             _ = SendTransactionSuccessEmails(transaction, terminal);
 
             _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionCreated);
@@ -542,23 +526,26 @@ namespace Transactions.Api.Controllers
             return null;
         }
 
-        private async Task ProcessEcwid(PaymentTransaction transaction, EcwidTransactionExtension ecwidPayload, OperationResponse endResponse)
+        private async Task ProcessEcwid(PaymentTransaction transaction, OperationResponse endResponse)
         {
-            // TODO: move to Ecwid Handler, add ecwidPayload explicitly to transaction details
-            if (ecwidPayload != null && ecwidPayload.Valid())
+            if (transaction.Extension != null)
             {
                 try
                 {
-                    var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
+                    var ecwidPayload = transaction.Extension.ToObject<EcwidTransactionExtension>();
+                    if (ecwidPayload != null && ecwidPayload.Valid())
                     {
-                        PaymentTransactionID = transaction.PaymentTransactionID,
-                        ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
-                        StoreID = ecwidPayload.StoreID,
-                        Status = endResponse.Status == StatusEnum.Success ?
-                                Ecwid.Api.Models.EcwidOrderStatusEnum.PAID : Ecwid.Api.Models.EcwidOrderStatusEnum.CANCELLED,
-                        CorrelationId = transaction.CorrelationId,
-                        Token = ecwidPayload.Token,
-                    });
+                        var ecwidResponse = await ecwidApiClient.UpdateOrderStatus(new Ecwid.Api.Models.EcwidUpdateOrderStatusRequest
+                        {
+                            PaymentTransactionID = transaction.PaymentTransactionID,
+                            ReferenceTransactionID = ecwidPayload.ReferenceTransactionID,
+                            StoreID = ecwidPayload.StoreID,
+                            Status = endResponse.Status == StatusEnum.Success ?
+                                    Ecwid.Api.Models.EcwidOrderStatusEnum.PAID : Ecwid.Api.Models.EcwidOrderStatusEnum.CANCELLED,
+                            CorrelationId = transaction.CorrelationId,
+                            Token = ecwidPayload.Token,
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {

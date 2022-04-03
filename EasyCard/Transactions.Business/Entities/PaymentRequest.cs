@@ -193,5 +193,7 @@ namespace Transactions.Business.Entities
         public string Language { get; set; }
 
         public string PaymentRequestUrl { get; set; }
+
+        public string Origin { get; set; }
     }
 }

@@ -287,5 +287,10 @@ namespace Transactions.Api.Models.Transactions
         public object BitTransactionDetails { get; set; }
 
         public decimal? TotalRefund { get; set; }
+
+        /// <summary>
+        /// Origin site url or label
+        /// </summary>
+        public string Origin { get; set; }
     }
 }

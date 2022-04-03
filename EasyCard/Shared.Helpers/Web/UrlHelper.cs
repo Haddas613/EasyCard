@@ -67,5 +67,16 @@ namespace Shared.Helpers
 
             return new Dictionary<string, string> { { token.Path, value } };
         }
+
+        public static string GetHostFromUrl(this string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return null;
+            }
+
+            Uri baseUri = new Uri(url);
+            return baseUri.Host;
+        }
     }
 }
