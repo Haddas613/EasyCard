@@ -317,7 +317,9 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            var endResponse = ProcessInvoice(terminal, transaction, null);
+            //TODO: change ProcessInvoice signature?
+            transaction.IssueInvoice = true;
+            var endResponse = await ProcessInvoice(terminal, transaction, null);
 
             if (endResponse == null)
             {

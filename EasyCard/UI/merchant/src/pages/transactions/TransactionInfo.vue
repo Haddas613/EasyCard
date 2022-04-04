@@ -61,7 +61,7 @@
                 class="primary--text"
                 link
                 :to="{name: 'Invoice', params: {id: model.invoiceID}}"
-                 v-if="model.invoiceID"
+                v-if="model.invoiceID"
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>

@@ -64,15 +64,21 @@
                     <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
                   </p>
                 </v-col>
-                <v-col cols="12" md="4" class="info-block" v-if="model.invoiceID">
+                <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
                   <router-link
                     class="primary--text"
                     link
                     :to="{name: 'Invoice', params: {id: model.$invoiceID || model.invoiceID}}"
+                    v-if="model.invoiceID"
                   >
                     <small>{{(model.invoiceID || '-') | guid}}</small>
                   </router-link>
+                  <v-btn x-small color="primary" 
+                    v-else-if="model.allowInvoiceCreation"
+                    @click="createInvoice()">
+                      {{$t("CreateInvoice")}}
+                  </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block" v-if="model.paymentRequestID">
                   <p class="caption ecgray--text text--darken-2">{{$t('PaymentRequest')}}</p>
@@ -399,6 +405,13 @@ export default {
     async onBitRefundCompleted(refundedAmount){
       this.$set(this.model, 'totalRefund', refundedAmount);
       await this.initThreeDotMenu();
+    },
+    async createInvoice(){
+      let operation = await this.$api.invoicing.createForTransaction(this.model.$paymentTransactionID);
+
+      if(operation.status == "success" && operation.entityReference){
+        this.$set(this.model, 'invoiceID', operation.entityReference);
+      }
     },
     ...mapMutations({
       refreshKeepAlive: 'ui/refreshKeepAlive',

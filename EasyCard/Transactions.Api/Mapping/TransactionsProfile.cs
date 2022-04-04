@@ -69,7 +69,13 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.AllowRefund, o => o.MapFrom(src =>
                     src.SpecialTransactionType != SpecialTransactionTypeEnum.Refund
                     && (src.Status == Shared.Enums.TransactionStatusEnum.Completed || src.Status == Shared.Enums.TransactionStatusEnum.Refund)
-                    && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount));
+                    && src.TotalRefund.GetValueOrDefault(0) < src.TransactionAmount))
+
+                // note: needs additional check performed that related terminal has invoicing integration enabled
+                .ForMember(d => d.AllowInvoiceCreation, o => o.MapFrom(src =>
+                    src.InvoiceID == null
+                    && (src.QuickStatus != Shared.Enums.QuickStatusFilterTypeEnum.Canceled && src.QuickStatus != Shared.Enums.QuickStatusFilterTypeEnum.Failed)
+                    && src.Currency == CurrencyEnum.ILS));
 
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
