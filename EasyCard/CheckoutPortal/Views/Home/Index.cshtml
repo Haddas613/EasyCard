@@ -75,10 +75,15 @@
                 $("input[name=formPaymentType]").on("change", function (e) {
                     let selectedMethod = $("input[name=formPaymentType]:checked").val();
 
+                    if (!selectedMethod){
+                        return;
+                    }
+
                     $("#bitlogo").attr("src", selectedMethod == "bit" ? "/img/bit-logo-white.svg" : "/img/bit-logo-gray.svg");
                     $(`.form-area`).attr('hidden', true);
                     $(`#${selectedMethod}`).attr('hidden', false);
                 });
+                $("input[name=formPaymentType]").trigger("change");
 
                 /* if (("#VersioningResponseHidden").val() != null) {
                      //call init3dmethod if it didn't fell on catch  PassedInit3DS is true, otherwise it's false
