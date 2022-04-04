@@ -372,6 +372,7 @@
   "WebhookEvent": "Webhook Event",
   "FailureEvent": "Failure Event",
   "WoocommerceID": "Woocommerce ID",
+  "OriginURL": "Origin URL",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
