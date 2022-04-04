@@ -11,7 +11,7 @@
               <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
             </v-app-bar>
             <keep-alive max="1" :include="keepAliveComponentsList">
-              <router-view/>
+              <router-view :key="$route.fullPath" />
             </keep-alive>
           </v-flex>
         </v-col>
