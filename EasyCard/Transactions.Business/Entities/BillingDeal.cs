@@ -132,6 +132,16 @@ namespace Transactions.Business.Entities
 
         public bool InvoiceOnly { get; set; }
 
+        [NotMapped]
+        public BillingDealTypeEnum BillingDealType =>
+                (InvoiceOnly, PaymentType) switch
+                {
+                    (true, _) => BillingDealTypeEnum.InvoiceOnly,
+                    (false, PaymentTypeEnum.Card) => BillingDealTypeEnum.CreditCard,
+                    (false, PaymentTypeEnum.Bank) => BillingDealTypeEnum.Bank,
+                    _ => BillingDealTypeEnum.CreditCard
+                };
+
         /// <summary>
         /// Date-time when transaction status updated
         /// </summary>

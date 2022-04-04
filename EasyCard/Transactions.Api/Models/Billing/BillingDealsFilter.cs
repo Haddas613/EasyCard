@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Billing
 {
@@ -84,5 +85,7 @@ namespace Transactions.Api.Models.Billing
         public bool CreditCardExpired { get; set; }
 
         public string ConsumerExternalReference { get; set; }
+
+        public BillingDealTypeEnum? BillingDealType { get; set; }
     }
 }
