@@ -350,18 +350,13 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
             }
 
-            EnsureExists(model.DealDetails);  // TODO: redo EnsureExists
-
-            //if (model.DealDetails.ConsumerID != billingDeal.DealDetails.ConsumerID)
-            //{
-            //    return BadRequest(MessagesConsumerCannotBeChanged);
-            //}
+            ValidateNotEmpty(model.DealDetails, nameof(model.DealDetails));
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
                 if (!model.CreditCardToken.HasValue)
                 {
-                    EnsureExists(model.CreditCardToken); // TODO: redo EnsureExists
+                    ValidateNotEmpty(model.CreditCardToken, nameof(model.CreditCardToken));
                 }
 
                 CreditCardTokenDetails token = null;
@@ -397,7 +392,7 @@ namespace Transactions.Api.Controllers
             }
             else if (model.PaymentType == PaymentTypeEnum.Bank)
             {
-                EnsureExists(model.BankDetails); // TODO: redo EnsureExists
+                ValidateNotEmpty(model.BankDetails, nameof(model.BankDetails));
             }
             else
             {

@@ -76,6 +76,24 @@ namespace Shared.Api
         }
 
         [NonAction]
+        protected T ValidateNotEmpty<T>(T src, string propertyName = null)
+        {
+            if (src == null)
+            {
+                List<Error> errors = new List<Error>();
+
+                if (propertyName != null)
+                {
+                    errors.Add(new Error(nameof(propertyName), ApiMessages.Required));
+                }
+
+                throw new BusinessException(ApiMessages.ShouldNotBeEmpty, errors);
+            }
+
+            return src;
+        }
+
+        [NonAction]
         protected string GetCorrelationID()
         {
             return HttpContext?.TraceIdentifier;

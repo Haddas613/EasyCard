@@ -115,6 +115,15 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field should not be empty.
+        /// </summary>
+        public static string ShouldNotBeEmpty {
+            get {
+                return ResourceManager.GetString("ShouldNotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation errors.
         /// </summary>
         public static string ValidationErrors {
