@@ -371,6 +371,7 @@
   "Key": "מַפְתֵחַ",
   "Value": "ערך",
   "WoocommerceID": "Woocommerce ח.פ",
+  "OriginURL": "כתובת אתר מקור",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -448,6 +448,7 @@
   "RequestStatusCode": "Request Status Code",
   "RequestStatusDescription": "Request Status Description",
   "BitMerchantNumber": "bit Merchant Number",
+  "OriginURL": "Origin URL",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -452,6 +452,7 @@
   "RequestStatusCode": "בקש קוד סטטוס",
   "RequestStatusDescription": "תיאור סטטוס בקשה",
   "BitMerchantNumber": "מספר לקוח ביט",
+  "OriginURL": "כתובת אתר מקור",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
