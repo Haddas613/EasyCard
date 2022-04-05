@@ -90,7 +90,10 @@ export default {
       }
       this.totalRefund += Number(this.amount);
       this.init();
-      this.$emit('refund', this.totalRefund);
+      this.$emit('refund', {
+        totalRefund: this.totalRefund,
+        transactionID: operationResult.entityReference,
+      });
     },
     init() {
       this.amount = this.transaction.transactionAmount - this.totalRefund;

@@ -10,7 +10,7 @@
         <div v-if="model">
           <transaction-printout ref="printout" :transaction="model"></transaction-printout>
           <transaction-slip-dialog ref="slipDialog" :transaction="model" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
-          <refund-dialog ref="refundDialog" :transaction="model" :show.sync="refundDialog" @refund="onBitRefundCompleted($event)"></refund-dialog>
+          <refund-dialog ref="refundDialog" :transaction="model" :show.sync="refundDialog" @refund="onRefundCompleted($event)"></refund-dialog>
           <v-card flat class="mb-2">
             <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
             <v-divider></v-divider>
@@ -417,9 +417,15 @@ export default {
         }
       });
     },
-    async onBitRefundCompleted(refundedAmount){
-      this.$set(this.model, 'totalRefund', refundedAmount);
-      await this.initThreeDotMenu();
+    async onRefundCompleted(data){
+      this.$set(this.model, 'totalRefund', data.refundedAmount);
+      this.$router.push({
+        name: "Transaction",
+        params: {
+          id: data.transactionID,
+        },
+      });
+      //await this.initThreeDotMenu();
     },
     async createInvoice(){
       let operation = await this.$api.invoicing.createForTransaction(this.model.$paymentTransactionID);
