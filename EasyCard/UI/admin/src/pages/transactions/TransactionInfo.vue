@@ -16,6 +16,11 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-row class="info-container body-1 black--text" v-if="model">
+                <v-col cols="12" v-if="model.specialTransactionType == 'refund'">
+                  <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-information-outline" type="warning">
+                    <span class="error--text">{{$t("ThisIsARefundTransaction")}}</span>
+                  </v-alert>
+                </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
                   <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
@@ -64,15 +69,28 @@
                     <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
                   </p>
                 </v-col>
-                <v-col cols="12" md="4" class="info-block" v-if="model.invoiceID">
+                <v-col cols="12" md="4" class="pb-0 info-block" v-if="model.status == 'refund'">
+                  <p class="caption error--text text--darken-2">{{$t('TotalRefundOutOf')}}</p>
+                  <p>
+                    <b>{{model.totalRefund || 0}}/{{model.transactionAmount | currency(model.currency)}}</b>
+                  </p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
                   <router-link
                     class="primary--text"
                     link
                     :to="{name: 'Invoice', params: {id: model.$invoiceID || model.invoiceID}}"
+                    v-if="model.invoiceID"
                   >
-                    <small>{{(model.invoiceID || '-') | guid}}</small>
+                    <small>{{model.invoiceID | guid}}</small>
                   </router-link>
+                  <v-btn x-small color="primary" 
+                    v-else-if="model.allowInvoiceCreation"
+                    @click="createInvoice()">
+                      {{$t("CreateInvoice")}}
+                  </v-btn>
+                  <span v-else>-</span>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block" v-if="model.paymentRequestID">
                   <p class="caption ecgray--text text--darken-2">{{$t('PaymentRequest')}}</p>
@@ -250,7 +268,9 @@ export default {
         Pending: "primary--text",
         None: "ecgray--text",
         Completed: "success--text",
+        Done: "success--text",
         Failed: "error--text",
+        Refund: "error--text",
         Canceled: "accent--text"
       },
       tab: "info",
@@ -319,6 +339,7 @@ export default {
         this.model = tr;
         this.model.allowTransmission = false;
         await this.initThreeDotMenu();
+        this.$forceUpdate();
       }
     },
     async selectJ5(){
@@ -399,6 +420,13 @@ export default {
     async onBitRefundCompleted(refundedAmount){
       this.$set(this.model, 'totalRefund', refundedAmount);
       await this.initThreeDotMenu();
+    },
+    async createInvoice(){
+      let operation = await this.$api.invoicing.createForTransaction(this.model.$paymentTransactionID);
+
+      if(operation.status == "success" && operation.entityReference){
+        this.$set(this.model, 'invoiceID', operation.entityReference);
+      }
     },
     ...mapMutations({
       refreshKeepAlive: 'ui/refreshKeepAlive',

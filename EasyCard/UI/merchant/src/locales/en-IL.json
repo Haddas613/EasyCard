@@ -373,6 +373,8 @@
   "FailureEvent": "Failure Event",
   "WoocommerceID": "Woocommerce ID",
   "OriginURL": "Origin URL",
+  "ThisIsARefundTransaction": "This is a Refund Transaction",
+  "TotalRefundOutOf": "Total Refund (out of)",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

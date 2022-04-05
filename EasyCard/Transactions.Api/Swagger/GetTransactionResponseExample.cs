@@ -18,7 +18,6 @@ namespace Transactions.Api.Swagger
             return new TransactionResponse
             {
                 PaymentTransactionID = Guid.NewGuid(),
-                AllowTransmission = true,
                 AllowTransmissionCancellation = true,
                 TransactionAmount = 1200,
                 BillingDealID = null,

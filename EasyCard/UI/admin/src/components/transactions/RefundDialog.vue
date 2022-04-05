@@ -85,6 +85,7 @@ export default {
       this.visible = false;
 
       if(!this.$apiSuccess(operationResult)){
+        this.$toasted.show(operationResult.message || this.$t("Error"), { type: "error" });
         return;
       }
       this.totalRefund += Number(this.amount);

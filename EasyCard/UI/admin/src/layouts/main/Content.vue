@@ -7,7 +7,7 @@
         </v-app-bar>
         <div class="px-1">
           <keep-alive max="1" :include="keepAliveComponentsList">
-            <router-view/>
+            <router-view :key="$route.fullPath" />
           </keep-alive>
         </div>
       </v-flex>

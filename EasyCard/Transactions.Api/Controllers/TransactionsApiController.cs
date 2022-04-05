@@ -235,7 +235,7 @@ namespace Transactions.Api.Controllers
                     transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
                 }
 
-                if (transaction.AllowTransmissionCancellation)
+                if (transaction.TransmissionCancellationPossible)
                 {
                     var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
 
@@ -249,7 +249,7 @@ namespace Transactions.Api.Controllers
                 transaction.TerminalName = terminal.Label;
                 transaction.MerchantName = terminal.Merchant.BusinessName;
 
-                if (transaction.AllowInvoiceCreation)
+                if (transaction.InvoiceCreationPossible)
                 {
                     transaction.AllowInvoiceCreation =
                         terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
@@ -266,7 +266,7 @@ namespace Transactions.Api.Controllers
                 var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
                 transaction.TerminalName = terminal.Label;
 
-                if (transaction.AllowTransmissionCancellation)
+                if (transaction.TransmissionCancellationPossible)
                 {
                     var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
 
@@ -277,7 +277,7 @@ namespace Transactions.Api.Controllers
                     }
                 }
 
-                if (transaction.AllowInvoiceCreation)
+                if (transaction.InvoiceCreationPossible)
                 {
                     transaction.AllowInvoiceCreation =
                         terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
