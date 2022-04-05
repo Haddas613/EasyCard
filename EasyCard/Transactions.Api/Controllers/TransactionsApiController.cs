@@ -58,6 +58,7 @@ using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Helpers.IO;
 
 namespace Transactions.Api.Controllers
 {
@@ -435,14 +436,29 @@ namespace Transactions.Api.Controllers
                     });
 
                     var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
-                    var res = await excelService.GenerateFile($"Admin/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", summary, mapping);
+
+                    var terminalsLabels = string.Join(",", terminals.Select(t => t.Value));
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions_{Guid.NewGuid()}-{terminalsLabels}.xlsx");
+                    var res = await excelService.GenerateFile($"Admin/{filename}", "Transactions", summary, mapping);
+
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
                 else
                 {
                     var data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
                     var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
-                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Transactions-{Guid.NewGuid()}.xlsx", "Transactions", data, mapping);
+
+                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => t.Label)
+                        .ToListAsync();
+
+                    var terminalsLabels = string.Join(",", terminals);
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions-{terminalsLabels}.xlsx");
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping);
+
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
             }

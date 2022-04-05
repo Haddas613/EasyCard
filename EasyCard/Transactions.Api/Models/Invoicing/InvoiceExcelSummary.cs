@@ -65,5 +65,8 @@ namespace Transactions.Api.Models.Invoicing
         public decimal? AmountWithoutVat { get; set; }
 
         public string CardOwnerName { get; set; }
+
+        [ExcelIgnore]
+        public Guid? TerminalID { get; set; }
     }
 }

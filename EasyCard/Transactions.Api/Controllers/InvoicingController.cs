@@ -16,6 +16,7 @@ using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
+using Shared.Helpers.IO;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Helpers.Templating;
@@ -654,14 +655,30 @@ namespace Transactions.Api.Controllers
                     });
 
                     var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummaryAdmin>();
-                    var res = await excelService.GenerateFile($"Admin/Invoices-{Guid.NewGuid()}.xlsx", "Invoices", summary, mapping);
+
+                    var terminalsLabels = string.Join(",", terminals.Select(t => t.Value));
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Admin/Invoices_{Guid.NewGuid()}-{terminalsLabels}.xlsx");
+                    var res = await excelService.GenerateFile($"Admin/{filename}", "Invoices", summary, mapping);
+
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }
                 else
                 {
                     var data = await mapper.ProjectTo<InvoiceExcelSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
                     var mapping = InvoiceExcelSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceExcelSummary>();
-                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/Invoices-{Guid.NewGuid()}.xlsx", "Invoices", data, mapping);
+
+                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => t.Label)
+                        .ToListAsync();
+
+                    var terminalsLabels = string.Join(",", terminals);
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Invoices-{terminalsLabels}.xlsx");
+                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping);
+
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }
             }
