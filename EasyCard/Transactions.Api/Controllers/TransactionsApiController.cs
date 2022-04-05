@@ -57,6 +57,7 @@ using Merchants.Business.Extensions;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Transactions.Api.Controllers
 {
@@ -778,15 +779,17 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> Chargeback([FromBody] ChargebackRequest request)
         {
             var transaction = EnsureExists(
-                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == request.ExistingPaymentTransactionID));
+                await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == request.ExistingPaymentTransactionID));
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
+            // TODO: move to entity "allowRefund()"
             if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
             {
                 return new OperationResponse($"It is possible to make refund only for completed or partially refunded transactions", StatusEnum.Error);
             }
 
+            // TODO: move to entity "allowRefund()"
             if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
             {
                 return new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error);
@@ -809,7 +812,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var transactionRequest = ConvertTransactionRequestForRefund(transaction);
+                var transactionRequest = ConvertTransactionRequestForRefund(transaction, request.RefundAmount);
 
                 if (transaction.CreditCardToken != null)
                 {
@@ -817,17 +820,17 @@ namespace Transactions.Api.Controllers
 
                     return await ProcessTransaction(terminal, transactionRequest, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund,
                         initialTransactionID: transaction.PaymentTransactionID,
-                        initialTransactionProcess: async () =>
+                        initialTransactionProcess: async (IDbContextTransaction dbTransaction) =>
                         {
                             transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
 
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated, dbTransaction: dbTransaction);
                         },
-                        compensationTransactionProcess: async() =>
+                        compensationTransactionProcess: async (IDbContextTransaction dbTransaction) =>
                         {
                             transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() - request.RefundAmount;
 
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RefundFailed, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RefundFailed, transactionOperationCode: TransactionOperationCodesEnum.RefundFailed, dbTransaction: dbTransaction);
                         }
                         );
                 }

@@ -250,13 +250,13 @@ namespace Transactions.Business.Services
 
             if (dbTransaction != null)
             {
-                await base.UpdateEntity(entity, dbTransaction);
+                await context.SaveChangesAsync();
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
             }
             else
             {
                 using var transaction = BeginDbTransaction();
-                await base.UpdateEntity(entity, transaction);
+                await context.SaveChangesAsync();
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
                 await transaction.CommitAsync();
             }

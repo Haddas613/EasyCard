@@ -214,6 +214,8 @@ namespace Transactions.Api.Controllers
             token.Active = false;
             await creditCardTokenService.UpdateEntity(token);
 
+            // TODO: add history message to related billing
+
             return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }
 

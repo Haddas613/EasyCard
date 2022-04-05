@@ -44,6 +44,8 @@ namespace Transactions.Shared.Enums
 
         ProcessorPreTransmissionCommited = 18,
 
-        RefundCreated = 19
+        RefundCreated = 19,
+
+        RefundFailed = 20
     }
 }

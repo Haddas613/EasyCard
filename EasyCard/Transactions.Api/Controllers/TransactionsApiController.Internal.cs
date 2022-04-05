@@ -3,6 +3,7 @@ using Merchants.Business.Entities.Terminal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Shared.Api.Extensions;
@@ -52,7 +53,7 @@ namespace Transactions.Api.Controllers
             return terminal;
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null, Func<Task> initialTransactionProcess = null, Func<Task> compensationTransactionProcess = null)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null, Func<IDbContextTransaction, Task> initialTransactionProcess = null, Func<IDbContextTransaction, Task> compensationTransactionProcess = null)
         {
             TransactionTerminalSettingsValidator.ValidatePinpad(terminal, model);
 
@@ -212,20 +213,21 @@ namespace Transactions.Api.Controllers
                 mapper.Map(pinpadProcessorSettings, transaction);
             }
 
-            var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
-
             if (initialTransactionProcess != null)
             {
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                 {
-                    await initialTransactionProcess();
-                    await transactionsService.CreateEntity(transaction);
+                    await initialTransactionProcess(dbTransaction);
+                    await transactionsService.CreateEntity(transaction, dbTransaction);
+                    await dbTransaction.CommitAsync();
                 }
             }
             else
             {
                 await transactionsService.CreateEntity(transaction);
             }
+
+            var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
             processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
 
@@ -245,7 +247,9 @@ namespace Transactions.Api.Controllers
                 {
                     using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                     {
-                        await compensationTransactionProcess();
+                        await compensationTransactionProcess(dbTransaction);
+                        await transactionsService.UpdateEntity(transaction, dbTransaction);
+                        await dbTransaction.CommitAsync();
                     }
                 }
 
@@ -891,9 +895,15 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private CreateTransactionRequest ConvertTransactionRequestForRefund(PaymentTransaction transaction)
+        private CreateTransactionRequest ConvertTransactionRequestForRefund(PaymentTransaction transaction, decimal refundAmount)
         {
             var res = mapper.Map<CreateTransactionRequest>(transaction);
+
+            res.TransactionAmount = refundAmount;
+            res.NetTotal = null;
+            res.VATTotal = null;
+            res.Calculate();
+
             return res;
         }
 
