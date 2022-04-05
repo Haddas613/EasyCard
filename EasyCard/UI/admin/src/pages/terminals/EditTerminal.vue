@@ -6,7 +6,7 @@
       <v-tab key="features">{{$t("Features")}}</v-tab>
       <v-tab key="webhooks">{{$t("Webhooks")}}</v-tab>
     </v-tabs>
-    <v-card-text>
+    <v-card-text :key="terminalUpdatedKey">
       <v-tabs-items v-model="tab" class="bg-ecbg">
         <v-tab-item key="settings" class="pt-2">
           <v-card class="mb-4" outlined v-if="terminal && terminal.merchant">
@@ -97,7 +97,8 @@ export default {
     return {
       terminal: null,
       terminalSettingsFormValid: true,
-      tab: "settings"
+      tab: "settings",
+      terminalUpdatedKey: null,
     };
   },
   async mounted() {
@@ -173,6 +174,7 @@ export default {
       }
 
       this.terminal = terminal;
+      this.terminalUpdatedKey = new Date().toString();
     },
     confirmLeave($event){
       if(this.$refs.terminalSettingsRef && this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
@@ -206,6 +208,7 @@ export default {
           this.$toasted.show(e.description, { type: "error" });
         })
       }
+      this.refreshTerminal();
     }
   },
   beforeRouteLeave (to, from, next) { 

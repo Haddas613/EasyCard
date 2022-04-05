@@ -137,7 +137,6 @@ export default {
       });
     }
     let webhooks = await this.$api.dictionaries.getWebhooks();
-    console.log(webhooks);
     this.webhooks = webhooks.map((e) => {
       return {
         name: this.$t(e.eventName),
@@ -149,7 +148,6 @@ export default {
         ),
       };
     });
-    console.log(this.webhooks);
   },
   methods: {
     async addWebhook() {
