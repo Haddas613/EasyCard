@@ -2110,21 +2110,6 @@
             Concurrency key
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmission">
-            <summary>
-            Transaction can be transmitted manually
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmissionCancellation">
-            <summary>
-            Transaction transmission cannot be canceled manually
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowInvoiceCreation">
-            <summary>
-            Invoice can be created for this transaction
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingDealID">
             <summary>
             Reference to billing schedule which produced this transaction
@@ -2193,6 +2178,21 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Origin">
             <summary>
             Origin site url or label
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmission">
+            <summary>
+            Transaction can be transmitted manually
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowTransmissionCancellation">
+            <summary>
+            Transaction transmission cannot be canceled manually
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowInvoiceCreation">
+            <summary>
+            Invoice can be created for this transaction
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">

@@ -372,6 +372,8 @@
   "Value": "ערך",
   "WoocommerceID": "Woocommerce ח.פ",
   "OriginURL": "כתובת אתר מקור",
+  "ThisIsARefundTransaction": "זוהי עסקת זיכוי",
+  "TotalRefundOutOf": "סה\"כ סכום לזיכוי",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

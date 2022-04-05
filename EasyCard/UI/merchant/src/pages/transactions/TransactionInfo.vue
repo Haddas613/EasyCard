@@ -9,6 +9,11 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-row class="info-container body-1 black--text" v-if="model">
+            <v-col cols="12" v-if="model.specialTransactionType == 'refund'">
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-information-outline" type="warning">
+                <span class="error--text">{{$t("ThisIsARefundTransaction")}}</span>
+              </v-alert>
+            </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
               <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
@@ -53,6 +58,12 @@
                   v-if="model.shvaTransactionDetails && model.shvaTransactionDetails.transmissionDate"
                 >{{model.shvaTransactionDetails.transmissionDate | ecdate('LLLL')}}</span>
                 <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
+              </p>
+            </v-col>
+            <v-col cols="12" md="4" class="pb-0 info-block" v-if="model.status == 'refund'">
+              <p class="caption error--text text--darken-2">{{$t('TotalRefundOutOf')}}</p>
+              <p>
+                <b>{{model.totalRefund || 0}}/{{model.transactionAmount | currency(model.currency)}}</b>
               </p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
@@ -110,7 +121,7 @@
         >{{$t("Items")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency"></transaction-items-list>
+          <transaction-items-list :items="model.dealDetails.items" :currency="model.currency"></transaction-items-list>
         </v-card-text>
       </v-card>
       <deal-details
@@ -216,8 +227,10 @@ export default {
         Pending: "primary--text",
         None: "ecgray--text",
         Completed: "success--text",
+        Done: "success--text",
         Failed: "error--text",
-        Canceled: "accent--text"
+        Canceled: "accent--text",
+        Refund: "error--text",
       },
       transactionSlipDialog: false,
       refundDialog: false,
@@ -284,6 +297,8 @@ export default {
         );
       this.model = tr;
       this.model.allowTransmission = false;
+      await this.initThreeDotMenu();
+      this.$forceUpdate();
     },
     async createInvoice(){
       this.loading = true;

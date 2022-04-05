@@ -453,6 +453,8 @@
   "RequestStatusDescription": "תיאור סטטוס בקשה",
   "BitMerchantNumber": "מספר לקוח ביט",
   "OriginURL": "כתובת אתר מקור",
+  "ThisIsARefundTransaction": "זוהי עסקת זיכוי",
+  "TotalRefundOutOf": "סה\"כ סכום לזיכוי",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
