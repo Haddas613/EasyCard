@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BankBilling" xml:space="preserve">
+    <value>Bank Billing</value>
+  </data>
+  <data name="CreditCardBilling" xml:space="preserve">
+    <value>Credit Card Billing</value>
+  </data>
   <data name="CreditNote" xml:space="preserve">
     <value>Credit Note</value>
   </data>
@@ -125,6 +131,9 @@
   </data>
   <data name="Invoice" xml:space="preserve">
     <value>Invoice</value>
+  </data>
+  <data name="InvoiceOnlyBilling" xml:space="preserve">
+    <value>Invoice only Billing</value>
   </data>
   <data name="InvoiceWithPaymentInfo" xml:space="preserve">
     <value>Invoice WIth Payment Info</value>
@@ -143,5 +152,8 @@
   </data>
   <data name="Sent" xml:space="preserve">
     <value>Sent</value>
+  </data>
+  <data name="TransactionInvoice" xml:space="preserve">
+    <value>Transaction Invoice</value>
   </data>
 </root>

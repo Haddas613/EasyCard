@@ -55,5 +55,7 @@ namespace Transactions.Api.Models.Dictionaries
         public Dictionary<string, string> TransactionFinalizationStatusEnum { get; set; }
 
         public Dictionary<string, string> PropertyPresenceEnum { get; set; }
+
+        public Dictionary<string, string> InvoiceBillingTypeEnum { get; set; }
     }
 }

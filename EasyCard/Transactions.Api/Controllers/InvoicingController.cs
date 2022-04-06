@@ -743,6 +743,19 @@ namespace Transactions.Api.Controllers
                         mapper.Map(transaction, invoiceRequest);
                         invoiceRequest.InvoiceDetails = invoiceDetails;
 
+                        if (transaction.BillingDealID != null)
+                        {
+                            var billingDeal = await billingDealService
+                                .GetBillingDeals()
+                                .FirstOrDefaultAsync(b => b.BillingDealID == transaction.BillingDealID);
+
+                            invoiceRequest.UpdateInvoiceType(transaction, billingDeal);
+                        }
+                        else
+                        {
+                            invoiceRequest.UpdateInvoiceType(transaction, null);
+                        }
+
                         var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
 
                         // in case if consumer name/natid is not specified in deal details, get it from credit card details
@@ -841,6 +854,8 @@ namespace Transactions.Api.Controllers
             invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
 
             model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, null);
+
+            invoiceRequest.UpdateInvoiceType(null, model);
 
             invoiceRequest.Calculate();
 

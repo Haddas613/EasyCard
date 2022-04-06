@@ -18,6 +18,7 @@ using Transactions.Api.Models.PaymentRequests.Enums;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.Models;
 using Shared.Helpers.Models.Resources;
+using Transactions.Business.Entities;
 
 namespace Transactions.Api.Services
 {
@@ -76,6 +77,8 @@ namespace Transactions.Api.Services
             var finalizationStatusEnumType = typeof(TransactionFinalizationStatusEnum);
 
             var propertyPresenceEnumType = typeof(PropertyPresenceEnum);
+
+            var invoiceBillingTypeEnumType = typeof(InvoiceBillingTypeEnum);
 
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -149,6 +152,9 @@ namespace Transactions.Api.Services
             var propertyPresenceTypes = Enum.GetValues(propertyPresenceEnumType).Cast<PropertyPresenceEnum>()
                .ToDictionary(m => propertyPresenceEnumType.GetDataContractAttrForEnum(m.ToString()), m => PropertyPresenceEnumResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var invoiceBillingTypes = Enum.GetValues(invoiceBillingTypeEnumType).Cast<InvoiceBillingTypeEnum>()
+               .ToDictionary(m => invoiceBillingTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => InvoiceEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
             response.SpecialTransactionTypeEnum = spTranTypes;
@@ -173,6 +179,7 @@ namespace Transactions.Api.Services
             response.DocumentOriginEnum = documentOriginTypes;
             response.TransactionFinalizationStatusEnum = finalizationStatusTypes;
             response.PropertyPresenceEnum = propertyPresenceTypes;
+            response.InvoiceBillingTypeEnum = invoiceBillingTypes;
 
             return response;
         }

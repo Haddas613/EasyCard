@@ -284,6 +284,31 @@
             General error mesage which can be displayed to merchant
             </summary>
         </member>
+        <member name="F:Shared.Integration.Models.Invoicing.InvoiceBillingTypeEnum.Invoice">
+            <summary>
+            Without transaction and billing
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.Invoicing.InvoiceBillingTypeEnum.TransactionInvoice">
+            <summary>
+            Transaction but has no billing
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.Invoicing.InvoiceBillingTypeEnum.InvoiceOnlyBilling">
+            <summary>
+            Billing's invoice. But billing is without transactions (invoice only)
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.Invoicing.InvoiceBillingTypeEnum.CreditCardBilling">
+            <summary>
+            Billing's invoice. Billing payment type is credit card
+            </summary>
+        </member>
+        <member name="F:Shared.Integration.Models.Invoicing.InvoiceBillingTypeEnum.BankBilling">
+            <summary>
+            Billing's invoice. Billing payment type is bank
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.CorrelationId">
             <summary>
             Request ID
@@ -889,6 +914,16 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.BankBilling">
+            <summary>
+              Looks up a localized string similar to Bank Billing.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CreditCardBilling">
+            <summary>
+              Looks up a localized string similar to Credit Card Billing.
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CreditNote">
             <summary>
               Looks up a localized string similar to Credit Note.
@@ -902,6 +937,11 @@
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Invoice">
             <summary>
               Looks up a localized string similar to Invoice.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.InvoiceOnlyBilling">
+            <summary>
+              Looks up a localized string similar to Invoice only Billing.
             </summary>
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.InvoiceWithPaymentInfo">
@@ -932,6 +972,11 @@
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Sent">
             <summary>
               Looks up a localized string similar to Sent.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.TransactionInvoice">
+            <summary>
+              Looks up a localized string similar to Transaction Invoice.
             </summary>
         </member>
         <member name="T:Shared.Integration.Resources.JDealTypeResource">

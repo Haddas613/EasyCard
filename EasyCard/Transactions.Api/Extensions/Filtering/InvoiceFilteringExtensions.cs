@@ -65,6 +65,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.InvoiceDetails.InvoiceType == filter.InvoiceType);
             }
 
+            if (filter.InvoiceBillingType != null)
+            {
+                src = src.Where(t => t.InvoiceBillingType == filter.InvoiceBillingType);
+            }
+
             if (filter.InvoiceNumber != null)
             {
                 src = src.Where(t => t.InvoiceNumber == filter.InvoiceNumber);

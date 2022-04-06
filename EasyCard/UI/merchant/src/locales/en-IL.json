@@ -375,6 +375,7 @@
   "OriginURL": "Origin URL",
   "ThisIsARefundTransaction": "This is a Refund Transaction",
   "TotalRefundOutOf": "Total Refund (out of)",
+  "InvoiceBillingType": "Invoice Billing Type",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

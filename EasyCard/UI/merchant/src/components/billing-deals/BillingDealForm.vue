@@ -538,8 +538,8 @@ export default {
       this.issueInvoice = false;
       this.issueInvoiceDisabled = true;
     }
-    else if (this.model.issueInvoice) {
-      this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
+    else if (!this.model.billingDealID) {
+      this.model.issueInvoice = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
     }
     
     if(!this.model.vatRate){

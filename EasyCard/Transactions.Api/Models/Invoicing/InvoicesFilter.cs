@@ -35,6 +35,8 @@ namespace Transactions.Api.Models.Invoicing
 
         public InvoiceTypeEnum? InvoiceType { get; set; }
 
+        public InvoiceBillingTypeEnum? InvoiceBillingType { get; set; }
+
         public Guid? ConsumerID { get; set; }
 
         /// <summary>

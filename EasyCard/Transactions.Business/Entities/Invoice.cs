@@ -188,5 +188,46 @@ namespace Transactions.Business.Entities
         public JObject ExternalSystemData { get; set; }
 
         public JObject Extension { get; set; }
+
+        public InvoiceBillingTypeEnum InvoiceBillingType { get; private set; }
+
+        public void UpdateInvoiceType(PaymentTransaction transaction, BillingDeal billingDeal)
+        {
+            if (transaction == null)
+            {
+                if (billingDeal == null)
+                {
+                    InvoiceBillingType = InvoiceBillingTypeEnum.Invoice;
+                }
+                else if (billingDeal.InvoiceOnly)
+                {
+                    InvoiceBillingType = InvoiceBillingTypeEnum.InvoiceOnlyBilling;
+                }
+                else
+                {
+                    InvoiceBillingType = billingDeal.PaymentType == PaymentTypeEnum.Bank
+                        ? InvoiceBillingTypeEnum.BankBilling : InvoiceBillingTypeEnum.CreditCardBilling;
+                }
+            }
+            else if (transaction.BillingDealID.HasValue)
+            {
+                if (billingDeal == null)
+                {
+                    throw new ArgumentNullException(nameof(billingDeal), "Transaction has billing but argument is missing");
+                }
+
+                if (billingDeal.InvoiceOnly)
+                {
+                    throw new ArgumentNullException(nameof(billingDeal.InvoiceOnly), "Invalid data. Invoice only billing can not have transactions.");
+                }
+
+                InvoiceBillingType = transaction.PaymentTypeEnum == PaymentTypeEnum.Bank
+                    ? InvoiceBillingTypeEnum.BankBilling : InvoiceBillingTypeEnum.CreditCardBilling;
+            }
+            else
+            {
+                InvoiceBillingType = InvoiceBillingTypeEnum.TransactionInvoice;
+            }
+        }
     }
 }

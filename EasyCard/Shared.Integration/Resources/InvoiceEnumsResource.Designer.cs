@@ -19,7 +19,7 @@ namespace Shared.Integration.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InvoiceEnumsResource {
@@ -61,6 +61,24 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bank Billing.
+        /// </summary>
+        public static string BankBilling {
+            get {
+                return ResourceManager.GetString("BankBilling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credit Card Billing.
+        /// </summary>
+        public static string CreditCardBilling {
+            get {
+                return ResourceManager.GetString("CreditCardBilling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit Note.
         /// </summary>
         public static string CreditNote {
@@ -84,6 +102,15 @@ namespace Shared.Integration.Resources {
         public static string Invoice {
             get {
                 return ResourceManager.GetString("Invoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoice only Billing.
+        /// </summary>
+        public static string InvoiceOnlyBilling {
+            get {
+                return ResourceManager.GetString("InvoiceOnlyBilling", resourceCulture);
             }
         }
         
@@ -138,6 +165,15 @@ namespace Shared.Integration.Resources {
         public static string Sent {
             get {
                 return ResourceManager.GetString("Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction Invoice.
+        /// </summary>
+        public static string TransactionInvoice {
+            get {
+                return ResourceManager.GetString("TransactionInvoice", resourceCulture);
             }
         }
     }

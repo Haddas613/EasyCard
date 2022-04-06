@@ -455,6 +455,7 @@
   "OriginURL": "כתובת אתר מקור",
   "ThisIsARefundTransaction": "זוהי עסקת זיכוי",
   "TotalRefundOutOf": "סה\"כ סכום לזיכוי",
+  "InvoiceBillingType": "סוג חשבונית חיוב",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

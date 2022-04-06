@@ -462,6 +462,9 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("InvoiceAmount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<short>("InvoiceBillingType")
+                        .HasColumnType("smallint");
+
                     b.Property<DateTime?>("InvoiceDate")
                         .HasColumnType("datetime2");
 
