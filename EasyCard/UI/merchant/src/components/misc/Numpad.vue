@@ -102,7 +102,7 @@
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money
-                :amount="item.price * (item.quantity || 1) - (item.discount ? item.discount : 0)"
+                :amount="item.price * (itemsCountCache[item.$itemID] || 1) - (item.discount ? item.discount : 0)"
                 :currency="item.$currency"
               ></ec-money>
             </v-col>
