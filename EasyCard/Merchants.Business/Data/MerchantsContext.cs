@@ -102,6 +102,8 @@ namespace Merchants.Business.Data
 
         public DbSet<PinPadDevice> PinPadDevices { get; set; }
 
+        public DbSet<MerchantConsent> MerchantConsents { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -134,6 +136,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
             modelBuilder.ApplyConfiguration(new ShvaTerminalConfiguration());
             modelBuilder.ApplyConfiguration(new PinPadDeviceConfiguration());
+            modelBuilder.ApplyConfiguration(new MerchantConsentConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -519,6 +522,20 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.PosName).HasMaxLength(64);
                 builder.Property(b => b.TerminalID).IsRequired(true);
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class MerchantConsentConfiguration : IEntityTypeConfiguration<MerchantConsent>
+        {
+            public void Configure(EntityTypeBuilder<MerchantConsent> builder)
+            {
+                builder.ToTable("MerchantConsent");
+
+                builder.HasKey(b => b.MerchantConsentID);
+                builder.Property(b => b.MerchantConsentID).ValueGeneratedNever();
+
+                builder.Property(b => b.MerchantID).IsRequired(true);
+                builder.Property(b => b.TerminalID).IsRequired(true);
             }
         }
     }

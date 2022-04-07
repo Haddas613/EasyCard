@@ -14,8 +14,6 @@ namespace Merchants.Shared.Models
 
         public bool? IssueInvoice { get; set; }
 
-        public bool? Support3DSecure { get; set; }
-
         // TODO: validation
         public IEnumerable<string> RedirectUrls { get; set; }
 
