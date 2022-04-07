@@ -89,5 +89,7 @@ namespace Merchants.Business.Entities.Terminal
         }
 
         public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public bool? Support3DSecure { get; set; }
     }
 }

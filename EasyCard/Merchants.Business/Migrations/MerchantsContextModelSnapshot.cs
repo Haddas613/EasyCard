@@ -635,6 +635,9 @@ namespace Merchants.Business.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("Support3DSecure")
+                        .HasColumnType("bit");
+
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
 

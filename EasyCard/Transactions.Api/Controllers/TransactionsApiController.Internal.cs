@@ -562,7 +562,7 @@ namespace Transactions.Api.Controllers
 
         private async Task<ThreeDSIntermediateData> Process3dSecure(Terminal terminal, CreateTransactionRequest model, CreditCardTokenDetails token, PaymentTransaction transaction)
         {
-            if (terminal.CheckoutSettings.Support3DSecure == true && !(model.PinPad == true) && token == null)
+            if (terminal.Support3DSecure == true && !(model.PinPad == true) && token == null)
             {
                 if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
                 {
