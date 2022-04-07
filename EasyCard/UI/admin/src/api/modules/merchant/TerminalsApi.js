@@ -102,4 +102,8 @@ export default class TerminalsApi {
     async deleteMerchantLogo(terminalID){
         return this.base.delete(this.terminalsUrl + `/${terminalID}/merchantlogo`);
     }
+
+    async disable3DS(terminalID){
+        return await this.base.delete(this.terminalsUrl + `/tds-disable/${terminalID}`);
+    }
 }

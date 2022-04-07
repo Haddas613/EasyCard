@@ -54,5 +54,7 @@ namespace MerchantProfileApi.Models.Terminal
         public byte[] SharedApiKey { get; set; }
 
         public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public bool? Support3DSecure { get; set; }
     }
 }

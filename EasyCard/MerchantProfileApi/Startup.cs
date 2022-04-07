@@ -274,7 +274,8 @@ namespace ProfileApi
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
-            services.AddScoped<IFeaturesService, FeaturesService>();
+            services.AddScoped<IFeaturesService, FeaturesService>(); 
+            services.AddScoped<IMerchantConsentService, MerchantConsentService>();
             services.AddSingleton<IBlobStorageService, BlobStorageService>(serviceProvider =>
             {
                 var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;

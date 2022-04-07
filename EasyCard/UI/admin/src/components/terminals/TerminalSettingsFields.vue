@@ -458,8 +458,10 @@
               hide-details
             ></v-switch>
             <v-switch
-              v-model="model.checkoutSettings.support3DSecure"
+              v-model="model.support3DSecure"
               :label="$t('Support3DSecure')"
+              :disabled="!model.support3DSecure"
+              @change="disable3DSecure()"
               hide-details
             ></v-switch>
             <v-switch
@@ -819,6 +821,13 @@ export default {
     onCreateTokenInitialDealChanged(){
       if(!this.model.settings.doNotCreateSaveTokenInitialDeal){
         this.model.settings.sharedCreditCardTokens = false;
+      }
+    },
+    async disable3DSecure(){
+      var operationResult = await this.$api.terminals.disable3DS(this.model.terminalID);
+
+      if (!this.$apiSuccess(operationResult)) {
+        this.$toasted.show(operationResult.message || this.$t('Error'), { type: 'error' });
       }
     }
   },

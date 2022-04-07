@@ -1,4 +1,5 @@
 ﻿using Merchants.Shared.Enums;
+using Shared.Business;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Merchants.Business.Entities.Merchant
 {
-    public class MerchantConsent
+    public class MerchantConsent : IEntityBase<Guid>
     {
         public MerchantConsent()
         {
@@ -33,5 +34,7 @@ namespace Merchants.Business.Entities.Merchant
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public Guid GetID() => MerchantConsentID;
     }
 }

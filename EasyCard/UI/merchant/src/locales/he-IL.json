@@ -100,6 +100,7 @@
   "WebhookEvent": "Webhook אירוע",
   "FailureEvent": "אירוע כשל",
   "DeleteCustomerMessageTitle": "?האם אתה בטוח שברצונך למחוק את הלקוח",
+  "Enable3DSecure": "3D Secure פעיל",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -141,6 +142,7 @@
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
   "PleaseSelectCardToken": "אנא בחר כרטיס אסימון",
+  "3DSecure": "3D Secure",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -449,6 +451,9 @@
   "Excel": "Excel",
   "ShowInitialTransaction": "הצג עסקה ראשונית",
   "ShowRefunds": "הצג זיכוי",
+  "Enable": "פעיל",
+  "Disable": "לא פעיל",
+  "AgreeAndProceed": "מסכים ולהמשיך",
 
   "--AUTH--": null,
   "Login": "כניסה",
@@ -536,5 +541,7 @@
   "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק.",
   "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון",
   "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות",
-  "DeleteCustomerMessageText": "במחיקת הלקוח ימחקו גם כל פרטי כרטיס האשראי שלו וכל העסקאות המחזוריות יהיו לא פעילות."
+  "DeleteCustomerMessageText": "במחיקת הלקוח ימחקו גם כל פרטי כרטיס האשראי שלו וכל העסקאות המחזוריות יהיו לא פעילות.",
+  "3DSecureEnabledMessage": "3D Secure פעיל",
+  "3DSecureNotEnabledMessage": "3D Secure לא פעיל"
 }

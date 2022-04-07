@@ -63,4 +63,16 @@ export default class TerminalsApi {
     async getTerminalDevices(terminalID){
         return await this.base.get(this.terminalsUrl + `/terminal-devices/${terminalID}`);
     }
+
+    async get3DSConsentMessage(){
+        return await this.base.get(this.terminalsUrl + '/tds-consent-message');
+    }
+
+    async enable3DS(data){
+        return await this.base.put(this.terminalsUrl + '/tds-enable', data);
+    }
+
+    async disable3DS(terminalID){
+        return await this.base.delete(this.terminalsUrl + `/tds-disable/${terminalID}`);
+    }
 }

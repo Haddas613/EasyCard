@@ -97,6 +97,7 @@
   "TriggerBillingDealsByTerminal": "Trigger Billing Deals by Terminal",
   "TransmitTransactionsByTerminal": "Transmit Transactions by Terminal",
   "DeleteCustomerMessageTitle": "Are you sure you want to delete the customer?",
+  "Enable3DSecure": "Enable 3D Secure",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -140,6 +141,7 @@
   "PleaseSelectCardToken": "Please Select Card Token",
   "Webhooks": "Webhooks",
   "SecurityHeader": "Security Header",
+  "3DSecure": "3D Secure",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -450,6 +452,9 @@
   "Excel": "Excel",
   "ShowInitialTransaction": "Show Initial Transaction",
   "ShowRefunds": "Show Refunds",
+  "Enable": "Enable",
+  "Disable": "Disable",
+  "AgreeAndProceed": "Agree and Proceed",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -537,5 +542,7 @@
   "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
   "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
   "FormInvalidSaveNotAllowed": "Can not save. Please check form values.",
-  "DeleteCustomerMessageText": "By deleting the customer you will also delete all his credit card tokens and deactivate all related billings"
+  "DeleteCustomerMessageText": "By deleting the customer you will also delete all his credit card tokens and deactivate all related billings",
+  "3DSecureEnabledMessage": "3D Secure is enabled and ready to use.",
+  "3DSecureNotEnabledMessage": "3D Secure is not active."
 }
