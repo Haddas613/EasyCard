@@ -54,11 +54,11 @@ using Shared.Helpers.Services;
 using Ecwid.Api;
 using Shared.Helpers.Events;
 using Merchants.Business.Extensions;
+using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Helpers.IO;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Microsoft.EntityFrameworkCore.Storage;
-using Shared.Helpers.IO;
 
 namespace Transactions.Api.Controllers
 {
@@ -493,7 +493,7 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: what if consumer does not created
-            if (model.CreditCardToken == null || model.SaveCreditCard == true)
+            if ((model.CreditCardToken == null || model.SaveCreditCard == true) && model.CreditCardSecureDetails != null)
             {
                 bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
@@ -584,7 +584,7 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            if (model.CreditCardToken == null || model.SaveCreditCard == true)
+            if ((model.CreditCardToken == null || model.SaveCreditCard == true) && model.CreditCardSecureDetails != null)
             {
                 bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
