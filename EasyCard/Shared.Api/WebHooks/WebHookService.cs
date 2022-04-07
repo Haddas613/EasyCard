@@ -41,7 +41,7 @@ namespace Shared.Helpers.WebHooks
                 await webApiClient.PostRaw(webHookData.Url, null, payload, "application/json", () =>
                 {
                     NameValueCollection headers = new NameValueCollection();
-                    if (webHookData.SecurityHeader != null)
+                    if (!string.IsNullOrWhiteSpace(webHookData.SecurityHeader?.Key))
                     {
                         headers.Add(webHookData.SecurityHeader.Key, webHookData.SecurityHeader.Value);
                     }
@@ -59,7 +59,7 @@ namespace Shared.Helpers.WebHooks
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"Failed to execute WebHook to {webHookData.Url}; CorrelationID: {webHookData.CorrelationId}: {ex.Message}", ex);
+                logger.LogWarning(ex, $"Failed to execute WebHook to {webHookData.Url}; CorrelationID: {webHookData.CorrelationId}: {ex.Message}");
 
                 metricsService.TrackEvent(
                     eventName: "ExecuteWebHookFailed",
