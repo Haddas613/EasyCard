@@ -391,6 +391,44 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Merchant");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantConsent", b =>
+                {
+                    b.Property<Guid>("MerchantConsentID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ButtonText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConsentText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("ConsentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TerminalID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MerchantConsentID");
+
+                    b.ToTable("MerchantConsent");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
                 {
                     b.Property<Guid>("MerchantHistoryID")
