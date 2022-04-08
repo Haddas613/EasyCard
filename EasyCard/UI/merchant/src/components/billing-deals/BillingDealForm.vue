@@ -540,7 +540,7 @@ export default {
       this.issueInvoiceDisabled = true;
     }
     else if (!this.model.billingDealID) {
-      this.model.issueInvoice = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
+      this.model.issueInvoice = !!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
     }
     
     if(!this.model.vatRate){
