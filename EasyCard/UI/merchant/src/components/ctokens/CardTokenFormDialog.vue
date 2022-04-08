@@ -77,6 +77,7 @@ export default {
 
       if (!this.$apiSuccess(result)) return;
 
+      data.creditCardTokenID = result.entityReference;
       this.$emit("ok", data);
     },
     reset() {

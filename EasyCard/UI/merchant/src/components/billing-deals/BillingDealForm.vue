@@ -86,6 +86,7 @@
           <ec-dialog-invoker
             v-on:click="handleClick()"
             :clickable="model.dealDetails.consumerID"
+            :key="customerTokens.length"
             class="pt-2"
           >
             <template v-slot:prepend>
@@ -446,7 +447,7 @@ export default {
       await this.getCustomerTokens();
         this.token = this.lodash.find(
           this.customerTokens,
-          t => t.creditCardTokenID == result.entityReference
+          t => t.creditCardTokenID == data.creditCardTokenID
         );
       this.$refs.ctokenDialogRef.reset();
     },
