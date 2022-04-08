@@ -254,6 +254,26 @@
             External system consumer identifier for example RapidOne customer code
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ResponsiblePerson">
+            <summary>
+            External responsible person
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.ExternalUserID">
+            <summary>
+            External user id
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.Branch">
+            <summary>
+            External branch
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.DealDetails.Department">
+            <summary>
+            External department
+            </summary>
+        </member>
         <member name="T:Shared.Integration.Models.InstallmentDetails">
             <summary>
             Installment payments details

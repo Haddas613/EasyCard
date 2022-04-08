@@ -452,6 +452,8 @@
   "ThisIsARefundTransaction": "This is a Refund Transaction",
   "TotalRefundOutOf": "Total Refund (out of)",
   "InvoiceBillingType": "Invoice Billing Type",
+  "ResponsiblePerson": "Responsible Person",
+  "ExternalUserID": "External User ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

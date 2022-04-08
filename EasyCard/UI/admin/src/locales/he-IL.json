@@ -456,6 +456,8 @@
   "ThisIsARefundTransaction": "זוהי עסקת זיכוי",
   "TotalRefundOutOf": "סה\"כ סכום לזיכוי",
   "InvoiceBillingType": "סוג חשבונית חיוב",
+  "ResponsiblePerson": "אדם אחראי",
+  "ExternalUserID": "חיצוני תעודת זהות",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -252,6 +252,11 @@ namespace Transactions.Business.Data
 
                     s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
@@ -446,6 +451,11 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                     s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -552,6 +562,11 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                     s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -664,6 +679,11 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                     s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>

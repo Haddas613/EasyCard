@@ -1333,6 +1333,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("BillingDealID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
@@ -1396,10 +1402,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("BillingDealID");
 
@@ -1544,6 +1568,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
@@ -1607,10 +1637,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("InvoiceID");
 
@@ -1699,6 +1747,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentRequestID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
@@ -1762,10 +1816,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("PaymentRequestID");
 
@@ -1958,6 +2030,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentTransactionID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
@@ -2021,10 +2099,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("PaymentTransactionID");
 

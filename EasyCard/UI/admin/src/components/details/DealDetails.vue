@@ -50,6 +50,24 @@
               <p>{{model.consumerAddress.apartment || '-'}}</p>
             </v-col>
           </template>
+          <template v-if="model.responsiblePerson || model.externalUserID">
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('ResponsiblePerson')}}</p>
+              <p>{{model.responsiblePerson || '-'}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('ExternalUserID')}}</p>
+              <p>{{model.externalUserID || '-'}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Branch')}}</p>
+              <p>{{model.branch || '-'}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Department')}}</p>
+              <p>{{model.department || '-'}}</p>
+            </v-col>
+          </template>
         </template>
       </v-row>
     </v-card-text>
