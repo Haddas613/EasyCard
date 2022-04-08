@@ -138,6 +138,9 @@
   <data name="InvoiceWithPaymentInfo" xml:space="preserve">
     <value>חשבונית מס/קבלה</value>
   </data>
+  <data name="ManualInvoice" xml:space="preserve">
+    <value>חשבונית ידנית</value>
+  </data>
   <data name="PaymentInfo" xml:space="preserve">
     <value>קבלה</value>
   </data>

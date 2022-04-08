@@ -9,7 +9,7 @@ namespace Shared.Integration.Models.Invoicing
         /// <summary>
         /// Without transaction and billing
         /// </summary>
-        Invoice = 0,
+        ManualInvoice = 0,
 
         /// <summary>
         /// Transaction but has no billing

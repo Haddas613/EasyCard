@@ -138,6 +138,9 @@
   <data name="InvoiceWithPaymentInfo" xml:space="preserve">
     <value>Invoice WIth Payment Info</value>
   </data>
+  <data name="ManualInvoice" xml:space="preserve">
+    <value>Manual Invoice</value>
+  </data>
   <data name="PaymentInfo" xml:space="preserve">
     <value>Payment Info</value>
   </data>

@@ -124,6 +124,15 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manual Invoice.
+        /// </summary>
+        public static string ManualInvoice {
+            get {
+                return ResourceManager.GetString("ManualInvoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Info.
         /// </summary>
         public static string PaymentInfo {

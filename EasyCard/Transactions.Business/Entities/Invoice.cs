@@ -197,7 +197,7 @@ namespace Transactions.Business.Entities
             {
                 if (billingDeal == null)
                 {
-                    InvoiceBillingType = InvoiceBillingTypeEnum.Invoice;
+                    InvoiceBillingType = InvoiceBillingTypeEnum.ManualInvoice;
                 }
                 else if (billingDeal.InvoiceOnly)
                 {
