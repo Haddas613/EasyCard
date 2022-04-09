@@ -66,6 +66,9 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("DocumentOrigin")
                         .HasColumnType("smallint");
 
+                    b.Property<DateTime?>("ExpirationEmailSent")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("FailedAttemptsCount")
                         .HasColumnType("int");
 

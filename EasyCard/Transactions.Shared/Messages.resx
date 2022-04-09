@@ -135,6 +135,9 @@
   <data name="AwaitingForTransmission" xml:space="preserve">
     <value>Awaiting for Transmission</value>
   </data>
+  <data name="BillingDealActivated" xml:space="preserve">
+    <value>Billing Deal Activated</value>
+  </data>
   <data name="BillingDealCreated" xml:space="preserve">
     <value>Billing Deal Created</value>
   </data>
@@ -237,6 +240,9 @@
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>Credit Card Token changed</value>
   </data>
+  <data name="CreditCardTokenRemoved" xml:space="preserve">
+    <value>Credit Card Token Removed</value>
+  </data>
   <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
     <value>Feature Credit Card Tokens must be enabled first</value>
   </data>
@@ -257,6 +263,9 @@
   </data>
   <data name="ExpectedValue" xml:space="preserve">
     <value>Expected @value got @input</value>
+  </data>
+  <data name="ExpirationEmailSent" xml:space="preserve">
+    <value>Billing Deal Credit Card Expiration Email Sent</value>
   </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>

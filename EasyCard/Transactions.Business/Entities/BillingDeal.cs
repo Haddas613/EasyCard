@@ -21,7 +21,7 @@ namespace Transactions.Business.Entities
             BillingDealTimestamp = DateTime.UtcNow;
             BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
 
-            //CreditCardDetails = new CreditCardDetails();
+            Active = true;
 
             DealDetails = new DealDetails();
         }
@@ -88,7 +88,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Date-time when next transaction should be generated
         /// </summary>
-        public DateTime? NextScheduledTransaction { get; internal set; }
+        public DateTime? NextScheduledTransaction { get; private set; }
 
         /// <summary>
         /// Reference to last deal
@@ -98,7 +98,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Credit card information (just to display)
         /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        public CreditCardDetails CreditCardDetails { get; private set; }
 
         /// <summary>
         /// Bank account information
@@ -108,7 +108,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Stored credit card details token
         /// </summary>
-        public Guid? CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; private set; }
 
         /// <summary>
         /// Deal information
@@ -118,7 +118,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Billing Schedule
         /// </summary>
-        public BillingSchedule BillingSchedule { get; set; }
+        public BillingSchedule BillingSchedule { get; private set; }
 
         /// <summary>
         /// Invoice details
@@ -165,7 +165,7 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
-        public bool Active { get; set; }
+        public bool Active { get; private set; }
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
@@ -196,7 +196,7 @@ namespace Transactions.Business.Entities
 
         public PaymentTypeEnum PaymentType { get; set; }
 
-        public bool HasError { get; set; }
+        public bool HasError { get; private set; }
 
         public string LastError { get; set; }
 
@@ -210,8 +210,49 @@ namespace Transactions.Business.Entities
 
         public int? FailedAttemptsCount { get; set; }
 
-        public void UpdateNextScheduledDatInitial(DateTime? existingTransactionTimestamp = null)
+        public DateTime? ExpirationEmailSent { get; set; }
+
+        [NotMapped]
+        public bool? TokenNotAvailable
         {
+            get { return !(PaymentType == PaymentTypeEnum.Card && CreditCardToken == null); }
+        }
+
+        public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails)
+        {
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            if (PaymentType != PaymentTypeEnum.Card || InvoiceOnly == true)
+            {
+                throw new ApplicationException($"It is not possible to set token for billing {BillingDealID} because payment type is {PaymentType} and InvoiceOnly flag is {InvoiceOnly}");
+            }
+
+            CreditCardToken = token;
+            ExpirationEmailSent = null;
+            CreditCardDetails = creditCardDetails;
+        }
+
+        public void ResetToken()
+        {
+            CreditCardToken = null;
+        }
+
+        public void Activate()
+        {
+            Active = true;
+        }
+
+        public void Deactivate()
+        {
+            Active = false;
+        }
+
+        public void UpdateNextScheduledDatInitial(BillingSchedule billingSchedule, DateTime? existingTransactionTimestamp = null)
+        {
+            BillingSchedule = billingSchedule;
             BillingSchedule.Validate(existingTransactionTimestamp);
 
             NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();

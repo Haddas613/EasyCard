@@ -154,33 +154,6 @@ namespace Transactions.Business.Services
             }
         }
 
-        public async Task<SharedApi.Models.OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate)
-        {
-            foreach (var billingDeal in billingDealsToIncactivate)
-            {
-                billingDeal.Active = false;
-
-                var historyRecord = new BillingDealHistory
-                {
-                    BillingDealID = billingDeal.BillingDealID,
-                    OperationCode = BillingDealOperationCodesEnum.Deactivated,
-                    OperationDescription = null,
-                    OperationMessage = Messages.BillingDealDeactivated
-                };
-
-                historyRecord.ApplyAuditInfo(httpContextAccessor);
-
-                context.BillingDealHistories.Add(historyRecord);
-            }
-
-            await context.SaveChangesAsync();
-
-            return new SharedApi.Models.OperationResponse
-            {
-                 Status = SharedApi.Models.Enums.StatusEnum.Success
-            };
-        }
-
         public Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken)
         {
             var obj = new

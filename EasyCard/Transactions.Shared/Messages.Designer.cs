@@ -115,6 +115,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Activated.
+        /// </summary>
+        public static string BillingDealActivated {
+            get {
+                return ResourceManager.GetString("BillingDealActivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Created.
         /// </summary>
         public static string BillingDealCreated {
@@ -421,6 +430,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token Removed.
+        /// </summary>
+        public static string CreditCardTokenRemoved {
+            get {
+                return ResourceManager.GetString("CreditCardTokenRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
         /// </summary>
         public static string CreditCardTokensFeatureMustBeEnabled {
@@ -480,6 +498,15 @@ namespace Transactions.Shared {
         public static string ExpectedValue {
             get {
                 return ResourceManager.GetString("ExpectedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Credit Card Expiration Email Sent.
+        /// </summary>
+        public static string ExpirationEmailSent {
+            get {
+                return ResourceManager.GetString("ExpirationEmailSent", resourceCulture);
             }
         }
         

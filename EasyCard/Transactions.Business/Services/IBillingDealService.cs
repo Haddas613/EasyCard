@@ -22,7 +22,5 @@ namespace Transactions.Business.Services
         Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken);
 
         Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
-
-        Task<OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate);
     }
 }

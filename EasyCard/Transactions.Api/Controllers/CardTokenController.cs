@@ -61,6 +61,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly IBillingDealService billingDealService;
 
         public CardTokenController(
             ITransactionsService transactionsService,
@@ -73,7 +74,8 @@ namespace Transactions.Api.Controllers
             IProcessorResolver processorResolver,
             IConsumersService consumersService,
             IHttpContextAccessorWrapper httpContextAccessor,
-            ISystemSettingsService systemSettingsService)
+            ISystemSettingsService systemSettingsService,
+            IBillingDealService billingDealService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -86,6 +88,7 @@ namespace Transactions.Api.Controllers
             this.processorResolver = processorResolver;
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
+            this.billingDealService = billingDealService;
         }
 
         [HttpGet]
@@ -211,10 +214,29 @@ namespace Transactions.Api.Controllers
                 logger.LogError(e, $"{nameof(DeleteToken)}: Error while deleting token from keyvalue storage. Message: {e.Message}");
             }
 
-            token.Active = false;
-            await creditCardTokenService.UpdateEntity(token);
+            using (var dbTransaction = creditCardTokenService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    token.Active = false;
+                    await creditCardTokenService.UpdateEntity(token, dbTransaction);
 
-            // TODO: add history message to related billing
+                    // TODO: move to event handler
+                    foreach (var billing in await billingDealService.GetBillingDeals().Filter(new Models.Billing.BillingDealsFilter { CreditCardTokenID = token.CreditCardTokenID }).ToListAsync())
+                    {
+                        billing.ResetToken();
+
+                        await billingDealService.UpdateEntityWithHistory(billing, Messages.CreditCardTokenRemoved, BillingDealOperationCodesEnum.CreditCardTokenRemoved, dbTransaction);
+                    }
+
+                    dbTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(DeleteToken)}: Error while deleting token and updating related data: {ex.Message}");
+                    dbTransaction.Rollback();
+                }
+            }
 
             return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PoalimOnlineBusiness;
 using Shared.Api;
+using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -85,30 +86,21 @@ namespace Transactions.Api.Controllers
         {
             var result = new OperationResponse { Message = "OK", Status = SharedApi.Models.Enums.StatusEnum.Success };
 
-            var consumer = EnsureExists(consumersService.GetConsumers().FirstOrDefaultAsync(c => c.ConsumerID == consumerID));
-
             var activeBillings = await billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID && b.Active).Select(b => b.BillingDealID).ToListAsync();
 
-            foreach (var billingId in activeBillings)
-            {
-                //Since it's active only, switch is guaranteed to mark them as inactive
-                var actionResult = await billingController.SwitchBillingDeal(billingId);
-                var response = actionResult.Result as ObjectResult;
-                var responseData = response.Value as OperationResponse;
+            //Since it's active only, switch is guaranteed to mark them as inactive
+            var responseData = (await billingController.DisableBillingDeals(new Models.Billing.DisableBillingDealsRequest { BillingDealsID = activeBillings })).GetOperationResponse();
 
-                if (responseData.Status != SharedApi.Models.Enums.StatusEnum.Success)
-                {
-                    result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
-                }
+            if (responseData.Status != SharedApi.Models.Enums.StatusEnum.Success)
+            {
+                result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
             }
 
             var tokens = await creditCardTokenService.GetTokens().Where(t => t.ConsumerID == consumerID).Select(t => t.CreditCardTokenID).ToListAsync();
 
             foreach (var token in tokens)
             {
-                var actionResult = await cardTokenController.DeleteToken(token.ToString());
-                var response = actionResult.Result as ObjectResult;
-                var responseData = response.Value as OperationResponse;
+                var responseDataToken = (await cardTokenController.DeleteToken(token.ToString())).GetOperationResponse();
 
                 if (responseData.Status != SharedApi.Models.Enums.StatusEnum.Success)
                 {

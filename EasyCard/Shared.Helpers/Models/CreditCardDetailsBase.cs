@@ -10,6 +10,8 @@ namespace Shared.Helpers
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardDetailsBase
     {
+        // TODO: make immutable
+
         [Required]
         [StringLength(19, MinimumLength = 9)]
         [RegularExpression("^[0-9]*$")]

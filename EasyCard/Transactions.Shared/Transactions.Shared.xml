@@ -640,6 +640,11 @@
               Looks up a localized string similar to Awaiting for Transmission.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealActivated">
+            <summary>
+              Looks up a localized string similar to Billing Deal Activated.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.BillingDealCreated">
             <summary>
               Looks up a localized string similar to Billing Deal Created.
@@ -810,6 +815,11 @@
               Looks up a localized string similar to Credit Card Token changed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokenRemoved">
+            <summary>
+              Looks up a localized string similar to Credit Card Token Removed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CreditCardTokensFeatureMustBeEnabled">
             <summary>
               Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
@@ -843,6 +853,11 @@
         <member name="P:Transactions.Shared.Messages.ExpectedValue">
             <summary>
               Looks up a localized string similar to Expected @value got @input.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ExpirationEmailSent">
+            <summary>
+              Looks up a localized string similar to Billing Deal Credit Card Expiration Email Sent.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.FailedToCancelByAggregator">

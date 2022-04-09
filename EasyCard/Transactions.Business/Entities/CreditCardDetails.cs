@@ -12,6 +12,8 @@ namespace Transactions.Business.Entities
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardDetails : CreditCardDetailsBase
     {
+        // TODO: make immutable
+
         public string CardBin { get; set; }
 
         public override CardExpiration CardExpiration

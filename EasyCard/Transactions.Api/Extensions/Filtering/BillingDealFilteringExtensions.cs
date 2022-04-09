@@ -7,6 +7,7 @@ using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
 using SharedHelpers = Shared.Helpers;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions.Filtering
 {
@@ -96,8 +97,7 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (filter.CreditCardExpired)
             {
-                var lastDayOfMonth = today.LastDayOfMonth();
-                return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate < lastDayOfMonth);
+                return src.FilterCardExpired(today);
             }
 
             src = HandleDateFiltering(src, filter);
@@ -162,32 +162,50 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 case BillingsQuickStatusFilterEnum.Completed:
                     return src.Where(t => t.NextScheduledTransaction == null);
+
                 case BillingsQuickStatusFilterEnum.Failed:
                     return src.Where(t => t.Active && t.HasError);
+
                 case BillingsQuickStatusFilterEnum.Inactive:
                     return src.Where(t => t.Active == false);
+
                 case BillingsQuickStatusFilterEnum.Paused:
                     return src.Where(t =>
                         t.Active && (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
+
                 case BillingsQuickStatusFilterEnum.ManualTrigger:
                     return src.Where(t =>
                         t.InProgress == Shared.Enums.BillingProcessingStatusEnum.Pending && t.Active &&
                         t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
+
                 case BillingsQuickStatusFilterEnum.TriggeredTomorrow:
                     return src.Where(t =>
                         t.Active &&
                         t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date == today.AddDays(1))
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
+
                 case BillingsQuickStatusFilterEnum.CardExpired:
-                    var lastDayOfMonth = today.LastDayOfMonth();
-                    return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate < lastDayOfMonth);
+                    return src.FilterCardExpired(today);
+
                 case BillingsQuickStatusFilterEnum.ExpiredNextMonth:
                     var lastDayOfNextMonth = today.AddMonths(1).LastDayOfMonth();
                     return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate == lastDayOfNextMonth);
+
                 default:
                     return src.Where(t => t.Active);
             }
+        }
+
+        public static IQueryable<BillingDeal> FilterCardExpired(this IQueryable<BillingDeal> src, DateTime? today = null)
+        {
+            if (today == null)
+            {
+                today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+            }
+
+            var lastDayOfMonth = today.Value.LastDayOfMonth();
+            return src.Where(t => t.Active && t.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card && t.InvoiceOnly == false && (t.CreditCardDetails.ExpirationDate < lastDayOfMonth || t.CreditCardToken == null));
         }
 
         private static IQueryable<BillingDeal> HandleDateFiltering(IQueryable<BillingDeal> src, BillingDealsFilter filter)
