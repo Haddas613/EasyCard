@@ -166,5 +166,9 @@ namespace Transactions.Api.Models.Billing
         public int? FailedAttemptsCount { get; set; }
 
         public DateTime? ExpirationEmailSent { get; set; }
+
+        public DateTime? TokenUpdated { get; set; }
+
+        public DateTime? TokenCreated { get; set; }
     }
 }

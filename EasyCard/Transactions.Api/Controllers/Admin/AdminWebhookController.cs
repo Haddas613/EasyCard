@@ -86,15 +86,8 @@ namespace Transactions.Api.Controllers
         {
             var result = new OperationResponse { Message = "OK", Status = SharedApi.Models.Enums.StatusEnum.Success };
 
-            var activeBillings = await billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID && b.Active).Select(b => b.BillingDealID).ToListAsync();
-
-            //Since it's active only, switch is guaranteed to mark them as inactive
-            var responseData = (await billingController.DisableBillingDeals(new Models.Billing.DisableBillingDealsRequest { BillingDealsID = activeBillings })).GetOperationResponse();
-
-            if (responseData.Status != SharedApi.Models.Enums.StatusEnum.Success)
-            {
-                result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
-            }
+            // TODO: move this to event handler
+            var inactivatedBillins = await billingController.ActivateOrDeactivateBillingDeals(false, billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID && b.Active));
 
             var tokens = await creditCardTokenService.GetTokens().Where(t => t.ConsumerID == consumerID).Select(t => t.CreditCardTokenID).ToListAsync();
 
@@ -102,7 +95,7 @@ namespace Transactions.Api.Controllers
             {
                 var responseDataToken = (await cardTokenController.DeleteToken(token.ToString())).GetOperationResponse();
 
-                if (responseData.Status != SharedApi.Models.Enums.StatusEnum.Success)
+                if (responseDataToken.Status != SharedApi.Models.Enums.StatusEnum.Success)
                 {
                     result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
                 }

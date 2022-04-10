@@ -499,6 +499,9 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(p => p.TokenCreated).HasColumnName("TokenCreated").HasColumnType("date").IsRequired(false);
+                builder.Property(p => p.TokenUpdated).HasColumnName("TokenUpdated").HasColumnType("date").IsRequired(false);
             }
         }
 

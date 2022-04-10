@@ -142,6 +142,14 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("TokenCreated")
+                        .HasColumnType("date")
+                        .HasColumnName("TokenCreated");
+
+                    b.Property<DateTime?>("TokenUpdated")
+                        .HasColumnType("date")
+                        .HasColumnName("TokenUpdated");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
 

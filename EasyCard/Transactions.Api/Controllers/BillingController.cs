@@ -131,7 +131,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
-            var query = billingDealService.GetBillingDeals().Filter(filter);
+            var query = billingDealService.GetBillingDeals().AsNoTracking().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
@@ -184,7 +184,7 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> GetBillingDealsExcel([FromQuery] BillingDealsFilter filter)
         {
-            var query = billingDealService.GetBillingDeals().Filter(filter);
+            var query = billingDealService.GetBillingDeals().AsNoTracking().Filter(filter);
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -247,7 +247,7 @@ namespace Transactions.Api.Controllers
         {
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var dbBillingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+                var dbBillingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
 
                 var billingDeal = mapper.Map<BillingDealResponse>(dbBillingDeal);
 
@@ -313,7 +313,7 @@ namespace Transactions.Api.Controllers
         [Route("{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -346,19 +346,6 @@ namespace Transactions.Api.Controllers
 
             billingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, billingDeal, null);
 
-            if (model.PaymentType == PaymentTypeEnum.Card)
-            {
-                await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
-            }
-            else if (model.PaymentType == PaymentTypeEnum.Bank)
-            {
-                ValidateNotEmpty(model.BankDetails, nameof(model.BankDetails));
-            }
-            else
-            {
-                return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
-            }
-
             billingDeal.UpdateNextScheduledDatInitial(model.BillingSchedule, billingDeal.HasError ? null : billingDeal.CurrentTransactionTimestamp);
 
             if (billingDeal.InvoiceDetails == null && billingDeal.IssueInvoice)
@@ -368,7 +355,21 @@ namespace Transactions.Api.Controllers
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 
-            await billingDealService.UpdateEntity(billingDeal);
+            if (model.PaymentType == PaymentTypeEnum.Card)
+            {
+                await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
+            }
+            else if (model.PaymentType == PaymentTypeEnum.Bank)
+            {
+                ValidateNotEmpty(model.BankDetails, nameof(model.BankDetails));
+
+                // TODO: make bank details process similar as for card
+                await billingDealService.UpdateEntity(billingDeal);
+            }
+            else
+            {
+                return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
+            }
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
@@ -419,7 +420,7 @@ namespace Transactions.Api.Controllers
         [Route("/api/invoiceonlybilling/{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceOnlyUpdateRequest model)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -465,7 +466,7 @@ namespace Transactions.Api.Controllers
         [Route("{BillingDealID}/change-token/{tokenID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealToken([FromRoute] Guid billingDealID, [FromRoute] Guid tokenID)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -483,11 +484,9 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{billingDeal.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
-            await UpdateBillingToken(tokenID, billingDeal, terminal, consumer, false);
-
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 
-            await billingDealService.UpdateEntity(billingDeal);
+            await UpdateBillingToken(tokenID, billingDeal, terminal, consumer, false);
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
@@ -498,7 +497,7 @@ namespace Transactions.Api.Controllers
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -540,25 +539,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
             }
 
-            int successfulCount = 0;
-
-            foreach (var billingDealID in request.BillingDealsID)
-            {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
-
-                if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
-                {
-                    continue;
-                }
-
-                billingDeal.Deactivate();
-
-                billingDeal.ApplyAuditInfo(httpContextAccessor);
-
-                await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealDeactivated, BillingDealOperationCodesEnum.Deactivated);
-
-                successfulCount++;
-            }
+            int successfulCount = await ActivateOrDeactivateBillingDeals(false, billingDealService.GetBillingDeals().Where(d => request.BillingDealsID.Contains(d.BillingDealID)));
 
             return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereDisabled, successfulCount), StatusEnum.Success));
         }
@@ -577,25 +558,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
             }
 
-            int successfulCount = 0;
-
-            foreach (var billingDealID in request.BillingDealsID)
-            {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
-
-                if (billingDeal.Active || billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
-                {
-                    continue;
-                }
-
-                billingDeal.Activate();
-
-                billingDeal.ApplyAuditInfo(httpContextAccessor);
-
-                await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealActivated, BillingDealOperationCodesEnum.Activated);
-
-                successfulCount++;
-            }
+            int successfulCount = await ActivateOrDeactivateBillingDeals(true, billingDealService.GetBillingDeals().Where(d => request.BillingDealsID.Contains(d.BillingDealID)));
 
             return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereActivated, successfulCount), StatusEnum.Success));
         }
@@ -715,8 +678,7 @@ namespace Transactions.Api.Controllers
         [Authorize(Policy = Policy.AnyAdmin)]
         public async Task<ActionResult<SummariesResponse<BillingDealHistoryResponse>>> GetBillingDealHistory([FromRoute] Guid billingDealID)
         {
-            EnsureExists(await billingDealService.GetBillingDeals()
-                .Where(m => m.BillingDealID == billingDealID).Select(d => d.BillingDealID).FirstOrDefaultAsync());
+            EnsureExists(await billingDealService.GetBillingDeals().Where(m => m.BillingDealID == billingDealID).AnyAsync(), "BillingDeal");
 
             var query = billingDealService.GetBillingDealHistory(billingDealID);
 
@@ -748,7 +710,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billingDealID);
+            var billingDeal = await billingDealService.GetBillingDeal(billingDealID);
 
             if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending)
             {
@@ -772,7 +734,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billingDealID);
+            var billingDeal = await billingDealService.GetBillingDeal(billingDealID);
 
             if (billingDeal.NextScheduledTransaction == null)
             {
@@ -789,6 +751,47 @@ namespace Transactions.Api.Controllers
             await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealUnpaused, BillingDealOperationCodesEnum.Paused);
 
             return Ok(new OperationResponse { Status = StatusEnum.Success, Message = Messages.BillingDealUnpaused, EntityUID = billingDealID });
+        }
+
+        internal async Task<int> ActivateOrDeactivateBillingDeals(bool shouldBeActive, IQueryable<BillingDeal> billingDeals)
+        {
+            int successfulCount = 0;
+
+            foreach (var billingDeal in await billingDeals.ToListAsync())
+            {
+                if (shouldBeActive)
+                {
+                    if (billingDeal.Active || billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
+                    {
+                        continue;
+                    }
+
+                    billingDeal.Activate();
+
+                    billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+                    await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealActivated, BillingDealOperationCodesEnum.Activated);
+
+                    successfulCount++;
+                }
+                else
+                {
+                    if (billingDeal.InProgress != BillingProcessingStatusEnum.Pending || billingDeal.NextScheduledTransaction == null)
+                    {
+                        continue;
+                    }
+
+                    billingDeal.Deactivate();
+
+                    billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+                    await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealDeactivated, BillingDealOperationCodesEnum.Deactivated);
+
+                    successfulCount++;
+                }
+            }
+
+            return successfulCount;
         }
 
         private async Task UpdateBillingToken(Guid? creditCardToken, BillingDeal billingDeal, Terminal terminal, Merchants.Business.Entities.Billing.Consumer consumer, bool newBilling)
@@ -817,11 +820,11 @@ namespace Transactions.Api.Controllers
                 var creditCardDetails = new Business.Entities.CreditCardDetails();
                 mapper.Map(token, creditCardDetails);
 
-                billingDeal.UpdateCreditCardToken(token.CreditCardTokenID, creditCardDetails);
+                billingDeal.UpdateCreditCardToken(token.CreditCardTokenID, creditCardDetails, token.Created);
 
                 if (!newBilling)
                 {
-                    await billingDealService.AddCardTokenChangedHistory(billingDeal, token.CreditCardTokenID);
+                    await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.CreditCardTokenChanged, BillingDealOperationCodesEnum.CreditCardTokenChanged);
                 }
             }
         }

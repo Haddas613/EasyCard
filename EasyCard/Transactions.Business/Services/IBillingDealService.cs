@@ -15,7 +15,7 @@ namespace Transactions.Business.Services
     {
         IQueryable<BillingDeal> GetBillingDeals();
 
-        IQueryable<BillingDeal> GetBillingDealsForUpdate();
+        Task<BillingDeal> GetBillingDeal(Guid billingDeal);
 
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
 

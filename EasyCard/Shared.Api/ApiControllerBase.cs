@@ -40,6 +40,15 @@ namespace Shared.Api
         }
 
         [NonAction]
+        protected void EnsureExists(bool src, string entityName = null, string entityReference = null)
+        {
+            if (!src)
+            {
+                throw new EntityNotFoundException(ApiMessages.EntityNotFound, entityName, entityReference);
+            }
+        }
+
+        [NonAction]
         protected T EnsureConcurrency<T, TModel>(T src, TModel model)
             where T : IConcurrencyCheck
             where TModel : IConcurrencyCheck

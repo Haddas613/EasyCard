@@ -746,8 +746,7 @@ namespace Transactions.Api.Controllers
                         if (transaction.BillingDealID != null)
                         {
                             var billingDeal = await billingDealService
-                                .GetBillingDeals()
-                                .FirstOrDefaultAsync(b => b.BillingDealID == transaction.BillingDealID);
+                                .GetBillingDeal(transaction.BillingDealID.GetValueOrDefault());
 
                             invoiceRequest.UpdateInvoiceType(transaction, billingDeal);
                         }

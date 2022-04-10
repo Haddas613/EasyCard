@@ -212,13 +212,17 @@ namespace Transactions.Business.Entities
 
         public DateTime? ExpirationEmailSent { get; set; }
 
+        public DateTime? TokenUpdated { get; set; }
+
+        public DateTime? TokenCreated { get; set; }
+
         [NotMapped]
         public bool? TokenNotAvailable
         {
             get { return !(PaymentType == PaymentTypeEnum.Card && CreditCardToken == null); }
         }
 
-        public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails)
+        public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails, DateTime? tokenCreated)
         {
             if (token == null)
             {
@@ -233,6 +237,8 @@ namespace Transactions.Business.Entities
             CreditCardToken = token;
             ExpirationEmailSent = null;
             CreditCardDetails = creditCardDetails;
+            TokenCreated = tokenCreated;
+            TokenUpdated = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
         }
 
         public void ResetToken()

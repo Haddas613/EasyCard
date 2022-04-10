@@ -888,7 +888,7 @@ namespace Transactions.Api.Controllers
 
             foreach (var billingId in request.BillingDealsID)
             {
-                var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId);
+                var billingDeal = await billingDealService.GetBillingDeal(billingId);
                 if (billingDeal == null)
                 {
                     logger.LogError($"Billing deal not found: {billingId}");
