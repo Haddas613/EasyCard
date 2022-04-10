@@ -14,6 +14,8 @@ namespace Transactions.Shared.Enums
         CreditCardTokenChanged = 5,
         CreditCardTokenRemoved = 6,
         Activated = 7,
-        ExpirationEmailSent = 8
+        ExpirationEmailSent = 8,
+        TransactionCreated = 9,
+        TriggerTransactionFailed = 10
     }
 }

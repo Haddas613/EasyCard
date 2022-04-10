@@ -154,19 +154,6 @@ namespace Transactions.Business.Services
             }
         }
 
-        public Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken)
-        {
-            var obj = new
-            {
-                before = billingDeal.CreditCardToken?.ToString(),
-                after = newToken?.ToString(),
-            };
-
-            var changesStr = string.Concat("[", string.Join(",", JObject.FromObject(obj).ToString()), "]");
-
-            return AddHistory(billingDeal.BillingDealID, changesStr, Messages.CreditCardTokenChanged, BillingDealOperationCodesEnum.CreditCardTokenChanged);
-        }
-
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)
         {
             var historyRecord = new BillingDealHistory

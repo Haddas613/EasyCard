@@ -1190,6 +1190,11 @@
               Looks up a localized string similar to Transmitted By Processor.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.TriggerTransactionFailed">
+            <summary>
+              Looks up a localized string similar to Billing transaction triggering failed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.UserAmountRequiredValidationMessage">
             <summary>
               Looks up a localized string similar to User Amount must be set to true when making transaction without amount.

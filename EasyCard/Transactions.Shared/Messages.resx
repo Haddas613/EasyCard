@@ -465,6 +465,9 @@
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
   </data>
+  <data name="TriggerTransactionFailed" xml:space="preserve">
+    <value>Billing transaction triggering failed</value>
+  </data>
   <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
     <value>User Amount must be set to true when making transaction without amount</value>
   </data>

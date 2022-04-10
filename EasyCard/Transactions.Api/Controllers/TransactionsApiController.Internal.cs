@@ -277,7 +277,7 @@ namespace Transactions.Api.Controllers
             {
                 billingDeal.UpdateNextScheduledDatAfterSuccess(transaction.PaymentTransactionID, transaction.TransactionTimestamp, transaction.TransactionDate);
 
-                await billingDealService.UpdateEntity(billingDeal);
+                await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.TransactionCreated, BillingDealOperationCodesEnum.TransactionCreated);
             }
 
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);

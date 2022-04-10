@@ -1105,6 +1105,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing transaction triggering failed.
+        /// </summary>
+        public static string TriggerTransactionFailed {
+            get {
+                return ResourceManager.GetString("TriggerTransactionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Amount must be set to true when making transaction without amount.
         /// </summary>
         public static string UserAmountRequiredValidationMessage {

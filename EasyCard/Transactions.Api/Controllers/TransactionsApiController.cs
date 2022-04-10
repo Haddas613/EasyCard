@@ -918,74 +918,8 @@ namespace Transactions.Api.Controllers
 
                 try
                 {
-                    OperationResponse operationResult = new OperationResponse { Status = StatusEnum.Success };
-
-                    if (!billingDeal.Active)
-                    {
-                        logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
-                        operationResult.Message = $"Billing deal is closed";
-                        operationResult.Status = StatusEnum.Error;
-                    }
-
-                    var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-                    var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
-                        (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
-
-                    if (!actualDeal)
-                    {
-                        logger.LogError($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
-                        operationResult.Message = $"Billing deal is not actual: NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}";
-                        operationResult.Status = StatusEnum.Error;
-                    }
-
-                    CreditCardTokenKeyVault token = null;
-
-                    if (billingDeal.PaymentType == PaymentTypeEnum.Card && billingDeal.InvoiceOnly == false)
-                    {
-                        var tokenData = await creditCardTokenService.GetTokens().Where(d => d.CreditCardTokenID == billingDeal.CreditCardToken).FirstOrDefaultAsync();
-                        if (tokenData == null)
-                        {
-                            logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
-                            operationResult.Status = StatusEnum.Error;
-                            operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
-                        }
-                        else
-                        {
-                            if (tokenData.CardExpiration.Expired == true)
-                            {
-                                logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
-                                operationResult.Status = StatusEnum.Error;
-                                operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
-                            }
-                            else
-                            {
-                                token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
-                                if (token == null)
-                                {
-                                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
-                                    operationResult.Status = StatusEnum.Error;
-                                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
-                                }
-                                else
-                                {
-                                    if (token.CardExpiration.Expired == true)
-                                    {
-                                        logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
-                                        operationResult.Status = StatusEnum.Error;
-                                        operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    var terminal = await GetTerminal(billingDeal.TerminalID);
-
-                    if (operationResult.Status == StatusEnum.Success)
-                    {
-                        operationResult = await NextBillingDeal(terminal, billingDeal, token);
-                    }
+                    Terminal terminal = await GetTerminal(billingDeal.TerminalID);
+                    OperationResponse operationResult = await CreateTransactionsFromBillingDealInternal(billingDeal, terminal);
 
                     if (operationResult.Status == StatusEnum.Success)
                     {
@@ -995,7 +929,7 @@ namespace Transactions.Api.Controllers
                     {
                         billingDeal.UpdateNextScheduledDatAfterError(operationResult.Message, GetCorrelationID(), terminal.BillingSettings.FailedTransactionsCountBeforeInactivate, terminal.BillingSettings.NumberOfDaysToRetryTransaction);
 
-                        await billingDealService.UpdateEntity(billingDeal);
+                        await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.TriggerTransactionFailed, BillingDealOperationCodesEnum.TriggerTransactionFailed);
 
                         response.FailedCount++;
                     }
@@ -1046,6 +980,75 @@ namespace Transactions.Api.Controllers
             _ = SendTransactionSuccessEmails(transaction, terminal);
 
             return Ok(response);
+        }
+
+        private async Task<OperationResponse> CreateTransactionsFromBillingDealInternal(BillingDeal billingDeal, Terminal terminal)
+        {
+            var operationResult = new OperationResponse { Status = StatusEnum.Success };
+            if (!billingDeal.Active)
+            {
+                logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                operationResult.Message = $"Billing deal is closed";
+                operationResult.Status = StatusEnum.Error;
+            }
+
+            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+            var actualDeal = (billingDeal.NextScheduledTransaction != null && billingDeal.NextScheduledTransaction.Value.Date <= today) &&
+                (billingDeal.PausedFrom == null || billingDeal.PausedFrom > today) && (billingDeal.PausedTo == null || billingDeal.PausedTo < today);
+
+            if (!actualDeal)
+            {
+                logger.LogError($"Billing deal is not actual: {billingDeal.BillingDealID}, NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}");
+                operationResult.Message = $"Billing deal is not actual: NextScheduledTransaction: {billingDeal.NextScheduledTransaction}, PausedFrom: {billingDeal.PausedFrom}, PausedTo: {billingDeal.PausedTo}";
+                operationResult.Status = StatusEnum.Error;
+            }
+
+            CreditCardTokenKeyVault token = null;
+
+            if (billingDeal.PaymentType == PaymentTypeEnum.Card && billingDeal.InvoiceOnly == false)
+            {
+                // NOTE: this is admin-scoped method
+                var tokenData = await creditCardTokenService.GetTokens().Where(d => d.CreditCardTokenID == billingDeal.CreditCardToken).FirstOrDefaultAsync();
+                if (tokenData == null)
+                {
+                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
+                    operationResult.Status = StatusEnum.Error;
+                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+
+                    return operationResult;
+                }
+
+                if (tokenData.CardExpiration.Expired == true)
+                {
+                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
+                    operationResult.Status = StatusEnum.Error;
+                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+
+                    return operationResult;
+                }
+
+                token = await keyValueStorage.Get(billingDeal.CreditCardToken.ToString());
+                if (token == null)
+                {
+                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} does not exist. Billing deal: {billingDeal.BillingDealID}");
+                    operationResult.Status = StatusEnum.Error;
+                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} does not exist";
+
+                    return operationResult;
+                }
+
+                if (token.CardExpiration.Expired == true)
+                {
+                    logger.LogError($"Credit card token {billingDeal.CreditCardToken} expired. Billing deal: {billingDeal.BillingDealID}");
+                    operationResult.Status = StatusEnum.Error;
+                    operationResult.Message = $"Credit card token {billingDeal.CreditCardToken} expired";
+
+                    return operationResult;
+                }
+            }
+
+            return await NextBillingDeal(terminal, billingDeal, token);
         }
     }
 }
