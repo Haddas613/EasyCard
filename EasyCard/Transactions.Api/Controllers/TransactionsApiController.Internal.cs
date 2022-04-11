@@ -288,6 +288,17 @@ namespace Transactions.Api.Controllers
             }
 
             endResponse.InnerResponse = await invoicingController.ProcessInvoice(terminal, transaction, model.InvoiceDetails);
+            if (transaction.IssueInvoice)
+            {
+                if (transaction.InvoiceID != null)
+                {
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.InvoiceGenerated);
+                }
+                else
+                {
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.InvoiceGenerationFailed);
+                }
+            }
 
             // TODO: move to event handler
             _ = ProcessEcwid(transaction, endResponse);
