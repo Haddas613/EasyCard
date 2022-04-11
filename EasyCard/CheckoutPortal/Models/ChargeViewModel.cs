@@ -180,5 +180,7 @@ namespace CheckoutPortal.Models
 
         [StringLength(50)]
         public string ThreeDSServerTransID { get; set; }
+
+        public string Origin { get; set; }
     }
 }

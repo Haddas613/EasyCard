@@ -464,7 +464,7 @@ namespace CheckoutPortal.Controllers
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
 
-                mdel.Origin = checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
+                mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
             }
@@ -961,6 +961,11 @@ namespace CheckoutPortal.Controllers
                         Created = d.Created,
                     });
                 }
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Origin))
+            {
+                model.Origin = checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
