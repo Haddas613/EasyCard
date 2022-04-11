@@ -69,4 +69,8 @@ export default class InvoicingApi {
     async getExcel(params) {
         return await this.base.get(this.invoicingUrl + '/$excel', params);
     }
+
+    async resendSingle(data){
+        return await this.base.post(this.invoicingUrl + '/resend-single', data);
+    }
 }
