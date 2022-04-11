@@ -379,5 +379,19 @@ namespace Transactions.Business.Entities
         public string ThreeDSServerTransID { get; set; }
 
         public string Origin { get; set; }
+
+        [NotMapped]
+        public bool AllowRefund
+        {
+            get
+            {
+                return SpecialTransactionType != SpecialTransactionTypeEnum.Refund
+                    && (Status == TransactionStatusEnum.Completed || Status == TransactionStatusEnum.Chargeback)
+                    && TotalRefund.GetValueOrDefault(0) < TransactionAmount
+                    && DocumentOrigin != DocumentOriginEnum.Device
+                    && BillingDealID == null
+                    && CreditCardToken != null;
+            }
+        }
     }
 }

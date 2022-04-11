@@ -307,15 +307,7 @@ namespace Transactions.Api.Models.Transactions
 
         private bool allowTransmissionCancellation;
 
-        public bool AllowRefund
-        {
-            get
-            {
-                return SpecialTransactionType != SpecialTransactionTypeEnum.Refund
-                    && (Status == TransactionStatusEnum.Completed || Status == TransactionStatusEnum.Chargeback)
-                    && TotalRefund.GetValueOrDefault(0) < TransactionAmount;
-            }
-        }
+        public bool AllowRefund { get; set; }
 
         [JsonIgnore]
         public bool InvoiceCreationPossible

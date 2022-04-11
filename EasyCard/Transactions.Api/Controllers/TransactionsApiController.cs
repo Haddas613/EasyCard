@@ -799,16 +799,9 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            // TODO: move to entity "allowRefund()"
-            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Chargeback)
+            if (!transaction.AllowRefund)
             {
-                return new OperationResponse($"It is possible to make refund only for completed or partially refunded transactions", StatusEnum.Error);
-            }
-
-            // TODO: move to entity "allowRefund()"
-            if (transaction.Amount < request.RefundAmount + transaction.TotalRefund)
-            {
-                return new OperationResponse($"It is possible to make refund only for amount less than or equal to {transaction.Amount}", StatusEnum.Error);
+                return new OperationResponse($"It is not possible to make chargeback for transaction {transaction.PaymentTransactionID}", StatusEnum.Error);
             }
 
             if (transaction.DocumentOrigin == DocumentOriginEnum.Bit)
