@@ -399,6 +399,16 @@
               Looks up a localized string similar to Cancelled by merchant.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Chargeback">
+            <summary>
+              Looks up a localized string similar to Chargeback.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.ChargebackFailed">
+            <summary>
+              Looks up a localized string similar to Chargeback Failed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.CommitedByAggregator">
             <summary>
               Looks up a localized string similar to Commited by aggregator.
@@ -447,16 +457,6 @@
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Initial">
             <summary>
               Looks up a localized string similar to Initial.
-            </summary>
-        </member>
-        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Refund">
-            <summary>
-              Looks up a localized string similar to Refund.
-            </summary>
-        </member>
-        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RefundFailed">
-            <summary>
-              Looks up a localized string similar to Refund Failed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
@@ -549,12 +549,12 @@
             Shva transmision is done
             </summary>
         </member>
-        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Refund">
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Chargeback">
             <summary>
             Refund is done for this transaction
             </summary>
         </member>
-        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RefundFailed">
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.ChargebackFailed">
             <summary>
             Refund attempt failed
             </summary>

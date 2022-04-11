@@ -312,7 +312,7 @@ namespace Transactions.Api.Models.Transactions
             get
             {
                 return SpecialTransactionType != SpecialTransactionTypeEnum.Refund
-                    && (Status == TransactionStatusEnum.Completed || Status == TransactionStatusEnum.Refund)
+                    && (Status == TransactionStatusEnum.Completed || Status == TransactionStatusEnum.Chargeback)
                     && TotalRefund.GetValueOrDefault(0) < TransactionAmount;
             }
         }

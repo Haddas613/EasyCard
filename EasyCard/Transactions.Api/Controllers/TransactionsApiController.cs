@@ -800,7 +800,7 @@ namespace Transactions.Api.Controllers
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
             // TODO: move to entity "allowRefund()"
-            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Chargeback)
             {
                 return new OperationResponse($"It is possible to make refund only for completed or partially refunded transactions", StatusEnum.Error);
             }
@@ -840,13 +840,13 @@ namespace Transactions.Api.Controllers
                         {
                             transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
 
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated, dbTransaction: dbTransaction);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Chargeback, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated, dbTransaction: dbTransaction);
                         },
                         compensationTransactionProcess: async (IDbContextTransaction dbTransaction) =>
                         {
                             transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() - request.RefundAmount;
 
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RefundFailed, transactionOperationCode: TransactionOperationCodesEnum.RefundFailed, dbTransaction: dbTransaction);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ChargebackFailed, transactionOperationCode: TransactionOperationCodesEnum.RefundFailed, dbTransaction: dbTransaction);
                         }
                         );
                 }

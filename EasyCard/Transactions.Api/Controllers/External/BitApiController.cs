@@ -334,7 +334,7 @@ namespace Transactions.Api.Controllers.External
                 return new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error);
             }
 
-            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Chargeback)
             {
                 return new OperationResponse($"It is possible to make refund only for completed or partially refunded Bit transactions", StatusEnum.Error);
             }
@@ -394,7 +394,7 @@ namespace Transactions.Api.Controllers.External
 
                     transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Chargeback, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
                 }
                 catch (Exception ex)
                 {

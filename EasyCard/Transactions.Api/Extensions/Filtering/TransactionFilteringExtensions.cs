@@ -315,7 +315,7 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 0 && (int)t.Status < 40),
                 QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Completed),
-                QuickStatusFilterTypeEnum.Refund => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Refund),
+                QuickStatusFilterTypeEnum.Refund => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Chargeback),
                 QuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CancelledByMerchant),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
                 QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission),

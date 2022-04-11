@@ -360,7 +360,7 @@ namespace Transactions.Business.Entities
                 return QuickStatusFilterTypeEnum.Completed;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.Refund)
+            if (@enum == Shared.Enums.TransactionStatusEnum.Chargeback)
             {
                 return QuickStatusFilterTypeEnum.Refund;
             }
