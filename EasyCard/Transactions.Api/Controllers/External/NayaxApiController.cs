@@ -364,7 +364,11 @@ namespace Transactions.Api.Controllers.External
                 else
                 {
                     //If aggregator is not required transaction is eligible for transmission
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+
+                    if (model.Success)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+                    }
                 }
 
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, null, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber, updateReceiptNumber.ToString());
