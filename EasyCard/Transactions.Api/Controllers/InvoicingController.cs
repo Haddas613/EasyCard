@@ -13,6 +13,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
@@ -409,6 +410,23 @@ namespace Transactions.Api.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("resend-single")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> Resend(ResendSingleInvoiceRequest request)
+        {
+            var invoice = EnsureExists(await invoiceService.GetInvoice(request.InvoiceID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(invoice.TerminalID));
+
+            if (request.Email != invoice.DealDetails.ConsumerEmail)
+            {
+                invoice.DealDetails.ConsumerEmail = request.Email;
+                await invoiceService.UpdateEntity(invoice);
+            }
+
+            return await Resend(new ResendInvoiceRequest { TerminalID = terminal.TerminalID, InvoicesIDs = new List<Guid> { request.InvoiceID } });
         }
 
         /// <summary>

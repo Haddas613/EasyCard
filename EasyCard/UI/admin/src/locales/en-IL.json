@@ -469,6 +469,7 @@
   "AddToken": "Add Token",
   "RemoveItem": "Remove Item",
   "ResendInvoices": "Resend Invoices",
+  "ResendInvoice": "Resend Invoice",
   "Resend": "Resend",
   "ManualMode": "Manual mode",
   "OnlyActual": "Only actual",
