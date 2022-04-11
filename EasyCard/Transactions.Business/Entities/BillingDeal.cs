@@ -219,7 +219,7 @@ namespace Transactions.Business.Entities
         [NotMapped]
         public bool? TokenNotAvailable
         {
-            get { return !(PaymentType == PaymentTypeEnum.Card && CreditCardToken == null); }
+            get { return PaymentType == PaymentTypeEnum.Card && CreditCardToken == null; }
         }
 
         public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails, DateTime? tokenCreated)
