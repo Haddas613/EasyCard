@@ -479,7 +479,7 @@ namespace Transactions.Api
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IPaymentRequestsService, PaymentRequestsService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
-            services.AddAutoMapper((cfg) => { cfg.ShouldMapProperty = pi => pi.PropertyType.IsPublic; }, typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();
 

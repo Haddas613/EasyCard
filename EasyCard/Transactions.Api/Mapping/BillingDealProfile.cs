@@ -23,7 +23,9 @@ namespace Transactions.Api.Mapping
 
         private void RegisterBillingDealMappings()
         {
-            CreateMap<BillingDealRequest, BillingDeal>();
+            CreateMap<BillingDealRequest, BillingDeal>()
+                .ForMember(d => d.CreditCardToken, o => o.Ignore());
+
             CreateMap<BillingDealInvoiceOnlyRequest, BillingDeal>()
                 .ForMember(d => d.InvoiceOnly, o => o.MapFrom(d => true))
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
