@@ -172,9 +172,16 @@ export default {
   },
   methods: {
     async switchBillingDeal() {
-      let opResult = await this.$api.billingDeals.switchBillingDeal(
-        this.$route.params.id
-      );
+      let opResult = {};
+      if(this.model.active) {
+        opResult = await this.$api.billingDeals.disableBillingDeals(
+          [this.$route.params.id]
+        );
+      } else {
+        opResult = await this.$api.billingDeals.activateBillingDeals(
+          [this.$route.params.id]
+        );
+      }
       if (opResult.status === "success") {
         this.model.active = !this.model.active;
         await this.initThreeDotMenu();
