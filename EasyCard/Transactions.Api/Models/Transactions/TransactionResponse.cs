@@ -309,6 +309,8 @@ namespace Transactions.Api.Models.Transactions
 
         public bool AllowRefund { get; set; }
 
+        private bool allowRefund;
+
         [JsonIgnore]
         public bool InvoiceCreationPossible
         {

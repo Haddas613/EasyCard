@@ -11,6 +11,7 @@ namespace Merchants.Shared.Enums
         SmsNotification = 3,
         Checkout = 4,
         Api = 5,
-        CreditCardTokens = 6
+        CreditCardTokens = 6,
+        Chargebacks = 7,
     }
 }

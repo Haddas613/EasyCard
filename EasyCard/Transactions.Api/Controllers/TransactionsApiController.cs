@@ -257,6 +257,11 @@ namespace Transactions.Api.Controllers
                         || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
                 }
 
+                if (transaction.AllowRefund)
+                {
+                    transaction.AllowRefund = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks);
+                }
+
                 return Ok(transaction);
             }
             else
@@ -283,6 +288,11 @@ namespace Transactions.Api.Controllers
                     transaction.AllowInvoiceCreation =
                         terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
                         || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
+                }
+
+                if (transaction.AllowRefund)
+                {
+                    transaction.AllowRefund = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks);
                 }
 
                 return Ok(transaction);
@@ -802,6 +812,11 @@ namespace Transactions.Api.Controllers
             if (!transaction.AllowRefund)
             {
                 return new OperationResponse($"It is not possible to make chargeback for transaction {transaction.PaymentTransactionID}", StatusEnum.Error);
+            }
+
+            if (!terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks))
+            {
+                return new OperationResponse($"Feature Chargebacks in not enabled for terminal {terminal.TerminalID}", StatusEnum.Error);
             }
 
             if (transaction.DocumentOrigin == DocumentOriginEnum.Bit)
