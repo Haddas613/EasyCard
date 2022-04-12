@@ -25,6 +25,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
+using Shared.Helpers.Events;
 using Shared.Helpers.IO;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Queue;
@@ -75,6 +76,7 @@ namespace Transactions.Api.Controllers
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly BasicServices.Services.IExcelService excelService;
+        private readonly IEventsService events;
 
         public BillingController(
             ITransactionsService transactionsService,
@@ -93,7 +95,8 @@ namespace Transactions.Api.Controllers
             IEmailSender emailSender,
             ICryptoServiceCompact cryptoServiceCompact,
             IPaymentIntentService paymentIntentService,
-            BasicServices.Services.IExcelService excelService)
+            BasicServices.Services.IExcelService excelService,
+            IEventsService events)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -114,6 +117,7 @@ namespace Transactions.Api.Controllers
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.paymentIntentService = paymentIntentService;
             this.excelService = excelService;
+            this.events = events;
         }
 
         [HttpGet]
@@ -304,7 +308,11 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.UpdateNextScheduledDatInitial(model.BillingSchedule);
 
+            newBillingDeal.WebHooksConfiguration = terminal.WebHooksConfiguration;
+
             await billingDealService.CreateEntity(newBillingDeal);
+
+            _ = events.RaiseBillingEvent(newBillingDeal, CustomEvent.BillingDealCreated);
 
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
@@ -370,6 +378,10 @@ namespace Transactions.Api.Controllers
             {
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
+
+            billingDeal.WebHooksConfiguration = terminal.WebHooksConfiguration;
+
+            _ = events.RaiseBillingEvent(billingDeal, CustomEvent.BillingDealUpdated);
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
