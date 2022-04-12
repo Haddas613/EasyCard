@@ -20,7 +20,7 @@ namespace TestWebStore.Models
 
         public async Task<IEnumerable<WebHookData>> GetData()
         {
-            var segment = table.QueryAsync<WebHookData>("", 100);
+            var segment = table.QueryAsync<WebHookData>("", 1000);
 
             var e = segment.AsPages().GetAsyncEnumerator();
 

@@ -54,4 +54,8 @@ export default class InvoicingApi {
     async createForTransaction(paymentTransactionID){
         return await this.base.post(this.invoicingUrl + `/transaction/${paymentTransactionID}`);
     }
+
+    async resendSingle(data){
+        return await this.base.post(this.invoicingUrl + '/resend-single', data);
+    }
 }

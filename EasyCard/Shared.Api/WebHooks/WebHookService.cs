@@ -61,6 +61,8 @@ namespace Shared.Helpers.WebHooks
             {
                 logger.LogWarning(ex, $"Failed to execute WebHook to {webHookData.Url}; CorrelationID: {webHookData.CorrelationId}: {ex.Message}");
 
+                dimensions.Add("ErrorMessage", ex.Message);
+
                 metricsService.TrackEvent(
                     eventName: "ExecuteWebHookFailed",
                     properties: dimensions,

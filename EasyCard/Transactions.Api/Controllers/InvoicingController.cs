@@ -13,9 +13,11 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
+using Shared.Helpers.Events;
 using Shared.Helpers.IO;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
@@ -60,6 +62,7 @@ namespace Transactions.Api.Controllers
         private readonly ITransactionsService transactionsService;
         private readonly BasicServices.Services.IExcelService excelService;
         private readonly IBillingDealService billingDealService;
+        private readonly IEventsService events;
 
         public InvoicingController(
                     IInvoiceService invoiceService,
@@ -75,7 +78,8 @@ namespace Transactions.Api.Controllers
                     IEmailSender emailSender,
                     ITransactionsService transactionsService,
                     BasicServices.Services.IExcelService excelService,
-                    IBillingDealService billingDealService)
+                    IBillingDealService billingDealService,
+                    IEventsService events)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -91,6 +95,7 @@ namespace Transactions.Api.Controllers
             this.invoicingResolver = invoicingResolver;
             this.transactionsService = transactionsService;
             this.excelService = excelService;
+            this.events = events;
         }
 
         [HttpGet]
@@ -411,6 +416,23 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route("resend-single")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> Resend(ResendSingleInvoiceRequest request)
+        {
+            var invoice = EnsureExists(await invoiceService.GetInvoice(request.InvoiceID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(invoice.TerminalID));
+
+            if (request.Email != invoice.DealDetails.ConsumerEmail)
+            {
+                invoice.DealDetails.ConsumerEmail = request.Email;
+                await invoiceService.UpdateEntity(invoice);
+            }
+
+            return await Resend(new ResendInvoiceRequest { TerminalID = terminal.TerminalID, InvoicesIDs = new List<Guid> { request.InvoiceID } });
+        }
+
         /// <summary>
         /// Generate invocie in EasyInvoice system
         /// </summary>
@@ -466,70 +488,19 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+                var res = await GenerateInvoiceInternal(dbInvoice, terminal);
+                var opResp = res.GetOperationResponse();
 
-                if (terminalInvoicing == null)
+                if (opResp.Status == StatusEnum.Success)
                 {
-                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
-                    await invoiceService.UpdateEntity(dbInvoice);
-
-                    throw new BusinessException(Messages.InvoicingNotDefined);
+                    _ = events.RaiseInvoiceEvent(dbInvoice, CustomEvent.InvoiceGenerated);
+                }
+                else
+                {
+                    _ = events.RaiseInvoiceEvent(dbInvoice, CustomEvent.InvoiceGenerationFailed, opResp.Message);
                 }
 
-                var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
-                var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
-                dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
-
-                try
-                {
-                    var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
-                    invoicingRequest.InvoiceingSettings = invoicingSettings;
-
-                    var invoicingResponse = await invoicing.CreateDocument(invoicingRequest);
-                    mapper.Map(invoicingResponse, dbInvoice);
-
-                    if (!invoicingResponse.Success)
-                    {
-                        logger.LogError($"Invoice generation failed. InvoiceID: {dbInvoice.InvoiceID}, response: {invoicingResponse.ErrorMessage}");
-
-                        // TODO: UpdateEntityWithStatus
-                        dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
-                        await invoiceService.UpdateEntity(dbInvoice);
-
-                        return BadRequest(new OperationResponse($"{Messages.InvoiceGenerationFailed}: {invoicingResponse.ErrorMessage}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier, invoicingResponse.Errors));
-                    }
-                    else
-                    {
-                        dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.Sent;
-
-                        await invoiceService.UpdateEntity(dbInvoice);
-
-                        if (dbInvoice.InvoiceDetails.SendCCTo?.Any() == true)
-                        {
-                            foreach (var cc in dbInvoice.InvoiceDetails.SendCCTo)
-                            {
-                                await SendInvoiceEmail(cc, dbInvoice, terminal);
-                            }
-                        }
-
-                        //Send to customer as well
-                        if (dbInvoice.DealDetails.ConsumerEmail != null)
-                        {
-                            await SendInvoiceEmail(dbInvoice.DealDetails.ConsumerEmail, dbInvoice, terminal);
-                        }
-
-                        return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, dbInvoice.InvoiceID);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Invoice generation failed. InvoiceID: {dbInvoice.InvoiceID}");
-
-                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
-                    await invoiceService.UpdateEntity(dbInvoice);
-
-                    return BadRequest(new OperationResponse($"{Messages.InvoiceGenerationFailed}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
-                }
+                return res;
             }
         }
 
@@ -909,6 +880,76 @@ namespace Transactions.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetInvoice), new { billingDealID = model.BillingDealID, invoiceID }, endResponse);
+        }
+
+        private async Task<ActionResult<OperationResponse>> GenerateInvoiceInternal(Invoice dbInvoice, Terminal terminal)
+        {
+            try
+            {
+                dbInvoice.WebHooksConfiguration = terminal.WebHooksConfiguration;
+
+                var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+                if (terminalInvoicing == null)
+                {
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    throw new BusinessException(Messages.InvoicingNotDefined);
+                }
+
+                var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+                var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
+
+                var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
+                invoicingRequest.InvoiceingSettings = invoicingSettings;
+
+                var invoicingResponse = await invoicing.CreateDocument(invoicingRequest);
+                mapper.Map(invoicingResponse, dbInvoice);
+
+                if (!invoicingResponse.Success)
+                {
+                    logger.LogError($"Invoice generation failed. InvoiceID: {dbInvoice.InvoiceID}, response: {invoicingResponse.ErrorMessage}");
+
+                    // TODO: UpdateEntityWithStatus
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    return BadRequest(new OperationResponse($"{Messages.InvoiceGenerationFailed}: {invoicingResponse.ErrorMessage}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier, invoicingResponse.Errors));
+                }
+                else
+                {
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.Sent;
+
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    if (dbInvoice.InvoiceDetails.SendCCTo?.Any() == true)
+                    {
+                        foreach (var cc in dbInvoice.InvoiceDetails.SendCCTo)
+                        {
+                            await SendInvoiceEmail(cc, dbInvoice, terminal);
+                        }
+                    }
+
+                    //Send to customer as well
+                    if (dbInvoice.DealDetails.ConsumerEmail != null)
+                    {
+                        await SendInvoiceEmail(dbInvoice.DealDetails.ConsumerEmail, dbInvoice, terminal);
+                    }
+
+                    return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, dbInvoice.InvoiceID);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Invoice generation failed. InvoiceID: {dbInvoice.InvoiceID}");
+
+                dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                await invoiceService.UpdateEntity(dbInvoice);
+
+                return BadRequest(new OperationResponse($"{Messages.InvoiceGenerationFailed}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+            }
         }
     }
 }

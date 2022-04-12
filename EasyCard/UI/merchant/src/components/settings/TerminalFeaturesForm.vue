@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   components: {
     EcList: () => import("../ec/EcList")

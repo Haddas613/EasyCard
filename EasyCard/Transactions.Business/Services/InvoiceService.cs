@@ -60,28 +60,11 @@ namespace Transactions.Business.Services
             }
         }
 
-        public IQueryable<Invoice> GetInvoices()
-        {
-            if (user.IsAdmin())
-            {
-                return context.Invoices.AsNoTracking();
-            }
-            else if (user.IsTerminal())
-            {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.Invoices.AsNoTracking().Where(t => t.TerminalID == terminalID);
-            }
-            else
-            {
-                var response = context.Invoices.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID();
-                if (terminals?.Count() > 0)
-                {
-                    response = response.Where(d => terminals.Contains(d.TerminalID));
-                }
+        public IQueryable<Invoice> GetInvoices() => GetInvoicesInternal().AsNoTracking();
 
-                return response;
-            }
+        public Task<Invoice> GetInvoice(Guid invoiceID)
+        {
+            return GetInvoicesInternal().FirstOrDefaultAsync(i => i.InvoiceID == invoiceID);
         }
 
         public async Task<IEnumerable<Guid>> StartSending(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
@@ -130,6 +113,30 @@ namespace Transactions.Business.Services
 
             context.InvoiceHistories.Add(historyRecord);
             await context.SaveChangesAsync();
+        }
+
+        private IQueryable<Invoice> GetInvoicesInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.Invoices;
+            }
+            else if (user.IsTerminal())
+            {
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return context.Invoices.Where(t => t.TerminalID == terminalID);
+            }
+            else
+            {
+                var response = context.Invoices.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return response;
+            }
         }
     }
 }

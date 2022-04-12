@@ -91,7 +91,7 @@ export default {
       showDetailsDialog: false,
       requestLog: null,
       preMode: false,
-      integrations: ["shva", "clearing-house", "upay", "nayax", "rapidone", "easy-invoice"],
+      integrations: ["shva", "clearing-house", "upay", "nayax", "rapidone", "easy-invoice", "bit"],
       currentIntegration: null,
     };
   },

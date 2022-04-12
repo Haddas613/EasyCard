@@ -4,6 +4,7 @@ using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
@@ -17,7 +18,7 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity
+    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity, IWebHookEntity
     {
         public Invoice()
         {
@@ -229,5 +230,8 @@ namespace Transactions.Business.Entities
                 InvoiceBillingType = InvoiceBillingTypeEnum.TransactionInvoice;
             }
         }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }
