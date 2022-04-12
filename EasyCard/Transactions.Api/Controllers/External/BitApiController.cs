@@ -618,7 +618,7 @@ namespace Transactions.Api.Controllers.External
                     logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
                 }
 
-                return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, transaction.PaymentTransactionID);
+                return new OperationResponse(Shared.Messages.PaymentWasCompletedSuccessfully, StatusEnum.Success, transaction.PaymentTransactionID);
             }
             else
             {
@@ -628,7 +628,14 @@ namespace Transactions.Api.Controllers.External
                 }
                 else
                 {
-                    return BadRequest(new OperationResponse($"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}", StatusEnum.Error, transaction.PaymentTransactionID));
+                    string message = bitTransaction?.RequestStatusCode switch
+                    {
+                        "3" => Shared.Messages.PaymentWasNotCompleted,
+                        "11" => Shared.Messages.PaymentWasCompletedSuccessfully,
+                        _ => $"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}"
+                    };
+
+                    return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
             }
         }

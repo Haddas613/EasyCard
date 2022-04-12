@@ -198,3 +198,6 @@ input[type="checkbox"].input-validation-error {
     z-index: 1001; /**ensure it's above .overlay*/
 }
 
+.text-bit {
+    color: #2d5082;
+}

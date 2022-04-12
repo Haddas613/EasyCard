@@ -453,4 +453,10 @@
   <data name="BitPaymentFailed" xml:space="preserve">
     <value>נכשל bit -תשלום ב</value>
   </data>
+  <data name="PaymentWasCompletedSuccessfully" xml:space="preserve">
+    <value>תשלום בוצע בהצלחה</value>
+  </data>
+  <data name="PaymentWasNotCompleted" xml:space="preserve">
+    <value>תשלום לא בוצע</value>
+  </data>
 </root>

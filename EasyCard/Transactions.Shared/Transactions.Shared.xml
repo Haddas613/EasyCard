@@ -1025,6 +1025,16 @@
               Looks up a localized string similar to Payment type can not be changed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.PaymentWasCompletedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Payment completed successfully.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentWasNotCompleted">
+            <summary>
+              Looks up a localized string similar to Payment was not completed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.PleaseCheckValues">
             <summary>
               Looks up a localized string similar to Please check specified values.
