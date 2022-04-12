@@ -443,9 +443,7 @@ export default {
     }),
   },
   async mounted() {
-    await this.applyFilters({
-      terminalID: this.terminalStore.terminalID,
-    });
+    await this.applyFilters();
     await this.initThreeDotMenu();
   },
   watch: {
