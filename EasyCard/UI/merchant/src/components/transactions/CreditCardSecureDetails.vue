@@ -33,7 +33,7 @@
       <v-form class="ec-form" ref="form" lazy-validation>
         <v-row no-gutters>
           <v-col 
-            :cols="(allowBit && $integrationAvailable(terminalStore, $appConstants.terminal.integrations.virtualWalletProcessor)) ? 6 : 12"
+            cols="12"
             class="d-flex justify-center"
             v-if="includeDevice && availableDevices.length">
             <v-switch
@@ -43,16 +43,6 @@
               :label="$t('UsePinPad')"
               :disabled="!availableDevices.length || model.useBit"
               @change="model.useBit = false">
-            </v-switch>
-          </v-col>
-          <v-col cols="6" class="d-flex justify-center" v-if="allowBit && $integrationAvailable(terminalStore, $appConstants.terminal.integrations.virtualWalletProcessor)">
-            <v-switch
-              dense
-              hide-details
-              v-model="model.useBit"
-              :label="$t('PayWithBit')"
-              :disabled="true || !availableDevices.length || model.pinPad"
-              @change="model.pinPad = false">
             </v-switch>
           </v-col>
         </v-row>
