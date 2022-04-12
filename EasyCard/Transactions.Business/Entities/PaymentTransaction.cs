@@ -390,7 +390,7 @@ namespace Transactions.Business.Entities
                     && TotalRefund.GetValueOrDefault(0) < TransactionAmount
                     && DocumentOrigin != DocumentOriginEnum.Device
                     && BillingDealID == null
-                    && CreditCardToken != null;
+                    && (DocumentOrigin == DocumentOriginEnum.Bit || CreditCardToken != null);
             }
         }
     }
