@@ -154,7 +154,7 @@ namespace TestWebStore.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Webhooks()
         {
-            var res = await webHookStorage.GetData();
+            var res = (await webHookStorage.GetData()).OrderByDescending(d => d.EventTimestamp);
 
             return View(res);
         }

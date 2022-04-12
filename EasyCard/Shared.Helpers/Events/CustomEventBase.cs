@@ -26,6 +26,7 @@ namespace Shared.Helpers.Events
 
         public bool IsFailureEvent { get; set; }
 
+        // TODO: extend by errors array
         public string ErrorMesage { get; set; }
     }
 }

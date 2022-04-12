@@ -733,6 +733,7 @@ namespace Transactions.Api
                 var metrics = serviceProvider.GetRequiredService<IMetricsService>();
                 var webHooksService = serviceProvider.GetRequiredService<SharedHelpers.WebHooks.IWebHookService>();
 
+                // TODO: invoice events, billing events metrics
                 var p1 = new Events.TransactionEventMetricsProcessor(metrics);
 
                 var p2 = new SharedHelpers.WebHooks.WebHooksEventProcessor(webHooksService);
