@@ -796,31 +796,30 @@ namespace Transactions.Api.Controllers
 
         private async Task UpdateBillingToken(Guid? creditCardToken, BillingDeal billingDeal, Terminal terminal, Merchants.Business.Entities.Billing.Consumer consumer, bool newBilling)
         {
-            if (!creditCardToken.HasValue)
-            {
-                ValidateNotEmpty(creditCardToken, "CreditCardToken");
-            }
-
             CreditCardTokenDetails token = null;
-            if (terminal.Settings.SharedCreditCardTokens == true)
+
+            if (creditCardToken.HasValue)
             {
-                token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == creditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
-            }
-            else
-            {
-                token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == creditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == creditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                }
+                else
+                {
+                    token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == creditCardToken.Value && d.ConsumerID == consumer.ConsumerID && d.TerminalID == terminal.TerminalID), "CreditCardToken");
+                }
+
+                //Ensure that token is not removed from key vault
+                EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
             }
 
-            //Ensure that token is not removed from key vault
-            EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
-
-            if (billingDeal.CreditCardToken != token.CreditCardTokenID)
+            if (billingDeal.CreditCardToken != token?.CreditCardTokenID)
             {
-                billingDeal.InitialTransactionID = token.InitialTransactionID;
+                billingDeal.InitialTransactionID = token?.InitialTransactionID;
                 var creditCardDetails = new Business.Entities.CreditCardDetails();
                 mapper.Map(token, creditCardDetails);
 
-                billingDeal.UpdateCreditCardToken(token.CreditCardTokenID, creditCardDetails, token.Created);
+                billingDeal.UpdateCreditCardToken(token?.CreditCardTokenID, creditCardDetails, token?.Created);
 
                 if (!newBilling)
                 {
