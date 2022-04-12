@@ -78,7 +78,8 @@ namespace Transactions.Api.Controllers
                     IEmailSender emailSender,
                     ITransactionsService transactionsService,
                     BasicServices.Services.IExcelService excelService,
-                    IBillingDealService billingDealService)
+                    IBillingDealService billingDealService,
+                    IEventsService events)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -94,6 +95,7 @@ namespace Transactions.Api.Controllers
             this.invoicingResolver = invoicingResolver;
             this.transactionsService = transactionsService;
             this.excelService = excelService;
+            this.events = events;
         }
 
         [HttpGet]
@@ -882,22 +884,24 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> GenerateInvoiceInternal(Invoice dbInvoice, Terminal terminal)
         {
-            var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
-
-            if (terminalInvoicing == null)
-            {
-                dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
-                await invoiceService.UpdateEntity(dbInvoice);
-
-                throw new BusinessException(Messages.InvoicingNotDefined);
-            }
-
-            var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
-            var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
-            dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
-
             try
             {
+                dbInvoice.WebHooksConfiguration = terminal.WebHooksConfiguration;
+
+                var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+                if (terminalInvoicing == null)
+                {
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    throw new BusinessException(Messages.InvoicingNotDefined);
+                }
+
+                var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+                var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
+
                 var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
                 invoicingRequest.InvoiceingSettings = invoicingSettings;
 

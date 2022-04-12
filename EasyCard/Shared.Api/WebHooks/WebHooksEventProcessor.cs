@@ -27,7 +27,7 @@ namespace Shared.Helpers.WebHooks
 
             var whcfg = whentity.WebHooksConfiguration;
 
-            var webhook = whcfg.WebHooks?.FirstOrDefault(d => d.IsFailureEvent == evnt.IsFailureEvent && d.EventName == evnt.EventName && d.EntityType == evnt.EntityType);
+            var webhook = whcfg.WebHooks?.FirstOrDefault(d => d.EventName == evnt.EventName && d.EntityType == evnt.EntityType);
 
             if (webhook != null)
             {
