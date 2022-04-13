@@ -158,5 +158,19 @@ namespace TestWebStore.Controllers
 
             return View(res);
         }
+
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Iframe(IframeData iframeData)
+        {
+            return View(iframeData);
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Iframe()
+        {
+            return View();
+        }
     }
 }
