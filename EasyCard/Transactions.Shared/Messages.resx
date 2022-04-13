@@ -366,6 +366,12 @@
   <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
     <value>Payment type can not be changed</value>
   </data>
+  <data name="PaymentWasCompletedSuccessfully" xml:space="preserve">
+    <value>Payment completed successfully</value>
+  </data>
+  <data name="PaymentWasNotCompleted" xml:space="preserve">
+    <value>Payment was not completed</value>
+  </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
   </data>

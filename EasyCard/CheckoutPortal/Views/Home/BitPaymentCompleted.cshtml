@@ -1,13 +1,36 @@
-﻿@{
+﻿@model CheckoutPortal.Models.Bit.BitPaymentCompletedViewModel
+@inject CommonLocalizationService localizer
+
+@{
     ViewData["Title"] = "Bit Payment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-12">
-        <h3 class="text-center">Bit payment completed</h3>
+<div class="bit-result-container">
+    <div class="row">
+        <div class="col-md-12 text-center pb-4">
+            <img id="bitlogo" height="50px" src="~/img/bit_logo.svg" />
+        </div>
+        <div class="col-md-12">
+            <h3 class="text-center text-bit">
+                @Model.Message
+            </h3>
+        </div>
     </div>
-</div>
+
+    @if (Model.ReturnURL != null)
+    {
+        <center class="pt-4">
+            @*<a class="btn btn-outline-primary" href="@Model.ReturnURL">@localizer.Get("GoBackToPayment")</a>*@
+            <a href="@Model.ReturnURL">
+                <img class="cursor-pointer" height="60px" src="~/img/button_desktop.svg" role="button"/>
+            </a>
+        </center>
+    }
+</div> 
+
+
+
 
 @section Scripts{
 <script nws-csp-add-nonce="true">

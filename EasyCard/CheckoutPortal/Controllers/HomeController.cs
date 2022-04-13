@@ -25,6 +25,7 @@ using Transactions.Api.Client;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.External.Bit;
 using CheckoutPortal.Services;
+using CheckoutPortal.Models.Bit;
 
 namespace CheckoutPortal.Controllers
 {
@@ -701,14 +702,22 @@ namespace CheckoutPortal.Controllers
             if (captureResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 logger.LogError($"{nameof(BitPaymentCompleted)}.{nameof(transactionsApiClient.CaptureBitTransaction)}: {captureResult.Message}");
-                return PaymentError(captureResult.Message, checkoutConfig?.PaymentRequest.PaymentRequestUrl);
+
+                return View(new BitPaymentCompletedViewModel
+                {
+                    Message = captureResult.Message,
+                    ReturnURL = checkoutConfig?.PaymentRequest.PaymentRequestUrl,
+                });
             }
 
             var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
 
             if (string.IsNullOrWhiteSpace(redirectUrl))
             {
-                return RedirectToAction("PaymentResult");
+                return View(new BitPaymentCompletedViewModel
+                {
+                    Message = captureResult.Message,
+                });
             }
             else
             {
@@ -726,7 +735,10 @@ namespace CheckoutPortal.Controllers
                     }
                     catch { }
 
-                    return RedirectToAction("PaymentResult");
+                    return View(new BitPaymentCompletedViewModel
+                    {
+                        Message = captureResult.Message,
+                    });
                 }
                 else
                 {
