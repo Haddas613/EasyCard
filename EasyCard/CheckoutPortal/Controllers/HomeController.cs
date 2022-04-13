@@ -26,6 +26,8 @@ using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.External.Bit;
 using CheckoutPortal.Services;
 using CheckoutPortal.Models.Bit;
+using System.Threading;
+using System.Globalization;
 
 namespace CheckoutPortal.Controllers
 {
@@ -91,9 +93,12 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            ChangeLocalizationInternal(checkoutConfig.Settings?.Language);
+            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
+            {
+                return RedirectToAction(null, new { r });
+            }
 
-            return await IndexViewResult(checkoutConfig);
+            return IndexViewResult(checkoutConfig);
         }
 
         /// <summary>
@@ -131,16 +136,17 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            ChangeLocalizationInternal(checkoutConfig.Settings?.Language);
+            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
+            {
+                return RedirectToAction(null, new { r });
+            }
 
-            return await IndexViewResult(checkoutConfig);
+            return IndexViewResult(checkoutConfig);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery] CardRequest request)
         {
-            ChangeLocalizationInternal(request?.Language);
-
             if (request == null || !Request.QueryString.HasValue || (Request.Query.Keys.Count == 1 && Request.Query.ContainsKey("culture")))
             {
                 return View("PaymentImpossible");
@@ -153,7 +159,12 @@ namespace CheckoutPortal.Controllers
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
             }
 
-            return await IndexViewResult(checkoutConfig, request);
+            if (ChangeLocalizationInternal(request?.Language))
+            {
+                return RedirectToAction(null, new { request });
+            }
+
+            return IndexViewResult(checkoutConfig, request);
         }
 
 
@@ -229,14 +240,14 @@ namespace CheckoutPortal.Controllers
             if (request.PayWithBit && request.TransactionType != TransactionTypeEnum.RegularDeal)
             {
                 ModelState.AddModelError(nameof(request.PayWithBit), "Only regular deals are allowed for Bit payments");
-                return await IndexViewResult(checkoutConfig, request);
+                return IndexViewResult(checkoutConfig, request);
             }
 
             if (checkoutConfig?.Settings.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.CreditCardTokens) == false
                 && (request.SaveCreditCard))
             {
                 ModelState.AddModelError(nameof(request.SaveCreditCard), "Saving credit cards is not allowed for this terminal");
-                return await IndexViewResult(checkoutConfig, request);
+                return IndexViewResult(checkoutConfig, request);
             }
 
             if (request.PayWithBit)
@@ -267,7 +278,7 @@ namespace CheckoutPortal.Controllers
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
 
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
-                    return await IndexViewResult(checkoutConfig, request);
+                    return IndexViewResult(checkoutConfig, request);
                 }
 
                 if (request.PinPad)
@@ -324,7 +335,7 @@ namespace CheckoutPortal.Controllers
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
 
-                return await IndexViewResult(checkoutConfig, request);
+                return IndexViewResult(checkoutConfig, request);
             }
 
             if (request.TransactionType == TransactionTypeEnum.Installments || request.TransactionType == TransactionTypeEnum.Credit)
@@ -376,7 +387,7 @@ namespace CheckoutPortal.Controllers
 
             if (!ModelState.IsValid)
             {
-                return await IndexViewResult(checkoutConfig, request);
+                return IndexViewResult(checkoutConfig, request);
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
@@ -510,7 +521,7 @@ namespace CheckoutPortal.Controllers
                     }
                 }
 
-                return await IndexViewResult(checkoutConfig, request);
+                return IndexViewResult(checkoutConfig, request);
             }
 
             if (request.PayWithBit)
@@ -911,28 +922,41 @@ namespace CheckoutPortal.Controllers
             return Ok();
         }
 
-        private void ChangeLocalizationInternal(string culture)
+        /// <summary>
+        /// Changes current localization to specified one if required.
+        /// Redirect is required for cookies to work.
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns>Boolean, whether redirect (to apply locale) is required</returns>
+        private bool ChangeLocalizationInternal(string culture)
         {
             if (string.IsNullOrWhiteSpace(culture))
             {
-                return;
+                return false;
             }
 
             var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
+            var currentCulture = HttpContext.Features.Get<IRequestCultureFeature>();
 
-            if (allowed)
+            if (!allowed || currentCulture.RequestCulture.Culture.Name == culture)
             {
-                var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
-                HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c, new CookieOptions
-                {
-                    Expires = DateTimeOffset.UtcNow.AddYears(1),
-                    SameSite = SameSiteMode.None,
-                    Secure = true
-                });
+                return false;
             }
+
+            var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
+
+            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+
+            //TODO: ECNG-1472 (return true instead)
+            return false;
         }
 
-        private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)
+        private IActionResult IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)
         {
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -982,10 +1006,10 @@ namespace CheckoutPortal.Controllers
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
-            return await Task.FromResult(View(nameof(Index), model));
+            return View(nameof(Index), model);
         }
 
-        private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, ChargeViewModel model)
+        private IActionResult IndexViewResult(CheckoutData checkoutConfig, ChargeViewModel model)
         {
             mapper.Map(checkoutConfig.PaymentRequest, model);
             mapper.Map(checkoutConfig.Settings, model);
@@ -1008,7 +1032,7 @@ namespace CheckoutPortal.Controllers
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
-            return await Task.FromResult(View(nameof(Index), model));
+            return View(nameof(Index), model);
         }
 
         /// <summary>
