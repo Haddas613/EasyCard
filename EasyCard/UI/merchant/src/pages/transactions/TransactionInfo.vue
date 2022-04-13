@@ -128,8 +128,8 @@
         :model="model.dealDetails"
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
-      <credit-card-details :model="model.creditCardDetails" v-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.card"></credit-card-details>
-      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.bank"></bank-payment-details>
+      <credit-card-details :model="model.creditCardDetails" v-if="model.paymentTypeEnum == $appConstants.transaction.paymentTypes.card"></credit-card-details>
+      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.paymentTypeEnum == $appConstants.transaction.paymentTypes.bank"></bank-payment-details>
 
       <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2">
