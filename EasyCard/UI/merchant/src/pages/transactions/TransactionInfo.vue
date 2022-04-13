@@ -35,7 +35,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
-              <p>{{model.paymentTypeEnum}}</p>
+              <p v-if="dictionaries.paymentTypeEnum">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum] || model.paymentTypeEnum}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
@@ -234,6 +234,7 @@ export default {
       },
       transactionSlipDialog: false,
       refundDialog: false,
+      dictionaries: {},
     };
   },
   async mounted() {
@@ -244,6 +245,8 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
+    this.dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+
     await this.initThreeDotMenu();
   },
   methods: {
