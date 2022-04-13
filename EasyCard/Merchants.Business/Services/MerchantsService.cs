@@ -6,6 +6,7 @@ using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json;
 using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
@@ -46,17 +47,9 @@ namespace Merchants.Business.Services
             }
         }
 
-        public IQueryable<Merchant> GetMerchants()
-        {
-            if (user.IsAdmin())
-            {
-                return context.Merchants.AsNoTracking();
-            }
-            else
-            {
-                return context.Merchants.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
-            }
-        }
+        public IQueryable<Merchant> GetMerchants() => GetMerchantsInternal().AsNoTracking();
+
+        public Task<Merchant> GetMerchant(Guid merchantID) => GetMerchantsInternal().FirstOrDefaultAsync(m => m.MerchantID == merchantID);
 
         public async override Task UpdateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)
         {
@@ -193,8 +186,6 @@ namespace Merchants.Business.Services
         // TODO: security
         public async Task UnLinkUserFromMerchant(Guid userID, Guid merchantID, IDbContextTransaction dbTransaction = null)
         {
-            // TODO: history
-
             var entity = await context.UserTerminalMappings.FirstOrDefaultAsync(m => m.MerchantID == merchantID && m.UserID == userID);
 
             if (entity != null)
@@ -208,7 +199,16 @@ namespace Merchants.Business.Services
                     OperationDoneBy = user?.GetDoneBy(),
                     OperationDoneByID = user?.GetDoneByID(),
                     MerchantID = merchantID,
-                    SourceIP = httpContextAccessor.GetIP()
+                    SourceIP = httpContextAccessor.GetIP(),
+                    OperationDescription = JsonConvert.SerializeObject(
+                    new
+                    {
+                        UserName = entity.DisplayName,
+                        entity.Email,
+                        entity.UserID,
+                        entity.MerchantID
+                    },
+                    Formatting.Indented)
                 };
                 context.MerchantHistories.Add(history);
 
@@ -346,6 +346,18 @@ namespace Merchants.Business.Services
                 using var transaction = BeginDbTransaction();
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
+            }
+        }
+
+        private IQueryable<Merchant> GetMerchantsInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.Merchants.AsNoTracking();
+            }
+            else
+            {
+                return context.Merchants.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
     }
