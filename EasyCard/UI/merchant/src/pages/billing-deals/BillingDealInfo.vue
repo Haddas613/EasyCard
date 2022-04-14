@@ -7,12 +7,14 @@
           <billing-deal-pause-dialog :show.sync="pauseDialog" :billing="model" v-on:ok="billingPausedChanged($event)"></billing-deal-pause-dialog>
           <v-card flat class="mb-2">
             <v-card-text class="body-1 black--text" v-if="model">
-              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
-                {{$t("CreditCardExpired")}}
-              </v-alert>
-              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.tokenNotAvailable">
-                {{$t("CreditCardTokenNotAvailable")}}
-              </v-alert>
+              <div v-if="!model.invoiceOnly">
+                <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
+                  {{$t("CreditCardExpired")}}
+                </v-alert>
+                <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.tokenNotAvailable">
+                  {{$t("CreditCardTokenNotAvailable")}}
+                </v-alert>
+              </div>
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
