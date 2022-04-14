@@ -193,6 +193,11 @@ namespace Transactions.Api.Controllers
             response.Settings.EnableThreeDS = terminal.Support3DSecure;
             response.Settings.Language = paymentRequest?.Language ?? terminal.CheckoutSettings.DefaultLanguage;
 
+            if (paymentRequest != null)
+            {
+                response.Settings.IssueInvoice = paymentRequest.IssueInvoice;
+            }
+
             return response;
         }
     }
