@@ -336,9 +336,7 @@ export default {
           types.push('bank');
         }
       } else {
-        if (!bankTypeAvailable){
-          types.push('bank');
-        }
+        types.push('bank');
       }
       return types;
     }
