@@ -40,6 +40,15 @@ namespace Shared.Api
         }
 
         [NonAction]
+        protected void EnsureExists(bool src, string entityName = null, string entityReference = null)
+        {
+            if (!src)
+            {
+                throw new EntityNotFoundException(ApiMessages.EntityNotFound, entityName, entityReference);
+            }
+        }
+
+        [NonAction]
         protected T EnsureConcurrency<T, TModel>(T src, TModel model)
             where T : IConcurrencyCheck
             where TModel : IConcurrencyCheck
@@ -70,6 +79,24 @@ namespace Shared.Api
             if (src == null)
             {
                 throw new BusinessException(message);
+            }
+
+            return src;
+        }
+
+        [NonAction]
+        protected T ValidateNotEmpty<T>(T src, string propertyName = null)
+        {
+            if (src == null)
+            {
+                List<Error> errors = new List<Error>();
+
+                if (propertyName != null)
+                {
+                    errors.Add(new Error(nameof(propertyName), ApiMessages.Required));
+                }
+
+                throw new BusinessException(ApiMessages.ShouldNotBeEmpty, errors);
             }
 
             return src;

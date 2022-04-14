@@ -57,6 +57,7 @@ namespace Transactions.Tests
                 null,
                 null,
                 null,
+                null,
                 null); // TODO: add fixture
             var tokenRequest = new TokenRequest
             {
@@ -207,6 +208,7 @@ namespace Transactions.Tests
                     null,
                     null,
                     null,
+                    null,
                     null); // TODO: add fixture
                 var tokenRequest = new TokenRequest
                 {
@@ -278,6 +280,7 @@ namespace Transactions.Tests
                     transactionsFixture.Mapper,
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                     transactionsFixture.AppSettings,
+                    null,
                     null,
                     null,
                     null,
@@ -397,7 +400,6 @@ namespace Transactions.Tests
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                 transactionsFixture.Logger,
                 appSettings,
-                null,
                 null,
                 null,
                 null,

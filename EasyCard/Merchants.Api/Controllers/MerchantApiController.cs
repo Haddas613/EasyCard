@@ -122,7 +122,7 @@ namespace Merchants.Api.Controllers
         [Route("{merchantID}")]
         public async Task<ActionResult<OperationResponse>> UpdateMerchant([FromRoute]Guid merchantID, [FromBody]UpdateMerchantRequest model)
         {
-            var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID));
+            var merchant = EnsureExists(await merchantsService.GetMerchant(merchantID));
 
             mapper.Map(model, merchant);
 

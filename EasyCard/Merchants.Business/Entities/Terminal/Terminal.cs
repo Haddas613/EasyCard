@@ -5,6 +5,7 @@ using Merchants.Shared.Models;
 using Shared.Business;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -86,5 +87,9 @@ namespace Merchants.Business.Entities.Terminal
         {
             return TerminalID;
         }
+
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public bool? Support3DSecure { get; set; }
     }
 }

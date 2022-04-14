@@ -9,6 +9,7 @@ using EasyInvoice;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Extensions;
 using Merchants.Business.Services;
 using Merchants.Shared.Enums;
@@ -23,6 +24,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Validation;
+using Shared.Business.Messages;
 using Shared.Helpers.Security;
 using Shared.Integration;
 using Z.EntityFramework.Plus;
@@ -47,6 +50,7 @@ namespace MerchantProfileApi.Controllers
         private readonly IBlobStorageService blobStorageService;
         private readonly ILogger logger;
         private readonly IExternalSystemsService externalSystemsService;
+        private readonly IMerchantConsentService merchantConsentService;
 
         //TODO: temporary, use events to update EC logo
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
@@ -62,7 +66,8 @@ namespace MerchantProfileApi.Controllers
             IBlobStorageService blobStorageService,
             IExternalSystemsService externalSystemsService,
             ILogger<TerminalsApiController> logger,
-            ECInvoiceInvoicing eCInvoiceInvoicing)
+            ECInvoiceInvoicing eCInvoiceInvoicing,
+            IMerchantConsentService merchantConsentService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -75,6 +80,7 @@ namespace MerchantProfileApi.Controllers
             this.blobStorageService = blobStorageService;
             this.eCInvoiceInvoicing = eCInvoiceInvoicing;
             this.externalSystemsService = externalSystemsService;
+            this.merchantConsentService = merchantConsentService;
         }
 
         [HttpGet]
@@ -95,7 +101,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpGet]
-        [Route("{terminalID}")]
+        [Route("{terminalID:guid}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
             var entity = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -120,7 +126,7 @@ namespace MerchantProfileApi.Controllers
 
         // TODO: concurrency check, handle exceptions
         [HttpPut]
-        [Route("{terminalID}")]
+        [Route("{terminalID:guid}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -134,7 +140,7 @@ namespace MerchantProfileApi.Controllers
 
         //[RequestSizeLimit(1000000)]
         [HttpPost]
-        [Route("{terminalID}/merchantlogo")]
+        [Route("{terminalID:guid}/merchantlogo")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<OperationResponse>> UploadMerchantLogo([FromRoute]Guid terminalID, [FromForm]IFormFile file)
         {
@@ -199,7 +205,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpPost]
-        [Route("{terminalID}/customcss")]
+        [Route("{terminalID:guid}/customcss")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<OperationResponse>> UploadCustomCss([FromRoute]Guid terminalID, [FromForm]IFormFile file)
         {
@@ -239,7 +245,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{terminalID}/customcss")]
+        [Route("{terminalID:guid}/customcss")]
         public async Task<ActionResult<OperationResponse>> DeleteCustomCss([FromRoute]Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -253,7 +259,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{terminalID}/merchantlogo")]
+        [Route("{terminalID:guid}/merchantlogo")]
         public async Task<ActionResult<OperationResponse>> DeleteMerchantLogo([FromRoute]Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -267,7 +273,7 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpPost]
-        [Route("{terminalID}/resetApiKey")]
+        [Route("{terminalID:guid}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -285,7 +291,7 @@ namespace MerchantProfileApi.Controllers
 
         // TODO: concurrency check, handle exceptions
         [HttpPost]
-        [Route("{terminalID}/resetSharedApiKey")]
+        [Route("{terminalID:guid}/resetSharedApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateSharedTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
@@ -305,6 +311,56 @@ namespace MerchantProfileApi.Controllers
             var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
 
             return Ok(features);
+        }
+
+        [HttpGet]
+        [Route("tds-consent-message")]
+        public async Task<ActionResult<OperationResponse>> Get3DSConsentMessage2()
+        {
+            var response = new OperationResponse(ConsentMessages.ThreeDSConsentMessage, StatusEnum.Success);
+
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("tds-enable")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> Enable3DS(Enable3DSRequest request)
+        {
+            var response = new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success);
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+
+            var consent = new MerchantConsent
+            {
+                MerchantID = User.GetDoneByID().Value,
+                TerminalID = request.TerminalID,
+                ButtonText = request.ConsentAgreeText,
+                ConsentText = ConsentMessages.ThreeDSConsentMessage,
+                FirstName = User.GetDoneByName(),
+                ConsentType = ConsentTypeEnum.ThreeDSecure,
+            };
+
+            await merchantConsentService.CreateEntity(consent);
+
+            terminal.Support3DSecure = true;
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("tds-disable/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> Disable3DS(Guid terminalID)
+        {
+            var response = new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success);
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            terminal.Support3DSecure = false;
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(response);
         }
 
         [HttpGet]

@@ -196,6 +196,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go back to Payment.
+        /// </summary>
+        public static string GoBackToPayment {
+            get {
+                return ResourceManager.GetString("GoBackToPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Immediate.
         /// </summary>
         public static string Immediate {
@@ -282,6 +291,15 @@ namespace CheckoutPortal.Resources {
         public static string OnlyAddCard {
             get {
                 return ResourceManager.GetString("OnlyAddCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payer&apos;s name.
+        /// </summary>
+        public static string PayersName {
+            get {
+                return ResourceManager.GetString("PayersName", resourceCulture);
             }
         }
         
@@ -453,6 +471,15 @@ namespace CheckoutPortal.Resources {
         public static string ThisCreditCardIsAlreadyAddedAsToken {
             get {
                 return ResourceManager.GetString("ThisCreditCardIsAlreadyAddedAsToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3D Secure Error.
+        /// </summary>
+        public static string ThreeDSError {
+            get {
+                return ResourceManager.GetString("ThreeDSError", resourceCulture);
             }
         }
         

@@ -181,3 +181,30 @@ input[type="checkbox"].input-validation-error {
 .form-area{
     padding-top: 1rem;
 }
+
+.messagepop {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
+    cursor: default;
+    display: none;
+    margin-top: 15px;
+    position: absolute;
+    text-align: left;
+    width: 600px;
+    height: 400px;
+    z-index: 50;
+    top: 0px;
+    left: 0px;
+    z-index: 1001; /**ensure it's above .overlay*/
+}
+
+.text-bit {
+    color: #2d5082;
+}
+
+.bit-result-container {
+    height: 80vh;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}

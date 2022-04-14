@@ -12,5 +12,10 @@ namespace Transactions.Shared.Enums
         Unpaused = 3,
         Deactivated = 4,
         CreditCardTokenChanged = 5,
+        CreditCardTokenRemoved = 6,
+        Activated = 7,
+        ExpirationEmailSent = 8,
+        TransactionCreated = 9,
+        TriggerTransactionFailed = 10
     }
 }

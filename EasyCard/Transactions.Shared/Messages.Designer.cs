@@ -19,7 +19,7 @@ namespace Transactions.Shared {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Messages {
@@ -111,6 +111,15 @@ namespace Transactions.Shared {
         public static string AwaitingForTransmission {
             get {
                 return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Activated.
+        /// </summary>
+        public static string BillingDealActivated {
+            get {
+                return ResourceManager.GetString("BillingDealActivated", resourceCulture);
             }
         }
         
@@ -421,6 +430,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token Removed.
+        /// </summary>
+        public static string CreditCardTokenRemoved {
+            get {
+                return ResourceManager.GetString("CreditCardTokenRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
         /// </summary>
         public static string CreditCardTokensFeatureMustBeEnabled {
@@ -480,6 +498,15 @@ namespace Transactions.Shared {
         public static string ExpectedValue {
             get {
                 return ResourceManager.GetString("ExpectedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Credit Card Expiration Email Sent.
+        /// </summary>
+        public static string ExpirationEmailSent {
+            get {
+                return ResourceManager.GetString("ExpirationEmailSent", resourceCulture);
             }
         }
         
@@ -781,6 +808,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment completed successfully.
+        /// </summary>
+        public static string PaymentWasCompletedSuccessfully {
+            get {
+                return ResourceManager.GetString("PaymentWasCompletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment was not completed.
+        /// </summary>
+        public static string PaymentWasNotCompleted {
+            get {
+                return ResourceManager.GetString("PaymentWasNotCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check specified values.
         /// </summary>
         public static string PleaseCheckValues {
@@ -804,6 +849,15 @@ namespace Transactions.Shared {
         public static string ProcessorNotDefined {
             get {
                 return ResourceManager.GetString("ProcessorNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejected by 3DSecure.
+        /// </summary>
+        public static string RejectedBy3DSecure {
+            get {
+                return ResourceManager.GetString("RejectedBy3DSecure", resourceCulture);
             }
         }
         
@@ -1065,6 +1119,15 @@ namespace Transactions.Shared {
         public static string TransmittedByProcessor {
             get {
                 return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing transaction triggering failed.
+        /// </summary>
+        public static string TriggerTransactionFailed {
+            get {
+                return ResourceManager.GetString("TriggerTransactionFailed", resourceCulture);
             }
         }
         

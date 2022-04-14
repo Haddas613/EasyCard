@@ -61,8 +61,14 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Refund is done for this transaction
         /// </summary>
-        [EnumMember(Value = "refund")]
-        Refund = 50,
+        [EnumMember(Value = "chargeback")]
+        Chargeback = 50,
+
+        /// <summary>
+        /// Refund attempt failed
+        /// </summary>
+        [EnumMember(Value = "chargebackFailed")]
+        ChargebackFailed = -90,
 
         /// <summary>
         /// Transaction is rejeced by Clearing House

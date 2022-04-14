@@ -32,7 +32,10 @@ const state = () => ({
         customDate: false,
         dateFrom: null,
         dateTo: null
-    }
+    },
+
+    //can be used to force re-render cached keep-alive components
+    keepAliveRenderState: 0,
 });
 
 const getters = {};
@@ -59,7 +62,10 @@ const mutations = {
     },
     setDashboardDateFilterAlt(state, value){
         state.dashboardDateFilterAlt = value;
-    }
+    },
+    refreshKeepAlive(state){
+        state.keepAliveRenderState += 1;
+    },
 }
 
 export default {

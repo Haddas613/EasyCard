@@ -66,6 +66,9 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("DocumentOrigin")
                         .HasColumnType("smallint");
 
+                    b.Property<DateTime?>("ExpirationEmailSent")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("FailedAttemptsCount")
                         .HasColumnType("int");
 
@@ -138,6 +141,14 @@ namespace Transactions.Business.Migrations
 
                     b.Property<Guid>("TerminalID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("TokenCreated")
+                        .HasColumnType("date")
+                        .HasColumnName("TokenCreated");
+
+                    b.Property<DateTime?>("TokenUpdated")
+                        .HasColumnType("date")
+                        .HasColumnName("TokenUpdated");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
@@ -461,6 +472,9 @@ namespace Transactions.Business.Migrations
 
                     b.Property<decimal>("InvoiceAmount")
                         .HasColumnType("decimal(19,4)");
+
+                    b.Property<short>("InvoiceBillingType")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime?>("InvoiceDate")
                         .HasColumnType("datetime2");
@@ -840,11 +854,21 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<decimal>("PaymentRequestAmount")
                         .HasColumnType("decimal(19,4)");
 
                     b.Property<DateTime?>("PaymentRequestTimestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentRequestUrl")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
@@ -1050,6 +1074,11 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("OperationDoneByID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<Guid?>("PaymentIntentID")
                         .HasColumnType("uniqueidentifier");
 
@@ -1088,6 +1117,11 @@ namespace Transactions.Business.Migrations
 
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("ThreeDSServerTransID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
@@ -1263,10 +1297,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<DateTime?>("CardExpiration")
-                                .HasColumnType("date")
-                                .HasColumnName("CardExpirationDate");
-
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1291,6 +1321,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
+
                             b1.Property<string>("Solek")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1310,10 +1344,22 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("BillingDealID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
+
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
 
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
@@ -1349,6 +1395,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
 
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
+
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
                                 .IsUnicode(true)
@@ -1361,10 +1413,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("BillingDealID");
 
@@ -1460,6 +1530,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("CardOwnerName");
 
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("datetime2");
+
                             b1.HasKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
 
                             b1.ToTable("vFutureBillings");
@@ -1506,10 +1579,22 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
+
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
 
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
@@ -1545,6 +1630,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
 
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
+
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
                                 .IsUnicode(true)
@@ -1557,10 +1648,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("InvoiceID");
 
@@ -1649,10 +1758,22 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentRequestID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
+
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
 
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
@@ -1688,6 +1809,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
 
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
+
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
                                 .IsUnicode(true)
@@ -1700,10 +1827,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("PaymentRequestID");
 
@@ -1855,10 +2000,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<DateTime?>("CardExpiration")
-                                .HasColumnType("date")
-                                .HasColumnName("CardExpirationDate");
-
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1883,6 +2024,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
+                            b1.Property<DateTime?>("ExpirationDate")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
+
                             b1.HasKey("PaymentTransactionID");
 
                             b1.ToTable("PaymentTransaction");
@@ -1896,10 +2041,22 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentTransactionID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Branch")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Branch");
+
                             b1.Property<string>("ConsumerAddress")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("CustomerAddress");
+
+                            b1.Property<string>("ConsumerEcwidID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerEcwidID");
 
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
@@ -1935,6 +2092,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
 
+                            b1.Property<string>("ConsumerWoocommerceID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerWoocommerceID");
+
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)
                                 .IsUnicode(true)
@@ -1947,10 +2110,28 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("DealReference");
 
+                            b1.Property<string>("Department")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Department");
+
+                            b1.Property<string>("ExternalUserID")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ExternalUserID");
+
                             b1.Property<string>("Items")
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
+
+                            b1.Property<string>("ResponsiblePerson")
+                                .HasMaxLength(50)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("ResponsiblePerson");
 
                             b1.HasKey("PaymentTransactionID");
 

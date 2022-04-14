@@ -12,12 +12,13 @@
     <input type="hidden" asp-for="Description" />
     <input type="hidden" asp-for="IssueInvoice" />
     <input type="hidden" asp-for="AllowPinPad" />
+    <input type="hidden" asp-for="ThreeDSServerTransID" />
+    <input type="hidden" asp-for="Origin" />
 
     @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
     {
         <input type="hidden" asp-for="ConnectionID" />
     }
-
     @if (Model.TransactionTypes.Count() > 1 && !Model.OnlyAddCard)
     {
         <div class="form-group">
@@ -48,7 +49,7 @@
                 @*<label asp-for="InitialPaymentAmount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
                 <div class="col">
                     <input id="initial-payment-amount" type="number" step="0.01" class="form-control form-control-sm text-end"
-                       placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
+                           placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
                     <span asp-validation-for="InitialPaymentAmount"></span>
                 </div>
                 <input type="hidden" asp-for="InstallmentPaymentAmount" />
@@ -110,7 +111,7 @@
                                         <span class="align-self-end">
                                             <small>@(savedToken.Created?.ToString("dd/MM/yyyy"))</small>
                                         </span>
-                                    }    
+                                    }
                                 </div>
                             }
                             <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />@localizer.Get("EnterNewCard")<br />
@@ -258,14 +259,15 @@
             <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
         }
     </div>
-</form>
 
+    <div id="threeDSMethodIFrameContainer"></div>
+    <div id="threeDSCReqIframeContainer" class="messagepop"></div>
+
+</form>
 
 @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
 {
 <script src="~/lib/signalr/signalr.min.js"></script>
-<script src="~/lib/toastr/toastr.min.js"></script>
-<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
 }
 
 <script nws-csp-add-nonce="true">
@@ -357,10 +359,123 @@
             $('#cancel-form').submit();
         });
 
-        @if(Model.PaymentIntent != null && Model.AllowPinPad == true)
+        @if(Model.EnableThreeDS == true) // TODO: case with pinpad
         {
         <text>
-        $("#submitbtn").on("click", function (e) {
+            $.fn.slideFadeToggle = function (easing, callback) {
+                return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+            };
+
+            window.notification3Ds = function (cres) {
+                if (cres.success) {
+                    $('#threeDSCReqIframeContainer').slideFadeToggle();
+                    return $("#checkout-form").submit();
+                } else {
+                    toastr["error"]('@(localizer.Get("ThreeDSError"))' + cres.error);
+                    window.switchLoadingSpinner(false);
+                    $('#threeDSCReqIframeContainer').slideFadeToggle();
+                }
+            };
+
+            const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());
+
+            const authenticate3Ds = function () {
+                let payload = $('#checkout-form').serialize();
+
+                return $.post("/Home/Authenticate3Ds", payload, function (data, status, xhr) {
+                    if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
+
+                        if (continueInCaseOf3DSecureError)
+                            return $("#checkout-form").submit();
+                        else {
+                            toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                            window.switchLoadingSpinner(false);
+                            return;
+                        }
+                    }
+
+                    if (data.errorMessage) {
+                        if (continueInCaseOf3DSecureError)
+                            return $("#checkout-form").submit();
+                        else {
+                            toastr["error"](data.errorMessage);
+                            window.switchLoadingSpinner(false);
+                            return;
+                        }
+                    }
+
+                    if (data.chalengeRequired) {
+                        $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
+
+                        let container = document.getElementById('threeDSCReqIframeContainer');
+
+                        nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSCReqIframe', container,
+                            console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
+                        window.scrollTo(0, 0);
+                        $('#threeDSCReqIframeContainer').slideFadeToggle();
+                    } else {
+                        window.switchLoadingSpinner(false);
+                        return $("#checkout-form").submit();
+                    }
+                });
+            }
+
+            $("#submitbtn").on("click", function () {
+                var pinPadDeal = document.getElementById("pin-pad-deal");
+                if (pinPadDeal && pinPadDeal.checked == true) {
+                    signalRClient.establishSignalRConnection().then(r => {
+                        $("#checkout-form").submit();
+                    }, e => {
+                        $("#checkout-form").submit();
+                    });
+                }
+                if ($("#CreditCardToken:checked").val()){
+                    return $("#checkout-form").submit();
+                }
+
+
+                let payload = $('#checkout-form').serialize();
+                window.switchLoadingSpinner(true);
+
+                return $.post("/Home/Versioning3Ds", payload, function (data, status, xhr) {
+                    if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
+
+                        if (continueInCaseOf3DSecureError)
+                            return $("#checkout-form").submit();
+                        else {
+                            toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                            window.switchLoadingSpinner(false);
+                            return;
+                        }
+                    }
+
+                    if (data.errorMessage) {
+                        if (continueInCaseOf3DSecureError)
+                            return $("#checkout-form").submit();
+                        else {
+                            toastr["error"](data.errorMessage);
+                            window.switchLoadingSpinner(false);
+                            return;
+                        }
+                    }
+
+                    $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
+                    let container = document.getElementById('threeDSMethodIFrameContainer');
+
+                    nca3DSWebSDK.createIframeAndInit3DSMethod(data.threeDSMethodUrl, data.threeDSMethodData, 'threeDSMethodIframe', container,
+                        () => {
+                            console.log('Iframe loaded, form created and submitted');
+                        });
+
+                    return authenticate3Ds();//.then((e) => window.switchLoadingSpinner(false));
+                });
+            })
+        </text>
+        }
+        else if(Model.PaymentIntent != null && Model.AllowPinPad == true)
+        {
+        <text>
+            $("#submitbtn").on("click", function (e) {
                 e.preventDefault();
                 if (!$("#checkout-form").valid()) {
                     return;
@@ -432,8 +547,7 @@
                 $("#credit-card-info-area").remove();
             }
 
-            document.getElementById("loading-spinner").hidden = false;
-            document.getElementsByTagName("body")[0].classList.add("no-scroll")
+            window.switchLoadingSpinner(true);
         })
 
         window.onunload = function (e) {
@@ -588,7 +702,7 @@
                 }
                 let presence = tokens.reduce((acc, e) => {
                     if(acc){ return acc;}
-                    acc += e.value.split(' ')[0] == toBin ? 1 : 0;
+                    acc += e.value ? (e.value.split(' ')[0] == toBin ? 1 : 0) : 0;
                     return acc;
                 }, 0);
 

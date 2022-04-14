@@ -80,6 +80,11 @@ namespace Merchants.Business.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EcwidID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("ExternalReference")
                         .HasMaxLength(50)
                         .IsUnicode(true)
@@ -119,6 +124,11 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("WoocommerceID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("ConsumerID");
 
@@ -171,6 +181,11 @@ namespace Merchants.Business.Migrations
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("EcwidID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("ExternalReference")
                         .HasMaxLength(50)
                         .IsUnicode(true)
@@ -218,6 +233,11 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("WoocommerceID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("ItemID");
 
@@ -369,6 +389,44 @@ namespace Merchants.Business.Migrations
                     b.HasKey("MerchantID");
 
                     b.ToTable("Merchant");
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantConsent", b =>
+                {
+                    b.Property<Guid>("MerchantConsentID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ButtonText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConsentText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("ConsentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TerminalID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MerchantConsentID");
+
+                    b.ToTable("MerchantConsent");
                 });
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
@@ -577,6 +635,9 @@ namespace Merchants.Business.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("Support3DSecure")
+                        .HasColumnType("bit");
+
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
 
@@ -587,6 +648,11 @@ namespace Merchants.Business.Migrations
 
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("WebHooksConfiguration")
+                        .IsUnicode(false)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("WebHooksConfiguration");
 
                     b.HasKey("TerminalID");
 

@@ -91,5 +91,6 @@ namespace Shared.Integration.Models.Invoicing
         public TransactionTypeEnum? TransactionType { get; set; }
 
         public Newtonsoft.Json.Linq.JObject Extension { get; set; }
+
     }
 }

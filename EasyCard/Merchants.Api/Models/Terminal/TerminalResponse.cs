@@ -3,6 +3,7 @@ using Merchants.Api.Models.User;
 using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using Newtonsoft.Json.Linq;
+using Shared.Helpers.WebHooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,5 +58,9 @@ namespace Merchants.Api.Models.Terminal
         public TerminalBankDetails BankDetails { get; set; }
 
         public byte[] SharedApiKey { get; set; }
+
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public bool? Support3DSecure { get; set; }
     }
 }

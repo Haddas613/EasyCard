@@ -47,30 +47,6 @@ namespace Transactions.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.BillingDeals.AsNoTracking();
-            }
-            else if (user.IsTerminal())
-            {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.BillingDeals.AsNoTracking().Where(t => t.TerminalID == terminalID);
-            }
-            else
-            {
-                var response = context.BillingDeals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID();
-                if (terminals?.Count() > 0)
-                {
-                    response = response.Where(d => terminals.Contains(d.TerminalID));
-                }
-
-                return response;
-            }
-        }
-
-        public IQueryable<BillingDeal> GetBillingDealsForUpdate()
-        {
-            if (user.IsAdmin())
-            {
                 return context.BillingDeals;
             }
             else if (user.IsTerminal())
@@ -91,6 +67,30 @@ namespace Transactions.Business.Services
             }
         }
 
+        public async Task<BillingDeal> GetBillingDeal(Guid billingDeal)
+        {
+            if (user.IsAdmin())
+            {
+                return await context.BillingDeals.FirstOrDefaultAsync(d => d.BillingDealID == billingDeal);
+            }
+            else if (user.IsTerminal())
+            {
+                var terminalID = user.GetTerminalID()?.FirstOrDefault();
+                return await context.BillingDeals.Where(t => t.TerminalID == terminalID).FirstOrDefaultAsync(d => d.BillingDealID == billingDeal);
+            }
+            else
+            {
+                var response = context.BillingDeals.Where(t => t.MerchantID == user.GetMerchantID());
+                var terminals = user.GetTerminalID();
+                if (terminals?.Count() > 0)
+                {
+                    response = response.Where(d => terminals.Contains(d.TerminalID));
+                }
+
+                return await response.FirstOrDefaultAsync(d => d.BillingDealID == billingDeal);
+            }
+        }
+
         public async override Task UpdateEntity(BillingDeal entity, IDbContextTransaction dbTransaction = null)
             => await UpdateEntityWithHistory(entity, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated, dbTransaction);
 
@@ -101,7 +101,7 @@ namespace Transactions.Business.Services
         {
             var exist = this.context.BillingDeals.Find(entity.GetID());
 
-            this.context.Entry(exist).CurrentValues.SetValues(entity);
+            //this.context.Entry(exist).CurrentValues.SetValues(entity);
 
             List<string> changes = new List<string>();
 
@@ -152,46 +152,6 @@ namespace Transactions.Business.Services
 
                 return response;
             }
-        }
-
-        public async Task<SharedApi.Models.OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate)
-        {
-            foreach (var billingDeal in billingDealsToIncactivate)
-            {
-                billingDeal.Active = false;
-
-                var historyRecord = new BillingDealHistory
-                {
-                    BillingDealID = billingDeal.BillingDealID,
-                    OperationCode = BillingDealOperationCodesEnum.Deactivated,
-                    OperationDescription = null,
-                    OperationMessage = Messages.BillingDealDeactivated
-                };
-
-                historyRecord.ApplyAuditInfo(httpContextAccessor);
-
-                context.BillingDealHistories.Add(historyRecord);
-            }
-
-            await context.SaveChangesAsync();
-
-            return new SharedApi.Models.OperationResponse
-            {
-                 Status = SharedApi.Models.Enums.StatusEnum.Success
-            };
-        }
-
-        public Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken)
-        {
-            var obj = new
-            {
-                before = billingDeal.CreditCardToken?.ToString(),
-                after = newToken?.ToString(),
-            };
-
-            var changesStr = string.Concat("[", string.Join(",", JObject.FromObject(obj).ToString()), "]");
-
-            return AddHistory(billingDeal.BillingDealID, changesStr, Messages.CreditCardTokenChanged, BillingDealOperationCodesEnum.CreditCardTokenChanged);
         }
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)

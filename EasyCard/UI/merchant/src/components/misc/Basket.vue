@@ -151,9 +151,9 @@ export default {
       return this.lodash.sumBy(this.model.dealDetails.items, "discount");
     },
     totalAmount() {
-      //return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
-      this.recalculate();
-      return this.model.totalAmount;
+      return this.lodash.sumBy(this.model.dealDetails.items, e => (e.price * e.quantity) - e.discount);
+      //this.recalculate();
+      //return this.model.totalAmount;
     },
     ...mapState({
       currencyStore: state => state.settings.currency,

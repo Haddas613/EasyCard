@@ -166,9 +166,12 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                        .HasColumnName("CardExpirationDate")
-                        .HasColumnType("date");
+                    //s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                    //    .HasColumnName("CardExpirationDate")
+                    //    .HasColumnType("date");
+
+                    s.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
+                    s.Ignore(b => b.CardExpiration);
 
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -244,6 +247,16 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
@@ -286,6 +299,10 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneByID).IsRequired(false);
+
+                builder.Property(p => p.ThreeDSServerTransID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 
@@ -394,9 +411,12 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                        .HasColumnName("CardExpirationDate")
-                        .HasColumnType("date");
+                    //s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                    //    .HasColumnName("CardExpirationDate")
+                    //    .HasColumnType("date");
+
+                    s.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
+                    s.Ignore(b => b.CardExpiration);
 
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -429,6 +449,13 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -472,6 +499,9 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(p => p.TokenCreated).HasColumnName("TokenCreated").HasColumnType("date").IsRequired(false);
+                builder.Property(p => p.TokenUpdated).HasColumnName("TokenUpdated").HasColumnType("date").IsRequired(false);
             }
         }
 
@@ -533,6 +563,13 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -643,6 +680,13 @@ namespace Transactions.Business.Data
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
+                    s.Property(p => p.ConsumerWoocommerceID).HasColumnName("ConsumerWoocommerceID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerEcwidID).HasColumnName("ConsumerEcwidID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                    s.Property(p => p.ResponsiblePerson).HasColumnName("ResponsiblePerson").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ExternalUserID).HasColumnName("ExternalUserID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.Branch).HasColumnName("Branch").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.Department).HasColumnName("Department").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -675,6 +719,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.FromAddress).IsRequired(false).HasMaxLength(100).IsUnicode(true);
                 builder.Property(b => b.RequestSubject).IsRequired(false).HasMaxLength(250).IsUnicode(true);
 
+                builder.Property(b => b.PaymentRequestUrl).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
 
@@ -684,6 +730,8 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
+
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 

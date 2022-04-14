@@ -6,12 +6,12 @@
           <v-spacer></v-spacer>
         </v-col>
         <v-col class="d-flex justify-space-around">
-          <v-flex class="flex-column">
+          <v-flex class="flex-column" :key="keepAliveStateKey">
             <v-app-bar flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
               <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
             </v-app-bar>
             <keep-alive max="1" :include="keepAliveComponentsList">
-              <router-view/>
+              <router-view :key="$route.fullPath" />
             </keep-alive>
           </v-flex>
         </v-col>
@@ -38,7 +38,7 @@ export default {
   },
   props: ["drawer"],
   mounted () {
-    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[1].children, r => r.keepAlive).map(r => r.keepAlive);
+    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[1].children, r => (r.meta && r.meta.keepAlive)).map(r => r.meta.keepAlive);
   },
   computed: {
     drawerObj: {
@@ -50,7 +50,8 @@ export default {
       }
     },
     ...mapState({
-      headerStore: state => state.ui.header
+      headerStore: state => state.ui.header,
+      keepAliveStateKey: state => state.ui.keepAliveRenderState,
     }),
   }
 };

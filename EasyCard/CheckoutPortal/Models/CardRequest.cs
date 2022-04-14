@@ -49,5 +49,7 @@ namespace CheckoutPortal.Models
         public bool? IssueInvoice { get; set; }
 
         public bool? AllowPinPad { get; set; }
+
+        public string Language { get; set; }
     }
 }

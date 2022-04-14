@@ -195,6 +195,12 @@ export default {
                 await this.resendSelectedInvoices();
               }
             },
+            {
+              text: this.$t("Excel"),
+              fn: async () => {
+                await this.exportExcel();
+              }
+            },
             // {
             //   text: this.$t("SelectAll"),
             //   fn: () => {
@@ -204,6 +210,14 @@ export default {
           ]
         }
       });
+    },
+    async exportExcel() {
+      let operation = await this.$api.invoicing.getExcel({
+        ...this.invoicesFilter,
+      });
+      
+      if (!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, '_blank');
     },
   },
   computed: {
@@ -223,7 +237,7 @@ export default {
     manually update menu on route change to make sure header has correct value*/
     $route (to, from){
       /** only update header if we returned to the same (cached) page */
-      if(to.name == this.$route.name){
+      if(to.meta.keepAlive == this.$options.name){
         this.initThreeDotMenu();
       }
     }

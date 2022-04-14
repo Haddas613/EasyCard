@@ -451,6 +451,12 @@
     <value>{0} עסקאות בילינג  הופעלו</value>
   </data>
   <data name="BitPaymentFailed" xml:space="preserve">
-    <value>Bit payment failed</value>
+    <value>נכשל bit -תשלום ב</value>
+  </data>
+  <data name="PaymentWasCompletedSuccessfully" xml:space="preserve">
+    <value>תשלום בוצע בהצלחה</value>
+  </data>
+  <data name="PaymentWasNotCompleted" xml:space="preserve">
+    <value>תשלום לא בוצעה</value>
   </data>
 </root>

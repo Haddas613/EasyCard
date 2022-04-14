@@ -34,7 +34,7 @@ namespace Shared.Helpers
             var urlBase = redirectUrlBase.CheckRedirectUrl();
             var urlPartial = redirectUrlPartial.CheckRedirectUrl();
 
-            return !urlBase.IsBaseOf(urlPartial);
+            return urlBase.IsBaseOf(urlPartial);
         }
 
         public static void CheckRedirectUrls(this IEnumerable<string> baseRedirectUrls, string redirectUrlPartial)

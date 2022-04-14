@@ -12,8 +12,11 @@ namespace EasyInvoice.Converters
 {
     public static class ECInvoiceConverter
     {
-        public static ECInvoiceCreateDocumentRequest GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message)
+        public static ECInvoiceCreateDocumentRequest GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message, EasyInvoiceTerminalSettings settings)
         {
+            string description;
+            fillDonationDescription(message, settings, out description);
+
             var json = new ECInvoiceCreateDocumentRequest
             {
                 CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress),
@@ -21,7 +24,7 @@ namespace EasyInvoice.Converters
                 CustomerName = message.ConsumerName,
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
                 CustomerTaxId = message.ConsumerNationalID,
-                Description = message.DealDetails?.DealDescription,
+                Description = description,
                 DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault()).ToString(),
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
@@ -31,7 +34,7 @@ namespace EasyInvoice.Converters
                 TotalAmountBeforeDiscount = message.InvoiceAmount,
                 TotalNetAmount = message.NetTotal,
                 TotalPaidAmount = message.InvoiceAmount,
-                
+
                 TransactionDateTime = message.InvoiceDate?.ToString("o"),
                 Rows = GetRows(message),
             };
@@ -56,6 +59,15 @@ namespace EasyInvoice.Converters
             return json;
         }
 
+        private static void fillDonationDescription(InvoicingCreateDocumentRequest message, EasyInvoiceTerminalSettings settings, out string description)
+        {
+            description = message.DealDetails?.DealDescription;
+            var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
+            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "קבלת תרומה לפי סעיף 46" : "Receiving a donation according to Section 46";
+
+            if (documentType == ECInvoiceDocumentType.PAYMENT_INFO && (settings.PaymentInfoAsDonation))
+                description = String.Format("{0}{1} {2}", description, string.IsNullOrEmpty(description) ? "" : ",", donationDescription);
+        }
 
         public static UpdateUserDetailsRequest GetUpdateUserDataRequest(UpdateUserDetailsRequest message)
         {

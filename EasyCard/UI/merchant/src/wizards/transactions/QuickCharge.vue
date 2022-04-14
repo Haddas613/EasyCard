@@ -56,6 +56,7 @@
             :data="model"
             ref="numpadInvoker"
             @ok="processAmount($event)"
+            :key="model.vatRate"
           ></numpad-dialog-invoker>
         </v-col>
         <v-col cols="12" class="pt-0">

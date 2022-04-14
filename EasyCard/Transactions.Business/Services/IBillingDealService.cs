@@ -15,14 +15,10 @@ namespace Transactions.Business.Services
     {
         IQueryable<BillingDeal> GetBillingDeals();
 
-        IQueryable<BillingDeal> GetBillingDealsForUpdate();
+        Task<BillingDeal> GetBillingDeal(Guid billingDeal);
 
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
 
-        Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken);
-
         Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
-
-        Task<OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate);
     }
 }

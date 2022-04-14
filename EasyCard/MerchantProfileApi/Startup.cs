@@ -274,7 +274,8 @@ namespace ProfileApi
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
-            services.AddScoped<IFeaturesService, FeaturesService>();
+            services.AddScoped<IFeaturesService, FeaturesService>(); 
+            services.AddScoped<IMerchantConsentService, MerchantConsentService>();
             services.AddSingleton<IBlobStorageService, BlobStorageService>(serviceProvider =>
             {
                 var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
@@ -459,11 +460,17 @@ namespace ProfileApi
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MerchantProfile API V1");
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MerchantProfile API V1");
 
-                //c.RoutePrefix = string.Empty;
+            //    //c.RoutePrefix = string.Empty;
+            //});
+
+            app.UseReDoc(c =>
+            {
+                c.DocumentTitle = "EasyCard Transactions Api V1";
+                c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
             //app.UseXXssProtection(options => options.EnabledWithBlockMode());

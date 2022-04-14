@@ -213,7 +213,7 @@ Live version: [https://api.e-c.co.il/api-docs/index.html](https://api.e-c.co.il/
 
 $ch = curl_init();
 
-curl_setopt($ch, CURLOPT_URL,"https://identity.e-c.co.il/api/token");
+curl_setopt($ch, CURLOPT_URL,"https://identity.e-c.co.il/connect/token");
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS,
             "client_id=terminal&grant_type=terminal_rest_api&authorizationKey=hL5pXeI96df0wxCb....IWYcmhJH2bye1gg==");

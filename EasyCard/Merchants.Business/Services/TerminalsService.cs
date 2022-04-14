@@ -119,7 +119,6 @@ namespace Merchants.Business.Services
                     }
                 }
             }
-
             var externalSystems = await query.Where(t => t.TerminalID == terminalID).ToListAsync();
 
             var shvaIntegration = externalSystems.FirstOrDefault(e => e.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID);
@@ -139,7 +138,6 @@ namespace Merchants.Business.Services
                     }
                 }
             }
-
             return externalSystems;
         }
 

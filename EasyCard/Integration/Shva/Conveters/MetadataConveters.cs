@@ -195,5 +195,35 @@ namespace Shva.Conveters
 
             return date.Value.ToString("HHmmss");
         }
+
+        public static string GetShvaEciBy3dsEci(this string eci)
+        {
+            switch (eci)
+            {
+                // Visa, Amex, JCB
+                case "05":
+                    return "3";
+                case "06":
+                    return "2";
+                case "07":
+                    return "1";
+
+                // MasterCard
+                case "02":
+                    return "3";
+                case "01":
+                    return "2";
+                case "00":
+                    return "1";
+
+                default:
+                    return null;
+            }
+        }
+
+        public static string GetShvaAddendum2By3dsEci(this string eci)
+        {
+            return $"A002{eci}";
+        }
     }
 }

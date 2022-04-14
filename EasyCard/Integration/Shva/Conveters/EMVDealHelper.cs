@@ -120,6 +120,15 @@ namespace Shva.Conveters
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
         {
             clsInput inputObj = new clsInput();
+
+            if (req.ThreeDSecure != null)
+            {
+                inputObj.xid = req.ThreeDSecure.Xid;
+                inputObj.eci = req.ThreeDSecure.Eci.GetShvaEciBy3dsEci();
+                inputObj.cavvUcaf = req.ThreeDSecure.AuthenticationValue;
+                inputObj.addendum2 = req.ThreeDSecure.Eci.GetShvaAddendum2By3dsEci();
+            }
+
             InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
             int parameterJValue = (int)req.JDealType.GetParamJ5();
             var transactionType = req.SpecialTransactionType.GetShvaTransactionType();

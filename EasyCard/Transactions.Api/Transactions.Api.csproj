@@ -13,12 +13,16 @@
   <ItemGroup>
     <Compile Remove="Models\Converters\**" />
     <Compile Remove="Models\Settings\**" />
+    <Compile Remove="Models\Transactions\Enums\**" />
     <Content Remove="Models\Converters\**" />
     <Content Remove="Models\Settings\**" />
+    <Content Remove="Models\Transactions\Enums\**" />
     <EmbeddedResource Remove="Models\Converters\**" />
     <EmbeddedResource Remove="Models\Settings\**" />
+    <EmbeddedResource Remove="Models\Transactions\Enums\**" />
     <None Remove="Models\Converters\**" />
     <None Remove="Models\Settings\**" />
+    <None Remove="Models\Transactions\Enums\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +76,7 @@
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
+    <ProjectReference Include="..\ThreeDS\ThreeDS.csproj" />
     <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
   </ItemGroup>
 
@@ -86,6 +91,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BillingDealSummaryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Invoicing\InvoiceExcelSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InvoiceExcelSummaryResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Models\Invoicing\InvoiceSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -149,6 +159,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>BillingDealSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Models\Invoicing\InvoiceExcelSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InvoiceExcelSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Models\Invoicing\InvoiceSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InvoiceSummaryResource.Designer.cs</LastGenOutput>
@@ -196,10 +210,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SMSResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Transactions\Enums\" />
   </ItemGroup>
 
 

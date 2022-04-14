@@ -164,5 +164,11 @@ namespace Transactions.Api.Models.Billing
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
         public int? FailedAttemptsCount { get; set; }
+
+        public DateTime? ExpirationEmailSent { get; set; }
+
+        public DateTime? TokenUpdated { get; set; }
+
+        public DateTime? TokenCreated { get; set; }
     }
 }

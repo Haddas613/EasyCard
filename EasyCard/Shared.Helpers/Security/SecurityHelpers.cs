@@ -94,7 +94,9 @@ namespace Shared.Helpers.Security
         /// </summary>
         public static bool IsMerchantFrontend(this ClaimsPrincipal user)
         {
-            return user?.FindFirst("client_id")?.Value == "merchant_frontend" && user?.IsMerchant() == true;
+            var clientId = user?.FindFirst("client_id")?.Value;
+
+            return (clientId == "merchant_frontend_mobile" || clientId == "merchant_frontend") && user?.IsMerchant() == true;
         }
 
         public static Guid? GetMerchantID(this ClaimsPrincipal user)

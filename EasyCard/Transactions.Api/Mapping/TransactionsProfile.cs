@@ -35,6 +35,8 @@ namespace Transactions.Api.Mapping
                    .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
+            CreateMap<PaymentTransaction, CreateTransactionRequest>();
+
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
@@ -44,15 +46,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.TerminalTemplateID, o => o.MapFrom(d => d.TerminalTemplateID))
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID))
+                .ForMember(d => d.WebHooksConfiguration, o => o.MapFrom(d => d.WebHooksConfiguration))
                 .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<PaymentTransaction, TransactionResponse>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
+            CreateMap<PaymentTransaction, TransactionResponse>();
 
-            CreateMap<PaymentTransaction, TransactionResponseAdmin>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.PaymentTypeEnum == PaymentTypeEnum.Card && src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue));
+            CreateMap<PaymentTransaction, TransactionResponseAdmin>();
 
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))

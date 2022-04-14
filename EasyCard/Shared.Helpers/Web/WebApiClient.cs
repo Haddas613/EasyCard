@@ -207,13 +207,9 @@ namespace Shared.Helpers
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             onRequest?.Invoke(url, json);
-
             HttpResponseMessage response = await HttpClient.SendAsync(request);
-
             var res = await response.Content.ReadAsStringAsync();
-
             onResponse?.Invoke(res, response.StatusCode, response.Headers);
-
             if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<T>(res);

@@ -182,5 +182,12 @@ namespace Transactions.Api.Models.Transactions
 
         [SwaggerExclude]
         public JObject Extension { get; set; }
+
+        [SwaggerExclude]
+        [StringLength(50)]
+        public string ThreeDSServerTransID { get; set; }
+
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

@@ -56,6 +56,7 @@ namespace Shared.Api
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, Errors = businessEx.Errors });
                     responseStatusCode = 400;
+                    logAsWarning = true;
                 }
                 else if (ex is NotImplementedException)
                 {

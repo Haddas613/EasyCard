@@ -33,7 +33,13 @@
           ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
-        <payment-type @change="onPaymentTypeChanged($event)" :key="model.invoiceOnly" :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only']"></payment-type>
+        <payment-type 
+          @change="onPaymentTypeChanged($event)"
+          :key="model.invoiceOnly"
+          :disabled="!!model.billingDealID"
+          v-model="model.paymentType"
+          :exclude-types="excludePaymentTypes"
+        ></payment-type>
       </v-col>
       <template v-if="model.invoiceOnly">
         <invoice-credit-card-details-fields :data="model.paymentDetails[0]" ref="ccDetails" v-if="model.paymentType == $appConstants.transaction.paymentTypes.card"></invoice-credit-card-details-fields>
@@ -86,6 +92,7 @@
           <ec-dialog-invoker
             v-on:click="handleClick()"
             :clickable="model.dealDetails.consumerID"
+            :key="customerTokens.length"
             class="pt-2"
           >
             <template v-slot:prepend>
@@ -317,9 +324,29 @@ export default {
         this.tokensDialog = false;
       }
     },
+    excludePaymentTypes() {
+      let types = this.model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only'];
+
+      if (this.terminalStore.bankDetails){
+        let bankTypeAvailable = this.terminalStore.bankDetails.instituteName
+          && this.terminalStore.bankDetails.instituteNum
+          && this.terminalStore.bankDetails.instituteServiceNum;
+
+        if (!bankTypeAvailable){
+          types.push('bank');
+        }
+      } else {
+        types.push('bank');
+      }
+      return types;
+    }
   },
   methods: {
     async processCustomer(data) {
+      if (this.model.dealDetails.consumerID !== data.consumerID){
+        this.token = null;
+      }
+
       this.model.dealDetails = Object.assign(this.model.dealDetails, {
         consumerEmail: data.consumerEmail,
         consumerPhone: data.consumerPhone,
@@ -442,7 +469,7 @@ export default {
       await this.getCustomerTokens();
         this.token = this.lodash.find(
           this.customerTokens,
-          t => t.creditCardTokenID == result.entityReference
+          t => t.creditCardTokenID == data.creditCardTokenID
         );
       this.$refs.ctokenDialogRef.reset();
     },
@@ -534,8 +561,8 @@ export default {
       this.issueInvoice = false;
       this.issueInvoiceDisabled = true;
     }
-    else if (this.model.issueInvoice) {
-      this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
+    else if (!this.model.billingDealID) {
+      this.model.issueInvoice = !!this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing);
     }
     
     if(!this.model.vatRate){

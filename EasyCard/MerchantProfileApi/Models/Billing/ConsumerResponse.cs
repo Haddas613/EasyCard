@@ -50,5 +50,15 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerNote { get; set; }
 
         public BankDetails BankDetails { get; set; }
+
+        /// <summary>
+        /// External ID inside https://woocommerce.com system
+        /// </summary>
+        public string WoocommerceID { get; set; }
+
+        /// <summary>
+        /// External ID inside https://www.ecwid.com system
+        /// </summary>
+        public string EcwidID { get; set; }
     }
 }

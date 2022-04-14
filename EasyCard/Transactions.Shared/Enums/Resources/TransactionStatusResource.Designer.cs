@@ -79,6 +79,24 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chargeback.
+        /// </summary>
+        public static string Chargeback {
+            get {
+                return ResourceManager.GetString("Chargeback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chargeback Failed.
+        /// </summary>
+        public static string ChargebackFailed {
+            get {
+                return ResourceManager.GetString("ChargebackFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commited by aggregator.
         /// </summary>
         public static string CommitedByAggregator {
@@ -165,15 +183,6 @@ namespace Transactions.Shared.Enums.Resources {
         public static string Initial {
             get {
                 return ResourceManager.GetString("Initial", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refund.
-        /// </summary>
-        public static string Refund {
-            get {
-                return ResourceManager.GetString("Refund", resourceCulture);
             }
         }
         

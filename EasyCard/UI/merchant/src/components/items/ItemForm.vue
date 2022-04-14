@@ -33,12 +33,22 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" class="py-0">
+      <v-col cols="12" md="6" class="py-0">
         <v-text-field
           v-model="model.externalReference"
           :counter="50"
           :rules="[vr.primitives.maxLength(50)]"
           :label="$t('ExternalReference')"
+          class="px-1"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" class="py-0">
+        <v-text-field
+          v-model="model.woocommerceID"
+          :counter="50"
+          :rules="[vr.primitives.maxLength(50)]"
+          :label="$t('WoocommerceID')"
           class="px-1"
           outlined
         ></v-text-field>

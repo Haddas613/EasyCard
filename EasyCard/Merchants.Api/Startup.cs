@@ -1,6 +1,7 @@
 using AutoMapper;
 using BasicServices;
 using BasicServices.BlobStorage;
+using Bit.Configuration;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Api.Data;
@@ -339,6 +340,20 @@ namespace Merchants.Api
                 var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, logger);
 
                 return blobStorageService;
+            });
+
+            //NOTE: this is not fully functioning Bit Processor as we only need it for request logs
+            services.AddSingleton<Bit.BitProcessor, Bit.BitProcessor>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Bit.BitProcessor>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.BitRequestsLogStorageTable, cfg.BitRequestsLogStorageTable);
+
+                var bitOptionsConfig = serviceProvider.GetRequiredService<IOptions<BitGlobalSettings>>();
+                //var tokenSvc = new BitTokensService(webApiClient, bitOptionsConfig.Value);
+
+                return new Bit.BitProcessor(bitOptionsConfig, webApiClient, logger, storageService, null);
             });
 
             // DI: request logging

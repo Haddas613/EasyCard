@@ -58,6 +58,8 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.Processor.ShvaTransactionDetails>();
+
+            //ThreeDSIntermediateData
         }
     }
 }

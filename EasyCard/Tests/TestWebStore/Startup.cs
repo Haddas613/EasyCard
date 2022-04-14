@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using TestWebStore.Models;
+using Transactions.Business.Services;
 
 namespace TestWebStore
 {
@@ -24,6 +27,22 @@ namespace TestWebStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+
+            services.AddSingleton<IThreeDSIntermediateStorage, ThreeDSIntermediateStorage>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+
+                return new ThreeDSIntermediateStorage(cfg.DefaultStorageConnectionString, "threedscallback");
+            });
+
+            services.AddSingleton<WebHookStorage, WebHookStorage>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+
+                return new WebHookStorage(cfg.DefaultStorageConnectionString, "testwebhooks");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

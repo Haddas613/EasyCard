@@ -24,5 +24,10 @@
     </p>
 }
 
-
+@if (Model.ReturnURL != null)
+{
+    <center class="pt-4">
+        <a class="btn btn-outline-primary" href="@Model.ReturnURL">@localizer.Get("GoBackToPayment")</a>
+    </center>
+}
 

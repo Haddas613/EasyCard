@@ -70,5 +70,39 @@ namespace Transactions.Business.Entities
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerExternalReference { get; set; }
+
+        [StringLength(50)]
+        public string ConsumerWoocommerceID { get; set; }
+
+        [StringLength(50)]
+        public string ConsumerEcwidID { get; set; }
+
+        /// <summary>
+        /// External responsible person
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ResponsiblePerson { get; set; }
+
+        /// <summary>
+        /// External user id
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ExternalUserID { get; set; }
+
+        /// <summary>
+        /// External branch
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string Branch { get; set; }
+
+        /// <summary>
+        /// External department
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string Department { get; set; }
     }
 }

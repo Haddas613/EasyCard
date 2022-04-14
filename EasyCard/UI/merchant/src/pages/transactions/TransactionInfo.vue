@@ -3,12 +3,17 @@
     <div v-if="model">
       <transaction-printout ref="printout" :transaction="model"></transaction-printout>
       <transaction-slip-dialog ref="slipDialog" :transaction="model" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
-      <bit-refund-dialog ref="bitRefundDialog" :transaction="model" :show.sync="bitRefundDialog" @refund="onBitRefundCompleted($event)"></bit-refund-dialog>
+      <refund-dialog ref="refundDialog" :transaction="model" :show.sync="refundDialog" @refund="onRefundCompleted($event)"></refund-dialog>
       <v-card flat class="mb-2">
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-row class="info-container body-1 black--text" v-if="model">
+            <v-col cols="12" v-if="model.specialTransactionType == 'refund'">
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-information-outline" type="warning">
+                <span class="error--text">{{$t("ThisIsARefundTransaction")}}</span>
+              </v-alert>
+            </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
               <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
@@ -30,7 +35,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
-              <p>{{model.paymentTypeEnum}}</p>
+              <p v-if="dictionaries.paymentTypeEnum">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum] || model.paymentTypeEnum}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
@@ -55,18 +60,24 @@
                 <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
               </p>
             </v-col>
+            <v-col cols="12" md="4" class="pb-0 info-block" v-if="model.status == 'refund'">
+              <p class="caption error--text text--darken-2">{{$t('TotalRefundOutOf')}}</p>
+              <p>
+                <b>{{model.totalRefund || 0}}/{{model.transactionAmount | currency(model.currency)}}</b>
+              </p>
+            </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
               <router-link
                 class="primary--text"
                 link
                 :to="{name: 'Invoice', params: {id: model.invoiceID}}"
-                 v-if="model.invoiceID"
+                v-if="model.invoiceID"
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
               <v-btn x-small color="primary" 
-                v-else-if="canCreateInvoice()"
+                v-else-if="model.allowInvoiceCreation"
                 @click="createInvoice()" :loading="loading">
                   {{$t("CreateInvoice")}}
               </v-btn>
@@ -92,6 +103,14 @@
                 <small>{{model.billingDealID | guid}}</small>
               </router-link>
             </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
+              <p>{{model.documentOrigin}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('OriginURL')}}</p>
+              <p>{{model.origin || '-'}}</p>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
@@ -102,15 +121,15 @@
         >{{$t("Items")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency"></transaction-items-list>
+          <transaction-items-list :items="model.dealDetails.items" :currency="model.currency"></transaction-items-list>
         </v-card-text>
       </v-card>
       <deal-details
         :model="model.dealDetails"
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
-      <credit-card-details :model="model.creditCardDetails" v-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.card"></credit-card-details>
-      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.$paymentTypeEnum == $appConstants.transaction.paymentTypes.bank"></bank-payment-details>
+      <credit-card-details :model="model.creditCardDetails" v-if="model.paymentTypeEnum == $appConstants.transaction.paymentTypes.card"></credit-card-details>
+      <bank-payment-details card :model="model.bankTransferDetails" v-else-if="model.paymentTypeEnum == $appConstants.transaction.paymentTypes.bank"></bank-payment-details>
 
       <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2">
@@ -173,7 +192,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   components: {
@@ -197,8 +216,8 @@ export default {
       import("../../components/details/ClearingHouseTransactionDetails"),
     BankPaymentDetails: () =>
       import("../../components/details/BankPaymentDetails"),
-    BitRefundDialog: () =>
-      import("../../components/transactions/BitRefundDialog"),
+    RefundDialog: () =>
+      import("../../components/transactions/RefundDialog"),
   },
   data() {
     return {
@@ -208,11 +227,14 @@ export default {
         Pending: "primary--text",
         None: "ecgray--text",
         Completed: "success--text",
+        Done: "success--text",
         Failed: "error--text",
-        Canceled: "accent--text"
+        Canceled: "accent--text",
+        Refund: "error--text",
       },
       transactionSlipDialog: false,
-      bitRefundDialog: false,
+      refundDialog: false,
+      dictionaries: {},
     };
   },
   async mounted() {
@@ -223,6 +245,8 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
+    this.dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+
     await this.initThreeDotMenu();
   },
   methods: {
@@ -276,6 +300,8 @@ export default {
         );
       this.model = tr;
       this.model.allowTransmission = false;
+      await this.initThreeDotMenu();
+      this.$forceUpdate();
     },
     async createInvoice(){
       this.loading = true;
@@ -285,12 +311,6 @@ export default {
         this.$set(this.model, 'invoiceID', operation.entityReference);
       }
       this.loading = false;
-    },
-    canCreateInvoice(){
-      return (this.$integrationAvailable(this.terminalStore, this.$appConstants.terminal.integrations.invoicing) 
-        && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
-        && this.model.dealDetails.consumerEmail
-        && (this.model.currency =='ILS' || this.model.$currency =='ILS'))
     },
     async selectJ5(){
       let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);
@@ -323,10 +343,41 @@ export default {
         });
       }
 
-      if(this.canPerformBitRefund){
+      if(this.model.$status == 'refund'){
+        threeDotMenu.push({
+          text: this.$t("ShowRefunds"),
+          fn: () => {
+              this.$router.push({
+                name: "TransactionsFiltered",
+                params: {
+                  filters: {
+                    initialTransactionID: this.$route.params.id,
+                    specialTransactionType: 'refund',
+                  }
+                }
+              });
+              
+              setTimeout(() => this.refreshKeepAlive(), 500);
+            },
+        });
+      }
+
+      if(this.model.specialTransactionType == 'refund' && this.model.initialTransactionID){
+        threeDotMenu.push({
+          text: this.$t("ShowInitialTransaction"),
+          fn: () => this.$router.push({
+            name: "Transaction",
+            params: {
+              id: this.model.initialTransactionID,
+            }
+          }),
+        });
+      }
+
+      if(this.model.allowRefund){
         threeDotMenu.push({
           text: this.$t("Refund"),
-          fn: () => this.bitRefundDialog = true,
+          fn: () => this.refundDialog = true,
         });
       }
 
@@ -336,10 +387,19 @@ export default {
         }
       });
     },
-    async onBitRefundCompleted(refundedAmount){
-      this.$set(this.model, 'totalRefund', refundedAmount);
-      await this.initThreeDotMenu();
+    async onRefundCompleted(data){
+      this.$set(this.model, 'totalRefund', data.refundedAmount);
+      this.$router.push({
+        name: "Transaction",
+        params: {
+          id: data.transactionID,
+        },
+      });
+      //await this.initThreeDotMenu();
     },
+    ...mapMutations({
+      refreshKeepAlive: 'ui/refreshKeepAlive',
+    }),
   },
   computed: {
     isInstallmentTransaction() {
@@ -351,12 +411,6 @@ export default {
     ...mapState({
       terminalStore: state => state.settings.terminal
     }),
-    canPerformBitRefund() {
-      return (
-        (this.model.status === "completed" || this.model.status === "refund")
-        && this.model.$documentOrigin === "bit" && (this.model.totalRefund || 0) < this.model.transactionAmount
-      );
-    },
   }
 };
 </script>

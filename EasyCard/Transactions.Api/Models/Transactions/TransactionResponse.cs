@@ -196,16 +196,6 @@ namespace Transactions.Api.Models.Transactions
         public byte[] UpdateTimestamp { get; set; }
 
         /// <summary>
-        /// Transaction can be transmitted manually
-        /// </summary>
-        public bool AllowTransmission { get; set; }
-
-        /// <summary>
-        /// Transaction transmission cannot be canceled manually
-        /// </summary>
-        public bool AllowTransmissionCancellation { get; set; }
-
-        /// <summary>
         /// Reference to billing schedule which produced this transaction
         /// </summary>
         public Guid? BillingDealID { get; set; }
@@ -280,5 +270,66 @@ namespace Transactions.Api.Models.Transactions
         public object BitTransactionDetails { get; set; }
 
         public decimal? TotalRefund { get; set; }
+
+        /// <summary>
+        /// Origin site url or label
+        /// </summary>
+        public string Origin { get; set; }
+
+        /// <summary>
+        /// Transaction can be transmitted manually
+        /// </summary>
+        public bool AllowTransmission
+        {
+            get
+            {
+                return PaymentTypeEnum == PaymentTypeEnum.Card && Status == TransactionStatusEnum.AwaitingForTransmission;
+            }
+        }
+
+        [JsonIgnore]
+        public bool TransmissionCancellationPossible
+        {
+            get
+            {
+                return Status == TransactionStatusEnum.AwaitingForTransmission && !InvoiceID.HasValue;
+            }
+        }
+
+        /// <summary>
+        /// Transaction transmission cannot be canceled manually
+        /// </summary>
+        public bool AllowTransmissionCancellation
+        {
+            get => allowTransmissionCancellation;
+            set => allowTransmissionCancellation = TransmissionCancellationPossible & value;
+        }
+
+        private bool allowTransmissionCancellation;
+
+        public bool AllowRefund { get; set; }
+
+        private bool allowRefund;
+
+        [JsonIgnore]
+        public bool InvoiceCreationPossible
+        {
+            get
+            {
+                return InvoiceID == null && Currency == CurrencyEnum.ILS
+                 && QuickStatus != QuickStatusFilterTypeEnum.Canceled && QuickStatus != Shared.Enums.QuickStatusFilterTypeEnum.Failed;
+            }
+        }
+
+        /// <summary>
+        /// Invoice can be created for this transaction
+        /// </summary>
+        public bool AllowInvoiceCreation
+        {
+            get => allowInvoiceCreation;
+            set => allowInvoiceCreation = InvoiceCreationPossible & value;
+        }
+
+        private bool allowInvoiceCreation;
     }
 }

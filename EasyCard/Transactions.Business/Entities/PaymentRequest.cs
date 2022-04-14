@@ -188,5 +188,12 @@ namespace Transactions.Business.Entities
 
         [NotMapped]
         public Guid? BillingDealID { get; set; }
+
+        [NotMapped]
+        public string Language { get; set; }
+
+        public string PaymentRequestUrl { get; set; }
+
+        public string Origin { get; set; }
     }
 }

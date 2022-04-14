@@ -2,6 +2,7 @@
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
@@ -21,7 +22,7 @@ namespace Transactions.Business.Entities
             BillingDealTimestamp = DateTime.UtcNow;
             BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
 
-            //CreditCardDetails = new CreditCardDetails();
+            Active = true;
 
             DealDetails = new DealDetails();
         }
@@ -88,7 +89,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Date-time when next transaction should be generated
         /// </summary>
-        public DateTime? NextScheduledTransaction { get; set; }
+        public DateTime? NextScheduledTransaction { get; private set; }
 
         /// <summary>
         /// Reference to last deal
@@ -98,7 +99,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Credit card information (just to display)
         /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        public CreditCardDetails CreditCardDetails { get; private set; }
 
         /// <summary>
         /// Bank account information
@@ -108,7 +109,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Stored credit card details token
         /// </summary>
-        public Guid? CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; private set; }
 
         /// <summary>
         /// Deal information
@@ -118,7 +119,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Billing Schedule
         /// </summary>
-        public BillingSchedule BillingSchedule { get; set; }
+        public BillingSchedule BillingSchedule { get; private set; }
 
         /// <summary>
         /// Invoice details
@@ -131,6 +132,16 @@ namespace Transactions.Business.Entities
         public bool IssueInvoice { get; set; }
 
         public bool InvoiceOnly { get; set; }
+
+        [NotMapped]
+        public BillingDealTypeEnum BillingDealType =>
+                (InvoiceOnly, PaymentType) switch
+                {
+                    (true, _) => BillingDealTypeEnum.InvoiceOnly,
+                    (false, PaymentTypeEnum.Card) => BillingDealTypeEnum.CreditCard,
+                    (false, PaymentTypeEnum.Bank) => BillingDealTypeEnum.Bank,
+                    _ => BillingDealTypeEnum.CreditCard
+                };
 
         /// <summary>
         /// Date-time when transaction status updated
@@ -155,7 +166,7 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
-        public bool Active { get; set; }
+        public bool Active { get; private set; }
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
@@ -186,7 +197,7 @@ namespace Transactions.Business.Entities
 
         public PaymentTypeEnum PaymentType { get; set; }
 
-        public bool HasError { get; set; }
+        public bool HasError { get; private set; }
 
         public string LastError { get; set; }
 
@@ -199,6 +210,68 @@ namespace Transactions.Business.Entities
         public BillingProcessingStatusEnum InProgress { get; set; }
 
         public int? FailedAttemptsCount { get; set; }
+
+        public DateTime? ExpirationEmailSent { get; set; }
+
+        public DateTime? TokenUpdated { get; set; }
+
+        public DateTime? TokenCreated { get; set; }
+
+        [NotMapped]
+        public bool? TokenNotAvailable
+        {
+            get { return PaymentType == PaymentTypeEnum.Card && CreditCardToken == null; }
+        }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails, DateTime? tokenCreated)
+        {
+            if (PaymentType != PaymentTypeEnum.Card || InvoiceOnly == true)
+            {
+                throw new ApplicationException($"It is not possible to set token for billing {BillingDealID} because payment type is {PaymentType} and InvoiceOnly flag is {InvoiceOnly}");
+            }
+
+            CreditCardToken = token;
+            ExpirationEmailSent = null;
+            CreditCardDetails = creditCardDetails;
+            TokenCreated = tokenCreated;
+            TokenUpdated = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+        }
+
+        public void ResetToken()
+        {
+            CreditCardToken = null;
+        }
+
+        public void Activate()
+        {
+            Active = true;
+        }
+
+        public void Deactivate()
+        {
+            Active = false;
+        }
+
+        public void UpdateNextScheduledDatInitial(BillingSchedule billingSchedule, DateTime? existingTransactionTimestamp = null)
+        {
+            BillingSchedule = billingSchedule;
+            BillingSchedule.Validate(existingTransactionTimestamp);
+
+            NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
+
+            var legalDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+            if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments &&
+                BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
+                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue &&
+                BillingSchedule.EndAt <= legalDate))
+            {
+                NextScheduledTransaction = null;
+            }
+        }
 
         public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
         {
@@ -234,18 +307,12 @@ namespace Transactions.Business.Entities
             LastError = errorMessage;
             LastErrorCorrelationID = correlationID;
             FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
-            //if (FailedAttemptsCount >= failedTransactionsCountBeforeInactivate.GetValueOrDefault(5))
-            //{
-            //    Active = false;
-            //}
-            //else
-            {
-                NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
 
-                if (NextScheduledTransaction.Value.Day > 20)
-                {
-                    NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
-                }
+            NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date.AddDays(numberOfDaysToRetryTransaction.GetValueOrDefault(1));
+
+            if (NextScheduledTransaction.Value.Day > 20)
+            {
+                NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
             }
         }
     }

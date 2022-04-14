@@ -17,6 +17,8 @@ namespace Merchants.Business.Services
     {
         IQueryable<Merchant> GetMerchants();
 
+        Task<Merchant> GetMerchant(Guid merchantID);
+
         IQueryable<MerchantHistory> GetMerchantHistories();
 
         IQueryable<UserTerminalMapping> GetMerchantUsers();

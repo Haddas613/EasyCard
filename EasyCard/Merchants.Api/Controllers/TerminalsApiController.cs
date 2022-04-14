@@ -589,6 +589,20 @@ namespace Merchants.Api.Controllers
             return Ok(response);
         }
 
+        [HttpDelete]
+        [Route("tds-disable/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> Disable3DS(Guid terminalID)
+        {
+            var response = new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success);
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            terminal.Support3DSecure = false;
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(response);
+        }
+
         private async Task ProcessFeatureInternal(Terminal terminal, Feature feature)
         {
             if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))

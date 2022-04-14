@@ -44,11 +44,6 @@
             Document created by consumer using Bit
             </summary>
         </member>
-        <member name="F:Transactions.Shared.Enums.DocumentOriginEnum.Ecwid">
-            <summary>
-            Document created by consumer using Ecwid
-            </summary>
-        </member>
         <member name="F:Transactions.Shared.Enums.PaymentRequestStatusEnum.Sending">
             <summary>
             Required because of technical reason - to do not send request twice
@@ -404,6 +399,16 @@
               Looks up a localized string similar to Cancelled by merchant.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Chargeback">
+            <summary>
+              Looks up a localized string similar to Chargeback.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.ChargebackFailed">
+            <summary>
+              Looks up a localized string similar to Chargeback Failed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.CommitedByAggregator">
             <summary>
               Looks up a localized string similar to Commited by aggregator.
@@ -452,11 +457,6 @@
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Initial">
             <summary>
               Looks up a localized string similar to Initial.
-            </summary>
-        </member>
-        <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.Refund">
-            <summary>
-              Looks up a localized string similar to Refund.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Enums.Resources.TransactionStatusResource.RejectedByAggregator">
@@ -549,9 +549,14 @@
             Shva transmision is done
             </summary>
         </member>
-        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Refund">
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.Chargeback">
             <summary>
             Refund is done for this transaction
+            </summary>
+        </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.ChargebackFailed">
+            <summary>
+            Refund attempt failed
             </summary>
         </member>
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">
@@ -633,6 +638,11 @@
         <member name="P:Transactions.Shared.Messages.AwaitingForTransmission">
             <summary>
               Looks up a localized string similar to Awaiting for Transmission.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.BillingDealActivated">
+            <summary>
+              Looks up a localized string similar to Billing Deal Activated.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.BillingDealCreated">
@@ -805,6 +815,11 @@
               Looks up a localized string similar to Credit Card Token changed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.CreditCardTokenRemoved">
+            <summary>
+              Looks up a localized string similar to Credit Card Token Removed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.CreditCardTokensFeatureMustBeEnabled">
             <summary>
               Looks up a localized string similar to Feature Credit Card Tokens must be enabled first.
@@ -838,6 +853,11 @@
         <member name="P:Transactions.Shared.Messages.ExpectedValue">
             <summary>
               Looks up a localized string similar to Expected @value got @input.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.ExpirationEmailSent">
+            <summary>
+              Looks up a localized string similar to Billing Deal Credit Card Expiration Email Sent.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.FailedToCancelByAggregator">
@@ -1005,6 +1025,16 @@
               Looks up a localized string similar to Payment type can not be changed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.PaymentWasCompletedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Payment completed successfully.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentWasNotCompleted">
+            <summary>
+              Looks up a localized string similar to Payment was not completed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.PleaseCheckValues">
             <summary>
               Looks up a localized string similar to Please check specified values.
@@ -1018,6 +1048,11 @@
         <member name="P:Transactions.Shared.Messages.ProcessorNotDefined">
             <summary>
               Looks up a localized string similar to Processor is not defined.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.RejectedBy3DSecure">
+            <summary>
+              Looks up a localized string similar to Rejected by 3DSecure.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.RejectedByAggregator">
@@ -1163,6 +1198,11 @@
         <member name="P:Transactions.Shared.Messages.TransmittedByProcessor">
             <summary>
               Looks up a localized string similar to Transmitted By Processor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.TriggerTransactionFailed">
+            <summary>
+              Looks up a localized string similar to Billing transaction triggering failed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.UserAmountRequiredValidationMessage">

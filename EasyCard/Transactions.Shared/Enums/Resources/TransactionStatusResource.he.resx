@@ -180,4 +180,7 @@
   <data name="Refund" xml:space="preserve">
     <value>הֶחזֵר</value>
   </data>
+  <data name="RefundFailed" xml:space="preserve">
+    <value>Refund Failed</value>
+  </data>
 </root>

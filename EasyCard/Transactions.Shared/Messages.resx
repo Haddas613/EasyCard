@@ -135,6 +135,9 @@
   <data name="AwaitingForTransmission" xml:space="preserve">
     <value>Awaiting for Transmission</value>
   </data>
+  <data name="BillingDealActivated" xml:space="preserve">
+    <value>Billing Deal Activated</value>
+  </data>
   <data name="BillingDealCreated" xml:space="preserve">
     <value>Billing Deal Created</value>
   </data>
@@ -237,6 +240,9 @@
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>Credit Card Token changed</value>
   </data>
+  <data name="CreditCardTokenRemoved" xml:space="preserve">
+    <value>Credit Card Token Removed</value>
+  </data>
   <data name="CreditCardTokensFeatureMustBeEnabled" xml:space="preserve">
     <value>Feature Credit Card Tokens must be enabled first</value>
   </data>
@@ -257,6 +263,9 @@
   </data>
   <data name="ExpectedValue" xml:space="preserve">
     <value>Expected @value got @input</value>
+  </data>
+  <data name="ExpirationEmailSent" xml:space="preserve">
+    <value>Billing Deal Credit Card Expiration Email Sent</value>
   </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>
@@ -357,6 +366,12 @@
   <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
     <value>Payment type can not be changed</value>
   </data>
+  <data name="PaymentWasCompletedSuccessfully" xml:space="preserve">
+    <value>Payment completed successfully</value>
+  </data>
+  <data name="PaymentWasNotCompleted" xml:space="preserve">
+    <value>Payment was not completed</value>
+  </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
   </data>
@@ -365,6 +380,9 @@
   </data>
   <data name="ProcessorNotDefined" xml:space="preserve">
     <value>Processor is not defined</value>
+  </data>
+  <data name="RejectedBy3DSecure" xml:space="preserve">
+    <value>Rejected by 3DSecure</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
     <value>Failed To Process Transaction</value>
@@ -452,6 +470,9 @@
   </data>
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
+  </data>
+  <data name="TriggerTransactionFailed" xml:space="preserve">
+    <value>Billing transaction triggering failed</value>
   </data>
   <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
     <value>User Amount must be set to true when making transaction without amount</value>

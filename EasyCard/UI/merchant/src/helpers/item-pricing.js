@@ -4,8 +4,13 @@ const itemFunctions = {
     calculate: function(item, opts){
         let amount = this.calculateAmount(item);
         //let vatRate = item.vatRate >= 0 ? item.vatRate : opts.vatRate;
-        let netAmount = amount ? this.calculateNetAmount(amount, opts.vatRate) : 0;
-        let vat = this.calculateVat(amount, netAmount);
+        let netAmount = 0;
+        let vat = 0;
+
+        if  (opts.vatRate){
+            netAmount = amount ? this.calculateNetAmount(amount, opts.vatRate) : 0;
+            vat = this.calculateVat(amount, netAmount);
+        }
         
         item.amount = amount;
         item.netAmount = netAmount;

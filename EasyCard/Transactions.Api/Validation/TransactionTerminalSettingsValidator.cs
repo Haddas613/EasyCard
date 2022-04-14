@@ -2,6 +2,7 @@
 using Merchants.Shared.Models;
 using Shared.Business.Messages;
 using Shared.Helpers;
+using Shared.Integration;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Shared;
+using SharedBusiness = Shared.Business;
 using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api.Validation
@@ -195,6 +197,28 @@ namespace Transactions.Api.Validation
             else
             {
                 return;
+            }
+        }
+
+        public static void ValidatePinpad(Terminal terminal, CreateTransactionRequest model)
+        {
+            if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
+            {
+                var nayaxIntegration = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
+                if (nayaxIntegration == null)
+                {
+                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "PinpadIntegration", null);
+                }
+
+                var devices = nayaxIntegration.Settings.ToObject<Nayax.Models.NayaxTerminalCollection>();
+                var firstDevice = devices.devices.FirstOrDefault();
+
+                if (firstDevice == null)
+                {
+                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "PinPadDevice", null);
+                }
+
+                model.PinPadDeviceID = firstDevice.TerminalID;
             }
         }
     }

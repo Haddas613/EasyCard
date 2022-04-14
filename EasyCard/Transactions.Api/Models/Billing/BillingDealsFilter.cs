@@ -8,11 +8,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Billing
 {
     public class BillingDealsFilter : FilterBase
     {
+        public BillingsQuickStatusFilterEnum? QuickStatus { get; set; }
+
         public Guid? TerminalID { get; set; }
 
         [SwaggerExclude]
@@ -82,5 +85,7 @@ namespace Transactions.Api.Models.Billing
         public bool CreditCardExpired { get; set; }
 
         public string ConsumerExternalReference { get; set; }
+
+        public BillingDealTypeEnum? BillingDealType { get; set; }
     }
 }

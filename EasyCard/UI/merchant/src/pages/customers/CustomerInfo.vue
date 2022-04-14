@@ -1,5 +1,6 @@
 <template>
   <v-flex>
+    <customer-delete-dialog :show.sync="deleteCustomerDialog" @ok="deleteCustomer()"></customer-delete-dialog>
     <v-card flat class="mx-2 my-2">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
@@ -34,6 +35,10 @@
             <div class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
               <p class="primary--text">{{model.consumerEmail}}</p>
+            </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
+              <p>{{model.origin || '-'}}</p>
             </div>
             <template v-if="model.consumerAddress">
               <div class="info-block">
@@ -77,8 +82,8 @@
               <p>{{model.externalReference || '-'}}</p>
             </div>
             <div class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
-              <p>{{model.origin || '-'}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('WoocommerceID')}}</p>
+              <p>{{model.woocommerceID || '-'}}</p>
             </div>
             <template v-if="model.consumerAddress">
               <div class="info-block">
@@ -156,6 +161,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     BankPaymentDetails: () => import("../../components/details/BankPaymentDetails"),
+    CustomerDeleteDialog: () => import("../../components/customers/CustomerDeleteDialog"),
   },
   props: {
     data: {
@@ -167,26 +173,30 @@ export default {
   data() {
     return {
       model: {},
-      tokens: null
+      tokens: null,
+      deleteCustomerDialog: false,
     };
   },
   methods: {
-    async switchCustomerStatus() {
+    async restoreCustomer(){
+      let result = await this.$api.consumers.updateConsumer(this.$route.params.id, {
+        ...this.model,
+        active: true,
+      });
+      if (!this.$apiSuccess(result)) return;
+      this.model.active = true;
+      this.initMenu();
+    },
+    async showDeleteCustomerDialog(){
+      this.deleteCustomerDialog = true;
+    },
+    async deleteCustomer(){
       if(this.model.active){
         let result = await this.$api.consumers.deleteConsumer(
           this.$route.params.id
         );
         return this.$router.push({ name: "Customers" });
       }
-      else{
-        let result = await this.$api.consumers.updateConsumer(this.$route.params.id, {
-          ...this.model,
-          active: true,
-        });
-        if (!this.$apiSuccess(result)) return;
-        this.model.active = true;
-      }
-      this.initMenu();
     },
     async deleteCardToken(tokenId) {
       let result = await this.$api.cardTokens.deleteCardToken(tokenId);
@@ -290,7 +300,7 @@ export default {
             },
             {
               text: this.model.active ? this.$t("DeleteCustomer") : this.$t("RestoreCustomer"),
-              fn: this.switchCustomerStatus.bind(this)
+              fn: () => this.model.active ? this.showDeleteCustomerDialog() : this.restoreCustomer(),
             }
           ],
           text: { translate: false, value: this.model.consumerName }

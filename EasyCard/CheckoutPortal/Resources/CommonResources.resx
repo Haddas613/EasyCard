@@ -267,4 +267,13 @@
   <data name="ChoosePaymentMethod" xml:space="preserve">
     <value>Choose payment method</value>
   </data>
+  <data name="ThreeDSError" xml:space="preserve">
+    <value>3D Secure Error</value>
+  </data>
+  <data name="PayersName" xml:space="preserve">
+    <value>Payer's name</value>
+  </data>
+  <data name="GoBackToPayment" xml:space="preserve">
+    <value>Go back to Payment</value>
+  </data>
 </root>

@@ -21,8 +21,12 @@
     [ConsumerSecondPhone]     NVARCHAR (50)    NULL,
     [BankDetails]             NVARCHAR (MAX)   NULL,
     [MergedFromConsumerID]    UNIQUEIDENTIFIER NULL,
+    [EcwidID]                 VARCHAR (50)     NULL,
+    [WoocommerceID]           VARCHAR (50)     NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
+
+
 
 
 

@@ -17,6 +17,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Events;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Resources;
 using Shared.Helpers.Services;
@@ -51,7 +52,7 @@ namespace Transactions.Api.Controllers.External
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly ITransactionsService transactionsService;
-        private readonly IMetricsService metrics;
+        private readonly IEventsService events;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
@@ -60,8 +61,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ApiSettings apiSettings;
         private readonly IPaymentIntentService paymentIntentService;
         private readonly IPaymentRequestsService paymentRequestsService;
-        private readonly IInvoiceService invoiceService;
-        private readonly IQueue invoiceQueue;
+        private readonly InvoicingController invoicingController;
 
         public BitApiController(
              IAggregatorResolver aggregatorResolver,
@@ -69,20 +69,19 @@ namespace Transactions.Api.Controllers.External
              ITerminalsService terminalsService,
              IMapper mapper,
              ILogger<BitApiController> logger,
-             IMetricsService metrics,
+             IEventsService events,
              IHttpContextAccessorWrapper httpContextAccessor,
              BitProcessor bitProcessor,
              ISystemSettingsService systemSettingsService,
              IOptions<ApiSettings> apiSettings,
              IPaymentIntentService paymentIntentService,
              IPaymentRequestsService paymentRequestsService,
-             IInvoiceService invoiceService,
-             IQueueResolver queueResolver)
+             InvoicingController invoicingController)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.aggregatorResolver = aggregatorResolver;
             this.transactionsService = transactionService;
-            this.metrics = metrics;
+            this.events = events;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.mapper = mapper;
@@ -91,8 +90,7 @@ namespace Transactions.Api.Controllers.External
             this.apiSettings = apiSettings.Value;
             this.paymentIntentService = paymentIntentService;
             this.paymentRequestsService = paymentRequestsService;
-            this.invoiceService = invoiceService;
-            this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
+            this.invoicingController = invoicingController;
         }
 
         [HttpGet]
@@ -169,7 +167,6 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-                metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
@@ -337,7 +334,7 @@ namespace Transactions.Api.Controllers.External
                 return new OperationResponse($"It is possible to make refund only for Bit transactions", StatusEnum.Error);
             }
 
-            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Refund)
+            if (transaction.Status != TransactionStatusEnum.Completed && transaction.Status != TransactionStatusEnum.Chargeback)
             {
                 return new OperationResponse($"It is possible to make refund only for completed or partially refunded Bit transactions", StatusEnum.Error);
             }
@@ -397,7 +394,7 @@ namespace Transactions.Api.Controllers.External
 
                     transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Refund, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Chargeback, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
                 }
                 catch (Exception ex)
                 {
@@ -492,61 +489,19 @@ namespace Transactions.Api.Controllers.External
         // TODO: return
         private async Task CreateInvoice(PaymentTransaction transaction, Terminal terminal)
         {
-            if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
+            var invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
             {
-                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
-                {
-                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-                    {
-                        try
-                        {
-                            Invoice invoiceRequest = new Invoice();
-                            mapper.Map(transaction, invoiceRequest);
-                            invoiceRequest.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
-                            {
-                                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
-                                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                                SendCCTo = terminal.InvoiceSettings.SendCCTo
-                            };
+                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
+                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
+                SendCCTo = terminal.InvoiceSettings.SendCCTo
+            };
 
-                            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
-                            {
-                                invoiceRequest.InvoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
-                            }
-
-                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
-                            invoiceRequest.DealDetails = transaction.DealDetails;
-
-                            invoiceRequest.MerchantID = terminal.MerchantID;
-
-                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                            invoiceRequest.Calculate();
-
-                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                            transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                            // TODO: validate, rollback
-                            if (invoicesToResend.Count() > 0)
-                            {
-                                await invoiceQueue.PushToQueue(invoicesToResend.First());
-                            }
-
-                            await dbTransaction.CommitAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(Capture)}: Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-                            await dbTransaction.RollbackAsync();
-                        }
-                    }
-                }
+            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+            {
+                invoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
             }
+
+            await invoicingController.ProcessInvoice(terminal, transaction, invoiceDetails);
         }
 
         private async Task<ActionResult<OperationResponse>> PostProcessTransaction(PaymentTransaction transaction, Terminal terminal, bool sucessCapture)
@@ -629,41 +584,41 @@ namespace Transactions.Api.Controllers.External
                 await CreateInvoice(transaction, terminal);
             }
 
-            try
+            if (sucessCapture)
             {
-                if (transaction.PaymentIntentID != null)
+                try
                 {
-                    await paymentIntentService.DeletePaymentIntent(transaction.PaymentIntentID.GetValueOrDefault());
-                }
-                else if (transaction.PaymentRequestID != null)
-                {
-                    var dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
-
-                    if (dbPaymentRequest != null)
+                    if (transaction.PaymentIntentID != null)
                     {
-                        if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                        await paymentIntentService.DeletePaymentIntent(transaction.PaymentIntentID.GetValueOrDefault());
+                    }
+                    else if (transaction.PaymentRequestID != null)
+                    {
+                        var dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
+
+                        if (dbPaymentRequest != null)
                         {
-                            logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} status not valid ({dbPaymentRequest.Status}). Transaction id: {transaction.PaymentTransactionID}");
+                            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                            {
+                                logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} status not valid ({dbPaymentRequest.Status}). Transaction id: {transaction.PaymentTransactionID}");
+                            }
+                            else
+                            {
+                                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, sucessCapture ? PaymentRequestStatusEnum.Payed : PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: transaction.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                            }
                         }
                         else
                         {
-                            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, sucessCapture ? PaymentRequestStatusEnum.Payed : PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: transaction.PaymentTransactionID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                            logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} not found. Transaction id: {transaction.PaymentTransactionID}");
                         }
                     }
-                    else
-                    {
-                        logger.LogError($"Failed to finalize payment request/intent Transaction for Bit: Payment request {transaction.PaymentRequestID} not found. Transaction id: {transaction.PaymentTransactionID}");
-                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
-            }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
+                }
 
-            if (sucessCapture)
-            {
-                return new OperationResponse(Shared.Messages.TransactionUpdated, StatusEnum.Success, transaction.PaymentTransactionID);
+                return new OperationResponse(Shared.Messages.PaymentWasCompletedSuccessfully, StatusEnum.Success, transaction.PaymentTransactionID);
             }
             else
             {
@@ -673,7 +628,14 @@ namespace Transactions.Api.Controllers.External
                 }
                 else
                 {
-                    return BadRequest(new OperationResponse($"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}", StatusEnum.Error, transaction.PaymentTransactionID));
+                    string message = bitTransaction?.RequestStatusCode switch
+                    {
+                        "3" => Shared.Messages.PaymentWasNotCompleted,
+                        "11" => Shared.Messages.PaymentWasCompletedSuccessfully,
+                        _ => $"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}"
+                    };
+
+                    return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
             }
         }

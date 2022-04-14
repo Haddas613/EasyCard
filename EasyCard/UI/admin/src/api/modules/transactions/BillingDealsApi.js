@@ -47,10 +47,6 @@ export default class BillingDealsApi {
         return await this.base.get(this.billingUrl + `/${billingDealId}/history`);
     }
 
-    async switchBillingDeal(id, data) {
-        return await this.base.post(this.billingUrl + `/${id}/switch`, data);
-    }
-
     async pauseBillingDeal(id, data) {
         return await this.base.post(this.billingUrl + `/${id}/pause`, data);
     }

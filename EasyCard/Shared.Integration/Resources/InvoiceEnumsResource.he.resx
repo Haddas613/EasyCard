@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BankBilling" xml:space="preserve">
+    <value>בילינג חיובי מסב</value>
+  </data>
+  <data name="CreditCardBilling" xml:space="preserve">
+    <value>בילינג חיוב אשראי</value>
+  </data>
   <data name="CreditNote" xml:space="preserve">
     <value>חשבונית זיכוי</value>
   </data>
@@ -126,8 +132,14 @@
   <data name="Invoice" xml:space="preserve">
     <value>חשבונית מס</value>
   </data>
+  <data name="InvoiceOnlyBilling" xml:space="preserve">
+    <value>הפקת חשבוניות</value>
+  </data>
   <data name="InvoiceWithPaymentInfo" xml:space="preserve">
     <value>חשבונית מס/קבלה</value>
+  </data>
+  <data name="ManualInvoice" xml:space="preserve">
+    <value>חשבונית ידנית</value>
   </data>
   <data name="PaymentInfo" xml:space="preserve">
     <value>קבלה</value>
@@ -143,5 +155,8 @@
   </data>
   <data name="Sent" xml:space="preserve">
     <value>נשלח</value>
+  </data>
+  <data name="TransactionInvoice" xml:space="preserve">
+    <value>חשבונית עסקה</value>
   </data>
 </root>

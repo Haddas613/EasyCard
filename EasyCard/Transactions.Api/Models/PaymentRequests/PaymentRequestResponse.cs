@@ -36,5 +36,8 @@ namespace Transactions.Api.Models.PaymentRequests
         public PaymentRequestUserPaidDetails UserPaidDetails { get; set; }
 
         public decimal Amount { get; set; }
+
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

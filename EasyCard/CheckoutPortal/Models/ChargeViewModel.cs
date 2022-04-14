@@ -168,5 +168,19 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool? AllowBit { get; set; }
+
+        [BindNever]
+        public bool? EnableThreeDS { get; set; }
+
+        /// <summary>
+        /// If 3DSecure raises error - continue flow without 3ds
+        /// </summary>
+        [BindNever]
+        public bool? ContinueInCaseOf3DSecureError { get; set; }
+
+        [StringLength(50)]
+        public string ThreeDSServerTransID { get; set; }
+
+        public string Origin { get; set; }
     }
 }

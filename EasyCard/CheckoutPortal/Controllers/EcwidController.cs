@@ -94,8 +94,11 @@ namespace CheckoutPortal.Controllers
             var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
             var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
 
+            paymentRequestPayload.Origin = ecwidPayload.ReturnUrl?.GetHostFromUrl() ?? Request.GetTypedHeaders().Referer?.Host;
+
             if (customerPayload != null)
             {
+                // TODO: can we use ecwid ID to find customer ?
                 var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter
                 {
                     NationalID = customerPayload.ConsumerNationalID,
@@ -110,6 +113,7 @@ namespace CheckoutPortal.Controllers
                 }
                 else if (exisingConsumers.NumberOfRecords > 1)
                 {
+                    // TODO: proper handler
                     throw new ApplicationException("There are several consumers with same Consumer code in ECNG");
                 }
 

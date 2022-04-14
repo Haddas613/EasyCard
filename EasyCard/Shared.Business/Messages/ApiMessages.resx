@@ -135,6 +135,9 @@
   <data name="Required" xml:space="preserve">
     <value>Required</value>
   </data>
+  <data name="ShouldNotBeEmpty" xml:space="preserve">
+    <value>The field should not be empty</value>
+  </data>
   <data name="ValidationErrors" xml:space="preserve">
     <value>Validation errors</value>
   </data>

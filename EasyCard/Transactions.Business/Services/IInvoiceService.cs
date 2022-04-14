@@ -16,5 +16,7 @@ namespace Transactions.Business.Services
         Task<IEnumerable<Guid>> StartSending(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction);
 
         IQueryable<InvoiceHistory> GetInvoiceHistory(Guid invoiceID);
+
+        Task<Invoice> GetInvoice(Guid invoiceID);
     }
 }

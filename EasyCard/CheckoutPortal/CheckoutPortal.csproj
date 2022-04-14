@@ -7,12 +7,17 @@
 
   <ItemGroup>
     <Compile Remove="Helpers\Attributes\**" />
+    <Compile Remove="Views\3DS\**" />
     <Content Remove="Helpers\Attributes\**" />
+    <Content Remove="Views\3DS\**" />
     <EmbeddedResource Remove="Helpers\Attributes\**" />
+    <EmbeddedResource Remove="Views\3DS\**" />
     <None Remove="Helpers\Attributes\**" />
+    <None Remove="Views\3DS\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\Ecwid\Ecwid.csproj" />
     <ProjectReference Include="..\MerchantProfileApi.Client\MerchantProfileApi.Client.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />

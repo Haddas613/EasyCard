@@ -3,6 +3,7 @@ using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -14,7 +15,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem, IAuditEntity, IWebHookEntity
     {
         public PaymentTransaction()
         {
@@ -359,7 +360,7 @@ namespace Transactions.Business.Entities
                 return QuickStatusFilterTypeEnum.Completed;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.Refund)
+            if (@enum == Shared.Enums.TransactionStatusEnum.Chargeback)
             {
                 return QuickStatusFilterTypeEnum.Refund;
             }
@@ -370,6 +371,27 @@ namespace Transactions.Business.Entities
             }
 
             return QuickStatusFilterTypeEnum.Pending;
+        }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public string ThreeDSServerTransID { get; set; }
+
+        public string Origin { get; set; }
+
+        [NotMapped]
+        public bool AllowRefund
+        {
+            get
+            {
+                return SpecialTransactionType != SpecialTransactionTypeEnum.Refund
+                    && (Status == TransactionStatusEnum.Completed || Status == TransactionStatusEnum.Chargeback)
+                    && TotalRefund.GetValueOrDefault(0) < TransactionAmount
+                    && DocumentOrigin != DocumentOriginEnum.Device
+                    && BillingDealID == null
+                    && (DocumentOrigin == DocumentOriginEnum.Bit || CreditCardToken != null);
+            }
         }
     }
 }

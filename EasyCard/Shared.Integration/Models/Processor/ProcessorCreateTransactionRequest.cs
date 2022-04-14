@@ -139,5 +139,7 @@ namespace Shared.Integration.Models
         /// For Bit Processor only
         /// </summary>
         public string RedirectURL { get; set; }
+
+        public ThreeDSIntermediateData ThreeDSecure { get; set; }
     }
 }

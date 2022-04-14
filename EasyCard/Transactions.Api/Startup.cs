@@ -48,6 +48,8 @@ using Shared.Helpers.Sms;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
+using ThreeDS;
+using ThreeDS.Configuration;
 using Transactions.Api.Controllers;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.Tokens;
@@ -715,6 +717,49 @@ namespace Transactions.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EcwidRequestsLogStorageTable, cfg.EcwidRequestsLogStorageTable);
 
                 return new Ecwid.Api.EcwidApiClient(webApiClient, storageService, logger, ecwidCfg);
+            });
+
+            services.AddSingleton<SharedHelpers.WebHooks.IWebHookService, SharedHelpers.WebHooks.WebHookService>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<SharedHelpers.WebHooks.WebHookService>>();
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
+
+                return new SharedHelpers.WebHooks.WebHookService(webApiClient, logger, metrics);
+            });
+
+            services.AddSingleton<SharedHelpers.Events.IEventsService, SharedHelpers.Events.EventsService>(serviceProvider =>
+            {
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
+                var webHooksService = serviceProvider.GetRequiredService<SharedHelpers.WebHooks.IWebHookService>();
+
+                // TODO: invoice events, billing events metrics
+                var p1 = new Events.TransactionEventMetricsProcessor(metrics);
+
+                var p2 = new SharedHelpers.WebHooks.WebHooksEventProcessor(webHooksService);
+
+                return new SharedHelpers.Events.EventsService(p1, p2);
+            });
+
+            // 3DS integration
+            services.Configure<ThreedDSGlobalConfiguration>(Configuration.GetSection("ThreedDSGlobalConfiguration"));
+
+            services.AddSingleton<ThreeDSService, ThreeDSService>(serviceProvider =>
+            {
+                var threedsCfg = serviceProvider.GetRequiredService<IOptions<ThreedDSGlobalConfiguration>>();
+                var webApiClient = new WebApiClient(shvaCertificate);
+                var logger = serviceProvider.GetRequiredService<ILogger<ThreeDSService>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, "threeds", "threeds");
+
+                return new ThreeDSService(threedsCfg, webApiClient, logger, storageService);
+            });
+
+            services.AddSingleton<IThreeDSIntermediateStorage, ThreeDSIntermediateStorage>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+
+                return new ThreeDSIntermediateStorage(cfg.DefaultStorageConnectionString, "threedscallback");
             });
         }
 

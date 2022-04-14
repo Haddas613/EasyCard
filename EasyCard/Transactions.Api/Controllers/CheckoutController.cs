@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Extensions;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Business.Entities;
@@ -167,22 +168,12 @@ namespace Transactions.Api.Controllers
 
                     List<CreditCardTokenDetails> tokensRaw = null;
 
-                    if (terminal.Settings.SharedCreditCardTokens == true)
-                    {
-                        tokensRaw = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID)
-                            .Where(d => d.ConsumerID == consumer.ConsumerID)
-                            .ToListAsync();
-                    }
-                    else
-                    {
-                        tokensRaw = await creditCardTokenService.GetTokens()
-                            .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
-                            .ToListAsync();
-                    }
+                    tokensRaw = await creditCardTokenService.GetTokens(terminal, consumer);
 
                     //TODO: no in memory filtering
                     var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)
-                        .Select(d => new TokenInfo {
+                        .Select(d => new TokenInfo
+                        {
                             CardNumber = d.CardNumber,
                             CardExpiration = d.CardExpiration.ToString(),
                             CardVendor = d.CardVendor,
@@ -199,6 +190,13 @@ namespace Transactions.Api.Controllers
             }
 
             response.Settings.AllowBit = terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID);
+            response.Settings.EnableThreeDS = terminal.Support3DSecure;
+            response.Settings.Language = paymentRequest?.Language ?? terminal.CheckoutSettings.DefaultLanguage;
+
+            if (paymentRequest != null)
+            {
+                response.Settings.IssueInvoice = paymentRequest.IssueInvoice;
+            }
 
             return response;
         }

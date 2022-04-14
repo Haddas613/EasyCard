@@ -172,7 +172,33 @@ export default {
       });
       if(!this.$apiSuccess(operation)) return;
       window.open(operation.entityReference, "_blank");
-    }
+    },
+    async initThreeDotMenu(){
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: this.$t("Charge"),
+              fn: () => {
+                this.$router.push({ name: "Charge" });
+              }
+            },
+            {
+              text: this.$t("Refund"),
+              fn: () => {
+                this.$router.push({ name: "Refund" });
+              }
+            },
+            {
+              text: this.$t("Excel"),
+              fn: () => {
+                this.exportExcel();
+              }
+            }
+          ]
+        }
+      });
+    },
   },
   computed: {
     ...mapState({
@@ -183,31 +209,17 @@ export default {
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
     });
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Charge"),
-            fn: () => {
-              this.$router.push({ name: "Charge" });
-            }
-          },
-          {
-            text: this.$t("Refund"),
-            fn: () => {
-              this.$router.push({ name: "Refund" });
-            }
-          },
-          {
-            text: this.$t("Excel"),
-            fn: () => {
-              this.exportExcel();
-            }
-          }
-        ]
-      }
-    });
-  }
+    this.initThreeDotMenu();  
+  },
+  // watch:{
+  //   /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  //   manually update menu on route change to make sure header has correct value*/
+  //   $route (to, from){
+  //     /** only update header if we returned to the same (cached) page */
+  //     if(to.name == this.$route.name){
+  //       this.initThreeDotMenu();
+  //     }
+  //   }
+  // },
 };
 </script>

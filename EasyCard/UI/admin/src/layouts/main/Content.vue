@@ -1,13 +1,13 @@
 <template>
   <v-main class="ecbg">
     <v-container fluid center class="px-0 pt-0">
-      <v-flex class="flex-column">
+      <v-flex class="flex-column" :key="keepAliveStateKey">
         <v-app-bar height="50px" flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
           <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
         </v-app-bar>
         <div class="px-1">
           <keep-alive max="1" :include="keepAliveComponentsList">
-            <router-view/>
+            <router-view :key="$route.fullPath" />
           </keep-alive>
         </div>
       </v-flex>
@@ -42,7 +42,8 @@ export default {
       }
     },
     ...mapState({
-      headerStore: state => state.ui.header
+      headerStore: state => state.ui.header,
+      keepAliveStateKey: state => state.ui.keepAliveRenderState,
     }),
   }
 };

@@ -4,6 +4,7 @@ using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
@@ -17,7 +18,7 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity
+    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity, IWebHookEntity
     {
         public Invoice()
         {
@@ -188,5 +189,49 @@ namespace Transactions.Business.Entities
         public JObject ExternalSystemData { get; set; }
 
         public JObject Extension { get; set; }
+
+        public InvoiceBillingTypeEnum InvoiceBillingType { get; private set; }
+
+        public void UpdateInvoiceType(PaymentTransaction transaction, BillingDeal billingDeal)
+        {
+            if (transaction == null)
+            {
+                if (billingDeal == null)
+                {
+                    InvoiceBillingType = InvoiceBillingTypeEnum.ManualInvoice;
+                }
+                else if (billingDeal.InvoiceOnly)
+                {
+                    InvoiceBillingType = InvoiceBillingTypeEnum.InvoiceOnlyBilling;
+                }
+                else
+                {
+                    InvoiceBillingType = billingDeal.PaymentType == PaymentTypeEnum.Bank
+                        ? InvoiceBillingTypeEnum.BankBilling : InvoiceBillingTypeEnum.CreditCardBilling;
+                }
+            }
+            else if (transaction.BillingDealID.HasValue)
+            {
+                if (billingDeal == null)
+                {
+                    throw new ArgumentNullException(nameof(billingDeal), "Transaction has billing but argument is missing");
+                }
+
+                if (billingDeal.InvoiceOnly)
+                {
+                    throw new ArgumentNullException(nameof(billingDeal.InvoiceOnly), "Invalid data. Invoice only billing can not have transactions.");
+                }
+
+                InvoiceBillingType = transaction.PaymentTypeEnum == PaymentTypeEnum.Bank
+                    ? InvoiceBillingTypeEnum.BankBilling : InvoiceBillingTypeEnum.CreditCardBilling;
+            }
+            else
+            {
+                InvoiceBillingType = InvoiceBillingTypeEnum.TransactionInvoice;
+            }
+        }
+
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
     }
 }

@@ -27,12 +27,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ApiMessages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Messages\ConsentMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConsentMessages.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Messages\ApiMessages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApiMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Messages\ConsentMessages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConsentMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

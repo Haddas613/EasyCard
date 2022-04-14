@@ -164,8 +164,6 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(dbPaymentRequest);
-
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
                 paymentRequest.TerminalName = terminal.Label;
@@ -279,6 +277,8 @@ namespace Transactions.Api.Controllers
             {
                 await SendPaymentRequestSMS(newPaymentRequest, terminal);
             }
+
+            newPaymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(newPaymentRequest);
 
             await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
 

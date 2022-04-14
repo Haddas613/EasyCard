@@ -552,6 +552,16 @@
         </v-col> -->
       </template>
     </v-row>
+    <terminal-tds-settings v-if="model" :terminal="model" />
+    <v-row v-if="model.webHooksConfiguration && model.webHooksConfiguration.webHooks.length">
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{ $t("Webhooks") }}
+        <v-divider></v-divider>
+      </v-col>
+      <v-col cols="12">
+        <terminal-webhooks-form :terminal="data"></terminal-webhooks-form>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -565,6 +575,8 @@ export default {
     TerminalIntegrationsForm: () => import("../settings/TerminalIntegrationsForm"),
     TerminalMerchantLogoInput: () => import("../settings/TerminalMerchantLogoInput"),
     TerminalMerchantStyleInput: () => import("../settings/TerminalMerchantStyleInput"),
+    TerminalWebhooksForm: () => import("../settings/TerminalWebhooksForm"),
+    TerminalTdsSettings: () => import("./Terminal3DSecureSettings.vue"),
   },
   props: {
     data: {

@@ -2,12 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Shared.Api.Models.Binding
 {
     public class TrimmingJsonConverter : JsonConverter
     {
+        private static readonly Regex SWhitespace = new Regex(@"\s+");
+
         private readonly bool nullIfEmpty = true;
+        private readonly bool removeAllSpaces = false;
 
         public TrimmingJsonConverter()
         {
@@ -16,6 +20,12 @@ namespace Shared.Api.Models.Binding
         public TrimmingJsonConverter(bool nullIfEmpty)
         {
             this.nullIfEmpty = nullIfEmpty;
+        }
+
+        public TrimmingJsonConverter(bool nullIfEmpty, bool removeAllSpaces)
+        {
+            this.nullIfEmpty = nullIfEmpty;
+            this.removeAllSpaces = removeAllSpaces;
         }
 
         public override bool CanRead => true;
@@ -30,14 +40,17 @@ namespace Shared.Api.Models.Binding
             {
                 var res = ((string)reader.Value)?.Trim();
 
+                if (removeAllSpaces)
+                {
+                    res = SWhitespace.Replace(res, string.Empty);
+                }
+
                 if (nullIfEmpty)
                 {
-                    return res == string.Empty ? null : res;
+                    res = res == string.Empty ? null : res;
                 }
-                else
-                {
-                    return res;
-                }
+
+                return res;
             }
 
             return reader.Value;

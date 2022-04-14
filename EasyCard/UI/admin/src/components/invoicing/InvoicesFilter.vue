@@ -26,6 +26,16 @@
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-select
+            :items="dictionaries.invoiceBillingTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.invoiceBillingType"
+            :label="$t('InvoiceBillingType')"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-select
             :items="dictionaries.invoiceTypeEnum"
             item-text="description"
             item-value="code"

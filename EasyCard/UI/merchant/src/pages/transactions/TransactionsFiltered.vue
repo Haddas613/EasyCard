@@ -95,7 +95,7 @@
             <small>{{item.terminalName || item.terminalID}}</small>
           </template> 
           <template v-slot:item.transactionAmount="{ item }">
-            <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
+            <b class="justify-currency" v-bind:class="{'red--text': item.specialTransactionType == 'refund'}">{{item.transactionAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.transactionTimestamp="{ item }">
           {{item.$transactionTimestamp | ecdate('DT')}}
@@ -347,7 +347,7 @@ export default {
     manually update menu on route change to make sure header has correct value*/
     $route (to, from){
       /** only update header if we returned to the same (cached) page */
-      if(to.name == this.$route.name){
+      if(to.meta.keepAlive == this.$options.name){
         this.initThreeDotMenu();
       }
     }
