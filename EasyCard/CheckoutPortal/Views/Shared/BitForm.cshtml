@@ -19,6 +19,7 @@
     <input type="hidden" asp-for="Description" id="Bit_Description" />
     <input type="hidden" asp-for="IssueInvoice" id="Bit_IssueInvoice" />
     <input type="hidden" asp-for="PayWithBit" id="PayWithBit" />
+    <input type="hidden" asp-for="Origin" id="Bit_Origin" />
 
 
     @if (Model.Amount.GetValueOrDefault() > 0 && !Model.UserAmount)
