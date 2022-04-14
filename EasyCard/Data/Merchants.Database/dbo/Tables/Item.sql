@@ -15,9 +15,13 @@
     [BillingDesktopRefNumber] NVARCHAR (50)    NULL,
     [SKU]                     NVARCHAR (50)    NULL,
     [Origin]                  NVARCHAR (50)    NULL,
+    [EcwidID]                 VARCHAR (50)     NULL,
+    [WoocommerceID]           VARCHAR (50)     NULL,
     CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED ([ItemID] ASC),
     CONSTRAINT [FK_Item_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

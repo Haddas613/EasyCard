@@ -52,8 +52,17 @@
     [ConsumerNationalID]        VARCHAR (20)     NULL,
     [Extension]                 NVARCHAR (MAX)   NULL,
     [BillingDealID]             UNIQUEIDENTIFIER NULL,
+    [ConsumerEcwidID]           VARCHAR (50)     NULL,
+    [ConsumerWoocommerceID]     VARCHAR (50)     NULL,
+    [InvoiceBillingType]        SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [Branch]                    NVARCHAR (50)    NULL,
+    [Department]                NVARCHAR (50)    NULL,
+    [ExternalUserID]            VARCHAR (50)     NULL,
+    [ResponsiblePerson]         NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 
