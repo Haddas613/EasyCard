@@ -327,12 +327,16 @@ export default {
     excludePaymentTypes() {
       let types = this.model.invoiceOnly ? ['cash', 'invoice-only'] : ['cash', 'cheque', 'invoice-only'];
 
-      if(this.terminalStore.bankDetails){
+      if (this.terminalStore.bankDetails){
         let bankTypeAvailable = this.terminalStore.bankDetails.instituteName
           && this.terminalStore.bankDetails.instituteNum
           && this.terminalStore.bankDetails.instituteServiceNum;
 
-        if(!bankTypeAvailable){
+        if (!bankTypeAvailable){
+          types.push('bank');
+        }
+      } else {
+        if (!bankTypeAvailable){
           types.push('bank');
         }
       }
