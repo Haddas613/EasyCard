@@ -436,7 +436,7 @@ namespace CheckoutPortal.Controllers
                     mdel.Calculate();
                 }
 
-                mdel.Origin = checkoutConfig.PaymentRequest?.Origin ?? Request.GetTypedHeaders().Referer?.Host;
+                mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
 
                 result = await transactionsApiClient.InitiateBitTransaction(mdel);
             }
