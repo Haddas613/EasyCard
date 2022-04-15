@@ -123,6 +123,9 @@
   <data name="Canceled" xml:space="preserve">
     <value>Canceled</value>
   </data>
+  <data name="Chargeback" xml:space="preserve">
+    <value>Chargeback</value>
+  </data>
   <data name="Completed" xml:space="preserve">
     <value>Done</value>
   </data>

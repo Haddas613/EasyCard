@@ -362,7 +362,7 @@ namespace Transactions.Business.Entities
 
             if (@enum == Shared.Enums.TransactionStatusEnum.Chargeback)
             {
-                return QuickStatusFilterTypeEnum.Refund;
+                return QuickStatusFilterTypeEnum.Chargeback;
             }
 
             if ((int)@enum < 0)
