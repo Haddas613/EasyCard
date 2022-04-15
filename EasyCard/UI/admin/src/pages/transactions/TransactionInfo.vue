@@ -276,7 +276,7 @@ export default {
       tab: "info",
       transactionSlipDialog: false,
       refundDialog: false,
-      dictionaries: null,
+      dictionaries: { },
       appConstants: appConstants
     };
   },
