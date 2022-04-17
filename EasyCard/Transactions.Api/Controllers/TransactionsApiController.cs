@@ -503,7 +503,7 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: what if consumer does not created
-            if ((model.CreditCardToken == null || model.SaveCreditCard == true) && model.CreditCardSecureDetails != null)
+            if (model.CreditCardToken == null && model.SaveCreditCard == true && model.CreditCardSecureDetails != null)
             {
                 bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
