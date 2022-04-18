@@ -38,6 +38,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.RestoreConsumer(System.Guid)">
+            <summary>
+            Restore customer
+            </summary>
+            <param name="consumerID"></param>
+            <returns></returns>
+        </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.DeleteConsumer(System.Guid)">
             <summary>
             Delete end-customer record and all related data like card tokens, billings, etc.
