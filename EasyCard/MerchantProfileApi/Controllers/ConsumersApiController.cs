@@ -190,6 +190,26 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
+        /// Restore customer
+        /// </summary>
+        /// <param name="consumerID"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("restore/{consumerID}")]
+        public async Task<ActionResult<OperationResponse>> RestoreConsumer([FromRoute] Guid consumerID)
+        {
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
+
+            consumer.Active = true;
+
+            consumer.ApplyAuditInfo(httpContextAccessor);
+
+            await consumersService.UpdateEntity(consumer);
+
+            return Ok(new OperationResponse(Messages.ConsumerUpdated, StatusEnum.Success, consumerID));
+        }
+
+        /// <summary>
         /// Delete end-customer record and all related data like card tokens, billings, etc.
         /// </summary>
         /// <param name="consumerID"></param>
