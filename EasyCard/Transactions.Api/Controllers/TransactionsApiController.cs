@@ -447,8 +447,18 @@ namespace Transactions.Api.Controllers
 
                     var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
 
-                    var terminalsLabels = string.Join(",", terminals.Select(t => t.Value));
-                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions_{Guid.NewGuid()}-{terminalsLabels}.xlsx");
+                    var terminalLabel = string.Empty;
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var tlabel = terminals
+                           .Where(t => t.Key == filter.TerminalID)
+                           .Select(t => t.Value)
+                           .FirstOrDefault();
+
+                        terminalLabel = $"-{tlabel}";
+                    }
+
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions_{Guid.NewGuid()}{terminalLabel}.xlsx");
                     var res = await excelService.GenerateFile($"Admin/{filename}", "Transactions", summary, mapping);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
@@ -458,15 +468,18 @@ namespace Transactions.Api.Controllers
                     var data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
                     var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
 
-                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
-                    var terminals = await terminalsService.GetTerminals()
-                        .Include(t => t.Merchant)
-                        .Where(t => terminalsId.Contains(t.TerminalID))
-                        .Select(t => t.Label)
-                        .ToListAsync();
+                    var terminalLabel = string.Empty;
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var tlabel = await terminalsService.GetTerminals()
+                           .Where(t => t.TerminalID == filter.TerminalID)
+                           .Select(t => t.Label)
+                           .FirstOrDefaultAsync();
 
-                    var terminalsLabels = string.Join(",", terminals);
-                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions-{terminalsLabels}.xlsx");
+                        terminalLabel = $"-{tlabel}";
+                    }
+
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions{terminalLabel}.xlsx");
                     var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
