@@ -381,6 +381,8 @@
   "ExternalUserID": "חיצוני תעודת זהות",
   "Branch": "סניף",
   "Department": "מחלקה",
+  "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
+  "Donation": "תרומה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

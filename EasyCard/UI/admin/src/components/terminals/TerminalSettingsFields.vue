@@ -233,6 +233,9 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
+          <v-col cols="12" class="py-0 mb-2">
+            <v-switch :label="$t('UsePaymentInfoAsDonation')" v-model="model.invoiceSettings.paymentInfoAsDonation" hide-details></v-switch>
+          </v-col>
           <v-col cols="12" md="5">
             <v-text-field
               v-model="model.invoiceSettings.defaultInvoiceSubject"
