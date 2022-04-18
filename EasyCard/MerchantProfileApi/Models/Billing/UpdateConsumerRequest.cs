@@ -93,6 +93,7 @@ namespace MerchantProfileApi.Models.Billing
         [SwaggerExclude]
         public string BillingDesktopRefNumber { get; set; }
 
+        // TODO: remove this property - add method for customer reqctivation
         public bool Active { get; set; } = true;
 
         public BankDetails BankDetails { get; set; }

@@ -46,7 +46,7 @@
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('PaymentType')}}</p>
-                  <p v-if="dictionaries">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum]}}</p>
+                  <p v-if="dictionaries.paymentTypeEnum">{{dictionaries.paymentTypeEnum[model.paymentTypeEnum]}}</p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
@@ -276,7 +276,7 @@ export default {
       tab: "info",
       transactionSlipDialog: false,
       refundDialog: false,
-      dictionaries: null,
+      dictionaries: { },
       appConstants: appConstants
     };
   },

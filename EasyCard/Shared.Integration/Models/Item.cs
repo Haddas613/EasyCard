@@ -23,9 +23,11 @@ namespace Shared.Integration.Models
         [StringLength(50)]
         public string SKU { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
         [Range(0, double.MaxValue)]
         public decimal? Price { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal? NetPrice { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]

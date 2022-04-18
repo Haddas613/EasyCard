@@ -156,6 +156,7 @@
 </template> 
 
 <script>
+import { mapMutations } from 'vuex';
 
 export default {
   components: {
@@ -179,10 +180,7 @@ export default {
   },
   methods: {
     async restoreCustomer(){
-      let result = await this.$api.consumers.updateConsumer(this.$route.params.id, {
-        ...this.model,
-        active: true,
-      });
+      let result = await this.$api.consumers.restoreConsumer(this.$route.params.id);
       if (!this.$apiSuccess(result)) return;
       this.model.active = true;
       this.initMenu();
@@ -195,6 +193,8 @@ export default {
         let result = await this.$api.consumers.deleteConsumer(
           this.$route.params.id
         );
+        if (!this.$apiSuccess(result)) return;
+        this.refreshKeepAlive();
         return this.$router.push({ name: "Customers" });
       }
     },
@@ -307,6 +307,9 @@ export default {
         }
       });
     },
+    ...mapMutations({
+      refreshKeepAlive: 'ui/refreshKeepAlive',
+    }),
   },
   async mounted() {
     if (this.data) {

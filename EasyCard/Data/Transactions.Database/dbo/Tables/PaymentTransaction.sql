@@ -99,8 +99,18 @@
     [TotalRefund]                    DECIMAL (19, 4)  NULL,
     [OperationDoneBy]                NVARCHAR (50)    NULL,
     [OperationDoneByID]              UNIQUEIDENTIFIER NULL,
+    [ThreeDSServerTransID]           VARCHAR (50)     NULL,
+    [ConsumerEcwidID]                VARCHAR (50)     NULL,
+    [ConsumerWoocommerceID]          VARCHAR (50)     NULL,
+    [Origin]                         NVARCHAR (50)    NULL,
+    [Branch]                         NVARCHAR (50)    NULL,
+    [Department]                     NVARCHAR (50)    NULL,
+    [ExternalUserID]                 VARCHAR (50)     NULL,
+    [ResponsiblePerson]              NVARCHAR (50)    NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

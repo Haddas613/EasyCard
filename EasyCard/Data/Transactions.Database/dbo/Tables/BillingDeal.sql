@@ -61,8 +61,19 @@
     [Origin]                      NVARCHAR (50)    NULL,
     [InProgress]                  SMALLINT         NOT NULL,
     [FailedAttemptsCount]         INT              NULL,
+    [ConsumerEcwidID]             VARCHAR (50)     NULL,
+    [ConsumerWoocommerceID]       VARCHAR (50)     NULL,
+    [Branch]                      NVARCHAR (50)    NULL,
+    [Department]                  NVARCHAR (50)    NULL,
+    [ExternalUserID]              VARCHAR (50)     NULL,
+    [ResponsiblePerson]           NVARCHAR (50)    NULL,
+    [ExpirationEmailSent]         DATETIME2 (7)    NULL,
+    [TokenCreated]                DATE             NULL,
+    [TokenUpdated]                DATE             NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

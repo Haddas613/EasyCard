@@ -17,7 +17,7 @@
       <v-tab-item key="info">
         <div v-if="model">
           <v-card flat class="mb-2">
-            <div class="mt-2">
+            <div class="mt-2" v-if="!model.invoiceOnly">
               <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
                 {{$t("CreditCardExpired")}}
               </v-alert>

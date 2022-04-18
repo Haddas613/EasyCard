@@ -362,7 +362,7 @@ namespace Transactions.Business.Entities
 
             if (@enum == Shared.Enums.TransactionStatusEnum.Chargeback)
             {
-                return QuickStatusFilterTypeEnum.Refund;
+                return QuickStatusFilterTypeEnum.Chargeback;
             }
 
             if ((int)@enum < 0)
@@ -390,7 +390,7 @@ namespace Transactions.Business.Entities
                     && TotalRefund.GetValueOrDefault(0) < TransactionAmount
                     && DocumentOrigin != DocumentOriginEnum.Device
                     && BillingDealID == null
-                    && CreditCardToken != null;
+                    && (DocumentOrigin == DocumentOriginEnum.Bit || CreditCardToken != null);
             }
         }
     }

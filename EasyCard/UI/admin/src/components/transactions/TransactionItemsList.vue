@@ -29,6 +29,8 @@
         <thead>
           <tr>
             <th class="text-left">{{$t("Name")}}</th>
+            <th class="text-left">{{$t("Price")}}</th>
+            <th class="text-left">{{$t("Quantity")}}</th>
             <th class="text-left">{{$t("Discount")}}</th>
             <th class="text-left">{{$t("PriceWithDiscount")}}</th>
           </tr>
@@ -36,6 +38,13 @@
         <tbody>
           <tr v-for="item in items" :key="item.itemID">
             <td>{{ item.itemName }}</td>
+            <td>
+              <ec-money
+                :amount="item.price"
+                :currency="currency"
+              ></ec-money>
+            </td>
+            <td>{{ item.quantity }}</td>
             <td>
               <ec-money v-if="item.discount" :amount="-item.discount" :currency="currency"></ec-money>
             </td>

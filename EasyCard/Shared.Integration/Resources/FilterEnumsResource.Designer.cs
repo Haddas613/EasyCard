@@ -79,6 +79,15 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chargeback.
+        /// </summary>
+        public static string Chargeback {
+            get {
+                return ResourceManager.GetString("Chargeback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Completed {

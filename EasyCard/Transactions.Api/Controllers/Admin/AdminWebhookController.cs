@@ -89,17 +89,18 @@ namespace Transactions.Api.Controllers
             // TODO: move this to event handler
             var inactivatedBillins = await billingController.ActivateOrDeactivateBillingDeals(false, billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID && b.Active));
 
-            var tokens = await creditCardTokenService.GetTokens().Where(t => t.ConsumerID == consumerID).Select(t => t.CreditCardTokenID).ToListAsync();
+            // ECNG-1483
+            //var tokens = await creditCardTokenService.GetTokens().Where(t => t.ConsumerID == consumerID).Select(t => t.CreditCardTokenID).ToListAsync();
 
-            foreach (var token in tokens)
-            {
-                var responseDataToken = (await cardTokenController.DeleteToken(token.ToString())).GetOperationResponse();
+            //foreach (var token in tokens)
+            //{
+            //    var responseDataToken = (await cardTokenController.DeleteToken(token.ToString())).GetOperationResponse();
 
-                if (responseDataToken.Status != SharedApi.Models.Enums.StatusEnum.Success)
-                {
-                    result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
-                }
-            }
+            //    if (responseDataToken.Status != SharedApi.Models.Enums.StatusEnum.Success)
+            //    {
+            //        result.Status = SharedApi.Models.Enums.StatusEnum.Warning;
+            //    }
+            //}
 
             return Ok(result);
         }

@@ -2,6 +2,7 @@
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.WebHooks;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
@@ -222,13 +223,11 @@ namespace Transactions.Business.Entities
             get { return PaymentType == PaymentTypeEnum.Card && CreditCardToken == null; }
         }
 
+        [NotMapped]
+        public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
         public void UpdateCreditCardToken(Guid? token, CreditCardDetails creditCardDetails, DateTime? tokenCreated)
         {
-            if (token == null)
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
-
             if (PaymentType != PaymentTypeEnum.Card || InvoiceOnly == true)
             {
                 throw new ApplicationException($"It is not possible to set token for billing {BillingDealID} because payment type is {PaymentType} and InvoiceOnly flag is {InvoiceOnly}");
