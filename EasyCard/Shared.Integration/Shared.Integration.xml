@@ -808,6 +808,11 @@
               Looks up a localized string similar to Canceled.
             </summary>
         </member>
+        <member name="P:Shared.Integration.Resources.FilterEnumsResource.Chargeback">
+            <summary>
+              Looks up a localized string similar to Chargeback.
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Resources.FilterEnumsResource.Completed">
             <summary>
               Looks up a localized string similar to Done.
