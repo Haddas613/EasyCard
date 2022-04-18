@@ -700,7 +700,7 @@ namespace Transactions.Api.Controllers
                     {
                         InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
                         InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                        SendCCTo = terminal.InvoiceSettings.SendCCTo
+                        SendCCTo = terminal.InvoiceSettings.SendCCTo,
                     };
                 }
 

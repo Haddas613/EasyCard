@@ -20,5 +20,6 @@ namespace Shared.Integration.Models.Invoicing
 
         // TODO: validation
         public string[] SendCCTo { get; set; }
+        public bool Donation { get; set; }
     }
 }
