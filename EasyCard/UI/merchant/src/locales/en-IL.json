@@ -547,7 +547,7 @@
   "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
   "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions",
   "FormInvalidSaveNotAllowed": "Can not save. Please check form values.",
-  "DeleteCustomerMessageText": "By deleting the customer you will also delete all his credit card tokens and deactivate all related billings",
+  "DeleteCustomerMessageText": "By deleting the customer you will also deactivate all related billing deals",
   "3DSecureEnabledMessage": "3D Secure is enabled and ready to use.",
   "3DSecureNotEnabledMessage": "3D Secure is not active."
 }
