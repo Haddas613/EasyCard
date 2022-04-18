@@ -58,7 +58,7 @@ namespace PoalimOnlineBusiness.Contract
             foreach (var transaction in this._rows)
             {
                 var exportTransaction = new TransactionRow(instituteNumber, Convert.ToInt32(transaction.Bankcode),
-                    Convert.ToInt32(transaction.BranchNumber), Convert.ToInt32(transaction.AccountNumber), transaction.BeneficiaryNname,
+                    Convert.ToInt32(transaction.BranchNumber), Convert.ToInt32(transaction.AccountNumber), string.Empty,
                     transaction.Amount, transaction.Reference);
 
                 exportTransactions.Add(exportTransaction);
