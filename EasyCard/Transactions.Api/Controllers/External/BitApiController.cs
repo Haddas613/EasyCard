@@ -171,6 +171,8 @@ namespace Transactions.Api.Controllers.External
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
                 processorRequest.ProcessorSettings = processorSettings;
+                processorRequest.DealDescription =
+                    $"{terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName} - {transaction.DealDetails.DealDescription}";
 
                 //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 

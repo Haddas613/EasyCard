@@ -141,5 +141,7 @@ namespace Shared.Integration.Models
         public string RedirectURL { get; set; }
 
         public ThreeDSIntermediateData ThreeDSecure { get; set; }
+
+        public string DealDescription { get; set; }
     }
 }
