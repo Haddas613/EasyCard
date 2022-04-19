@@ -577,6 +577,7 @@ namespace Transactions.Api.Controllers.External
 
                 if (aggregatorResponse?.Status != StatusEnum.Success)
                 {
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, $"{Shared.Messages.FailedToConfirmByAggregator}: {aggregatorResponse.Message}");
                     return aggregatorResponseContent;
                 }
             }
@@ -620,12 +621,15 @@ namespace Transactions.Api.Controllers.External
                     logger.LogError(ex, $"Failed to finalize payment request/intent Transaction for Bit: ({ex.Message}). Transaction id: {transaction.PaymentTransactionID}");
                 }
 
+                _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionCreated);
                 return new OperationResponse(Shared.Messages.PaymentWasCompletedSuccessfully, StatusEnum.Success, transaction.PaymentTransactionID);
             }
             else
             {
                 if (failedResponse != null)
                 {
+                    var failedRes = failedResponse.GetOperationResponse();
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, $"{Shared.Messages.FailedToProcessTransaction}: {failedRes.Message}");
                     return failedResponse;
                 }
                 else
@@ -637,6 +641,7 @@ namespace Transactions.Api.Controllers.External
                         _ => $"{Shared.Messages.BitPaymentFailed}: {bitTransaction?.RequestStatusDescription}"
                     };
 
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, message);
                     return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
             }
