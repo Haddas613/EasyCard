@@ -288,7 +288,14 @@ namespace Transactions.Api.Controllers.External
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to update Transaction for PAX deal. Vuid: {model.Vuid}");
-                _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected);
+
+                var transaction = await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID);
+
+                if (transaction != null)
+                {
+                    _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected);
+                }
+
                 return new NayaxResult(ex.Message, false /*ResultEnum.ServerError, false*/);
             }
         }
