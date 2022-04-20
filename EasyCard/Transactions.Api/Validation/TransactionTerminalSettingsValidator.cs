@@ -144,14 +144,14 @@ namespace Transactions.Api.Validation
             {
                 var correctNetTotal = Math.Round(model.TransactionAmount / (1m + model.VATRate.Value), 2, MidpointRounding.AwayFromZero);
 
-                if (correctNetTotal != model.NetTotal.Value)
-                {
-                    errors.Add(new Error(nameof(model.NetTotal), Messages.ExpectedValue.Replace("@value", correctNetTotal.ToString()).Replace("@input", model.NetTotal.Value.ToString())));
-                }
+                //if (correctNetTotal != model.NetTotal.Value)
+                //{
+                //    errors.Add(new Error(nameof(model.NetTotal), Messages.ExpectedValue.Replace("@value", correctNetTotal.ToString()).Replace("@input", model.NetTotal.Value.ToString())));
+                //}
 
                 var correctVatTotal = model.TransactionAmount - correctNetTotal;
 
-                if (correctVatTotal != model.VATTotal.Value)
+                if (Math.Abs(correctVatTotal - model.VATTotal.Value) > 0.01m)
                 {
                     errors.Add(new Error(nameof(model.VATTotal), Messages.ExpectedValue.Replace("@value", correctVatTotal.ToString()).Replace("@input", model.VATTotal.Value.ToString())));
                 }

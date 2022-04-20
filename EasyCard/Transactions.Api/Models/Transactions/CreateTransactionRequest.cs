@@ -94,6 +94,14 @@ namespace Transactions.Api.Models.Transactions
         [DataType(DataType.Currency)]
         public decimal? NetTotal { get; set; }
 
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetDiscountTotal { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? DiscountTotal { get; set; }
+
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>

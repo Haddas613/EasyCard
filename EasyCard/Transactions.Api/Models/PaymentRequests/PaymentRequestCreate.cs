@@ -91,6 +91,14 @@ namespace Transactions.Api.Models.PaymentRequests
         [DataType(DataType.Currency)]
         public decimal? VATTotal { get; set; }
 
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetDiscountTotal { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? DiscountTotal { get; set; }
+
         /// <summary>
         /// Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal. Can be omitted if only PaymentRequestAmount specified
         /// </summary>

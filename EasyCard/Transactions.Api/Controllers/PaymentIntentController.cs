@@ -121,6 +121,8 @@ namespace Transactions.Api.Controllers
         [SwaggerResponseExample(400, typeof(ValidationErrorsOperationResponseExample))]
         public async Task<ActionResult<OperationResponse>> CreatePaymentIntent([FromBody] PaymentRequestCreate model)
         {
+            // TODO: validate values
+
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
 

@@ -68,6 +68,13 @@ namespace Shared.Integration.Models
         [DataType(DataType.Currency)]
         public decimal? Discount { get; set; }
 
+        /// <summary>
+        /// Discount
+        /// </summary>
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetDiscount { get; set; }
+
         [SwaggerExclude]
         public JObject Extension { get; set; }
 
