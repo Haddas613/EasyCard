@@ -2,17 +2,17 @@
 
 /* Styles for main app container */
 
-div#appContent {
+/*div#appContent {
     background: white !important;
     margin: 0px auto;
     padding: 20px;
     max-width: 980px;
-}
+}*/
 
 
 /* Styles for Back button */
 
-.content-control-menu-nav .horizontal-icolink {
+/*.content-control-menu-nav .horizontal-icolink {
     font-weight: 600;
 }
 
@@ -26,10 +26,32 @@ div#appContent {
     display: flex;
     align-items: center;
     display: none;
-}
+}*/
 
 /* Styles for edit product label page */
 
 .edit-product-label {
     display: none;
+}
+
+.ecwid-lang-area {
+    display: flex;
+    justify-content: end;
+    padding: 0.5rem 2rem;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    background-color: #eceef0 !important;
+}
+
+.ecwid-input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
 }

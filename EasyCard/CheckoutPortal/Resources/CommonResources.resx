@@ -276,4 +276,19 @@
   <data name="GoBackToPayment" xml:space="preserve">
     <value>Go back to Payment</value>
   </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="EcwidGeneralInfoMessage" xml:space="preserve">
+    <value>EasyCard is Israel's leading payment gateway for SMB merchants.</value>
+  </data>
+  <data name="EcwidSettingsInfoMessage" xml:space="preserve">
+    <value>To use EasyCard you only need to specify Terminal API key</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="YouCanNowCloseThePage" xml:space="preserve">
+    <value>You can now close the page</value>
+  </data>
 </root>

@@ -88,6 +88,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bit Payment.
         /// </summary>
         public static string BitPayment {
@@ -156,6 +165,24 @@ namespace CheckoutPortal.Resources {
         public static string CVV {
             get {
                 return ResourceManager.GetString("CVV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EasyCard is Israel&apos;s leading payment gateway for SMB merchants..
+        /// </summary>
+        public static string EcwidGeneralInfoMessage {
+            get {
+                return ResourceManager.GetString("EcwidGeneralInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use EasyCard you only need to specify Terminal API key.
+        /// </summary>
+        public static string EcwidSettingsInfoMessage {
+            get {
+                return ResourceManager.GetString("EcwidSettingsInfoMessage", resourceCulture);
             }
         }
         
@@ -448,6 +475,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings were saved successfully.
         /// </summary>
         public static string SettingsWereSavedSuccessfully {
@@ -534,6 +570,15 @@ namespace CheckoutPortal.Resources {
         public static string WelcomeTextTop {
             get {
                 return ResourceManager.GetString("WelcomeTextTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now close the page.
+        /// </summary>
+        public static string YouCanNowCloseThePage {
+            get {
+                return ResourceManager.GetString("YouCanNowCloseThePage", resourceCulture);
             }
         }
     }
