@@ -419,6 +419,11 @@
             Discount
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.Item.NetDiscount">
+            <summary>
+            Discount
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.Item.WoocommerceID">
             <summary>
             External ID inside https://woocommerce.com system
