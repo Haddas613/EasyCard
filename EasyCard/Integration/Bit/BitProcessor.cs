@@ -52,7 +52,7 @@ namespace Bit
                 CurrencyTypeCode = 1,
                 DebitMethodCode = 2,
                 ExternalSystemReference = paymentTransactionRequest.PaymentTransactionID,
-                RequestSubjectDescription = "Bit payment", //TODO
+                RequestSubjectDescription = paymentTransactionRequest.DealDescription,
                 FranchisingId = 176, //TODO
                 UrlReturnAddress = paymentTransactionRequest.RedirectURL,
                 ProviderNbr = providerNbr

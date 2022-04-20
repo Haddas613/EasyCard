@@ -79,9 +79,9 @@
             hide-details="true"
           ></v-select>
         </v-col>
-        <v-col cols="12" md="6" class="py-0">
+        <!-- <v-col cols="12" md="6" class="py-0">
           <v-switch :label="$t('UsePaymentInfoAsDonation')" v-model="model.settings.paymentInfoAsDonation"></v-switch>
-        </v-col>
+        </v-col> -->
       </v-row>
       <div class="d-flex justify-end">
         <v-btn color="primary" @click="save()" :loading="loading">{{$t("Save")}}</v-btn>

@@ -1231,6 +1231,9 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("BillingDealID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<bool>("Donation")
+                                .HasColumnType("bit");
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
                                 .IsUnicode(true)
@@ -1551,6 +1554,9 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<bool>("Donation")
+                                .HasColumnType("bit");
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
                                 .IsUnicode(true)
@@ -1710,6 +1716,9 @@ namespace Transactions.Business.Migrations
                         {
                             b1.Property<Guid>("PaymentRequestID")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<bool>("Donation")
+                                .HasColumnType("bit");
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)

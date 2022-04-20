@@ -627,8 +627,18 @@ namespace Transactions.Api.Controllers
 
                     var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummaryAdmin>();
 
-                    var terminalsLabels = string.Join(",", terminals.Select(t => t.Value));
-                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Admin/Invoices_{Guid.NewGuid()}-{terminalsLabels}.xlsx");
+                    var terminalLabel = string.Empty;
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var tlabel = terminals
+                           .Where(t => t.Key == filter.TerminalID)
+                           .Select(t => t.Value)
+                           .FirstOrDefault();
+
+                        terminalLabel = $"-{tlabel}";
+                    }
+
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Admin/Invoices_{Guid.NewGuid()}{terminalLabel}.xlsx");
                     var res = await excelService.GenerateFile($"Admin/{filename}", "Invoices", summary, mapping);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
@@ -638,16 +648,18 @@ namespace Transactions.Api.Controllers
                     var data = await mapper.ProjectTo<InvoiceExcelSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
                     var mapping = InvoiceExcelSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceExcelSummary>();
 
-                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
+                    var terminalLabel = string.Empty;
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var tlabel = await terminalsService.GetTerminals()
+                           .Where(t => t.TerminalID == filter.TerminalID)
+                           .Select(t => t.Label)
+                           .FirstOrDefaultAsync();
 
-                    var terminals = await terminalsService.GetTerminals()
-                        .Include(t => t.Merchant)
-                        .Where(t => terminalsId.Contains(t.TerminalID))
-                        .Select(t => t.Label)
-                        .ToListAsync();
+                        terminalLabel = $"-{tlabel}";
+                    }
 
-                    var terminalsLabels = string.Join(",", terminals);
-                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Invoices-{terminalsLabels}.xlsx");
+                    var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Invoices{terminalLabel}.xlsx");
                     var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });

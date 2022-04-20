@@ -99,7 +99,7 @@
   "SecurityHeader": "כותרת אבטחה",
   "WebhookEvent": "Webhook אירוע",
   "FailureEvent": "אירוע כשל",
-  "DeleteCustomerMessageTitle": "?האם אתה בטוח שברצונך למחוק את הלקוח",
+  "DeleteCustomerMessageTitle": "האם אתה בטוח שברצונך למחוק את הלקוח?",
   "Enable3DSecure": "3D Secure פעיל",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
@@ -381,6 +381,8 @@
   "ExternalUserID": "חיצוני תעודת זהות",
   "Branch": "סניף",
   "Department": "מחלקה",
+  "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
+  "Donation": "תרומה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

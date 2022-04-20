@@ -280,6 +280,9 @@
         {{ $t("Invoice") }}
         <v-divider class="pt-1"></v-divider>
       </v-col>
+      <v-col cols="12" class="mt-0 pt-0">
+        <v-switch :label="$t('UsePaymentInfoAsDonation')" v-model="model.invoiceSettings.paymentInfoAsDonation" hide-details></v-switch>
+      </v-col>
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.invoiceSettings.defaultInvoiceSubject"

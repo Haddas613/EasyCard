@@ -382,6 +382,8 @@
   "ExternalUserID": "External User ID",
   "Branch": "Branch",
   "Department": "Department",
+  "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
+  "Donation": "Donation",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
