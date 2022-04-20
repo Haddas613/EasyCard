@@ -354,6 +354,7 @@ export default {
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
       }
+      this.model.pinPad = !!this.model.pinPadDeviceID;
       this.step++;
     },
     async processAdditionalSettings(data) {

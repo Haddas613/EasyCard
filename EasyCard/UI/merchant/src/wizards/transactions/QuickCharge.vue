@@ -394,6 +394,7 @@ export default {
         this.model.bitPaymentInitiationId = data.data.bitPaymentInitiationId;
         this.model.bitTransactionSerialId = data.data.bitTransactionSerialId;
       }
+      this.model.pinPad = !!this.model.pinPadDeviceID;
     },
     async processAdditionalSettings(data) {
       this.model.dealDetails = data.dealDetails;

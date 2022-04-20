@@ -444,6 +444,7 @@ export default {
         }
         return;
       }
+      this.model.pinPad = !!this.model.pinPadDeviceID;
       this.step++;
     },
     async processAdditionalSettings(data) {
@@ -468,7 +469,7 @@ export default {
       if (this.loading) return;
       try {
         this.loading = true;
-        if(this.model.pinPad){
+        if(this.model.pinPadDeviceID){
           await this.establishSignalRConnection();
         }
 
@@ -492,7 +493,7 @@ export default {
           lastStep.title = "Success";
           lastStep.completed = true;
           lastStep.closeable = false;
-          if(this.model.pinPad){
+          if(this.model.pinPadDeviceID){
             this.disposeSignalRConnection();
           }
           this.errors = [];
