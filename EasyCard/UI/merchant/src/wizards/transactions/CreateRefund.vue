@@ -369,9 +369,10 @@ export default {
     async createRefund(){
       if (this.loading) return;
       try{
-        
-        if(this.model.pinPad){
+        if(this.model.pinPadDeviceID){
           await this.establishSignalRConnection();
+        } else {
+          this.disposeSignalRConnection();
         }
 
         this.loading = true;

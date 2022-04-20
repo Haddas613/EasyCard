@@ -412,8 +412,10 @@ export default {
       if (this.loading || (!retry && !this.validate())) return;
       try {
         this.loading = true;
-        if(this.model.pinPad){
+        if(this.model.pinPadDeviceID) {
           await this.establishSignalRConnection();
+        } else {
+          this.disposeSignalRConnection();
         }
 
         if(!retry){
@@ -446,7 +448,7 @@ export default {
         else {
           this.result = result;
           this.success = true;
-          if(this.model.pinPad){
+          if(this.model.pinPadDeviceID){
             this.disposeSignalRConnection();
           }
           this.errors = [];
@@ -503,15 +505,13 @@ export default {
       this.model.connectionID = this.transactionsHub.connectionId;
     },
     async disposeSignalRConnection(){
-      if(!this.transactionsHub){
-        return;
-      }
       if(this.signalRToast){
         this.signalRToast.goAway();
         this.signalRToast = null;
       }
-
-      this.transactionsHub.stop();
+      if(this.transactionsHub){
+        this.transactionsHub.stop();
+      }
     },
     adjustItemsAmountToTotalAmount(){
       if(this.totalAmountTimeout){
