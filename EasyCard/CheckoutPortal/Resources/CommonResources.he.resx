@@ -232,7 +232,7 @@
     <value>כרטיס האשראי כבר קיים כטוקן</value>
   </data>
   <data name="TerminalApiKey" xml:space="preserve">
-    <value>Terminal Api Key</value>
+    <value>מפתח מסוף עבור api</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>שמור</value>
@@ -272,5 +272,20 @@
   </data>
   <data name="GoBackToPayment" xml:space="preserve">
     <value>חזור לתשלום</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>חזור</value>
+  </data>
+  <data name="EcwidGeneralInfoMessage" xml:space="preserve">
+    <value>איזי קארד היא שער התשלום המוביל בישראל עבור לקוחות SMB.</value>
+  </data>
+  <data name="EcwidSettingsInfoMessage" xml:space="preserve">
+    <value>כדי להשתמש ב-ECNG עליך לציין מסוף עם  API KEY</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>הגדרות</value>
+  </data>
+  <data name="YouCanNowCloseThePage" xml:space="preserve">
+    <value>כעת ניתן לסגור את העמוד</value>
   </data>
 </root>
