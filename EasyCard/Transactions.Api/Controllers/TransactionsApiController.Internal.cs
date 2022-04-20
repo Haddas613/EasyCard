@@ -290,7 +290,7 @@ namespace Transactions.Api.Controllers
             endResponse.InnerResponse = await invoicingController.ProcessInvoice(terminal, transaction, model.InvoiceDetails);
 
             // TODO: move to event handler
-            _ = ProcessEcwid(transaction, endResponse);
+            await ProcessEcwid(transaction, endResponse);
 
             // TODO: move to event handler
             _ = SendTransactionSuccessEmails(transaction, terminal);
