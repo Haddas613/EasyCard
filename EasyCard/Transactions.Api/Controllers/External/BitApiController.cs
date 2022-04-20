@@ -172,21 +172,7 @@ namespace Transactions.Api.Controllers.External
 
                 processorRequest.ProcessorSettings = processorSettings;
 
-                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.DealDescription))
-                {
-                    var description = $"{terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName} - {transaction.DealDetails.DealDescription}";
-
-                    if (description.Length > 50)
-                    {
-                        description = $"{description.Substring(0, 47)}...";
-                    }
-
-                    processorRequest.DealDescription = description;
-                }
-                else
-                {
-                    processorRequest.DealDescription = terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName;
-                }
+                processorRequest.DealDescription = terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName;
 
                 //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
