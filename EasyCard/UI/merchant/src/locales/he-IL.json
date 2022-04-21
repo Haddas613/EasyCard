@@ -383,6 +383,7 @@
   "Department": "מחלקה",
   "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
   "Donation": "תרומה",
+  "NumberOfChargedCustomers": "מספר הלקוחות שולם",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

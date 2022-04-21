@@ -384,6 +384,7 @@
   "Department": "Department",
   "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
   "Donation": "Donation",
+  "NumberOfChargedCustomers": "# Charged Customers",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

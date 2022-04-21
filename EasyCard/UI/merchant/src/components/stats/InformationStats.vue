@@ -13,7 +13,7 @@
       <ec-list class="" v-if="stats && stats.length > 0" :items="stats" dense dashed>
         <template v-slot:left="{ item }">
           <v-col cols="12" class="text-align-initial text-oneline">
-            <span class="body-1">{{item.name}}</span>
+            <span class="body-2">{{item.name}}</span>
           </v-col>
         </template>
         <template v-slot:right="{ item }">
@@ -41,7 +41,7 @@ export default {
           value: null
         },
         {
-          name: this.$t("TotalCustomers"),
+          name: this.$t("NumberOfChargedCustomers"),
           value: null
         },
         {
@@ -58,7 +58,8 @@ export default {
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
-      storeDateFilter: state => state.ui.dashboardDateFilter
+      storeDateFilter: state => state.ui.dashboardDateFilter,
+      currencyStore: state => state.settings.currency,
     }),
   },
   async mounted(){
@@ -85,11 +86,18 @@ export default {
       this.stats[1].value = r.customersCount;
 
       //New customers
-      this.stats[2].value = `${r.newCustomers.toFixed(0)}(${r.newCustomersRate}%)`;
+      let newCustomersSum = this.$options.filters.currency(r.newCustomers || 0, 'ILS');
+      this.stats[2].value = `${newCustomersSum} / ${this.toPercentage(r.newCustomersRate)}`;
+
+      //this.stats[2].value = `${r.newCustomers.toFixed(2)}₪(${r.newCustomersRate}%)`;
 
       //Repeating customers
-      this.stats[3].value = `${r.repeatingCustomers.toFixed(0)}(${r.repeatingCustomersRate}%)`;
-    }
+      let repCustomersSum = this.$options.filters.currency(r.repeatingCustomers || 0, 'ILS');
+      this.stats[3].value = `${repCustomersSum} / ${this.toPercentage(r.repeatingCustomersRate)}`;
+    },
+    toPercentage(value){
+      return value ? `${value * 100}%` : 0;
+    },
   },
   watch: {
     storeDateFilter(newValue, oldValue) {
