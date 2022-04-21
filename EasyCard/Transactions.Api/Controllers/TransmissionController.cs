@@ -171,6 +171,8 @@ namespace Transactions.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
+            transactionsToTransmit = transactionsToTransmit.Where(d => d.TranRecord != null && d.ShvaTerminalID != null).ToList();
+
             var processorIds = transactionsToTransmit.Select(d => d.TranRecord).Where(d => d != null).ToList();
 
             if (processorIds.Count == 0)
@@ -183,121 +185,131 @@ namespace Transactions.Api.Controllers
 
             foreach (var shvaTerminalID in transactionsToTransmit.Select(t => t.ShvaTerminalID).Where(s => s != null).Distinct())
             {
-                var terminalProcessor = ValidateExists(
-                    terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
-                    Messages.ProcessorNotDefined);
-
-                var processor = processorResolver.GetProcessor(terminalProcessor);
-
-                var shvaTerminalSettings = await shvaTerminalsService.GetShvaTerminal(shvaTerminalID);
-
-                var processorSettings = processorResolver.GetProcessorTerminalSettings(
-                    terminalProcessor,
-                    shvaTerminalSettings != null ? JObject.FromObject(shvaTerminalSettings) : terminalProcessor.Settings);
-
-                var processorRequest = new ProcessorTransmitTransactionsRequest
-                {
-                    TransactionIDs = processorIds,
-                    ProcessorSettings = processorSettings,
-                    CorrelationId = GetCorrelationID(),
-                    TerminalID = terminal.TerminalID
-                };
-
-                var processorResponse = await processor.TransmitTransactions(processorRequest);
-
-                foreach (var transactionID in transmitTransactionsRequest.PaymentTransactionIDs)
-                {
-                    var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transactionID);
-
-                    if (preparedTransaction != null)
-                    {
-                        var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
-
-                        if (failedTransaction != null)
-                        {
-                            transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.TransmissionFailed, PaymentTransactionID = transactionID });
-                            logger.LogError($"TransmissionFailed for transaction: {transactionID}");
-                        }
-                        else
-                        {
-                            transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.Transmitted, PaymentTransactionID = transactionID });
-                            logger.LogInformation($"Transaction Transmitted: {transactionID}");
-                        }
-                    }
-                    else
-                    {
-                        transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.NotFoundOrInvalidStatus, PaymentTransactionID = transactionID });
-                        logger.LogError($"NotFoundOrInvalidStatus for transaction: {transactionID}");
-                    }
-                }
-
-                response.NumberOfRecords = transactionsResponse.Count;
-                response.Data = transactionsResponse;
-
-                var transmissionDate = DateTime.UtcNow;
-
-                // TODO: use with batch or with queue
-                var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
-                var transactions = await transactionsService.GetTransactionsForUpdate().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
-
-                foreach (var transaction in transactions)
-                {
-                    var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transaction.PaymentTransactionID);
-                    if (preparedTransaction != null)
-                    {
-                        var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
-
-                        if (failedTransaction != null)
-                        {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
-
-                            // TODO: cancel in clearing house - but - it is possible to retry transmission
-                            // TODO: cancel invoice
-                        }
-                        else
-                        {
-                            transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
-                            transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
-                            transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
-
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.TransmittedByProcessor);
-                        }
-                    }
-                }
-
-                try
-                {
-                    ClearingHouse.ClearingHouseAggregator clearingHouseAggregator = null;
-
-                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                    if (terminalAggregator != null && terminalAggregator.ExternalSystemID == 10) //TODO: constants?
-                    {
-                        clearingHouseAggregator = aggregatorResolver.GetAggregator(terminalAggregator) as ClearingHouse.ClearingHouseAggregator;
-                    }
-
-                    //Notify ClearingHouse about successfully transmitted transactions
-                    if (clearingHouseAggregator != null)
-                    {
-                        var transmittedTransactionsId = transactionsResponse.Where(t => t.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(t => t.PaymentTransactionID).ToList();
-                        var transmittedCHTransactions = transactions
-                            .Where(t => t.ClearingHouseTransactionDetails?.ClearingHouseTransactionID.HasValue == true && transmittedTransactionsId.Contains(t.PaymentTransactionID))
-                            .Select(t => t.ClearingHouseTransactionDetails.ClearingHouseTransactionID.Value)
-                            .ToList();
-
-                        if (transmittedCHTransactions.Count > 0)
-                        {
-                            await clearingHouseAggregator.UpdateTransmission(transmissionDate, transmittedCHTransactions);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, $"ClearingHouseTransmit: Error {e.Message}");
-                }
+                await TransmitInternal(transmitTransactionsRequest, terminal, transactionsToTransmit, processorIds, response, transactionsResponse, shvaTerminalID);
             }
 
             return Ok(response);
+        }
+
+        private async Task TransmitInternal(TransmitTransactionsRequest transmitTransactionsRequest, Merchants.Business.Entities.Terminal.Terminal terminal, IEnumerable<TransmissionInfo> transactionsToTransmit, List<string> processorIds, SummariesResponse<TransmitTransactionResponse> response, List<TransmitTransactionResponse> transactionsResponse, string shvaTerminalID)
+        {
+            var terminalProcessor = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                Messages.ProcessorNotDefined);
+
+            var processor = processorResolver.GetProcessor(terminalProcessor);
+
+            var shvaTerminalSettings = await shvaTerminalsService.GetShvaTerminal(shvaTerminalID);
+
+            var processorSettings = processorResolver.GetProcessorTerminalSettings(
+                terminalProcessor,
+                shvaTerminalSettings != null ? JObject.FromObject(shvaTerminalSettings) : terminalProcessor.Settings);
+
+            var processorRequest = new ProcessorTransmitTransactionsRequest
+            {
+                TransactionIDs = processorIds,
+                ProcessorSettings = processorSettings,
+                CorrelationId = GetCorrelationID(),
+                TerminalID = terminal.TerminalID
+            };
+
+            var processorResponse = await processor.TransmitTransactions(processorRequest);
+
+            foreach (var transactionID in transmitTransactionsRequest.PaymentTransactionIDs)
+            {
+                var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transactionID);
+
+                if (preparedTransaction != null)
+                {
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+
+                    if (failedTransaction != null)
+                    {
+                        transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.TransmissionFailed, PaymentTransactionID = transactionID });
+                        logger.LogError($"TransmissionFailed for transaction: {transactionID}");
+                    }
+                    else
+                    {
+                        transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.Transmitted, PaymentTransactionID = transactionID });
+                        logger.LogInformation($"Transaction Transmitted: {transactionID}");
+                    }
+                }
+                else
+                {
+                    transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.NotFoundOrInvalidStatus, PaymentTransactionID = transactionID });
+                    logger.LogError($"NotFoundOrInvalidStatus for transaction: {transactionID}");
+                }
+            }
+
+            response.NumberOfRecords = transactionsResponse.Count;
+            response.Data = transactionsResponse;
+
+            var transmissionDate = DateTime.UtcNow;
+
+            // TODO: use with batch or with queue
+            var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
+            var transactions = await transactionsService.GetTransactionsForUpdate().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
+
+            foreach (var transaction in transactions)
+            {
+                var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transaction.PaymentTransactionID);
+                if (preparedTransaction != null)
+                {
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+
+                    if (failedTransaction != null)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
+
+                        // TODO: cancel in clearing house - but - it is possible to retry transmission
+                        // TODO: cancel invoice
+                    }
+                    else
+                    {
+                        transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
+                        transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
+                        transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.TransmittedByProcessor);
+                    }
+                }
+            }
+
+            _ = NotifyAggregator(terminal, transactionsResponse, transmissionDate, transactions);
+        }
+
+        private async Task NotifyAggregator(Merchants.Business.Entities.Terminal.Terminal terminal, List<TransmitTransactionResponse> transactionsResponse, DateTime transmissionDate, List<PaymentTransaction> transactions)
+        {
+            try
+            {
+                ClearingHouse.ClearingHouseAggregator clearingHouseAggregator = null;
+
+                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                if (terminalAggregator != null && terminalAggregator.ExternalSystemID == 10) //TODO: constants?
+                {
+                    clearingHouseAggregator = aggregatorResolver.GetAggregator(terminalAggregator) as ClearingHouse.ClearingHouseAggregator;
+                }
+
+                //Notify ClearingHouse about successfully transmitted transactions
+                if (clearingHouseAggregator != null)
+                {
+                    var transmittedTransactionsId = transactionsResponse.Where(t => t.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(t => t.PaymentTransactionID).ToList();
+                    var transmittedCHTransactions = transactions
+                        .Where(t => t.ClearingHouseTransactionDetails?.ClearingHouseTransactionID.HasValue == true && transmittedTransactionsId.Contains(t.PaymentTransactionID))
+                        .Select(t => t.ClearingHouseTransactionDetails.ClearingHouseTransactionID.Value)
+                        .ToList();
+
+                    if (transmittedCHTransactions.Count > 0)
+                    {
+                        await clearingHouseAggregator.UpdateTransmission(transmissionDate, transmittedCHTransactions);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"ClearingHouseTransmit: Error {e.Message}");
+            }
         }
 
         [HttpPost]
