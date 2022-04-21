@@ -217,6 +217,7 @@ export default {
       this.model.isRefund = data.isRefund;
       this.model.allowPinPad = data.allowPinPad;
       this.model.userAmount = data.userAmount;
+      this.model.issueInvoice = !!this.model.invoiceDetails;
 
       if(data.paymentIntent){
         await this.createPaymentIntent();
