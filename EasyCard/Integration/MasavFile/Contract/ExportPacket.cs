@@ -49,7 +49,7 @@ namespace PoalimOnlineBusiness.Contract
             var instituteNumber = Convert.ToInt32(this.InstituteNumber);
             var sendingInstitute = Convert.ToInt32(this.SendingInstitute);
 
-            var header = new Header(instituteNumber, this.PaymentDate, this.CreationDate, sendingInstitute, this.InstitueName);
+            var header = new Header(instituteNumber, this.PaymentDate, this.CreationDate, sendingInstitute, string.Empty);
 
 
 

@@ -18,7 +18,7 @@ namespace PoalimOnlineBusiness
             this.BranchNumber = branchNumber;
             this.AccountNumber = accountNumber;
             this.BeneficiaryNname = beneficiaryNname;
-            this.Amount = (int)(amount * 100);
+            this.Amount = (int)(amount * 100m);
             this.Reference = reference;
         }
 
