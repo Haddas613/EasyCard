@@ -355,22 +355,22 @@ namespace IdentityServer
 
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
-            //app.UseCsp(options => options
-            //    .DefaultSources(s => s.Self()
-            //        .CustomSources("data:")
-            //        .CustomSources("https:"))
-            //    .StyleSources(s => s.Self()
-            //        .CustomSources("ecngpublic.blob.core.windows.net")
-            //    )
-            //    .ScriptSources(s => s.Self()
-            //        .UnsafeInline()
-            //        .CustomSources("az416426.vo.msecnd.net")
-            //    )
-            //    /*.FrameAncestors(s => s.Self())*/
-            //    .FormActions(s => s.Self()
-            //        .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/", "login.microsoftonline.com", "com.auth0.flutterdemo://login-callback")
-            //    )
-            //);
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self()
+                    .CustomSources("data:")
+                    .CustomSources("https:"))
+                .StyleSources(s => s.Self()
+                    .CustomSources("ecngpublic.blob.core.windows.net")
+                )
+                .ScriptSources(s => s.Self()
+                    .UnsafeInline()
+                    .CustomSources("az416426.vo.msecnd.net")
+                )
+                /*.FrameAncestors(s => s.Self())*/
+                //.FormActions(s => s.Self()
+                //    .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/", "login.microsoftonline.com", "com.auth0.flutterdemo://login-callback")
+                //)
+            );
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
