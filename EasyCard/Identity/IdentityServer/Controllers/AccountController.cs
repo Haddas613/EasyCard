@@ -253,7 +253,7 @@ namespace IdentityServer.Controllers
 
                     if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
                     {
-                        return RedirectToAction(nameof(ForceUpdatePassword));
+                        return RedirectToAction(nameof(ForceUpdatePassword), new { ReturnUrl = model.ReturnUrl });
                     }
 
                     return RedirectToAction(nameof(LoginWith2faChooseType), new { ReturnUrl = model.ReturnUrl });
@@ -283,7 +283,7 @@ namespace IdentityServer.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ForceUpdatePassword()
+        public async Task<IActionResult> ForceUpdatePassword(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -291,13 +291,15 @@ namespace IdentityServer.Controllers
             // This page is unavailable if user's PasswordUpdated complies with the requirements
             if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
             {
-                return RedirectToAction(nameof(LoginWith2faChooseType));
+                return RedirectToAction(nameof(LoginWith2faChooseType), new { returnUrl });
             }
 
             if (user == null)
             {
                 return RedirectToAction(nameof(Login));
             }
+
+            ViewData["ReturnUrl"] = returnUrl;
 
             return View();
         }
@@ -317,7 +319,7 @@ namespace IdentityServer.Controllers
             // This page is unavailable if user's PasswordUpdated complies with the requirements
             if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
             {
-                return RedirectToAction(nameof(LoginWith2faChooseType));
+                return RedirectToAction(nameof(LoginWith2faChooseType), new { request.ReturnUrl });
             }
 
             if (!ModelState.IsValid)
@@ -335,7 +337,7 @@ namespace IdentityServer.Controllers
             else
             {
                 await auditLogger.RegisterChangePassword(user);
-                return RedirectToAction(nameof(LoginWith2faChooseType));
+                return RedirectToAction(nameof(LoginWith2faChooseType), new { request.ReturnUrl });
             }
         }
 
@@ -353,7 +355,7 @@ namespace IdentityServer.Controllers
 
             if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
             {
-                return RedirectToAction(nameof(ForceUpdatePassword));
+                return RedirectToAction(nameof(ForceUpdatePassword), new { returnUrl });
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
@@ -379,7 +381,7 @@ namespace IdentityServer.Controllers
 
             if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
             {
-                return RedirectToAction(nameof(ForceUpdatePassword));
+                return RedirectToAction(nameof(ForceUpdatePassword), new { request.ReturnUrl });
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
@@ -443,6 +445,8 @@ namespace IdentityServer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (!ModelState.IsValid)
             {
                 return View(model);

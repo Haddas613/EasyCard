@@ -14,5 +14,7 @@ namespace IdentityServer.Models
         [StringLength(32, MinimumLength = 8)]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^])[A-Za-z\d@$!%*#?&^]{8,}$", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordValidationMessage")]
         public string NewPassword { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }
