@@ -93,11 +93,6 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
-            {
-                return RedirectToAction(null, new { r });
-            }
-
             return IndexViewResult(checkoutConfig);
         }
 
@@ -136,11 +131,6 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
-            {
-                return RedirectToAction(null, new { r });
-            }
-
             return IndexViewResult(checkoutConfig);
         }
 
@@ -157,11 +147,6 @@ namespace CheckoutPortal.Controllers
             if (checkoutConfig == null)
             {
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
-            }
-
-            if (ChangeLocalizationInternal(request?.Language))
-            {
-                return RedirectToAction(null, new { request });
             }
 
             return IndexViewResult(checkoutConfig, request);
@@ -924,15 +909,13 @@ namespace CheckoutPortal.Controllers
 
         /// <summary>
         /// Changes current localization to specified one if required.
-        /// Redirect is required for cookies to work.
         /// </summary>
         /// <param name="culture"></param>
-        /// <returns>Boolean, whether redirect (to apply locale) is required</returns>
-        private bool ChangeLocalizationInternal(string culture)
+        private void ChangeLocalizationInternal(string culture)
         {
             if (string.IsNullOrWhiteSpace(culture))
             {
-                return false;
+                return;
             }
 
             var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
@@ -940,7 +923,7 @@ namespace CheckoutPortal.Controllers
 
             if (!allowed || currentCulture.RequestCulture.Culture.Name == culture)
             {
-                return false;
+                return;
             }
 
             var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
@@ -951,9 +934,6 @@ namespace CheckoutPortal.Controllers
                 SameSite = SameSiteMode.None,
                 Secure = true
             });
-
-            //TODO: ECNG-1472 (return true instead)
-            return false;
         }
 
         private IActionResult IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)

@@ -311,6 +311,12 @@ namespace Transactions.Api.Controllers
             query["r"] = encrypted;
 
             uriBuilder.Query = query.ToString();
+
+            if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
+            {
+                query["l"] = dbPaymentRequest.Language;
+            }
+
             var url = uriBuilder.ToString();
 
             query["reject"] = true.ToString();
@@ -328,6 +334,12 @@ namespace Transactions.Api.Controllers
 
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["r"] = encrypted;
+
+            if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
+            {
+                query["l"] = dbPaymentRequest.Language;
+            }
+
             uriBuilder.Query = query.ToString();
 
             return uriBuilder.ToString();

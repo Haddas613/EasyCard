@@ -270,6 +270,12 @@ namespace Transactions.Api.Controllers
 
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["r"] = encrypted;
+
+            if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
+            {
+                query["l"] = dbPaymentRequest.Language;
+            }
+
             uriBuilder.Query = query.ToString();
 
             return uriBuilder.ToString();

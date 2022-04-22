@@ -182,5 +182,11 @@ namespace CheckoutPortal.Models
         public string ThreeDSServerTransID { get; set; }
 
         public string Origin { get; set; }
+
+        /// <summary>
+        /// Language. Available values he (default), en.
+        /// </summary>
+        [StringLength(2)]
+        public string L { get; set; }
     }
 }

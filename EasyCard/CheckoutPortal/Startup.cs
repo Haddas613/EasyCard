@@ -149,7 +149,12 @@ namespace CheckoutPortal
                 options.DefaultRequestCulture = new RequestCulture("he");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
+
+                var queryStringRequestCultureProvider = new QueryStringRequestCultureProvider();
+                queryStringRequestCultureProvider.QueryStringKey = "l";
+                queryStringRequestCultureProvider.UIQueryStringKey = "l";
+
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { queryStringRequestCultureProvider, new CookieRequestCultureProvider() };
             });
 
             services.AddMvc().AddViewLocalization();
