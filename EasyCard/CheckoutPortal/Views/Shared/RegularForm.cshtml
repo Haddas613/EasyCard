@@ -382,10 +382,46 @@
             const authenticate3Ds = function () {
                 let payload = $('#checkout-form').serialize();
 
-                return $.post("/Home/Authenticate3Ds", payload, 
-                function (data, status, xhr) {
-                    if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
+                return $.ajax({
+                    url: "/Home/Authenticate3Ds",
+                    data: payload,
+                    success: function (data, status, xhr) {
+                        if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
 
+                            if (continueInCaseOf3DSecureError)
+                                return $("#checkout-form").submit();
+                            else {
+                                toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                                window.switchLoadingSpinner(false);
+                                return;
+                            }
+                        }
+
+                        if (data.errorMessage) {
+                            if (continueInCaseOf3DSecureError)
+                                return $("#checkout-form").submit();
+                            else {
+                                toastr["error"](data.errorMessage);
+                                window.switchLoadingSpinner(false);
+                                return;
+                            }
+                        }
+
+                        if (data.chalengeRequired) {
+                            $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
+
+                            let container = document.getElementById('threeDSCReqIframeContainer');
+
+                            nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSCReqIframe', container,
+                                console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
+                            window.scrollTo(0, 0);
+                            $('#threeDSCReqIframeContainer').slideFadeToggle();
+                        } else {
+                            window.switchLoadingSpinner(false);
+                            return $("#checkout-form").submit();
+                        }
+                    },
+                    error: function() {
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
                         else {
@@ -393,41 +429,8 @@
                             window.switchLoadingSpinner(false);
                             return;
                         }
-                    }
-
-                    if (data.errorMessage) {
-                        if (continueInCaseOf3DSecureError)
-                            return $("#checkout-form").submit();
-                        else {
-                            toastr["error"](data.errorMessage);
-                            window.switchLoadingSpinner(false);
-                            return;
-                        }
-                    }
-
-                    if (data.chalengeRequired) {
-                        $("#ThreeDSServerTransID").val(data.threeDSServerTransID);
-
-                        let container = document.getElementById('threeDSCReqIframeContainer');
-
-                        nca3DSWebSDK.createIFrameAndInit3DSChallengeRequest(data.acsURL, data.base64EncodedChallengeRequest, '05', 'threeDSCReqIframe', container,
-                            console.log('ChallengeRequest Iframe loaded, form created  and submitted'));
-                        window.scrollTo(0, 0);
-                        $('#threeDSCReqIframeContainer').slideFadeToggle();
-                    } else {
-                        window.switchLoadingSpinner(false);
-                        return $("#checkout-form").submit();
-                    }
+                    },
                 })
-                .fail(function() {
-                    if (continueInCaseOf3DSecureError)
-                        return $("#checkout-form").submit();
-                    else {
-                        toastr["error"]('@(localizer.Get("ThreeDSError"))');
-                        window.switchLoadingSpinner(false);
-                        return;
-                    }
-                });
             }
 
             $("#submitbtn").on("click", function () {
@@ -477,7 +480,7 @@
                             console.log('Iframe loaded, form created and submitted');
                         });
 
-                    return authenticate3Ds();//.then((e) => window.switchLoadingSpinner(false));
+                    return authenticate3Ds();
                 });
             })
         </text>
