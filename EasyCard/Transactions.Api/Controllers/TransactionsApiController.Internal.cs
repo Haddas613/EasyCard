@@ -339,7 +339,16 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
+                try
+                {
+                    processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
+                }
+                catch (Exception ex)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedBy3Dsecure, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), $"{transaction.ThreeDSServerTransID}"));
+                }
             }
 
             // create transaction in aggregator (Clearing House)
