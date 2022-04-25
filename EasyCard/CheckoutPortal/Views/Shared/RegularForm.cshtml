@@ -386,7 +386,6 @@
                     url: "/Home/Authenticate3Ds",
                     data: payload,
                     type: "POST",
-                    contentType: "application/json",
                     success: function (data, status, xhr) {
                         if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
 
