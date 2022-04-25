@@ -75,8 +75,8 @@ namespace PoalimOnlineBusiness
         public long Reference { get; set; }
 
         //14	95	8	 N Period Payed For       Can just pass zeros - MMYYMMYY
-        [FixedLengthFile(14, 95, 8, DataType.N)]
-        public int PeriodPayedFor { get; set; } = 0;
+        [FixedLengthFile(14, 95, 8, DataType.X)]
+        public string PeriodPayedFor { get; set; } 
 
         //15	103	3	 N Text Code ZEROS
         [FixedLengthFile(15, 103, 3, DataType.N)]
