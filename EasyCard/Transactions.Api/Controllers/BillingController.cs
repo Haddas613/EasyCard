@@ -378,7 +378,14 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
-                await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
+                if (billingDeal.CreditCardToken != model.CreditCardToken)
+                {
+                    await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
+                }
+                else
+                {
+                    await billingDealService.UpdateEntity(billingDeal);
+                }
             }
             else if (model.PaymentType == PaymentTypeEnum.Bank)
             {
