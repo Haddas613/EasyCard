@@ -232,6 +232,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How to set up.
+        /// </summary>
+        public static string HowToSetUp {
+            get {
+                return ResourceManager.GetString("HowToSetUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Immediate.
         /// </summary>
         public static string Immediate {

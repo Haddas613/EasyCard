@@ -291,4 +291,7 @@
   <data name="YouCanNowCloseThePage" xml:space="preserve">
     <value>You can now close the page</value>
   </data>
+  <data name="HowToSetUp" xml:space="preserve">
+    <value>How to set up</value>
+  </data>
 </root>
