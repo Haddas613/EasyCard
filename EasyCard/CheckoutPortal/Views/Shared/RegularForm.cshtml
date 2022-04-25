@@ -382,7 +382,8 @@
             const authenticate3Ds = function () {
                 let payload = $('#checkout-form').serialize();
 
-                return $.post("/Home/Authenticate3Ds", payload, function (data, status, xhr) {
+                return $.post("/Home/Authenticate3Ds", payload, 
+                function (data, status, xhr) {
                     if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
 
                         if (continueInCaseOf3DSecureError)
@@ -416,6 +417,15 @@
                     } else {
                         window.switchLoadingSpinner(false);
                         return $("#checkout-form").submit();
+                    }
+                })
+                .fail(function() {
+                    if (continueInCaseOf3DSecureError)
+                        return $("#checkout-form").submit();
+                    else {
+                        toastr["error"]('@(localizer.Get("ThreeDSError"))');
+                        window.switchLoadingSpinner(false);
+                        return;
                     }
                 });
             }
