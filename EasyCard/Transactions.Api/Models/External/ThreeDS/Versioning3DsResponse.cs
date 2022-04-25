@@ -13,6 +13,8 @@ namespace Transactions.Api.Models.External.ThreeDS
 
         public string ErrorMessage { get; set; }
 
+        public bool PassThrough { get; set; }
+
         public string ThreeDSServerTransID { get; set; }
     }
 }

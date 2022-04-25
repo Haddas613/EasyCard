@@ -361,3 +361,4 @@ MigrationBackup/
 
 **/.sonarqube
 **/.sonarlint
+/EasyCard/CheckoutPortal/Properties/ServiceDependencies/ecng-checkout - Web Deploy1/profile.arm.json

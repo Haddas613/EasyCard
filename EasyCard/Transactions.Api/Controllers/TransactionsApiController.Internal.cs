@@ -229,13 +229,11 @@ namespace Transactions.Api.Controllers
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-            processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
-
             // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
 
             ActionResult<OperationResponse> failedRsponse =
-             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, dbToken, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest);
+             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, dbToken, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest, terminal);
 
             if (failedRsponse != null)
             {
@@ -300,7 +298,7 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest)
+        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest, Terminal terminal)
         {
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
 
@@ -338,6 +336,10 @@ namespace Transactions.Api.Controllers
 
                     return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult?.Errors));
                 }
+            }
+            else
+            {
+                processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
             }
 
             // create transaction in aggregator (Clearing House)
