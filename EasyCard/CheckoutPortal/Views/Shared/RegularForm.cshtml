@@ -2,6 +2,10 @@
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
 
+<div id="toast-container" class="custom-toastr">
+    <!-- Only way to prevent the destruction -->
+    <span></span>
+</div>
 
 <form asp-action="Charge" method="post" id="checkout-form">
     <input type="hidden" asp-for="RedirectUrl" />
@@ -296,7 +300,7 @@
                   "showEasing": "swing",
                   "hideEasing": "linear",
                   "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
+                  "hideMethod": "fadeOut",
                 }
                 let signalRClient = new (function() {
                     this.transactionsHub = null;
