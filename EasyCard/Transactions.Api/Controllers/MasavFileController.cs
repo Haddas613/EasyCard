@@ -171,7 +171,7 @@ namespace Transactions.Api.Controllers
 
             var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
-            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.InstituteName.ContainsHebrew()? string.Empty : bankDetails.InstituteName, bankDetails.InstituteServiceNum, bankDetails.InstituteNum, fileDate);
+            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.InstituteName, bankDetails.InstituteServiceNum, bankDetails.InstituteNum, fileDate);
 
             if (masavFileID.HasValue)
             {
