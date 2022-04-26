@@ -96,7 +96,7 @@ export default {
       this.stats[3].value = `${repCustomersSum} / ${this.toPercentage(r.repeatingCustomersRate)}`;
     },
     toPercentage(value){
-      return value ? `${value.toFixed(2) * 100}%` : 0;
+      return value ? `${(value * 100).toFixed(2)}%` : 0;
     },
   },
   watch: {
