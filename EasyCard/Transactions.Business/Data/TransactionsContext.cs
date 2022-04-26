@@ -818,6 +818,10 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(600).IsUnicode(false).IsRequired(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
+
+                builder.Property(p => p.PinPadTranRecordReceiptNumber).HasColumnName("PinPadTranRecordReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.HasIndex(d => d.PinPadTranRecordReceiptNumber).IsUnique();
+
             }
         }
 

@@ -559,6 +559,11 @@
             Refund attempt failed
             </summary>
         </member>
+        <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedBy3Dsecure">
+            <summary>
+            Transaction is rejeced by 3Dsecure
+            </summary>
+        </member>
         <member name="F:Transactions.Shared.Enums.TransactionStatusEnum.RejectedByAggregator">
             <summary>
             Transaction is rejeced by Clearing House
