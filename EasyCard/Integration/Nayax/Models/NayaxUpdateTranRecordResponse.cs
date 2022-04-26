@@ -20,5 +20,8 @@ namespace Nayax.Models
 
         [JsonProperty("correlationID")]
         public string CorrelationID { get; set; }
+
+        [JsonProperty("receipt_number")]
+        public string ReceiptNumber { get; set; }
     }
 }

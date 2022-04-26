@@ -20,6 +20,8 @@ namespace Transactions.Business.Entities
 
         public string PinPadTransactionID { get; set; }
 
+        public string PinPadTranRecordReceiptNumber { get; set; }
+
         /// <summary>
         /// Shva TranRecord
         /// </summary>

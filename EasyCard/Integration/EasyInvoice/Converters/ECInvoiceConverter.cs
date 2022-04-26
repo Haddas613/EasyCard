@@ -63,7 +63,7 @@ namespace EasyInvoice.Converters
         {
             description = message.DealDetails?.DealDescription;
             var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
-            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "קבלת תרומה לפי סעיף 46" : "Receiving a donation according to Section 46";
+            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "התרומה מוכרת לצרכי מס לפי סעיף 46 א" : "Receiving a donation according to Section 46";
 
             if (documentType == ECInvoiceDocumentType.PAYMENT_INFO && (message.Donation || message.Donation || message.InvoiceDetails.Donation))
                 description = String.Format("{0}{1} {2}", description, string.IsNullOrEmpty(description) ? "" : ",", donationDescription);
