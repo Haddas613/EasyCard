@@ -208,3 +208,12 @@ input[type="checkbox"].input-validation-error {
     display: flex;
     flex-direction: column;
 }
+
+.custom-toastr {
+    position: fixed;
+    z-index: 999999;
+    pointer-events: none;
+    top: 0;
+    right: 0;
+    padding: 1rem 3rem;
+}

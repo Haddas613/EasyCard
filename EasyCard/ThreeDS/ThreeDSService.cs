@@ -103,9 +103,9 @@ namespace ThreeDS
                 MessageType = "ARes",
 
                 AcctType = "02",
-                AcquirerBin = "2",
-                AcquirerMerchantId = "1",
-                Brand = "2",
+                AcquirerBin = "",
+                AcquirerMerchantId = "",
+                Brand = "",
                 Merchant_mcc = "1234",
                 PurchaseExponent = "2",
                 TransType = "01",

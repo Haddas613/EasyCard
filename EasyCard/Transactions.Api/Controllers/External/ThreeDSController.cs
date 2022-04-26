@@ -77,6 +77,7 @@ namespace Transactions.Api.Controllers.External
                 return new Versioning3DsResponse
                 {
                     ErrorMessage = res.ErrorDetails.ErrorDescription,
+                    PassThrough = res.ErrorDetails.ErrorCode == "130"
                 };
             }
             else

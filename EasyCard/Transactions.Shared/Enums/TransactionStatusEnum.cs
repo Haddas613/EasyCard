@@ -71,6 +71,12 @@ namespace Transactions.Shared.Enums
         ChargebackFailed = -90,
 
         /// <summary>
+        /// Transaction is rejeced by 3Dsecure
+        /// </summary>
+        [EnumMember(Value = "rejectedBy3Dsecure")]
+        RejectedBy3Dsecure = -5,
+
+        /// <summary>
         /// Transaction is rejeced by Clearing House
         /// </summary>
         [EnumMember(Value = "rejectedByAggregator")]
