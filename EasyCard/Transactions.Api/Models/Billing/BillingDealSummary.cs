@@ -18,14 +18,19 @@ namespace Transactions.Api.Models.Billing
     {
         public Guid BillingDealID { get; set; }
 
+        public string TerminalName { get; set; }
+
+        [MetadataOptions(Hidden = true)]
         public Guid TerminalID { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid MerchantID { get; set; }
 
         public decimal TransactionAmount { get; set; }
 
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
         public CurrencyEnum Currency { get; set; }
 
         public DateTime? BillingDealTimestamp { get; set; }

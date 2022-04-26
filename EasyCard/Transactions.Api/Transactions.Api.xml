@@ -453,6 +453,11 @@
               Looks up a localized string similar to Customer.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CreditCardToken">
+            <summary>
+              Looks up a localized string similar to Card Token.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
             <summary>
               Looks up a localized string similar to Currency.
@@ -491,6 +496,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Paused">
             <summary>
               Looks up a localized string similar to Paused.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.PaymentType">
+            <summary>
+              Looks up a localized string similar to Payment Type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Schedule">

@@ -138,6 +138,9 @@
   <data name="ConsumerName" xml:space="preserve">
     <value>Customer</value>
   </data>
+  <data name="CreditCardToken" xml:space="preserve">
+    <value>Card Token</value>
+  </data>
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
@@ -161,6 +164,9 @@
   </data>
   <data name="Paused" xml:space="preserve">
     <value>Paused</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>Payment Type</value>
   </data>
   <data name="Schedule" xml:space="preserve">
     <value>Schedule</value>

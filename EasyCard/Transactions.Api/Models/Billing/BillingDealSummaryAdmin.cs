@@ -17,15 +17,12 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        [MetadataOptions(Hidden = true)]
         public new CurrencyEnum Currency { get; set; }
 
         public string MerchantName { get; set; }
 
         [MetadataOptions(Hidden = true)]
         public new Guid MerchantID { get; set; }
-
-        public string TerminalName { get; set; }
 
         [MetadataOptions(Hidden = true)]
         public new Guid TerminalID { get; set; }

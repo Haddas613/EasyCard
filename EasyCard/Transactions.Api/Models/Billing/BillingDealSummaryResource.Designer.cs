@@ -19,7 +19,7 @@ namespace Transactions.Api.Models.Billing {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class BillingDealSummaryResource {
@@ -124,6 +124,15 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Card Token.
+        /// </summary>
+        public static string CreditCardToken {
+            get {
+                return ResourceManager.GetString("CreditCardToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         public static string Currency {
@@ -192,6 +201,15 @@ namespace Transactions.Api.Models.Billing {
         public static string Paused {
             get {
                 return ResourceManager.GetString("Paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Type.
+        /// </summary>
+        public static string PaymentType {
+            get {
+                return ResourceManager.GetString("PaymentType", resourceCulture);
             }
         }
         
