@@ -12,6 +12,9 @@ using Reporting.Business.Services;
 using Reporting.Shared.Models;
 using Reporting.Shared.Models.Admin;
 using Shared.Api;
+using Shared.Api.Models;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Helpers.Services;
 
 namespace Reporting.Api.Controllers
@@ -71,6 +74,31 @@ namespace Reporting.Api.Controllers
             }
 
             return Ok(res);
+        }
+
+        [HttpGet]
+        [Route("tds-challenge-report")]
+        public async Task<ActionResult<SummariesResponse<ThreeDSChallengeSummary>>> ThreeDSChallengeReport([FromQuery] ThreeDSChallengeReportQuery query)
+        {
+            var res = new SummariesResponse<ThreeDSChallengeSummary>();
+            var data = await adminService.GetThreeDSChallengeReport(query);
+
+            res.Data = data;
+            res.NumberOfRecords = data.Count(); //TODO
+
+            return Ok(res);
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta-tds-challenge-report")]
+        public TableMeta ThreeDSChallengeReportMeta()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(ThreeDSChallengeSummary)
+                    .GetObjectMeta(ThreeDSChallengeSummaryResource.ResourceManager, CurrentCulture)
+            };
         }
     }
 }

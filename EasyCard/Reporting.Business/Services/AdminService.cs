@@ -120,6 +120,33 @@ namespace Reporting.Business.Services
             }
         }
 
+        public async Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query)
+        {
+            //query.Skip TODO: pagination
+
+            var result = new List<ThreeDSChallengeSummary>();
+
+            var rand = new Random();
+
+            for (int i = 1; i <= 10; i++)
+            {
+                var from = DateTime.UtcNow.AddDays(-1 * i);
+
+                result.Add(new ThreeDSChallengeSummary
+                {
+                    TerminalID = new Guid("fd483f66-7cf0-4e57-8661-ab9200804615"),
+                    TerminalName = "Vlad's terminal 29/07",
+                    MerchantID = new Guid("632eb049-8562-411d-ab9f-ab92007f0293"),
+                    MerchantName = "Main Merchant Bob",
+                    NumberOfChallengeRequests = rand.Next(0, 50),
+                    DateFrom = from,
+                    DateTo = from.AddDays(1),
+                });
+            }
+
+            return result;
+        }
+
         private string KustoAgo(DateTime from, DateTime to)
         {
             return $"{(to - from).TotalDays}d";

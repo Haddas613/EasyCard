@@ -31,7 +31,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+                <span dir="ltr">
+                  <template v-if="transmissionsFilter.dateFrom">
+                    {{transmissionsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="transmissionsFilter.dateTo">
+                    {{transmissionsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -118,7 +128,6 @@ export default {
         skip: 0,
       },
       showDialog: this.showFiltersDialog,
-      datePeriod: null,
       numberOfRecords: 0,
       totalAmount: 0,
       selectAll: false,
@@ -137,14 +146,6 @@ export default {
         this.transmissions = extendData ? [...this.transmissions, ...transmissions] : transmissions;
         this.numberOfRecords = data.numberOfRecords || 0;
         this.totalAmount = data.totalAmount;
-
-        if(transmissions.length > 0){
-          let newest = this.transmissions[0].$date;
-          let oldest = this.transmissions[this.transmissions.length - 1].$date;
-          this.datePeriod = this.$options.filters.ecdate(oldest, "L") +  ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        }else{
-          this.datePeriod = null;
-        }
       }
       this.selectAll = false;
       this.loading = false;
@@ -220,15 +221,12 @@ export default {
     });
     this.initThreeDotMenu();
   },
-  watch: {
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route (to, from){
-      /** only update header if we returned to the same (cached) page */
-      if(to.meta.keepAlive == this.$options.name){
-        this.initThreeDotMenu();
-      }
-    },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
 };
 </script>

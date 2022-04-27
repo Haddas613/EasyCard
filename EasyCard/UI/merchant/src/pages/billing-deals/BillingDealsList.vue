@@ -35,7 +35,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{ $t("PeriodShown") }}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{ datePeriod || "-" }}</span>
+                <span dir="ltr">
+                  <template v-if="billingDealsFilter.dateFrom">
+                    {{billingDealsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="billingDealsFilter.dateTo">
+                    {{billingDealsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -393,7 +403,6 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       showTriggerDialog: false,
-      datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
       now: new Date(),
@@ -417,18 +426,6 @@ export default {
 
         if (!this.headers || this.headers.length === 0) {
           this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
-        }
-
-        if (billingDeals.length > 0) {
-          let newest = this.billingDeals[0].$billingDealTimestamp;
-          let oldest =
-            this.billingDeals[this.billingDeals.length - 1]
-              .$billingDealTimestamp;
-          this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        } else {
-          this.datePeriod = null;
         }
       }
       this.selectAll = false;
@@ -604,15 +601,12 @@ export default {
     await this.applyFilters();
     await this.initThreeDotMenu();
   },
-  watch: {
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route(to, from) {
-      /** only update header if we returned to the same (cached) page */
-      if (to.meta.keepAlive == this.$options.name) {
-        this.initThreeDotMenu();
-      }
-    },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
 };
 </script>

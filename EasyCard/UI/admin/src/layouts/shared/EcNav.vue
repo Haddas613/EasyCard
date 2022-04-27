@@ -214,7 +214,12 @@ export default {
               icon: "mdi-credit-card-settings",
               text: "TokensTransactions",
               to: { name: "TokensTransactions" }
-            }
+            },
+            {
+              icon: "mdi-credit-card-lock",
+              text: "3DSecureChallenge",
+              to: { name: "3DSecureChallenge" }
+            },
           ]
         },
         {

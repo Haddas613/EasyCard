@@ -14,5 +14,7 @@ namespace Reporting.Business.Services
         public Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(DashboardQuery query); 
 
         public Task<IEnumerable<MerchantsTotals>> GetMerchantsTotals(DashboardQuery query);
+
+        public Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query);
     }
 }
