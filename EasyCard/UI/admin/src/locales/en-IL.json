@@ -130,6 +130,7 @@
   "Value": "Value",
   "WebhookEvent": "Webhook Event",
   "FailureEvent": "Failure Event",
+  "3DSecureChallenge": "3D Secure Challenge",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

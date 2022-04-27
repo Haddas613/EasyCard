@@ -130,6 +130,7 @@
   "Value": "ערך",
   "WebhookEvent": "Webhook אירוע",
   "FailureEvent": "אירוע כשל",
+  "3DSecureChallenge": "3DS בקשות לאתגר",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
