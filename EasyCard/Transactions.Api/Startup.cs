@@ -452,6 +452,7 @@ namespace Transactions.Api
             services.AddScoped<IPinPadDevicesService, PinPadDevicesService>();
             services.AddScoped<IMasavFileService, MasavFileService>();
             services.AddTransient<CardTokenController, CardTokenController>();
+            services.AddTransient<TransmissionController, TransmissionController>();
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
             services.AddTransient<BillingController, BillingController>();
