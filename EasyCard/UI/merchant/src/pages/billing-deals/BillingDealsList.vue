@@ -35,7 +35,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{ $t("PeriodShown") }}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{ datePeriod || "-" }}</span>
+                <span dir="ltr">
+                  <template v-if="billingDealsFilter.dateFrom">
+                    {{billingDealsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="billingDealsFilter.dateTo">
+                    {{billingDealsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -393,7 +403,6 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       showTriggerDialog: false,
-      datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
       now: new Date(),
@@ -417,18 +426,6 @@ export default {
 
         if (!this.headers || this.headers.length === 0) {
           this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
-        }
-
-        if (billingDeals.length > 0) {
-          let newest = this.billingDeals[0].$billingDealTimestamp;
-          let oldest =
-            this.billingDeals[this.billingDeals.length - 1]
-              .$billingDealTimestamp;
-          this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        } else {
-          this.datePeriod = null;
         }
       }
       this.selectAll = false;

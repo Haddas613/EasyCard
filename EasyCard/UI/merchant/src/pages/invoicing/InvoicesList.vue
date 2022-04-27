@@ -30,7 +30,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+                <span dir="ltr">
+                  <template v-if="invoicesFilter.dateFrom">
+                    {{invoicesFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="invoicesFilter.dateTo">
+                    {{invoicesFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -96,7 +106,6 @@ export default {
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
-      datePeriod: null,
       numberOfRecords: 0,
       selectAll: false
     };
@@ -112,17 +121,6 @@ export default {
         let invoices = data.data || [];
         this.invoices = extendData ? [...this.invoices, ...invoices] : invoices;
         this.numberOfRecords = data.numberOfRecords || 0;
-
-        if (invoices.length > 0) {
-          let newest = this.invoices[0].$invoiceTimestamp;
-          let oldest = this.invoices[this.invoices.length - 1]
-            .$invoiceTimestamp;
-          this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        } else {
-          this.datePeriod = null;
-        }
       }
       this.selectAll = false;
       this.loading = false;

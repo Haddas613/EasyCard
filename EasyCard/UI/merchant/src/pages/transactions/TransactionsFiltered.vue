@@ -217,6 +217,7 @@ export default {
       let data = await this.$api.transactions.get({
         ...this.transactionsFilter
       });
+      
       if (data) {
         if(!this.headers || this.headers.length === 0){
           this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
@@ -224,14 +225,6 @@ export default {
         let transactions = data.data || [];
         this.transactions = extendData ? [...this.transactions, ...transactions] : transactions;
         this.numberOfRecords = data.numberOfRecords || 0;
-
-        if(transactions.length > 0){
-          let newest = this.transactions[0].$transactionTimestamp;
-          let oldest = this.transactions[this.transactions.length - 1].$transactionTimestamp;
-          this.datePeriod = this.$options.filters.ecdate(oldest, "L") +  ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        }else{
-          this.datePeriod = null;
-        }
       }
       this.selectAll = false;
       this.loading = false;
