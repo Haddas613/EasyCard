@@ -774,6 +774,11 @@ namespace Transactions.Api.Controllers
 
             if (transaction.AllowTransmissionCancellation(aggregator))
             {
+                if (transaction.TransactionAmount != request.RefundAmount)
+                {
+                    return new OperationResponse($"It is not possible to cancel transaction {transaction.PaymentTransactionID} for amount {request.RefundAmount}", StatusEnum.Error);
+                }
+
                 object aggregatorSettings = null;
 
                 if (aggregator != null)
