@@ -770,9 +770,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadTransactionID");
 
                     b.Property<string>("TranRecord")
-                        .HasMaxLength(600)
+                        .HasMaxLength(700)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(600)")
+                        .HasColumnType("varchar(700)")
                         .HasColumnName("ShvaTranRecord");
 
                     b.HasKey("NayaxTransactionsParametersID");
@@ -2256,9 +2256,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("TelToGetAuthNum");
 
                             b1.Property<string>("TranRecord")
-                                .HasMaxLength(600)
+                                .HasMaxLength(700)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(600)")
+                                .HasColumnType("varchar(700)")
                                 .HasColumnName("ShvaTranRecord");
 
                             b1.Property<DateTime?>("TransmissionDate")
