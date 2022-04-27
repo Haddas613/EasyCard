@@ -12,13 +12,6 @@ namespace Transactions.Api.Models.Billing
 {
     public class BillingDealSummaryAdmin : BillingDealSummary
     {
-        /// <summary>
-        /// Currency
-        /// </summary>
-        [EnumDataType(typeof(CurrencyEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public new CurrencyEnum Currency { get; set; }
-
         public string MerchantName { get; set; }
 
         [MetadataOptions(Hidden = true)]

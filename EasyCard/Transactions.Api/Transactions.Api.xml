@@ -397,11 +397,6 @@
             Stored credit card details token
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
-            <summary>
-            Currency
-            </summary>
-        </member>
         <member name="T:Transactions.Api.Models.Billing.BillingDealSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
