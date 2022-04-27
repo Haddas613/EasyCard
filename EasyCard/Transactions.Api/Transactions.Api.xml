@@ -2215,6 +2215,11 @@
             Invoice can be created for this transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantName">
+            <summary>
+            Merchant name
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">
             <summary>
             Payment transaction details

@@ -1149,6 +1149,9 @@ namespace Transactions.Business.Migrations
                         .IsRequired()
                         .HasColumnType("date");
 
+                    b.Property<DateTime?>("TransactionJ5ExpiredDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("TransactionTimestamp")
                         .HasColumnType("datetime2");
 

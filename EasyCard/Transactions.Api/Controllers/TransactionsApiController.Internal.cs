@@ -67,6 +67,11 @@ namespace Transactions.Api.Controllers
 
             var transaction = mapper.Map<PaymentTransaction>(model);
 
+            if (jDealType == JDealTypeEnum.J5)
+            {
+                transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
+            }
+
             // NOTE: this is security assignment
             mapper.Map(terminal, transaction);
 

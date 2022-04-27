@@ -279,57 +279,25 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Transaction can be transmitted manually
         /// </summary>
-        public bool AllowTransmission
-        {
-            get
-            {
-                return PaymentTypeEnum == PaymentTypeEnum.Card && Status == TransactionStatusEnum.AwaitingForTransmission;
-            }
-        }
-
-        [JsonIgnore]
-        public bool TransmissionCancellationPossible
-        {
-            get
-            {
-                return Status == TransactionStatusEnum.AwaitingForTransmission && !InvoiceID.HasValue;
-            }
-        }
+        public bool AllowTransmission { get; set; }
 
         /// <summary>
         /// Transaction transmission cannot be canceled manually
         /// </summary>
-        public bool AllowTransmissionCancellation
-        {
-            get => allowTransmissionCancellation;
-            set => allowTransmissionCancellation = TransmissionCancellationPossible & value;
-        }
-
-        private bool allowTransmissionCancellation;
+        public bool AllowTransmissionCancellation { get; set; }
 
         public bool AllowRefund { get; set; }
-
-        private bool allowRefund;
-
-        [JsonIgnore]
-        public bool InvoiceCreationPossible
-        {
-            get
-            {
-                return InvoiceID == null && Currency == CurrencyEnum.ILS
-                 && QuickStatus != QuickStatusFilterTypeEnum.Canceled && QuickStatus != Shared.Enums.QuickStatusFilterTypeEnum.Failed;
-            }
-        }
 
         /// <summary>
         /// Invoice can be created for this transaction
         /// </summary>
-        public bool AllowInvoiceCreation
-        {
-            get => allowInvoiceCreation;
-            set => allowInvoiceCreation = InvoiceCreationPossible & value;
-        }
+        public bool AllowInvoiceCreation { get; set; }
 
-        private bool allowInvoiceCreation;
+        /// <summary>
+        /// Merchant name
+        /// </summary>
+        public string MerchantName { get; set; }
+
+        public Guid? PaymentIntentID { get; set; }
     }
 }
