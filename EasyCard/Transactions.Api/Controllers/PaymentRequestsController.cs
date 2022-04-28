@@ -264,10 +264,10 @@ namespace Transactions.Api.Controllers
 
             var response = CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
 
-            if (terminal.SharedApiKey == null)
-            {
-                return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
-            }
+            //if (terminal.SharedApiKey == null)
+            //{
+            //    return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            //}
 
             await emailSender.SendEmail(BuildPaymentRequestEmail(newPaymentRequest, terminal));
 
