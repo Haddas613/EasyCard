@@ -18,7 +18,7 @@
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
-                  <v-chip color="primary" small>{{model.$billingDealID | guid}}</v-chip>
+                  <v-chip color="primary" small>{{model.billingDealID | guid}}</v-chip>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block" v-if="model.invoiceOnly">
                   <p class="caption ecgray--text text--darken-2">{{$t('InvoiceOnly')}}</p>
@@ -204,6 +204,9 @@ export default {
       this.initThreeDotMenu();
     },
     async initThreeDotMenu() {
+      if(!this.model){
+        return;
+      }
       let newHeader = {
         threeDotMenu: [
           {

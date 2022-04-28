@@ -15,6 +15,7 @@ namespace Transactions.Api.Models.Billing
         TriggeredTomorrow = 5,
         Paused = 6,
         ExpiredNextMonth = 7,
-        ManualTrigger = 8
+        ManualTrigger = 8,
+        InProgress = 9,
     }
 }
