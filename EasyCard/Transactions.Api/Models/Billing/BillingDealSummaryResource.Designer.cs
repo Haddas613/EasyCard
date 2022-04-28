@@ -151,6 +151,15 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last Transaction Date.
+        /// </summary>
+        public static string CurrentTransactionTimestamp {
+            get {
+                return ResourceManager.GetString("CurrentTransactionTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoice Only.
         /// </summary>
         public static string InvoiceOnly {

@@ -237,7 +237,7 @@
                 icon
                 :to="{
                   name: 'BillingDeal',
-                  params: { id: item.$billingDealID },
+                  params: { id: item.billingDealID },
                 }"
               >
                 <re-icon>mdi-chevron-right</re-icon>
@@ -327,7 +327,7 @@
                 link
                 :to="{
                   name: 'BillingDeal',
-                  params: { id: item.$billingDealID },
+                  params: { id: item.billingDealID },
                 }"
               >
                 <re-icon small>mdi-arrow-right</re-icon>
@@ -468,7 +468,7 @@ export default {
         return;
       }
       let opResult = await this.$api.billingDeals.disableBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
 
       await this.refresh();
@@ -479,7 +479,7 @@ export default {
         return;
       }
       let opResult = await this.$api.billingDeals.activateBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
 
       await this.refresh();
@@ -496,7 +496,7 @@ export default {
       }
 
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
       //this.switchFilterChanged('inProgress');
       this.billingDealsFilter.inProgress = true;

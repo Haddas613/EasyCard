@@ -382,6 +382,11 @@
             Merchant deal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.CurrentTransactionTimestamp">
+            <summary>
+            Date-time when last created initially in UTC
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule
@@ -393,6 +398,11 @@
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.CreditCardToken">
+            <summary>
+            Stored credit card details token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.CreditCardToken">
             <summary>
             Stored credit card details token
             </summary>
@@ -461,6 +471,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentDeal">
             <summary>
               Looks up a localized string similar to Current deal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentTransactionTimestamp">
+            <summary>
+              Looks up a localized string similar to Last Transaction Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.InvoiceOnly">

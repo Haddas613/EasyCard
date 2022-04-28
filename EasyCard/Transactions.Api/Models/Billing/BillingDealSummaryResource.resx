@@ -147,6 +147,9 @@
   <data name="CurrentDeal" xml:space="preserve">
     <value>Current deal</value>
   </data>
+  <data name="CurrentTransactionTimestamp" xml:space="preserve">
+    <value>Last Transaction Date</value>
+  </data>
   <data name="InvoiceOnly" xml:space="preserve">
     <value>Invoice Only</value>
   </data>

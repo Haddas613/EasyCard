@@ -15,6 +15,8 @@ namespace Transactions.Api.Models.Billing
 {
     public class BillingDealSummaryAdmin : BillingDealSummary
     {
+        public new Guid BillingDealID { get; set; }
+
         public string MerchantName { get; set; }
 
         [MetadataOptions(Hidden = true)]
@@ -30,5 +32,10 @@ namespace Transactions.Api.Models.Billing
         [MetadataOptions(Hidden = true)]
         [ExcelIgnore]
         public new SharedIntegration.Models.DealDetails DealDetails { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token
+        /// </summary>
+        public new Guid? CreditCardToken { get; set; }
     }
 }
