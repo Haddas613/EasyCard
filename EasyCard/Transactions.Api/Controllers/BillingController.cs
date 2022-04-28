@@ -255,7 +255,7 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     var data = await mapper.ProjectTo<BillingDealExcelSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)).ToListAsync();
-                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealSummary>();
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealExcelSummary>();
 
                     var terminalsId = data.Select(t => t.TerminalID).Distinct();
                     var terminals = await terminalsService.GetTerminals()
