@@ -75,6 +75,9 @@
               <v-btn small outlined color="teal" value="triggeredTomorrow">{{
                 $t("Tomorrow")
               }}</v-btn>
+              <v-btn small outlined color="success" value="inProgress">{{
+                $t("InProgress")
+              }}</v-btn>
               <v-btn small outlined color="accent" value="paused">{{
                 $t("Paused")
               }}</v-btn>

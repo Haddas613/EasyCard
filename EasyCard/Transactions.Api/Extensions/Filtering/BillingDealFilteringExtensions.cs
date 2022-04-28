@@ -192,6 +192,9 @@ namespace Transactions.Api.Extensions.Filtering
                     var lastDayOfNextMonth = today.AddMonths(1).LastDayOfMonth();
                     return src.Where(t => t.Active && t.CreditCardDetails.ExpirationDate == lastDayOfNextMonth);
 
+                case BillingsQuickStatusFilterEnum.InProgress:
+                    return src.Where(t => t.InProgress != Shared.Enums.BillingProcessingStatusEnum.Pending);
+
                 default:
                     return src.Where(t => t.Active);
             }
