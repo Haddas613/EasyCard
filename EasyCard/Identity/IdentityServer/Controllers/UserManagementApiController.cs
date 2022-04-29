@@ -451,7 +451,6 @@ namespace IdentityServer.Controllers
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.Unlocked,
                 UserID = user.Id,
-                DisplayName = user.UserName,
                 Email = user.Email
             });
 
