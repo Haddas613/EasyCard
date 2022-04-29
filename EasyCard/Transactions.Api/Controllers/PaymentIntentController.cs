@@ -153,11 +153,6 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            if (terminal.SharedApiKey == null)
-            {
-                return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, correlationId: httpContextAccessor.TraceIdentifier));
-            }
-
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 

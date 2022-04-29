@@ -158,22 +158,8 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
-            CheckoutData checkoutConfig;
             bool isPaymentIntent = request.PaymentIntent != null;
-
-            if (request.ApiKey != null)
-            {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
-            }
-            else
-            {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
-                {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
-                }
-
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
-            }
+            CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
             if (checkoutConfig == null)
             {
@@ -538,7 +524,7 @@ namespace CheckoutPortal.Controllers
                     {
                         mobileRedirectUrl = bitTransaction.ApplicationSchemeAndroid + scheme;
                     }
-                    
+
                     return Json(new BitPaymentMobileModel
                     {
                         MobileRedirectUrl = mobileRedirectUrl,
@@ -592,6 +578,27 @@ namespace CheckoutPortal.Controllers
                     }
                 }
             }
+        }
+
+        private async Task<CheckoutData> GetCheckoutConfigForCharge(ChargeViewModel request, bool isPaymentIntent)
+        {
+            CheckoutData checkoutConfig;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            return checkoutConfig;
         }
 
         [HttpPost]
