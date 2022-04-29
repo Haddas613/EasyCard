@@ -38,6 +38,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ApiSettings apiSettings;
         private readonly IExternalSystemsService externalSystemsService;
         private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
+        private readonly IThreeDSChallengeService threeDSChallengeService;
 
         public ThreeDSController(
              ThreeDSService threeDSService,
@@ -47,7 +48,8 @@ namespace Transactions.Api.Controllers.External
              ISystemSettingsService systemSettingsService,
              IOptions<ApiSettings> apiSettings,
              IExternalSystemsService externalSystemsService,
-             IThreeDSIntermediateStorage threeDSIntermediateStorage)
+             IThreeDSIntermediateStorage threeDSIntermediateStorage,
+             IThreeDSChallengeService threeDSChallengeService)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.threeDSService = threeDSService;
@@ -57,6 +59,7 @@ namespace Transactions.Api.Controllers.External
             this.apiSettings = apiSettings.Value;
             this.externalSystemsService = externalSystemsService;
             this.threeDSIntermediateStorage = threeDSIntermediateStorage;
+            this.threeDSChallengeService = threeDSChallengeService;
         }
 
         [HttpPost]

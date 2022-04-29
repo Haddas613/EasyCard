@@ -475,6 +475,7 @@ namespace Transactions.Api
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<INayaxTransactionsParametersService, NayaxTransactionsParametersService>();
+            services.AddScoped<IThreeDSChallengeService, ThreeDSChallengeService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
             services.AddScoped<IFutureBillingsService, BillingDealService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
