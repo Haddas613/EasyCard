@@ -401,7 +401,6 @@ namespace IdentityServer.Controllers
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
                 UserID = user.Id,
-                DisplayName = user.UserName,
                 Email = user.Email
             });
 
