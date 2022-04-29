@@ -70,8 +70,11 @@
     [ExpirationEmailSent]         DATETIME2 (7)    NULL,
     [TokenCreated]                DATE             NULL,
     [TokenUpdated]                DATE             NULL,
+    [InvoiceDetails_Donation]     BIT              NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 
