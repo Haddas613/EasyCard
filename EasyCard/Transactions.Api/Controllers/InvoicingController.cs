@@ -111,17 +111,22 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<InvoiceSummary>>> GetInvoices([FromQuery] InvoicesFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<InvoiceSummary>>> GetInvoices([FromQuery] InvoicesFilter filter)
         {
             var query = invoiceService.GetInvoices().Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+            var totalAmount = new
+            {
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+            };
 
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
-                    var response = new SummariesResponse<InvoiceSummaryAdmin>();
-
+                    var response = new SummariesAmountResponse<InvoiceSummaryAdmin>();
                     var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
@@ -143,15 +148,22 @@ namespace Transactions.Api.Controllers
                     });
 
                     response.Data = summary;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
+
                     return Ok(response);
                 }
                 else
                 {
-                    var response = new SummariesResponse<InvoiceSummary>();
-
+                    var response = new SummariesAmountResponse<InvoiceSummary>();
                     response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
+
                     return Ok(response);
                 }
             }

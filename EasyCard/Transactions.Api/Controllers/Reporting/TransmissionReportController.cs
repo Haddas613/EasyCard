@@ -96,11 +96,16 @@ namespace Transactions.Api.Controllers.Reporting
                     .ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var totalAmount = query.DeferredSum(e => e.TotalAmount).FutureValue();
-                var response = new SummariesAmountResponse<TransmissionReportSummary>();
+                var totalAmount = new
+                {
+                    ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+                };
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
+                    var response = new SummariesAmountResponse<TransmissionReportSummaryAdmin>();
                     var summary = await mapper.ProjectTo<TransmissionReportSummaryAdmin>(dataQuery).Future().ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
@@ -123,15 +128,22 @@ namespace Transactions.Api.Controllers.Reporting
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
                 else
                 {
+                    var response = new SummariesAmountResponse<TransmissionReportSummary>();
                     // TODO: try to remove ProjectTo
                     response.Data = await mapper.ProjectTo<TransmissionReportSummary>(dataQuery).Future().ToListAsync();
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
             }

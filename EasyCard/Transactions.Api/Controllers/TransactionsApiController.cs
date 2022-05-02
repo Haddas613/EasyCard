@@ -284,11 +284,16 @@ namespace Transactions.Api.Controllers
                 var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var totalAmount = query.DeferredSum(e => e.TotalAmount).FutureValue();
-                var response = new SummariesAmountResponse<TransactionSummary>();
+                var totalAmount = new
+                {
+                    ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+                };
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
+                    var response = new SummariesAmountResponse<TransactionSummaryAdmin>();
                     var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).Future().ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
@@ -311,11 +316,15 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
                 else
                 {
+                    var response = new SummariesAmountResponse<TransactionSummary>();
                     // TODO: try to remove ProjectTo
                     var summary = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
 
@@ -334,9 +343,13 @@ namespace Transactions.Api.Controllers
                             s.TerminalName = terminals[s.TerminalID].Label;
                         }
                     });
+
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
             }

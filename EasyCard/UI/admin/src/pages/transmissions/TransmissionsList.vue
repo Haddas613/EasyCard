@@ -42,11 +42,11 @@
             <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
         </template>
-        <template v-slot:footer>
+        <!-- <template v-slot:footer>
           <p class="text-end px-4 pt-4 mb-2 body-2">
             {{$t("TotalAmount")}}: <ec-money :amount="totalAmount" bold></ec-money>
           </p>
-        </template> 
+        </template>  -->
       </v-data-table>
     </div>
   </v-card>

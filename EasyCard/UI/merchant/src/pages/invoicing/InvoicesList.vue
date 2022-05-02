@@ -26,7 +26,17 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
+            <v-row no-gutters>
+              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
+              <v-col cols="12" class="mt-1 font-weight-bold">
+                <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+                <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+                <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
@@ -44,7 +54,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">{{numberOfRecords || '-'}}</v-col>
@@ -107,7 +117,10 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       numberOfRecords: 0,
-      selectAll: false
+      selectAll: false,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
     };
   },
   methods: {
@@ -121,6 +134,9 @@ export default {
         let invoices = data.data || [];
         this.invoices = extendData ? [...this.invoices, ...invoices] : invoices;
         this.numberOfRecords = data.numberOfRecords || 0;
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
       }
       this.selectAll = false;
       this.loading = false;
