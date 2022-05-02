@@ -87,9 +87,11 @@
             :items="transactions"
             :options.sync="options"
             :server-items-length="numberOfRecords"
-            :footer-props="{ itemsPerPageOptions: [defaultFilter.take], itemsPerPage: defaultFilter.take}"
             :loading="loading"
             :header-props="{ sortIcon: null }"
+            :footer-props="{
+              'items-per-page-options': [10, 20, 50, 100]
+            }"
             class="elevation-1">     
           <template v-slot:item.terminalName="{ item }">
             <small>{{item.terminalName || item.terminalID}}</small>
@@ -169,6 +171,14 @@ export default {
       required: false
     }
   },
+  watch: {
+    options: {
+      handler: async function() {
+        await this.getDataFromApi();
+      },
+      deep: true
+    }
+  },
   data() {
     return {
       transactions: [],
@@ -204,18 +214,13 @@ export default {
       loadingTransaction: false,
     };
   },
-  watch: {
-    options: {
-      handler: async function(){ await this.getDataFromApi() },
-      deep: true
-    }
-  },
   methods: {
     async getDataFromApi(extendData) {
       if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.get({
-        ...this.transactionsFilter
+        ...this.transactionsFilter,
+        ...this.options,
       });
       
       if (data) {
@@ -230,6 +235,7 @@ export default {
       this.loading = false;
     },
     async applyFilters(data) {
+      this.options.page = 1;
       this.transactionsFilter = {
         ...this.filters,
         ...this.defaultFilter,

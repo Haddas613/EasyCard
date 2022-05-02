@@ -342,7 +342,7 @@
           {{ $t("NothingToShow") }}
         </p>
 
-        <v-flex class="text-center" v-if="canLoadMore">
+        <v-flex class="text-center" v-if="$vuetify.breakpoint.mdAndDown && canLoadMore">
           <v-btn
             outlined
             color="primary"
@@ -382,6 +382,14 @@ export default {
       default: false,
       required: false,
     },
+  },
+  watch: {
+    options: {
+      handler: async function() {
+        await this.getDataFromApi();
+      },
+      deep: true
+    }
   },
   data() {
     return {
