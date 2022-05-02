@@ -104,17 +104,22 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<PaymentRequestSummary>>> GetPaymentRequests([FromQuery] PaymentRequestsFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<PaymentRequestSummary>>> GetPaymentRequests([FromQuery] PaymentRequestsFilter filter)
         {
             var query = paymentRequestsService.GetPaymentRequests().Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+            var totalAmount = new
+            {
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+            };
 
             using (var dbTransaction = paymentRequestsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
-                    var response = new SummariesResponse<PaymentRequestSummaryAdmin>();
-
+                    var response = new SummariesAmountResponse<PaymentRequestSummaryAdmin>();
                     var summary = await mapper.ProjectTo<PaymentRequestSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
                         .ApplyPagination(filter)).ToListAsync();
 
@@ -138,15 +143,21 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
                     return Ok(response);
                 }
                 else
                 {
-                    var response = new SummariesResponse<PaymentRequestSummary>();
-
+                    var response = new SummariesAmountResponse<PaymentRequestSummary>();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
                     response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
                         .ApplyPagination(filter)).ToListAsync();
-                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+
                     return Ok(response);
                 }
             }

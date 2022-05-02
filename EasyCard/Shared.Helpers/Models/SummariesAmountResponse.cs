@@ -6,6 +6,10 @@ namespace Shared.Api.Models
 {
     public class SummariesAmountResponse<T> : SummariesResponse<T>
     {
-        public decimal? TotalAmount { get; set; }
+        public decimal? TotalAmountILS { get; set; }
+
+        public decimal? TotalAmountUSD { get; set; }
+
+        public decimal? TotalAmountEUR { get; set; }
     }
 }
