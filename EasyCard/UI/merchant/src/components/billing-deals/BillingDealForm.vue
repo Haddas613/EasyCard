@@ -126,7 +126,6 @@
           class="pb-2"
           v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
           v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
-          {{customerID}}
           <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
         </v-col>
       </template>
