@@ -48,12 +48,10 @@
                   <template v-if="transmissionsFilter.dateFrom">
                     {{transmissionsFilter.dateFrom | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="transmissionsFilter.dateTo">
                     {{transmissionsFilter.dateTo | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
                 </span>
               </v-col>
             </v-row>
@@ -131,6 +129,8 @@ export default {
       defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
       },
       showDialog: this.showFiltersDialog,
       numberOfRecords: 0,

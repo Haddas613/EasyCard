@@ -50,12 +50,10 @@
                   <template v-if="transactionsFilter.dateFrom">
                     {{transactionsFilter.dateFrom | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="transactionsFilter.dateTo">
                     {{transactionsFilter.dateTo | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
                 </span>
               </v-col>
             </v-row>
@@ -203,7 +201,9 @@ export default {
       defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
-        jDealType: "J4"
+        jDealType: "J4",
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
       },
       showDialog: this.showFiltersDialog,
       showTransmitDialog: false,
