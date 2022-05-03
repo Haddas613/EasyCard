@@ -50,7 +50,7 @@
                     {{billingDealsFilter.dateFrom | ecdate("L")}}
                   </template>
                   <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="billingDealsFilter.dateTo">
                     {{billingDealsFilter.dateTo | ecdate("L")}}
                   </template>
@@ -416,13 +416,17 @@ export default {
       customerInfo: null,
       moment: moment,
       loading: false,
-      billingDealsFilter: {
+      defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
         terminalID: null,
         quickStatus: null,
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(moment().endOf('month')),
+      },
+      billingDealsFilter: {
         ...this.filters,
       },
       showDialog: this.showFiltersDialog,
@@ -464,7 +468,7 @@ export default {
     async applyFilters(data) {
       this.options.page = 1;
       this.billingDealsFilter = {
-        ...this.billingDealsFilter,
+        ...this.defaultFilter,
         ...data,
         skip: 0,
         quickStatus: null, //quick status must be reset if filter is applied

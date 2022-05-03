@@ -13,6 +13,7 @@
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
+          <date-from-to-filter v-model="model"></date-from-to-filter>
           <v-row>
             <v-col cols="12" md="6" class="py-0">
               <v-text-field
@@ -90,7 +91,8 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   props: {
     show: {

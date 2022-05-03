@@ -44,12 +44,10 @@
                   <template v-if="invoicesFilter.dateFrom">
                     {{invoicesFilter.dateFrom | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="invoicesFilter.dateTo">
                     {{invoicesFilter.dateTo | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
                 </span>
               </v-col>
             </v-row>
@@ -110,9 +108,13 @@ export default {
       moment: moment,
       loading: false,
       loadCount: 0,
-      invoicesFilter: {
+      defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
+      },
+      invoicesFilter: {
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -144,7 +146,7 @@ export default {
     },
     async applyFilters(data) {
       this.invoicesFilter = {
-        ...this.invoicesFilter,
+        ...this.defaultFilter,
         ...data,
         skip: 0,
       };

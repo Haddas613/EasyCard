@@ -40,7 +40,17 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+                <span dir="ltr">
+                  <template v-if="paymentRequestsFilter.dateFrom">
+                    {{paymentRequestsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>/</span>
+                  <template v-if="paymentRequestsFilter.dateTo">
+                    {{paymentRequestsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -134,10 +144,14 @@ export default {
       customerInfo: null,
       moment: moment,
       loading: false,
-      paymentRequestsFilter: {
+      defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
-        ...this.filters
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
+      },
+      paymentRequestsFilter: {   
+        ...this.filters,
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
@@ -177,6 +191,7 @@ export default {
     },
     async applyFilters(data) {
       this.paymentRequestsFilter = {
+        ...this.defaultFilter,
         ...data,
         skip: 0,
       };

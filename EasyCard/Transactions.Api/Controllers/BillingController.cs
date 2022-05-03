@@ -138,11 +138,13 @@ namespace Transactions.Api.Controllers
             var query = billingDealService.GetBillingDeals().AsNoTracking().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+
+            //TODO: temporary, should be TotalAmount not TransactionAmount * CurrentDeal
             var totalAmount = new
             {
-                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
-                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
-                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
             };
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
