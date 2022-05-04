@@ -226,7 +226,7 @@
                 <p class="my-0 py-0">
                   <small>{{ $t("InvoiceOnly") }}</small>
                 </p>
-                {{ item.transactionAmount | currency(item.$currency) }}
+                {{ item.transactionAmount | currency(item.currency) }}
               </v-col>
               <v-col
                 cols="12"
@@ -238,7 +238,7 @@
                   'ecred--text': item.cardExpired,
                   'ecgray--text': !item.active,
                 }"
-                >{{ item.transactionAmount | currency(item.$currency) }}</v-col
+                >{{ item.transactionAmount | currency(item.currency) }}</v-col
               >
             </template>
 
