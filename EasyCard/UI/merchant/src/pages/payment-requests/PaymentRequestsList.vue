@@ -44,12 +44,10 @@
                   <template v-if="paymentRequestsFilter.dateFrom">
                     {{paymentRequestsFilter.dateFrom | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="paymentRequestsFilter.dateTo">
                     {{paymentRequestsFilter.dateTo | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
                 </span>
               </v-col>
             </v-row>
