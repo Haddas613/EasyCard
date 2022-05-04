@@ -24,7 +24,7 @@
           v-model="model.bankAccount"
           max="12"
           type="number"
-          :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(5, 12)]"
+          :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(5, 13)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
