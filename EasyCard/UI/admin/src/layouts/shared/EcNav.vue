@@ -216,7 +216,7 @@ export default {
               to: { name: "TokensTransactions" }
             },
             {
-              icon: "mdi-credit-card-lock",
+              icon: "mdi-lock-reset",
               text: "3DSecureChallenge",
               to: { name: "3DSecureChallenge" }
             },

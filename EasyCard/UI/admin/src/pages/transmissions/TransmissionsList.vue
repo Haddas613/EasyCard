@@ -42,11 +42,16 @@
             <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
         </template>
-        <!-- <template v-slot:footer>
+        <template v-slot:footer>
           <p class="text-end px-4 pt-4 mb-2 body-2">
-            {{$t("TotalAmount")}}: <ec-money :amount="totalAmount" bold></ec-money>
+            {{$t("TotalAmount")}}
           </p>
-        </template>  -->
+          <p class="text-end mx-4">
+            <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+            <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+            <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
+          </p>
+        </template> 
       </v-data-table>
     </div>
   </v-card>
@@ -72,7 +77,9 @@ export default {
   data() {
     return {
       numberOfRecords: 0,
-      totalAmount: 0,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
       transmissions: [],
       loading: false,
       options: {},
@@ -105,7 +112,9 @@ export default {
         let data = await this.$api.reporting.transmissions.get({ ...this.transmissionsFilter, ...this.options });
         this.transmissions = data.data;
         this.numberOfRecords = data.numberOfRecords;
-        this.totalAmount = data.totalAmount;
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
 
         if(!this.headers || this.headers.length === 0){
           this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
