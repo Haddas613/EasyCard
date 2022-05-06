@@ -159,7 +159,7 @@ const initEcwid = function (app_id) {
 		});
 
 		// Function to prepopulate values of select, input and textarea elements based on default settings for new accounts
-		self.setValuesForPage(initialConfig);
+		self.setValuesForPage(self.initialConfig);
 	}
 
 
