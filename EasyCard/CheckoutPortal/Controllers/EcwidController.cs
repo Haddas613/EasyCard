@@ -146,6 +146,7 @@ namespace CheckoutPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> Settings(EcwidSettingsQuery request)
         {
+            request.AppID = ecwidSettings.AppID;
             return View(request);
         }
 

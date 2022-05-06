@@ -170,11 +170,13 @@
 <script nws-csp-add-nonce="true">
     (function() {
         $(document).ready(function () {
+            const ecwid = new initEcwid('@Model.AppID');
+
             $("#go-back-btn").on("click", function(){
-                goBack();
+                ecwid.goBack();
             });
             $("#save-btn").on("click", function(){
-                saveUserData();
+                ecwid.saveUserData();
                 //toastr["success"]('@(localizer.Get("SettingsWereSavedSuccessfully"))');
                 $("#saved-alert").show()
             });
