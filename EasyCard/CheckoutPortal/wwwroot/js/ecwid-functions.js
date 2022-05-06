@@ -102,10 +102,10 @@ const initEcwid = function (app_id) {
 					applicationConfigTemp[applicationConfig[i].key] = applicationConfig[i].value;
 				}
 			}
-			applicationConfig = applicationConfigTemp;
+			self.applicationConfig = applicationConfigTemp;
 		}
 
-		applicationConfig.public = JSON.parse(applicationConfig.public);
+		self.applicationConfig.public = JSON.parse(self.applicationConfig.public);
 		var allInputs = document.querySelectorAll('input, select, textarea');
 
 		// Set values from config for input, select, textarea elements
@@ -142,7 +142,7 @@ const initEcwid = function (app_id) {
 		}
 	};
 
-	self.initialConfig.public = JSON.stringify(initialConfig.public);
+	self.initialConfig.public = JSON.stringify(self.initialConfig.public);
 
 	// Executes when we have a new user install the app. It creates and sets the default data using Ecwid JS SDK and Application storage
 
@@ -170,7 +170,7 @@ const initEcwid = function (app_id) {
 		// Retrieve all keys and values from application storage, including public app config. Set the values for select, input and textarea elements on a page in a callback
 
 		EcwidApp.getAppStorage(function (allValues) {
-			setValuesForPage(allValues);
+			self.setValuesForPage(allValues);
 		});
 
 	}
