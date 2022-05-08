@@ -122,6 +122,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecwid", "Integration\Ecwid\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeDS", "ThreeDS\ThreeDS.csproj", "{C4045F3F-1BF8-4309-9B90-67182227050B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExportEmailTemplates", "Integration\Tools\ExportEmailTemplates\ExportEmailTemplates.csproj", "{6C106E30-C394-4EF8-803B-20660B3A2AD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckTerminalSettings", "Integration\Tools\CheckTerminalSettings\CheckTerminalSettings.csproj", "{7E6540D0-A8EA-4E01-880B-3665770C4BC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -304,6 +308,14 @@ Global
 		{C4045F3F-1BF8-4309-9B90-67182227050B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4045F3F-1BF8-4309-9B90-67182227050B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4045F3F-1BF8-4309-9B90-67182227050B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C106E30-C394-4EF8-803B-20660B3A2AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C106E30-C394-4EF8-803B-20660B3A2AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C106E30-C394-4EF8-803B-20660B3A2AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C106E30-C394-4EF8-803B-20660B3A2AD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E6540D0-A8EA-4E01-880B-3665770C4BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E6540D0-A8EA-4E01-880B-3665770C4BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E6540D0-A8EA-4E01-880B-3665770C4BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6540D0-A8EA-4E01-880B-3665770C4BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -353,6 +365,8 @@ Global
 		{394B43EB-AF90-4DFF-83CB-5F82F77F2A81} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 		{958E8663-3289-4DD7-9E8F-DCDC8CEAD67D} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{C4045F3F-1BF8-4309-9B90-67182227050B} = {68126764-B9A1-45D9-9C33-E84873A9124E}
+		{6C106E30-C394-4EF8-803B-20660B3A2AD4} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
+		{7E6540D0-A8EA-4E01-880B-3665770C4BC2} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

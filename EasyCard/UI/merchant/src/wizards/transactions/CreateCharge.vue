@@ -42,6 +42,7 @@
             :show-previously-charged="true"
             :filter-by-terminal="true"
             v-on:ok="processCustomer($event)"
+            support-create
           ></customers-list>
         </v-stepper-content>
 

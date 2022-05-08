@@ -63,7 +63,8 @@ namespace InforU
             {
                 User = new User { Username = this.configuration.UserName, Password = this.configuration.Password },
                 Recipients = new Recipients { PhoneNumber = message.To },
-                Content = new Content { Message = message.Body, Type = "sms" }
+                Content = new Content { Message = message.Body, Type = "sms" },
+                Settings = new Settings { Sender = message.From }
             };
 
             var xmlStr = xml.ToXml();

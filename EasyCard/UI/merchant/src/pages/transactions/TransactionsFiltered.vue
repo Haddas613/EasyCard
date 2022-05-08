@@ -32,7 +32,17 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
+            <v-row no-gutters>
+              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
+              <v-col cols="12" class="mt-1 font-weight-bold">
+                <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+                <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+                <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
@@ -40,17 +50,15 @@
                   <template v-if="transactionsFilter.dateFrom">
                     {{transactionsFilter.dateFrom | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
-                  <span>/</span>
+                  <span>-</span>
                   <template v-if="transactionsFilter.dateTo">
                     {{transactionsFilter.dateTo | ecdate("L")}}
                   </template>
-                  <template v-else>-</template>
                 </span>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
@@ -87,9 +95,11 @@
             :items="transactions"
             :options.sync="options"
             :server-items-length="numberOfRecords"
-            :footer-props="{ itemsPerPageOptions: [defaultFilter.take], itemsPerPage: defaultFilter.take}"
             :loading="loading"
             :header-props="{ sortIcon: null }"
+            :footer-props="{
+              'items-per-page-options': [10, 25, 50, 100]
+            }"
             class="elevation-1">     
           <template v-slot:item.terminalName="{ item }">
             <small>{{item.terminalName || item.terminalID}}</small>
@@ -169,6 +179,14 @@ export default {
       required: false
     }
   },
+  watch: {
+    options: {
+      handler: async function() {
+        await this.getDataFromApi();
+      },
+      deep: true
+    }
+  },
   data() {
     return {
       transactions: [],
@@ -183,7 +201,9 @@ export default {
       defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
-        jDealType: "J4"
+        jDealType: "J4",
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
       },
       showDialog: this.showFiltersDialog,
       showTransmitDialog: false,
@@ -202,21 +222,20 @@ export default {
       selectedTransaction: null,
       transactionSlipDialog: false,
       loadingTransaction: false,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
     };
-  },
-  watch: {
-    options: {
-      handler: async function(){ await this.getDataFromApi() },
-      deep: true
-    }
   },
   methods: {
     async getDataFromApi(extendData) {
       if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.get({
-        ...this.transactionsFilter
+        ...this.transactionsFilter,
+        ...this.options,
       });
+      
       if (data) {
         if(!this.headers || this.headers.length === 0){
           this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
@@ -224,19 +243,15 @@ export default {
         let transactions = data.data || [];
         this.transactions = extendData ? [...this.transactions, ...transactions] : transactions;
         this.numberOfRecords = data.numberOfRecords || 0;
-
-        if(transactions.length > 0){
-          let newest = this.transactions[0].$transactionTimestamp;
-          let oldest = this.transactions[this.transactions.length - 1].$transactionTimestamp;
-          this.datePeriod = this.$options.filters.ecdate(oldest, "L") +  ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        }else{
-          this.datePeriod = null;
-        }
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
       }
       this.selectAll = false;
       this.loading = false;
     },
     async applyFilters(data) {
+      this.options.page = 1;
       this.transactionsFilter = {
         ...this.filters,
         ...this.defaultFilter,
@@ -342,15 +357,12 @@ export default {
       terminalStore: state => state.settings.terminal,
     })
   },
-  watch:{
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route (to, from){
-      /** only update header if we returned to the same (cached) page */
-      if(to.meta.keepAlive == this.$options.name){
-        this.initThreeDotMenu();
-      }
-    }
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
   async mounted() {
     await this.applyFilters({

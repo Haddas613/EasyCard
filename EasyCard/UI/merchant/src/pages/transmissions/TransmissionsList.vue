@@ -27,27 +27,40 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
             <v-row no-gutters>
-              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
+              <v-col cols="12" class="mt-1 font-weight-bold">
+                <!-- <p class="my-1">{{ totalAmountILS | currency('ILS') }}</p>
+                <p class="my-1" v-if="totalAmountUSD">{{ totalAmountUSD | currency('USD') }}</p>
+                <p class="my-1" v-if="totalAmountUSD">{{ totalAmountEUR | currency('EUR') }}</p> -->
+                <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+                <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+                <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
+            <v-row no-gutters>
+              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
+              <v-col cols="12" class="font-weight-bold">
+                <span dir="ltr">
+                  <template v-if="transmissionsFilter.dateFrom">
+                    {{transmissionsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <span>-</span>
+                  <template v-if="transmissionsFilter.dateTo">
+                    {{transmissionsFilter.dateTo | ecdate("L")}}
+                  </template>
+                </span>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
                 {{numberOfRecords || '-'}}
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
-            <v-row no-gutters>
-              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                {{totalAmount | currency(currencyStore.code)}}
               </v-col>
             </v-row>
           </v-col>
@@ -116,11 +129,14 @@ export default {
       defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
       },
       showDialog: this.showFiltersDialog,
-      datePeriod: null,
       numberOfRecords: 0,
-      totalAmount: 0,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
       selectAll: false,
       selectLimit: 1000 // TODO: from config
     };
@@ -136,15 +152,9 @@ export default {
         let transmissions = data.data || [];
         this.transmissions = extendData ? [...this.transmissions, ...transmissions] : transmissions;
         this.numberOfRecords = data.numberOfRecords || 0;
-        this.totalAmount = data.totalAmount;
-
-        if(transmissions.length > 0){
-          let newest = this.transmissions[0].$date;
-          let oldest = this.transmissions[this.transmissions.length - 1].$date;
-          this.datePeriod = this.$options.filters.ecdate(oldest, "L") +  ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        }else{
-          this.datePeriod = null;
-        }
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
       }
       this.selectAll = false;
       this.loading = false;
@@ -220,15 +230,12 @@ export default {
     });
     this.initThreeDotMenu();
   },
-  watch: {
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route (to, from){
-      /** only update header if we returned to the same (cached) page */
-      if(to.meta.keepAlive == this.$options.name){
-        this.initThreeDotMenu();
-      }
-    },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
 };
 </script>

@@ -54,8 +54,11 @@
     [Department]                NVARCHAR (50)    NULL,
     [ExternalUserID]            VARCHAR (50)     NULL,
     [ResponsiblePerson]         NVARCHAR (50)    NULL,
+    [InvoiceDetails_Donation]   BIT              NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

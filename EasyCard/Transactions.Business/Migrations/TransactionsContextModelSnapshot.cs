@@ -701,17 +701,17 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AccountNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("AccountNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<int?>("Bankcode")
-                        .HasColumnType("int");
+                    b.Property<long?>("Bankcode")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("BranchNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("BranchNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("ConsumerID")
                         .HasColumnType("uniqueidentifier");
@@ -721,8 +721,8 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("InstituteNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("InstituteNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
@@ -730,8 +730,8 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("MasavFileID")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("NationalID")
-                        .HasColumnType("int");
+                    b.Property<long?>("NationalID")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
@@ -770,9 +770,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadTransactionID");
 
                     b.Property<string>("TranRecord")
-                        .HasMaxLength(600)
+                        .HasMaxLength(700)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(600)")
+                        .HasColumnType("varchar(700)")
                         .HasColumnName("ShvaTranRecord");
 
                     b.HasKey("NayaxTransactionsParametersID");
@@ -1148,6 +1148,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("TransactionDate")
                         .IsRequired()
                         .HasColumnType("date");
+
+                    b.Property<DateTime?>("TransactionJ5ExpiredDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("TransactionTimestamp")
                         .HasColumnType("datetime2");
@@ -2253,9 +2256,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("TelToGetAuthNum");
 
                             b1.Property<string>("TranRecord")
-                                .HasMaxLength(600)
+                                .HasMaxLength(700)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(600)")
+                                .HasColumnType("varchar(700)")
                                 .HasColumnName("ShvaTranRecord");
 
                             b1.Property<DateTime?>("TransmissionDate")

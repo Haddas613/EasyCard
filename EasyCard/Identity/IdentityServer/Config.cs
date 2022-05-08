@@ -172,7 +172,7 @@ namespace IdentityServer
                     //    new Secret("secret".Sha256())
                     //},
 
-                    AllowedGrantTypes = { "terminal_rest_api" },
+                    AllowedGrantTypes = { "terminal_rest_api", "woocommerce" },
 
                     AllowedScopes = new List<string>
                     {

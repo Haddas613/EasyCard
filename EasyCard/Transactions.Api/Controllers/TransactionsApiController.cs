@@ -99,6 +99,7 @@ namespace Transactions.Api.Controllers
         private readonly IEcwidApiClient ecwidApiClient;
         private readonly External.BitApiController bitController;
         private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
+        private readonly TransmissionController transmissionController;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -127,7 +128,8 @@ namespace Transactions.Api.Controllers
             BasicServices.Services.IExcelService excelService,
             IEcwidApiClient ecwidApiClient,
             External.BitApiController bitController,
-            IThreeDSIntermediateStorage threeDSIntermediateStorage)
+            IThreeDSIntermediateStorage threeDSIntermediateStorage,
+            TransmissionController transmissionController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -156,6 +158,7 @@ namespace Transactions.Api.Controllers
             this.ecwidApiClient = ecwidApiClient;
             this.bitController = bitController;
             this.threeDSIntermediateStorage = threeDSIntermediateStorage;
+            this.transmissionController = transmissionController;
         }
 
         [HttpGet]
@@ -206,97 +209,35 @@ namespace Transactions.Api.Controllers
         [SwaggerResponseExample(201, typeof(GetTransactionResponseExample))]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {
-            Debug.WriteLine(User);
+            var tr = EnsureExists(
+                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID));
+            var transaction = mapper.Map<TransactionResponse>(tr);
 
-            if (httpContextAccessor.GetUser().IsAdmin())
+            TransactionStatusExtensions.UpdateAggregatorDetails(tr, transaction);
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
+
+            transaction.TerminalName = terminal.Label;
+            transaction.MerchantName = terminal.Merchant.BusinessName;
+
+            IAggregator aggregator = null;
+
+            var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+            if (terminalAggregator != null)
             {
-                var tr = EnsureExists(
-                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID));
-                var transaction = mapper.Map<TransactionResponseAdmin>(tr);
-
-                // TODO: find another way to map it
-                if (tr.AggregatorID == 60)
-                {
-                    transaction.ClearingHouseTransactionDetails = null;
-                }
-                else if (tr.AggregatorID == 10)
-                {
-                    transaction.UpayTransactionDetails = null;
-                }
-                else
-                {
-                    transaction.ClearingHouseTransactionDetails = null;
-                    transaction.UpayTransactionDetails = null;
-                }
-
-                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
-
-                if (transaction.JDealType == JDealTypeEnum.J5)
-                {
-                    transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
-                }
-
-                if (transaction.TransmissionCancellationPossible)
-                {
-                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                    if (terminalAggregator != null)
-                    {
-                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
-                    }
-                }
-
-                transaction.TerminalName = terminal.Label;
-                transaction.MerchantName = terminal.Merchant.BusinessName;
-
-                if (transaction.InvoiceCreationPossible)
-                {
-                    transaction.AllowInvoiceCreation =
-                        terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
-                        || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
-                }
-
-                if (transaction.AllowRefund)
-                {
-                    transaction.AllowRefund = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks);
-                }
-
-                return Ok(transaction);
+                aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             }
-            else
-            {
-                var transaction = mapper.Map<TransactionResponse>(EnsureExists(
-                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
 
-                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
-                transaction.TerminalName = terminal.Label;
+            transaction.AllowTransmission = tr.AllowTransmission();
 
-                if (transaction.TransmissionCancellationPossible)
-                {
-                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+            transaction.AllowTransmissionCancellation = tr.AllowTransmissionCancellation(aggregator);
 
-                    if (terminalAggregator != null)
-                    {
-                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
-                    }
-                }
+            transaction.AllowInvoiceCreation = tr.AllowInvoiceCreation(terminal);
 
-                if (transaction.InvoiceCreationPossible)
-                {
-                    transaction.AllowInvoiceCreation =
-                        terminal.IntegrationEnabled(ExternalSystemHelpers.ECInvoiceExternalSystemID)
-                        || terminal.IntegrationEnabled(ExternalSystemHelpers.RapidOneInvoicingExternalSystemID);
-                }
+            transaction.AllowRefund = tr.AllowRefund(terminal);
 
-                if (transaction.AllowRefund)
-                {
-                    transaction.AllowRefund = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks);
-                }
-
-                return Ok(transaction);
-            }
+            return Ok(transaction);
         }
 
         [HttpGet]
@@ -343,11 +284,16 @@ namespace Transactions.Api.Controllers
                 var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var totalAmount = query.DeferredSum(e => e.TotalAmount).FutureValue();
-                var response = new SummariesAmountResponse<TransactionSummary>();
+                var totalAmount = new
+                {
+                    ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                    EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+                };
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
+                    var response = new SummariesAmountResponse<TransactionSummaryAdmin>();
                     var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).Future().ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
@@ -370,11 +316,15 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
                 else
                 {
+                    var response = new SummariesAmountResponse<TransactionSummary>();
                     // TODO: try to remove ProjectTo
                     var summary = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
 
@@ -393,9 +343,13 @@ namespace Transactions.Api.Controllers
                             s.TerminalName = terminals[s.TerminalID].Label;
                         }
                     });
+
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
-                    response.TotalAmount = totalAmount.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
+
                     return Ok(response);
                 }
             }
@@ -822,14 +776,36 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            if (!transaction.AllowRefund)
+            IAggregator aggregator = null;
+
+            var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+            if (terminalAggregator != null)
             {
-                return new OperationResponse($"It is not possible to make chargeback for transaction {transaction.PaymentTransactionID}", StatusEnum.Error);
+                aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             }
 
-            if (!terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Chargebacks))
+            if (transaction.AllowTransmissionCancellation(aggregator))
             {
-                return new OperationResponse($"Feature Chargebacks in not enabled for terminal {terminal.TerminalID}", StatusEnum.Error);
+                if (transaction.TransactionAmount != request.RefundAmount)
+                {
+                    return new OperationResponse($"It is not possible to cancel transaction {transaction.PaymentTransactionID} for amount {request.RefundAmount}", StatusEnum.Error);
+                }
+
+                object aggregatorSettings = null;
+
+                if (aggregator != null)
+                {
+                    aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+                }
+
+                // TODO: db-transaction
+                return await transmissionController.CancelNotTransmittedTransactionInternal(terminal, transaction, aggregator, aggregatorSettings);
+            }
+
+            if (!transaction.AllowRefund(terminal))
+            {
+                return new OperationResponse($"It is not possible to make refund for transaction {transaction.PaymentTransactionID}", StatusEnum.Error);
             }
 
             if (transaction.DocumentOrigin == DocumentOriginEnum.Bit)
@@ -873,7 +849,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    throw new BusinessException($"Saved CreditCardToken required");
+                    throw new BusinessException($"Saved Credit Card required");
                 }
             }
         }

@@ -19,12 +19,12 @@
       <v-col cols="12" md="4">
         <v-text-field
           :label="$t('BankAccount')"
-          :counter="12"
+          :counter="13"
           outlined
           v-model="model.bankAccount"
           max="12"
           type="number"
-          :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+          :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(5, 13)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>

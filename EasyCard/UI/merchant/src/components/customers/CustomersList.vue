@@ -1,5 +1,26 @@
 <template>
   <div>
+    <customer-create-dialog
+      :terminal="terminalID"
+      :show.sync="customerCreateDialog"
+      v-on:ok="selectCustomer($event)"
+      v-if="supportCreate"
+    ></customer-create-dialog>
+    <v-row class="my-1" justify="space-between" no-gutters v-if="supportCreate">
+      <v-spacer class="hidden-sm-and-down"></v-spacer>
+      <v-col cols="12" md="4" lg="3">
+        <v-btn
+          color="success"
+          small
+          block
+          class="px-1"
+          @click="customerCreateDialog = true;"
+        >
+          <v-icon left>mdi-plus</v-icon>
+          {{$t("CreateCustomer")}}
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-card class="my-2" width="100%" flat v-if="overview">
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -119,7 +140,9 @@ import { mapState } from "vuex";
 
 export default {
   components: {
-    Avatar
+    Avatar,
+    CustomerCreateDialog: () =>
+      import("../../components/customers/CustomerCreateDialog"),
   },
   props: {
     showPreviouslyCharged: {
@@ -136,7 +159,11 @@ export default {
     overview: {
       type: Boolean,
       default: false
-    }
+    },
+    supportCreate: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -151,7 +178,8 @@ export default {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0
       },
-      loading: false
+      loading: false,
+      customerCreateDialog: false,
     };
   },
   async mounted() {
@@ -197,15 +225,10 @@ export default {
       try{
         let searchApply = this.search && this.search.trim().length >= 3;
 
-        let terminalID = null;
-        if(this.filterByTerminal){
-          terminalID = typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
-        }
-
         let customers = await this.$api.consumers.getConsumers({
           search: searchApply ? this.search : "",
           ...this.paging,
-          terminalID: terminalID,
+          terminalID: this.terminalID,
           showDeleted: this.allowShowDeleted ? this.$showDeleted(this.showDeletedCustomers) : false
         });
         this.totalAmount = customers.numberOfRecords;
@@ -272,6 +295,9 @@ export default {
     }),
     canLoadMore() {
       return (this.paging.take + this.paging.skip) < this.totalAmount;
+    },
+    terminalID() {
+      return typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
     }
   }
 };

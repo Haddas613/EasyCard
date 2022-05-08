@@ -126,7 +126,6 @@
           class="pb-2"
           v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
           v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
-          {{customerID}}
           <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
         </v-col>
       </template>
@@ -343,7 +342,8 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      if (this.model.dealDetails.consumerID !== data.consumerID){
+      let customerChanged = this.model.dealDetails.consumerID !== data.consumerID;
+      if (customerChanged){
         this.token = null;
       }
 
@@ -357,7 +357,7 @@ export default {
       });
       this.customer = data;
       await this.getCustomerTokens();
-      this.onPaymentTypeChanged(this.model.paymentType, true);
+      this.onPaymentTypeChanged(this.model.paymentType, customerChanged);
       this.customerID = this.customer.consumerID;
     },
     handleClick() {

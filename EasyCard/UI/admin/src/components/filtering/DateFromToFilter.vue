@@ -1,5 +1,5 @@
 <template>
-  <v-row class="px-3" :class="{'flex-row-reverse' : $vuetify.rtl}">
+  <v-row class="px-3">
     <v-col cols="12" md="6">
       <v-menu
         ref="dateFromMenu"

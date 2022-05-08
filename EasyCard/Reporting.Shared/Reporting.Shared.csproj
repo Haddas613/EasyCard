@@ -11,4 +11,19 @@
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Models\Admin\ThreeDSChallengeSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ThreeDSChallengeSummaryResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Models\Admin\ThreeDSChallengeSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ThreeDSChallengeSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

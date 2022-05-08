@@ -31,15 +31,35 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
             <v-row no-gutters>
-              <v-col cols="12">{{ $t("PeriodShown") }}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{ datePeriod || "-" }}</span>
+              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
+              <v-col cols="12" class="mt-1 font-weight-bold">
+                <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+                <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+                <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
+            <v-row no-gutters>
+              <v-col cols="12">{{ $t("PeriodShown") }}:</v-col>
+              <v-col cols="12" class="font-weight-bold">
+                <span dir="ltr">
+                  <template v-if="billingDealsFilter.dateFrom">
+                    {{billingDealsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                  <span>-</span>
+                  <template v-if="billingDealsFilter.dateTo">
+                    {{billingDealsFilter.dateTo | ecdate("L")}}
+                  </template>
+                  <template v-else>-</template>
+                </span>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{ $t("OperationsCountTotal") }}:</v-col>
               <v-col cols="12" class="font-weight-bold">{{
@@ -64,6 +84,9 @@
               }}</v-btn>
               <v-btn small outlined color="teal" value="triggeredTomorrow">{{
                 $t("Tomorrow")
+              }}</v-btn>
+              <v-btn small outlined color="success" value="inProgress">{{
+                $t("InProgress")
               }}</v-btn>
               <v-btn small outlined color="accent" value="paused">{{
                 $t("Paused")
@@ -203,7 +226,7 @@
                 <p class="my-0 py-0">
                   <small>{{ $t("InvoiceOnly") }}</small>
                 </p>
-                {{ item.transactionAmount | currency(item.$currency) }}
+                {{ item.transactionAmount | currency(item.currency) }}
               </v-col>
               <v-col
                 cols="12"
@@ -215,7 +238,7 @@
                   'ecred--text': item.cardExpired,
                   'ecgray--text': !item.active,
                 }"
-                >{{ item.transactionAmount | currency(item.$currency) }}</v-col
+                >{{ item.transactionAmount | currency(item.currency) }}</v-col
               >
             </template>
 
@@ -224,7 +247,7 @@
                 icon
                 :to="{
                   name: 'BillingDeal',
-                  params: { id: item.$billingDealID },
+                  params: { id: item.billingDealID },
                 }"
               >
                 <re-icon>mdi-chevron-right</re-icon>
@@ -239,6 +262,9 @@
             :server-items-length="numberOfRecords"
             :loading="loading"
             :header-props="{ sortIcon: null }"
+            :footer-props="{
+              'items-per-page-options': [10, 25, 50, 100]
+            }"
             class="elevation-1"
           >
             <template v-slot:item.select="{ item }">
@@ -314,7 +340,7 @@
                 link
                 :to="{
                   name: 'BillingDeal',
-                  params: { id: item.$billingDealID },
+                  params: { id: item.billingDealID },
                 }"
               >
                 <re-icon small>mdi-arrow-right</re-icon>
@@ -329,7 +355,7 @@
           {{ $t("NothingToShow") }}
         </p>
 
-        <v-flex class="text-center" v-if="canLoadMore">
+        <v-flex class="text-center" v-if="$vuetify.breakpoint.mdAndDown && canLoadMore">
           <v-btn
             outlined
             color="primary"
@@ -370,6 +396,14 @@ export default {
       required: false,
     },
   },
+  watch: {
+    options: {
+      handler: async function() {
+        await this.getDataFromApi();
+      },
+      deep: true
+    }
+  },
   data() {
     return {
       billingDeals: null,
@@ -382,23 +416,29 @@ export default {
       customerInfo: null,
       moment: moment,
       loading: false,
-      billingDealsFilter: {
+      defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
         actual: null,
         filterDateByNextScheduledTransaction: true,
         terminalID: null,
         quickStatus: null,
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(moment().endOf('month')),
+      },
+      billingDealsFilter: {
         ...this.filters,
       },
       showDialog: this.showFiltersDialog,
       showTriggerDialog: false,
-      datePeriod: null,
       numberOfRecords: 0,
       selectAll: false,
       now: new Date(),
       headers: [],
       options: {},
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
     };
   },
   methods: {
@@ -414,21 +454,12 @@ export default {
           ? [...this.billingDeals, ...billingDeals]
           : billingDeals;
         this.numberOfRecords = data.numberOfRecords || 0;
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
 
         if (!this.headers || this.headers.length === 0) {
           this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
-        }
-
-        if (billingDeals.length > 0) {
-          let newest = this.billingDeals[0].$billingDealTimestamp;
-          let oldest =
-            this.billingDeals[this.billingDeals.length - 1]
-              .$billingDealTimestamp;
-          this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        } else {
-          this.datePeriod = null;
         }
       }
       this.selectAll = false;
@@ -437,7 +468,7 @@ export default {
     async applyFilters(data) {
       this.options.page = 1;
       this.billingDealsFilter = {
-        ...this.billingDealsFilter,
+        ...this.defaultFilter,
         ...data,
         skip: 0,
         quickStatus: null, //quick status must be reset if filter is applied
@@ -468,7 +499,7 @@ export default {
         return;
       }
       let opResult = await this.$api.billingDeals.disableBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
 
       await this.refresh();
@@ -479,7 +510,7 @@ export default {
         return;
       }
       let opResult = await this.$api.billingDeals.activateBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
 
       await this.refresh();
@@ -496,7 +527,7 @@ export default {
       }
 
       let opResult = await this.$api.billingDeals.triggerBillingDeals(
-        this.lodash.map(selected, (i) => i.$billingDealID)
+        this.lodash.map(selected, (i) => i.billingDealID)
       );
       //this.switchFilterChanged('inProgress');
       this.billingDealsFilter.inProgress = true;
@@ -604,15 +635,12 @@ export default {
     await this.applyFilters();
     await this.initThreeDotMenu();
   },
-  watch: {
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route(to, from) {
-      /** only update header if we returned to the same (cached) page */
-      if (to.meta.keepAlive == this.$options.name) {
-        this.initThreeDotMenu();
-      }
-    },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
 };
 </script>

@@ -30,23 +30,24 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.Currency == filter.Currency);
             }
 
-            // TODO: date filtering for payment request
+            // TODO: date filtering for payment request, i.e. LegalInvoiceDate (without time)
             if (filter.QuickDateFilter != null)
             {
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
-                src = src.Where(t => t.DueDate >= dateRange.DateFrom && t.DueDate <= dateRange.DateTo);
+                src = src.Where(t => t.PaymentRequestTimestamp.Value.Date >= dateRange.DateFrom.Value.Date
+                    && t.PaymentRequestTimestamp.Value.Date <= dateRange.DateTo.Value.Date);
             }
             else
             {
                 if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.DueDate >= filter.DateFrom.Value);
+                    src = src.Where(t => t.PaymentRequestTimestamp.Value.Date >= filter.DateFrom.Value.Date);
                 }
 
                 if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.DueDate <= filter.DateTo.Value);
+                    src = src.Where(t => t.PaymentRequestTimestamp.Value.Date <= filter.DateTo.Value.Date);
                 }
             }
 

@@ -169,7 +169,8 @@ namespace IdentityServer
             .AddAspNetIdentity<ApplicationUser>()
 
             //.AddProfileService<ProfileService>()
-            .AddExtensionGrantValidator<DelegationGrantValidator>();
+            .AddExtensionGrantValidator<DelegationGrantValidator>()
+            .AddExtensionGrantValidator<DelegationGrantValidatorWoocommerce>();
 
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 

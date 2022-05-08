@@ -15,15 +15,15 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
-        public int? InstituteNumber { get; set; }
+        public long? InstituteNumber { get; set; }
 
-        public int? Bankcode { get; set; }
+        public long? Bankcode { get; set; }
 
-        public int? BranchNumber { get; set; }
+        public long? BranchNumber { get; set; }
 
-        public int? AccountNumber { get; set; }
+        public long? AccountNumber { get; set; }
 
-        public int? NationalID { get; set; }
+        public long? NationalID { get; set; }
 
         public decimal? Amount { get; set; }
 
