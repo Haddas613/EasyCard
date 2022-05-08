@@ -1,4 +1,5 @@
 ﻿
+
 CREATE PROCEDURE [dbo].[PR_GenerateMasavFile]
 @FileDate date,
 @MerchantID uniqueidentifier,
@@ -43,7 +44,7 @@ BEGIN TRANSACTION
 
 
 insert into @MasavFileRows ([ConsumerID],[PaymentTransactionID],[Amount],[NationalID],[Bankcode],[BranchNumber],[AccountNumber],[ConsumerName])
-select t.[ConsumerID], t.[PaymentTransactionID], t.[TransactionAmount] as [Amount], t.[CardOwnerNationalID] as [NationalID], t.BankTransferBank as [Bankcode], t.BankTransferBankBranch as [BranchNumber], TRY_CAST(t.BankTransferBankAccount as int) as [AccountNumber], t.[ConsumerName]
+select t.[ConsumerID], t.[PaymentTransactionID], t.[TransactionAmount] as [Amount], ISNULL(t.[CardOwnerNationalID], t.ConsumerNationalID) as [NationalID], t.BankTransferBank as [Bankcode], t.BankTransferBankBranch as [BranchNumber], TRY_CAST(t.BankTransferBankAccount as int) as [AccountNumber], t.[ConsumerName]
 from [dbo].[PaymentTransaction] as t
 where t.TerminalID = @TerminalID and t.PaymentTypeEnum = @PaymentTypeEnum and t.MasavFileID is null and t.[Status] = @TransactionStatusOld
 
