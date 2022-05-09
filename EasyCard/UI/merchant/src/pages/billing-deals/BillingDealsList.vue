@@ -4,6 +4,7 @@
       :show.sync="showDialog"
       :filter="billingDealsFilter"
       v-on:ok="applyFilters($event)"
+      :key="billingDealsFilter.filterDateByNextScheduledTransaction"
     ></billing-deals-filter-dialog>
     <billing-deals-trigger-dialog
       :show.sync="showTriggerDialog"

@@ -226,14 +226,14 @@ namespace Transactions.Api.Extensions.Filtering
                 {
                     src = filter.FilterDateByNextScheduledTransaction == true
                             ? src.Where(t => t.NextScheduledTransaction >= filter.DateFrom.Value)
-                            : src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
+                            : src.Where(t => t.BillingDealTimestamp.Value.Date >= filter.DateFrom.Value.Date);
                 }
 
                 if (filter.DateTo != null)
                 {
                     src = filter.FilterDateByNextScheduledTransaction == true
                             ? src.Where(t => t.NextScheduledTransaction <= filter.DateTo.Value)
-                            : src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
+                            : src.Where(t => t.BillingDealTimestamp.Value.Date <= filter.DateTo.Value.Date);
                 }
             }
 
