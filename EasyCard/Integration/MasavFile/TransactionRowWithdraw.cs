@@ -54,7 +54,7 @@ namespace PoalimOnlineBusiness
         public int AccountType { get; set; } = 0;
 
         [FixedLengthFile(8, 27, 9, DataType.N)]
-        public int BankAccountNumber { get; set; }
+        public long BankAccountNumber { get; set; }
 
         //9	36	1	 N Filler	 '0'
         [FixedLengthFile(9, 36, 1, DataType.N)]
