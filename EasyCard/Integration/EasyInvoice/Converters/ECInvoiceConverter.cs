@@ -25,7 +25,7 @@ namespace EasyInvoice.Converters
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
                 CustomerTaxId = message.ConsumerNationalID,
                 Description = description,
-                DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault()).ToString(),
+                DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault(), message.Donation || message.InvoiceDetails.Donation).ToString(),
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
                 DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
@@ -65,7 +65,7 @@ namespace EasyInvoice.Converters
             var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
             string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "התרומה מוכרת לצרכי מס לפי סעיף 46 א" : "Receiving a donation according to Section 46";
 
-            if (documentType == ECInvoiceDocumentType.PAYMENT_INFO && (message.Donation || message.Donation || message.InvoiceDetails.Donation))
+            if ((documentType == ECInvoiceDocumentType.PAYMENT_INFO || documentType == ECInvoiceDocumentType.PAYMENT_INFO_DONATION) && (message.Donation || message.InvoiceDetails.Donation))
                 description = String.Format("{0}{1} {2}", description, string.IsNullOrEmpty(description) ? "" : ",", donationDescription);
         }
 
@@ -209,14 +209,14 @@ namespace EasyInvoice.Converters
             return result;
         }
 
-        public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType)
+        public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType,bool donation = false)
         {
             return documentType switch
             {
                 InvoiceTypeEnum.CreditNote => ECInvoiceDocumentType.CREDIT_NOTE,
                 InvoiceTypeEnum.Invoice => ECInvoiceDocumentType.INVOICE,
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => ECInvoiceDocumentType.INVOICE_WITH_PAYMENT_INFO,
-                InvoiceTypeEnum.PaymentInfo => ECInvoiceDocumentType.PAYMENT_INFO,
+                InvoiceTypeEnum.PaymentInfo => donation ? ECInvoiceDocumentType.PAYMENT_INFO_DONATION : ECInvoiceDocumentType.PAYMENT_INFO,
                 InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE_WITH_PAYMENT_INFO,
                 _ => throw new NotImplementedException(),
             };
