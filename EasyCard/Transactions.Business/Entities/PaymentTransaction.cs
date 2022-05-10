@@ -335,6 +335,8 @@ namespace Transactions.Business.Entities
 
         public Guid? OperationDoneByID { get; set; }
 
+        public Guid? ThreeDSChallengeID { get; set; }
+
         [NotMapped]
         public string SourceIP { get { return MerchantIP; } set { MerchantIP = value; } }
 
