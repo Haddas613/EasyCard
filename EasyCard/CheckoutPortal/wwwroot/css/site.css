@@ -187,11 +187,11 @@ input[type="checkbox"].input-validation-error {
     border: 1px solid #999999;
     cursor: default;
     display: none;
-    margin-top: 15px;
+    margin-top: 25px;
     position: absolute;
     text-align: left;
     width: 600px;
-    height: 400px;
+    height: 450px;
     z-index: 50;
     top: 0px;
     left: 0px;
