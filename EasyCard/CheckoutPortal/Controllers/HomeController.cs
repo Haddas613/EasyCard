@@ -29,6 +29,8 @@ using CheckoutPortal.Models.Bit;
 using System.Threading;
 using System.Globalization;
 using CheckoutPortal.Resources;
+using System.IO;
+using System.Text;
 
 namespace CheckoutPortal.Controllers
 {
@@ -835,10 +837,12 @@ namespace CheckoutPortal.Controllers
 
         [HttpPost]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
+        public async Task<IActionResult> Notification3Ds(Models.ThreeDS.Notification request)
         {
-            // TODO: log this message
-            var cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+            string cresDecoded = null;
+
+            cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+
             if (!string.IsNullOrWhiteSpace(cresDecoded))
             {
                 try
@@ -850,6 +854,8 @@ namespace CheckoutPortal.Controllers
                         logger.LogError($"Notification3Ds ThreeDSServerTransID is empty: {cresDecoded}");
                         return View(new Models.ThreeDS.NotificationResult { Success = false });
                     }
+
+
 
                     return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID, Error = cresObj.ErrorDescription });
                 }

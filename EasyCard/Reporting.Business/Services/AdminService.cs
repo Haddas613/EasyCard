@@ -124,12 +124,42 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query)
         {
-            var sql = @"select ROW_NUMBER() OVER(ORDER BY t.[TerminalID] DESC) AS RowN, t.[TerminalID], min([MessageDate]) as DateFrom,  max([MessageDate]) as DateTo, COUNT([ThreeDSChallengeID]) as NumberOfChallengeRequests
-	from [dbo].[ThreeDSChallenge] as t group by t.[TerminalID]";
+            var builder = new SqlBuilder();
+
+            var sql = @"select ROW_NUMBER() OVER(ORDER BY d.[TerminalID] DESC) AS RowN,
+d.[TerminalID], min(d.[MessageDate]) as DateFrom,  max(d.[MessageDate]) as DateTo,
+COUNT(d.[ThreeDSChallengeID]) as NumberOfChallengeRequests, 
+COUNT(t.[PaymentTransactionID]) as NumberOfTransactions
+from [dbo].[ThreeDSChallenge] as d 
+left outer join [dbo].[PaymentTransaction] as t on t.[ThreeDSServerTransID] = d.[ThreeDSServerTransID]
+/**where**/
+group by d.[TerminalID]";
+
+            var selector = builder.AddTemplate(sql, query);
+
+            if (query.DateFrom.HasValue)
+            {
+                builder.Where($"d.[MessageDate] >= @DateFrom");
+            }
+
+            if (query.DateTo.HasValue)
+            {
+                builder.Where($"d.[MessageDate] <= @DateTo");
+            }
+
+            if (query.TerminalID.HasValue)
+            {
+                builder.Where($"d.[TerminalID] = @TerminalID");
+            }
+
+            if (query.MerchantID.HasValue)
+            {
+                builder.Where($"d.[MerchantID] = @MerchantID");
+            }
 
             using (var connection = new SqlConnection(transactionsConnectionString))
             {
-                return await connection.QueryAsync<ThreeDSChallengeSummary>(sql, query);
+                return await connection.QueryAsync<ThreeDSChallengeSummary>(selector.RawSql, selector.Parameters);
             }
         }
 

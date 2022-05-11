@@ -177,7 +177,8 @@ namespace Transactions.Api.Controllers.External
                     return new Authenticate3DsResponse
                     {
                         ErrorMessage = (res.ErrorDetails?.ErrorDescription ?? res.ResponseData?.AuthenticationResponse?.CardholderInfo) ?? "rejected",
-                        ErrorDetail = res.ErrorDetails?.ErrorDetail
+                        ErrorDetail = res.ErrorDetails?.ErrorDetail,
+                        PassThrough = res.ErrorDetails.PassThrough
                     };
                 }
                 else

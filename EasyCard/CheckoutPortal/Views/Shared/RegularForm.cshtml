@@ -393,8 +393,10 @@
                     success: function (data, status, xhr) {
                         if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
 
-                            if (continueInCaseOf3DSecureError)
+                            if (continueInCaseOf3DSecureError) {
+                                $("#ThreeDSServerTransID").val("");
                                 return $("#checkout-form").submit();
+                            }
                             else {
                                 toastr["error"]('@(localizer.Get("ThreeDSError"))');
                                 window.switchLoadingSpinner(false);
@@ -403,8 +405,10 @@
                         }
 
                         if (data.errorMessage) {
-                            if (continueInCaseOf3DSecureError)
+                            if (continueInCaseOf3DSecureError || data.passThrough) {
+                                $("#ThreeDSServerTransID").val("");
                                 return $("#checkout-form").submit();
+                            }
                             else {
                                 toastr["error"](data.errorMessage);
                                 window.switchLoadingSpinner(false);

@@ -17,5 +17,13 @@ namespace ThreeDS.Models
         public string ErrorDetail { get; set; }
 
         public string ErrorMessageType { get; set; }
+
+        public bool PassThrough
+        {
+            get
+            {
+                return ErrorCode == "130" || ErrorCode == "303" || ErrorCode == "118";
+            }
+        }
     }
 }
