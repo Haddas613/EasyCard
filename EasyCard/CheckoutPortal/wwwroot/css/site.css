@@ -183,6 +183,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .messagepop {
+    direction: ltr;
     background-color: #FFFFFF;
     border: 1px solid #999999;
     cursor: default;
