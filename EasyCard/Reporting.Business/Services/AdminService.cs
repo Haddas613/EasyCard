@@ -21,12 +21,14 @@ namespace Reporting.Business.Services
     public class AdminService : IAdminService
     {
         private readonly string connectionString;
+        private readonly string transactionsConnectionString;
         private readonly IAppInsightReaderService appInsightReaderService;
 
-        public AdminService(string connectionString, IAppInsightReaderService appInsightReaderService)
+        public AdminService(string connectionString, string transactionsConnection, IAppInsightReaderService appInsightReaderService)
         {
             this.connectionString = connectionString;
             this.appInsightReaderService = appInsightReaderService;
+            this.transactionsConnectionString = transactionsConnection;
         }
 
         public async Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query)
@@ -125,7 +127,7 @@ namespace Reporting.Business.Services
             var sql = @"select ROW_NUMBER() OVER(ORDER BY t.[TerminalID] DESC) AS RowN, t.[TerminalID], min([MessageDate]) as DateFrom,  max([MessageDate]) as DateTo, COUNT([ThreeDSChallengeID]) as NumberOfChallengeRequests
 	from [dbo].[ThreeDSChallenge] as t group by t.[TerminalID]";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(transactionsConnectionString))
             {
                 return await connection.QueryAsync<ThreeDSChallengeSummary>(sql, query);
             }
