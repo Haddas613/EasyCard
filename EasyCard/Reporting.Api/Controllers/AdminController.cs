@@ -29,11 +29,13 @@ namespace Reporting.Api.Controllers
     {
         private readonly IAdminService adminService;
         private readonly IMerchantsService merchantsService;
+        private readonly ITerminalsService terminalsService;
 
-        public AdminController(IAdminService adminService, IMerchantsService merchantsService)
+        public AdminController(IAdminService adminService, IMerchantsService merchantsService, ITerminalsService terminalsService)
         {
             this.adminService = adminService;
             this.merchantsService = merchantsService;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
@@ -85,6 +87,22 @@ namespace Reporting.Api.Controllers
 
             res.Data = data;
             res.NumberOfRecords = data.Count(); //TODO
+
+            if (data.Any())
+            {
+                var TerminalIDs = data.Select(r => r.TerminalID).Distinct();
+                var terminals = await terminalsService.GetTerminals()
+                    .Where(e => TerminalIDs.Contains(e.TerminalID))
+                    .Select(d => new { d.TerminalID, d.Label, d.Merchant.BusinessName})
+                    .ToDictionaryAsync(k => k.TerminalID);
+
+                foreach (var r in data)
+                {
+                    var terminal = terminals[r.TerminalID];
+                    r.MerchantName = terminal.BusinessName;
+                    r.TerminalName = terminal.Label;
+                }
+            }
 
             return Ok(res);
         }

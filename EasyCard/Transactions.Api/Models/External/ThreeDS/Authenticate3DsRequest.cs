@@ -11,7 +11,7 @@ namespace Transactions.Api.Models.External.ThreeDS
 {
     public class Authenticate3DsRequest
     {
-        public Guid TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
         public string ThreeDSServerTransID { get; set; }
 

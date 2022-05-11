@@ -21,12 +21,14 @@ namespace Reporting.Business.Services
     public class AdminService : IAdminService
     {
         private readonly string connectionString;
+        private readonly string transactionsConnectionString;
         private readonly IAppInsightReaderService appInsightReaderService;
 
-        public AdminService(string connectionString, IAppInsightReaderService appInsightReaderService)
+        public AdminService(string connectionString, string transactionsConnection, IAppInsightReaderService appInsightReaderService)
         {
             this.connectionString = connectionString;
             this.appInsightReaderService = appInsightReaderService;
+            this.transactionsConnectionString = transactionsConnection;
         }
 
         public async Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query)
@@ -122,29 +124,13 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query)
         {
-            //query.Skip TODO: pagination
+            var sql = @"select ROW_NUMBER() OVER(ORDER BY t.[TerminalID] DESC) AS RowN, t.[TerminalID], min([MessageDate]) as DateFrom,  max([MessageDate]) as DateTo, COUNT([ThreeDSChallengeID]) as NumberOfChallengeRequests
+	from [dbo].[ThreeDSChallenge] as t group by t.[TerminalID]";
 
-            var result = new List<ThreeDSChallengeSummary>();
-
-            var rand = new Random();
-
-            for (int i = 1; i <= 10; i++)
+            using (var connection = new SqlConnection(transactionsConnectionString))
             {
-                var from = DateTime.UtcNow.AddDays(-1 * i);
-
-                result.Add(new ThreeDSChallengeSummary
-                {
-                    TerminalID = new Guid("fd483f66-7cf0-4e57-8661-ab9200804615"),
-                    TerminalName = "Vlad's terminal 29/07",
-                    MerchantID = new Guid("632eb049-8562-411d-ab9f-ab92007f0293"),
-                    MerchantName = "Main Merchant Bob",
-                    NumberOfChallengeRequests = rand.Next(0, 50),
-                    DateFrom = from,
-                    DateTo = from.AddDays(1),
-                });
+                return await connection.QueryAsync<ThreeDSChallengeSummary>(sql, query);
             }
-
-            return result;
         }
 
         private string KustoAgo(DateTime from, DateTime to)

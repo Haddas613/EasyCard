@@ -381,7 +381,7 @@
                 }
             };
 
-            const continueInCaseOf3DSecureError = @((Model.ContinueInCaseOf3DSecureError == true).ToString().ToLower());
+            const continueInCaseOf3DSecureError = false;
 
             const authenticate3Ds = function () {
                 let payload = $('#checkout-form').serialize();

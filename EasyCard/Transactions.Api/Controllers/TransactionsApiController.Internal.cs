@@ -583,14 +583,12 @@ namespace Transactions.Api.Controllers
                 if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
                 {
                     var threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
+                    transaction.ThreeDSChallengeID = threeDSecure?.ThreeDSChallengeID;
 
                     // TODO: add converter
                     if (threeDSecure?.TransStatus != "Y")
                     {
-                        if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
-                        {
-                            throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}: {transaction.ThreeDSServerTransID}");
-                        }
+                         throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}: {transaction.ThreeDSServerTransID}");
                     }
                     else
                     {

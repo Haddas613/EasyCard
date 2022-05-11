@@ -18,6 +18,8 @@ namespace Merchants.Business.Services
 
         public Task<Terminal> GetTerminal(Guid terminalID);
 
+        // TODO: to be removed - use GetTerminal() instead
+        [Obsolete]
         public Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID);
 
         public Task SaveTerminalExternalSystem(TerminalExternalSystem entity, Terminal terminal, IDbContextTransaction dbTransaction = null);
