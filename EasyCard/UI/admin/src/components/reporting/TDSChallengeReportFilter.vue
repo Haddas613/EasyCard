@@ -44,9 +44,6 @@ export default {
       if(!this.$refs.form.validate()){
         return;
       }
-      if(!this.model.statuses){
-        this.model.statuses = null; //fix empty string
-      }
       this.$emit("apply", this.model);
     }
   }
