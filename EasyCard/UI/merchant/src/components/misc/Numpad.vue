@@ -199,6 +199,9 @@ export default {
         }).bind(this),
         1000
       );
+    },
+    'defaultItem.price': (newValue, oldValue) => {
+      console.log(newValue);
     }
   },
   computed: {
@@ -216,7 +219,7 @@ export default {
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
     this.defaultItem.itemName = this.terminalStore.settings.defaultItemName || 'Custom Charge';
-    
+
     //Default item price may be set externally if data.amount is present
     if(this.data.amount > 0){
       //If external data is bigger than current total amount, it's put in the default item price
@@ -228,16 +231,19 @@ export default {
     await this.getItems();
     //this.$emit('update', this.model);
     
-    if(!this.itemsOnly){
-      window.addEventListener("keydown", this.handleKeyPress);
-    }
+    // TODO: remove or fix
+    // if(!this.itemsOnly){
+    //   window.addEventListener("keydown", this.handleKeyPress);
+    // }
   },
   destroyed () {
-    if(!this.itemsOnly){
-      window.removeEventListener("keydown", this.handleKeyPress);
-    }
+    // TODO: remove or fix
+    // if(!this.itemsOnly){
+    //   window.removeEventListener("keydown", this.handleKeyPress);
+    // }
   },
   methods: {
+    /** TODO: disabled, interferes with item pricing dialog */
     handleKeyPress($event){
       if(!isNaN($event.key)){
         this.addDigit($event.key);
@@ -434,7 +440,7 @@ export default {
       this.defaultItem.price = 0;
       let total = this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
       let diff = total - amount;
-      
+  
       //we need to distribute difference between items in their discount in descending (by price) order
       if(diff > 0){
         for(let item of this.lodash.sortBy(this.model.dealDetails.items, e => e.price).reverse()){
