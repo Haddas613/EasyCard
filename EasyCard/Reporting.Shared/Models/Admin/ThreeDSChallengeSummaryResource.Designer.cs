@@ -19,7 +19,7 @@ namespace Reporting.Shared.Models.Admin {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ThreeDSChallengeSummaryResource {
@@ -102,6 +102,15 @@ namespace Reporting.Shared.Models.Admin {
         public static string NumberOfChallengeRequests {
             get {
                 return ResourceManager.GetString("NumberOfChallengeRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of Transactions.
+        /// </summary>
+        public static string NumberOfTransactions {
+            get {
+                return ResourceManager.GetString("NumberOfTransactions", resourceCulture);
             }
         }
         
