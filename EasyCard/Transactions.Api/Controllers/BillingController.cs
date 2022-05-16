@@ -317,6 +317,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get billing deal details
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{BillingDealID}")]
         public async Task<ActionResult<BillingDealResponse>> GetBillingDeal([FromRoute] Guid billingDealID)
@@ -336,6 +341,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create billing deal
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateBillingDeal([FromBody] BillingDealRequest model)
@@ -389,6 +399,12 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
+        /// <summary>
+        /// Update billing deal
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
@@ -507,6 +523,12 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
+        /// <summary>
+        /// Update invoice only billing deal details. 
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("/api/invoiceonlybilling/{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceOnlyUpdateRequest model)
@@ -553,6 +575,12 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        /// <summary>
+        /// Update credit card token for billing deal
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <param name="tokenID"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("{BillingDealID}/change-token/{tokenID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealToken([FromRoute] Guid billingDealID, [FromRoute] Guid tokenID)
@@ -585,6 +613,7 @@ namespace Transactions.Api.Controllers
         // It should be reworked to enable/disable methods pair
         [Obsolete]
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
         {
@@ -616,6 +645,11 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        /// <summary>
+        /// Disable billing deals
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("disable-billing-deals")]
         public async Task<ActionResult<OperationResponse>> DisableBillingDeals([FromBody] DisableBillingDealsRequest request)
@@ -635,6 +669,11 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(string.Format(Messages.BillingDealsWereDisabled, successfulCount), StatusEnum.Success));
         }
 
+        /// <summary>
+        /// Enable billing deals
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("activate-billing-deals")]
         public async Task<ActionResult<OperationResponse>> ActivateBillingDeals([FromBody] ActivateBillingDealsRequest request)
@@ -696,6 +735,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Trigger billing deals by terminalID
+        /// </summary>
+        /// <param name="terminalID"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("trigger-by-terminal/{terminalID:guid}")]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> TriggerBillingDealsByTerminal(Guid terminalID)
@@ -763,6 +807,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get Billing deal history
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <returns></returns>
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("{billingDealID}/history")]
@@ -786,6 +835,12 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Pause billing deal
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{billingDealID}/pause")]
         public async Task<ActionResult<OperationResponse>> PauseBilling([FromRoute]Guid billingDealID, [FromBody] PauseBillingDealRequest request)
@@ -816,6 +871,12 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { Status = StatusEnum.Success, Message = Messages.BillingDealPaused, EntityUID = billingDealID });
         }
 
+
+        /// <summary>
+        /// Unpause billing deal
+        /// </summary>
+        /// <param name="billingDealID"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{billingDealID}/unpause")]
         public async Task<ActionResult<OperationResponse>> UnpauseBilling([FromRoute]Guid billingDealID)

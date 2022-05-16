@@ -110,6 +110,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get invoices details by filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<InvoiceSummary>>> GetInvoices([FromQuery] InvoicesFilter filter)
         {
@@ -169,6 +174,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get invoice by invoiceID
+        /// </summary>
+        /// <param name="invoiceID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{invoiceID}")]
         public async Task<ActionResult<InvoiceResponse>> GetInvoice([FromRoute] Guid invoiceID)
@@ -186,6 +196,11 @@ namespace Transactions.Api.Controllers
         }
 
         // TODO: support several download urls
+        /// <summary>
+        /// Get invoice download URL
+        /// </summary>
+        /// <param name="invoiceID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{invoiceID}/download")]
         public async Task<ActionResult<DownloadInvoiceResponse>> GetInvoiceDownloadURL([FromRoute] Guid invoiceID)
@@ -243,6 +258,11 @@ namespace Transactions.Api.Controllers
         }
 
         // NOTE: this creates only db record - Invoicing system integration should be processed in a queue
+        /// <summary>
+        /// Create invoice
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateInvoice([FromBody] InvoiceRequest model)
@@ -308,6 +328,11 @@ namespace Transactions.Api.Controllers
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
         }
 
+        /// <summary>
+        /// Create invoice for transaction ID
+        /// </summary>
+        /// <param name="transactionID"></param>
+        /// <returns></returns>
         [HttpPost("transaction/{transactionID:guid}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateInvoiceForTransaction([FromRoute] Guid transactionID)
@@ -349,6 +374,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("resend-admin")]
         [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
@@ -384,6 +410,11 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Resend invoices to customer
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("resend")]
         public async Task<ActionResult<OperationResponse>> Resend(ResendInvoiceRequest request)
@@ -428,6 +459,11 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Resend one invoice 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("resend-single")]
         [ValidateModelState]

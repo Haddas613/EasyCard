@@ -103,6 +103,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get payment requests by filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<PaymentRequestSummary>>> GetPaymentRequests([FromQuery] PaymentRequestsFilter filter)
         {
@@ -163,6 +168,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment request details by ID
+        /// </summary>
+        /// <param name="paymentRequestID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{paymentRequestID}")]
         public async Task<ActionResult<PaymentRequestResponse>> GetPaymentRequest([FromRoute] Guid paymentRequestID)
@@ -190,6 +200,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create payment request
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreatePaymentRequest([FromBody] PaymentRequestCreate model)
@@ -295,6 +310,11 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Cancel payment request
+        /// </summary>
+        /// <param name="paymentRequestID"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{paymentRequestID}")]
         public async Task<ActionResult<OperationResponse>> CancelPaymentRequest([FromRoute] Guid paymentRequestID)

@@ -19,7 +19,7 @@ namespace Nayax.Models
             this.terminalID = terminalID;
             this.posID = posID;
             this.paramss = new object[2];
-            paramss[0] = "connector";
+            paramss[0] = "ashrait";
             //paramss[1] = new ObjectInAuthRequestParams(otp);
         }
     }

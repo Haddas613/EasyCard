@@ -90,6 +90,11 @@ namespace Transactions.Api.Controllers
             this.emailSender = emailSender;
         }
 
+        /// <summary>
+        /// Get payment intent details
+        /// </summary>
+        /// <param name="paymentIntentID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{paymentIntentID}")]
         public async Task<ActionResult<PaymentRequestResponse>> GetPaymentIntent([FromRoute] Guid paymentIntentID)
@@ -212,6 +217,11 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Delete payment intent
+        /// </summary>
+        /// <param name="paymentIntentID"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{paymentIntentID}")]
         public async Task<ActionResult<OperationResponse>> DeletePaymentIntent([FromRoute] Guid paymentIntentID)

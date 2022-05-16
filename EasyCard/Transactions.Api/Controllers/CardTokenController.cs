@@ -103,6 +103,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Create token for credit card details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
@@ -124,6 +129,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get tokens by filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
         {
@@ -186,6 +196,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete credit card token
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{key}")]
         public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
