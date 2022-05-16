@@ -459,6 +459,11 @@
             after code 3 or 4 user can insert this value from credit company
             </summary>
         </member>
+        <member name="T:Shared.Integration.Models.JDealTypeEnum">
+            <summary>
+            Type of Deal. optional values are; J2 for Check,J4 for Charge, J5 for Block card
+            </summary>
+        </member>
         <member name="F:Shared.Integration.Models.JDealTypeEnum.J2">
             <summary>
             Check

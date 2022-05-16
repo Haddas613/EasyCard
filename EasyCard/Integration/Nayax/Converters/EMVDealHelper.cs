@@ -10,6 +10,11 @@ namespace Nayax.Converters
 {
     public static class EMVDealHelper
     {
+        public static AuthRequestBody GetAutheRequestBody(NayaxGlobalSettings conf, string TerminalIDDevice)
+        {
+            var authReq = new AuthRequestBody(conf.ClientID, TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
+            return authReq;
+        }
         public static AuthenticateRequestBody GetAuthRequestBody(NayaxGlobalSettings conf, string otp, string TerminalIDDevice)
         {
             var authReq = new AuthenticateRequestBody(otp, conf.ClientID, TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));

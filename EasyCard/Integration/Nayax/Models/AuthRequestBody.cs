@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Nayax.Models
 {
-    public class AuthenticateRequestBody
+    public class AuthRequestBody
     {
         public string clientID { get; set; }
         public string terminalID { get; set; }
@@ -13,15 +13,14 @@ namespace Nayax.Models
 
         [JsonProperty("params")]
         public Object[] paramss { get; set; }
-        public AuthenticateRequestBody(string otp, string clientID, string terminalID, string posID)
+        public AuthRequestBody( string clientID, string terminalID, string posID)
         {
             this.clientID = clientID;
             this.terminalID = terminalID;
             this.posID = posID;
             this.paramss = new object[2];
             paramss[0] = "connector";
-            paramss[1] = new ObjectInAuthRequestParams(otp);
+            //paramss[1] = new ObjectInAuthRequestParams(otp);
         }
-
     }
 }

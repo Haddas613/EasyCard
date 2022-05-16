@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Controllers
 {
+    /// <summary>
+    /// show enums translated to hebrew on UI
+    /// </summary>
     [Produces("application/json")]
     [Route("api/dictionaries")]
     [ApiController]
@@ -30,6 +33,11 @@ namespace Merchants.Api.Controllers
         }
 
         //[ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" }, Duration = 3600)]
+        /// <summary>
+        ///  show enums translated to hebrew on UI
+        /// </summary>
+        /// <param name="showForTemplatesOnly"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("externalsystems")]
         public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems(bool showForTemplatesOnly = false)

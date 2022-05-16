@@ -26,6 +26,10 @@ namespace Transactions.Api.Controllers
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// show enums translated to hebrew on UI GetTransactionDictionaries
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("transaction")]
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
@@ -35,6 +39,10 @@ namespace Transactions.Api.Controllers
             return Ok(dictionaries);
         }
 
+        /// <summary>
+        /// show enums translated to hebrew on UI GetBanks
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("banks")]
         [ResponseCache(VaryByHeader = "Accept-Language", Duration = 3600)]
@@ -43,6 +51,10 @@ namespace Transactions.Api.Controllers
             return Ok(BankHelper.GetListOfBankOptions(CurrentCulture));
         }
 
+        /// <summary>
+        ///  show enums translated to hebrew on UI AvailableWebhooks
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("webhooks")]
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]

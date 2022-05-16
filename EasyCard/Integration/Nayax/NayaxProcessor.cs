@@ -11,6 +11,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Nayax
@@ -22,6 +23,7 @@ namespace Nayax
         private const string DoPeriodic = "doPeriodic";
         private const string Pair = "pair";
         private const string Authenticate = "authenticate";
+        private const string GetDetails = "getStatus";
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
         private readonly ILogger logger;
@@ -335,6 +337,29 @@ namespace Nayax
             else
             {
                 return new PairResponse(Messages.CannotGetErrorCodeFromResponse, authResultBody.statusCode);
+            }
+        }
+
+        public async Task<bool> TestConnection(AuthRequest authRequest)
+        {
+            //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+
+            if (authRequest == null)
+            {
+                throw new ArgumentNullException("TestConnection request is required");
+            }
+
+            var authReq = EMVDealHelper.GetAutheRequestBody(configuration, authRequest.terminalID);
+            try
+            {
+                var response = this.apiClient.Post<HttpResponseMessage>(configuration.BaseUrl, GetDetails, authReq, BuildHeaders);
+                var responseRes = response.Result.Content.ReadAsStringAsync().Result;
+                return (!string.IsNullOrEmpty(responseRes) && (responseRes.ToLower().Contains("ashraitready") || responseRes.ToLower().Contains("ashraitreadyonline")));
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

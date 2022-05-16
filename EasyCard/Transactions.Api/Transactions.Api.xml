@@ -43,6 +43,24 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.GetTransactionDictionaries">
+            <summary>
+            show enums translated to hebrew on UI GetTransactionDictionaries
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.GetBanks">
+            <summary>
+            show enums translated to hebrew on UI GetBanks
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.AvailableWebhooks">
+            <summary>
+             show enums translated to hebrew on UI AvailableWebhooks
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid},System.Boolean)">
             <summary>
             Generate invocie in EasyInvoice system

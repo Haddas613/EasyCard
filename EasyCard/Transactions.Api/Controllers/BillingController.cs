@@ -120,6 +120,7 @@ namespace Transactions.Api.Controllers
             this.events = events;
         }
 
+
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("$meta")]
@@ -132,6 +133,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get billing deals details using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
@@ -215,6 +221,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        ///  Get billing deals details using filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("$excel")]
         [ApiExplorerSettings(IgnoreApi = true)]
