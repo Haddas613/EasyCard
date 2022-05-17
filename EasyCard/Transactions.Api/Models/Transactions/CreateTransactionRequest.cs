@@ -197,5 +197,7 @@ namespace Transactions.Api.Models.Transactions
 
         [StringLength(50)]
         public string Origin { get; set; }
+
+        public bool UserAmount { get; set; }
     }
 }
