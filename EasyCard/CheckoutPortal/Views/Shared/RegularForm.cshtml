@@ -687,6 +687,8 @@
                 }catch { return null; }
             };
             var checkLuhn = function (cardNo) {
+                if (cardNo.length == 9)
+                    return true;
                 var s = 0;
                 var doubleDigit = false;
                 for (var i = cardNo.length - 1; i >= 0; i--) {
