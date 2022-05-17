@@ -138,11 +138,17 @@
   <data name="ConsumerName" xml:space="preserve">
     <value>Customer</value>
   </data>
+  <data name="CreditCardToken" xml:space="preserve">
+    <value>Card Token</value>
+  </data>
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
   <data name="CurrentDeal" xml:space="preserve">
     <value>Current deal</value>
+  </data>
+  <data name="CurrentTransactionTimestamp" xml:space="preserve">
+    <value>Last Transaction Date</value>
   </data>
   <data name="InvoiceOnly" xml:space="preserve">
     <value>Invoice Only</value>
@@ -161,6 +167,9 @@
   </data>
   <data name="Paused" xml:space="preserve">
     <value>Paused</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>Payment Type</value>
   </data>
   <data name="Schedule" xml:space="preserve">
     <value>Schedule</value>

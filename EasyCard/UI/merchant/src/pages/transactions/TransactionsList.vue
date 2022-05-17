@@ -21,7 +21,7 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
@@ -29,7 +29,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCount")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
@@ -211,15 +211,12 @@ export default {
     });
     this.initThreeDotMenu();  
   },
-  // watch:{
-  //   /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
-  //   manually update menu on route change to make sure header has correct value*/
-  //   $route (to, from){
-  //     /** only update header if we returned to the same (cached) page */
-  //     if(to.name == this.$route.name){
-  //       this.initThreeDotMenu();
-  //     }
-  //   }
-  // },
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+    manually update menu on route change to make sure header has correct value*/
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
+  },
 };
 </script>

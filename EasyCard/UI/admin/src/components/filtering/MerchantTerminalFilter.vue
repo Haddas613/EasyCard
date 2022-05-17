@@ -94,9 +94,7 @@ export default {
     },
     selectedMerchant: async function(val) {
       if (!val) {
-        this.data.terminalID = null;
         this.data.merchantID = null;
-        this.getTerminals();
         return;
       }
       this.data.merchantID = val.merchantID;
@@ -120,9 +118,13 @@ export default {
     },
     selectedTerminal: async function(val) {
       if (!val) {
+        this.data.terminalID = null;
+        this.data.merchantID = null;
         return;
+      }else{
+        this.data.terminalID = val.terminalID;
       }
-      this.data.terminalID = val.terminalID;
+      
       this.$emit("change", this.data);
     }
   },

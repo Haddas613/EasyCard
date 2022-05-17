@@ -336,7 +336,7 @@ class ApiBase {
             // }
             else if (h.dataType == 'date' && v) {
                 d[`$${property}`] = v
-                d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale
+                d[property] = moment(String(v)).format('DD/MM/YYYY') // TODO: locale
             }
         }
         return d

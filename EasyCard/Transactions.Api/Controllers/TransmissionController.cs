@@ -312,6 +312,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        // TODO: reuse CancelNotTransmittedTransactionInternal
         [HttpPost]
         [Route("cancel")]
         public async Task<ActionResult<OperationResponse>> CancelNotTransmittedTransaction(CancelTransmissionRequest cancelTransmissionRequest)
@@ -338,6 +339,7 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactionsForUpdate()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
+                // TODO: reuse helpers
                 if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
@@ -430,6 +432,54 @@ namespace Transactions.Api.Controllers
             }
 
             return Ok(new OperationResponse { Message = Messages.TransactionsQueued.Replace("@count", numberOfRecords.ToString()), Status = StatusEnum.Success });
+        }
+
+        // TODO: db-transaction
+        internal async Task<ActionResult<OperationResponse>> CancelNotTransmittedTransactionInternal(Merchants.Business.Entities.Terminal.Terminal terminal, PaymentTransaction transaction, IAggregator aggregator, object aggregatorSettings)
+        {
+            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant);
+
+            // TODO: remove invoice
+
+            if (aggregator != null && aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+            {
+                await transactionsService.ReloadEntity(transaction);
+
+                // cancel in clearing house
+                try
+                {
+                    var aggregatorTransaction = await aggregator.GetTransaction(transaction.ClearingHouseTransactionDetails?.ClearingHouseTransactionID?.ToString()); // TODO: abstract aggregator
+                    mapper.Map(aggregatorTransaction, transaction);
+
+                    var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                    aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                    aggregatorRequest.RejectionReason = TransactionStatusEnum.CancelledByMerchant.ToString();
+
+                    var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                    mapper.Map(aggregatorResponse, transaction);
+
+                    if (!aggregatorResponse.Success)
+                    {
+                        logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
+                    }
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
+                }
+            }
+
+            return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
         }
     }
 }

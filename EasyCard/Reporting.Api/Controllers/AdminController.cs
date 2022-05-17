@@ -12,6 +12,9 @@ using Reporting.Business.Services;
 using Reporting.Shared.Models;
 using Reporting.Shared.Models.Admin;
 using Shared.Api;
+using Shared.Api.Models;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Helpers.Services;
 
 namespace Reporting.Api.Controllers
@@ -26,11 +29,13 @@ namespace Reporting.Api.Controllers
     {
         private readonly IAdminService adminService;
         private readonly IMerchantsService merchantsService;
+        private readonly ITerminalsService terminalsService;
 
-        public AdminController(IAdminService adminService, IMerchantsService merchantsService)
+        public AdminController(IAdminService adminService, IMerchantsService merchantsService, ITerminalsService terminalsService)
         {
             this.adminService = adminService;
             this.merchantsService = merchantsService;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
@@ -71,6 +76,47 @@ namespace Reporting.Api.Controllers
             }
 
             return Ok(res);
+        }
+
+        [HttpGet]
+        [Route("tds-challenge-report")]
+        public async Task<ActionResult<SummariesResponse<ThreeDSChallengeSummary>>> ThreeDSChallengeReport([FromQuery] ThreeDSChallengeReportQuery query)
+        {
+            var res = new SummariesResponse<ThreeDSChallengeSummary>();
+            var data = await adminService.GetThreeDSChallengeReport(query);
+
+            res.Data = data;
+            res.NumberOfRecords = data.Count(); //TODO
+
+            if (data.Any())
+            {
+                var TerminalIDs = data.Select(r => r.TerminalID).Distinct();
+                var terminals = await terminalsService.GetTerminals()
+                    .Where(e => TerminalIDs.Contains(e.TerminalID))
+                    .Select(d => new { d.TerminalID, d.Label, d.Merchant.BusinessName})
+                    .ToDictionaryAsync(k => k.TerminalID);
+
+                foreach (var r in data)
+                {
+                    var terminal = terminals[r.TerminalID];
+                    r.MerchantName = terminal.BusinessName;
+                    r.TerminalName = terminal.Label;
+                }
+            }
+
+            return Ok(res);
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta-tds-challenge-report")]
+        public TableMeta ThreeDSChallengeReportMeta()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(ThreeDSChallengeSummary)
+                    .GetObjectMeta(ThreeDSChallengeSummaryResource.ResourceManager, CurrentCulture)
+            };
         }
     }
 }

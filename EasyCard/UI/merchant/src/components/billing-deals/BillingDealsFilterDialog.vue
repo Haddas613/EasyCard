@@ -155,7 +155,6 @@
             <date-from-to-filter
               class="px-3"
               v-model="model"
-              :from-today="model.filterDateByNextScheduledTransaction"
               :date-from-label="
                 model.filterDateByNextScheduledTransaction ? 'NextScheduledDateFrom' : 'CreatedFrom'
               "

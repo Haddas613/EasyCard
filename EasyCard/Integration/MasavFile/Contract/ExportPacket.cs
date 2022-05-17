@@ -49,7 +49,7 @@ namespace PoalimOnlineBusiness.Contract
             var instituteNumber = Convert.ToInt32(this.InstituteNumber);
             var sendingInstitute = Convert.ToInt32(this.SendingInstitute);
 
-            var header = new Header(instituteNumber, this.PaymentDate, this.CreationDate, sendingInstitute, string.Empty);
+            var header = new Header(instituteNumber, this.PaymentDate, this.CreationDate, sendingInstitute,this.InstitueName.ContainsHebrew()? string.Empty: this.InstitueName);
 
 
 
@@ -58,7 +58,7 @@ namespace PoalimOnlineBusiness.Contract
             foreach (var transaction in this._rows)
             {
                 var exportTransaction = new TransactionRow(instituteNumber, Convert.ToInt32(transaction.Bankcode),
-                    Convert.ToInt32(transaction.BranchNumber), Convert.ToInt32(transaction.AccountNumber), string.Empty,
+                    Convert.ToInt32(transaction.BranchNumber), Convert.ToInt32(transaction.AccountNumber),this.InstitueName.ContainsHebrew()?  string.Empty : this.InstitueName,
                     transaction.Amount, transaction.Reference);
 
                 exportTransactions.Add(exportTransaction);

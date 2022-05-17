@@ -18,7 +18,7 @@ namespace PoalimOnlineBusiness
             this.BranchNumber = branchNumber;
             this.BankAccountNumber = accountNumber;
             this.BeneficiaryNname = beneficiaryNname;
-            this.Amount = (int)(amount * 100);
+            this.Amount =(int)(amount * 100);
         }
 
 
@@ -54,7 +54,7 @@ namespace PoalimOnlineBusiness
         public int AccountType { get; set; } = 0;
 
         [FixedLengthFile(8, 27, 9, DataType.N)]
-        public int BankAccountNumber { get; set; }
+        public long BankAccountNumber { get; set; }
 
         //9	36	1	 N Filler	 '0'
         [FixedLengthFile(9, 36, 1, DataType.N)]
@@ -81,7 +81,7 @@ namespace PoalimOnlineBusiness
 
         //14	95	8	 N Period Payed For       "dd/MM/yy"
         [FixedLengthFile(14, 95, 8, DataType.X)]
-        public int PeriodPayedFor { get; set; } = 0;
+        public string PeriodPayedFor { get; set; } 
 
 
         //15	103	3	 N Text Code ZEROS

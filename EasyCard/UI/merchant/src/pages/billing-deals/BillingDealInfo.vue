@@ -18,7 +18,7 @@
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
-                  <v-chip color="primary" small>{{model.$billingDealID | guid}}</v-chip>
+                  <v-chip color="primary" small>{{model.billingDealID | guid}}</v-chip>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block" v-if="model.invoiceOnly">
                   <p class="caption ecgray--text text--darken-2">{{$t('InvoiceOnly')}}</p>
@@ -204,6 +204,9 @@ export default {
       this.initThreeDotMenu();
     },
     async initThreeDotMenu() {
+      if(!this.model){
+        return;
+      }
       let newHeader = {
         threeDotMenu: [
           {
@@ -271,15 +274,12 @@ export default {
 
     await this.initThreeDotMenu();
   },
-  watch: {
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route (to, from){
-      /** only update header if we returned to the same (cached) page */
-      if(to.meta.keepAlive == this.$options.name){
-        this.initThreeDotMenu();
-      }
-    }
-  }
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
+  },
 };
 </script>

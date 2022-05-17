@@ -54,3 +54,15 @@ body {
     width: 100%;
     height: 100%;
 }
+.d-block {
+    display: block !important;
+}
+.d-flex {
+    display: flex !important;
+}
+.justify-space-between {
+    justify-content: space-between !important;
+}
+.settings-page {
+    padding-top: 1rem;
+}

@@ -107,6 +107,8 @@ namespace Transactions.Business.Data
 
         public DbSet<NayaxTransactionsParameters> NayaxTransactionsParameters { get; set; }
 
+        public DbSet<ThreeDSChallenge> ThreeDSChallenges { get; internal set; }
+
         private readonly ClaimsPrincipal user;
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -137,6 +139,7 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
             modelBuilder.ApplyConfiguration(new NayaxTransactionsParametersConfiguration());
+            modelBuilder.ApplyConfiguration(new ThreeDSChallengeConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -228,7 +231,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ShvaAuthNum).HasColumnName("ShvaAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
-                    s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(600).IsUnicode(false).IsRequired(false);
+                    s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(700).IsUnicode(false).IsRequired(false);
                     s.Property(p => p.EmvSoftVersion).HasColumnName("EmvSoftVersion").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CompRetailerNum).HasColumnName("CompRetailerNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TelToGetAuthNum).HasColumnName("TelToGetAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -815,9 +818,31 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.NayaxTransactionsParametersID).ValueGeneratedNever();
 
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(600).IsUnicode(false).IsRequired(false);
+                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(700).IsUnicode(false).IsRequired(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
+
+                builder.Property(p => p.PinPadTranRecordReceiptNumber).HasColumnName("PinPadTranRecordReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.HasIndex(d => d.PinPadTranRecordReceiptNumber).IsUnique();
+            }
+        }
+
+        internal class ThreeDSChallengeConfiguration : IEntityTypeConfiguration<ThreeDSChallenge>
+        {
+            public void Configure(EntityTypeBuilder<ThreeDSChallenge> builder)
+            {
+                builder.ToTable("ThreeDSChallenge");
+
+                builder.HasKey(b => b.ThreeDSChallengeID);
+                builder.Property(b => b.ThreeDSChallengeID).ValueGeneratedNever();
+
+                builder.Property(p => p.ThreeDSServerTransID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.HasIndex(d => d.ThreeDSServerTransID);
+
+                builder.Property(p => p.MessageDate).HasColumnType("date").IsRequired(false);
+
+                builder.Property(d => d.Action).IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(d => d.TransStatus).IsRequired(false).HasMaxLength(20).IsUnicode(false);
             }
         }
 

@@ -3,10 +3,6 @@ import store from '../../store/index';
 
 export default function(value, format = null){
     if(!value) return;
-    
-    if(format == "DT"){
-        format = "DD/MM/YYYY HH:mm";
-    }
 
     if(!format){
         format = "DD/MM/YYYY HH:mm";
@@ -16,6 +12,14 @@ export default function(value, format = null){
         // }else{
         //     format = "DD/MM/YYYY HH:MM"
         // }
+    } else {
+        if(format.toLowerCase() == "dt"){
+            format = "DD/MM/YYYY HH:mm";
+        }
+    
+        if(format.toLowerCase() == "d"){
+            format = "DD/MM/YYYY";
+        }
     }
     return moment.utc(value).local().locale(store.state.localization.currentLocale).format(format);
 }

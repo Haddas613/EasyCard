@@ -21,12 +21,14 @@ namespace Reporting.Business.Services
     public class AdminService : IAdminService
     {
         private readonly string connectionString;
+        private readonly string transactionsConnectionString;
         private readonly IAppInsightReaderService appInsightReaderService;
 
-        public AdminService(string connectionString, IAppInsightReaderService appInsightReaderService)
+        public AdminService(string connectionString, string transactionsConnection, IAppInsightReaderService appInsightReaderService)
         {
             this.connectionString = connectionString;
             this.appInsightReaderService = appInsightReaderService;
+            this.transactionsConnectionString = transactionsConnection;
         }
 
         public async Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query)
@@ -117,6 +119,47 @@ namespace Reporting.Business.Services
             using (var connection = new SqlConnection(connectionString))
             {
                 return await connection.QueryAsync<MerchantsTotals>(sql, query);
+            }
+        }
+
+        public async Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query)
+        {
+            var builder = new SqlBuilder();
+
+            var sql = @"select ROW_NUMBER() OVER(ORDER BY d.[TerminalID] DESC) AS RowN,
+d.[TerminalID], min(d.[MessageDate]) as DateFrom,  max(d.[MessageDate]) as DateTo,
+COUNT(d.[ThreeDSChallengeID]) as NumberOfChallengeRequests, 
+COUNT(t.[PaymentTransactionID]) as NumberOfTransactions
+from [dbo].[ThreeDSChallenge] as d 
+left outer join [dbo].[PaymentTransaction] as t on t.[ThreeDSServerTransID] = d.[ThreeDSServerTransID]
+/**where**/
+group by d.[TerminalID]";
+
+            var selector = builder.AddTemplate(sql, query);
+
+            if (query.DateFrom.HasValue)
+            {
+                builder.Where($"d.[MessageDate] >= @DateFrom");
+            }
+
+            if (query.DateTo.HasValue)
+            {
+                builder.Where($"d.[MessageDate] <= @DateTo");
+            }
+
+            if (query.TerminalID.HasValue)
+            {
+                builder.Where($"d.[TerminalID] = @TerminalID");
+            }
+
+            if (query.MerchantID.HasValue)
+            {
+                builder.Where($"d.[MerchantID] = @MerchantID");
+            }
+
+            using (var connection = new SqlConnection(transactionsConnectionString))
+            {
+                return await connection.QueryAsync<ThreeDSChallengeSummary>(selector.RawSql, selector.Parameters);
             }
         }
 

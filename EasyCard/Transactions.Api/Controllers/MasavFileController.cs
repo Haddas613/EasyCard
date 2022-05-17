@@ -85,12 +85,18 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
         {
             var query = masavFileService.GetMasavFiles().OrderByDescending(f => f.MasavFileID).Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+            var totalAmount = new
+            {
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TotalAmount).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TotalAmount).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TotalAmount).FutureValue(),
+            };
 
-            var response = new SummariesResponse<MasavFileSummary>();
+            var response = new SummariesAmountResponse<MasavFileSummary>();
 
             response.Data = await mapper.ProjectTo<MasavFileSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
 
@@ -110,6 +116,9 @@ namespace Transactions.Api.Controllers
             }
 
             response.NumberOfRecords = numberOfRecordsFuture.Value;
+            response.TotalAmountILS = totalAmount.ILS.Value;
+            response.TotalAmountUSD = totalAmount.USD.Value;
+            response.TotalAmountEUR = totalAmount.EUR.Value;
 
             return Ok(response);
         }
@@ -171,7 +180,7 @@ namespace Transactions.Api.Controllers
 
             var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
-            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.InstituteName, bankDetails.InstituteServiceNum, bankDetails.InstituteNum, fileDate);
+            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.InstituteName.ContainsHebrew() ? string.Empty : bankDetails.InstituteName, bankDetails.InstituteServiceNum, bankDetails.InstituteNum, fileDate);
 
             if (masavFileID.HasValue)
             {

@@ -335,6 +335,8 @@ namespace Transactions.Business.Entities
 
         public Guid? OperationDoneByID { get; set; }
 
+        public Guid? ThreeDSChallengeID { get; set; }
+
         [NotMapped]
         public string SourceIP { get { return MerchantIP; } set { MerchantIP = value; } }
 
@@ -391,6 +393,41 @@ namespace Transactions.Business.Entities
                     && DocumentOrigin != DocumentOriginEnum.Device
                     && BillingDealID == null
                     && (DocumentOrigin == DocumentOriginEnum.Bit || CreditCardToken != null);
+            }
+        }
+
+        public DateTime? TransactionJ5ExpiredDate { get; set; }
+
+        [NotMapped]
+        public bool AllowInvoiceCreation
+        {
+            get
+            {
+                return InvoiceID == null
+                    && Currency == CurrencyEnum.ILS
+                    && QuickStatus != QuickStatusFilterTypeEnum.Canceled
+                    && QuickStatus != Shared.Enums.QuickStatusFilterTypeEnum.Failed;
+            }
+        }
+
+        /// <summary>
+        /// Transaction transmission cannot be canceled manually
+        /// </summary>
+        [NotMapped]
+        public bool AllowTransmissionCancellation
+        {
+            get
+            {
+                return Status == TransactionStatusEnum.AwaitingForTransmission && !InvoiceID.HasValue;
+            }
+        }
+
+        [NotMapped]
+        public bool AllowTransmission
+        {
+            get
+            {
+                return PaymentTypeEnum == PaymentTypeEnum.Card && Status == TransactionStatusEnum.AwaitingForTransmission;
             }
         }
     }

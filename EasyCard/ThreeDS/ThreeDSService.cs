@@ -30,7 +30,7 @@ namespace ThreeDS
             this.logger = logger;
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
-        public async Task<VersioningResponseEnvelop> Versioning(ThreeDS.Contract.Versioning3DsRequestModel model, string correlationID)
+        public async Task<VersioningResponseEnvelop> Versioning(ThreeDS.Contract.Versioning3DsRequestModel model, string correlationID, Guid threeDSChallengeID)
         {
             string requestUrl = null;
             string requestStr = null;
@@ -70,7 +70,7 @@ namespace ThreeDS
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, integrationMessageId, correlationID);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, threeDSChallengeID.ToString(), integrationMessageId, correlationID);
 
                 integrationMessage.Request = RemoveCardNumber(requestStr, model.CardNumber);
                 integrationMessage.Response = responseStr;
@@ -81,7 +81,7 @@ namespace ThreeDS
             }
         }
 
-        public async Task<AuthenticationResponseEnvelop> Authentication(Authenticate3DsRequestModel model, string correlationID)
+        public async Task<AuthenticationResponseEnvelop> Authentication(Authenticate3DsRequestModel model, string correlationID, Guid threeDSChallengeID)
         {
             string requestUrl = null;
             string requestStr = null;
@@ -103,9 +103,9 @@ namespace ThreeDS
                 MessageType = "ARes",
 
                 AcctType = "02",
-                AcquirerBin = "2",
-                AcquirerMerchantId = "1",
-                Brand = "2",
+                AcquirerBin = "",
+                AcquirerMerchantId = "",
+                Brand = "",
                 Merchant_mcc = "1234",
                 PurchaseExponent = "2",
                 TransType = "01",
@@ -155,7 +155,7 @@ namespace ThreeDS
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, integrationMessageId, correlationID);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, threeDSChallengeID.ToString(), integrationMessageId, correlationID);
 
                 integrationMessage.Request = RemoveCardNumber(requestStr, model.CardNumber);
                 integrationMessage.Response = responseStr;

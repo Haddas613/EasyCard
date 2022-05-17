@@ -133,17 +133,25 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
             var query = billingDealService.GetBillingDeals().AsNoTracking().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
+            //TODO: temporary, should be TotalAmount not TransactionAmount * CurrentDeal
+            var totalAmount = new
+            {
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+            };
+
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
-                    var response = new SummariesResponse<BillingDealSummaryAdmin>();
+                    var response = new SummariesAmountResponse<BillingDealSummaryAdmin>();
 
                     var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)
                         .ApplyPagination(filter)).ToListAsync();
@@ -168,15 +176,39 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
                     return Ok(response);
                 }
                 else
                 {
-                    var response = new SummariesResponse<BillingDealSummary>();
+                    var response = new SummariesAmountResponse<BillingDealSummary>();
+                    var summary = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                        }
+                    });
 
                     //TODO: ordering
-                    response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.Data = summary;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    response.TotalAmountILS = totalAmount.ILS.Value;
+                    response.TotalAmountUSD = totalAmount.USD.Value;
+                    response.TotalAmountEUR = totalAmount.EUR.Value;
 
                     return Ok(response);
                 }
@@ -236,8 +268,24 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    var data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)).ToListAsync();
-                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealSummary>();
+                    var data = await mapper.ProjectTo<BillingDealExcelSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)).ToListAsync();
+                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealExcelSummary>();
+
+                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    data.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
 
                     var terminalLabel = string.Empty;
                     if (filter.TerminalID.HasValue)
@@ -378,7 +426,14 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
-                await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
+                if (billingDeal.CreditCardToken != model.CreditCardToken)
+                {
+                    await UpdateBillingToken(model.CreditCardToken, billingDeal, terminal, consumer, false);
+                }
+                else
+                {
+                    await billingDealService.UpdateEntity(billingDeal);
+                }
             }
             else if (model.PaymentType == PaymentTypeEnum.Bank)
             {

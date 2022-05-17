@@ -26,15 +26,33 @@
       </v-card-title>
       <v-card-text class="body-2">
         <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="6">
             <v-row no-gutters>
-              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
+              <v-col cols="12">{{$t("TotalAmount")}}:</v-col>
+              <v-col cols="12" class="mt-1 font-weight-bold">
+                <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+                <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+                <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
+          <v-col cols="12" md="3">
+            <v-row no-gutters>
+              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
+              <v-col cols="12" class="font-weight-bold">
+                <span dir="ltr">
+                  <template v-if="paymentRequestsFilter.dateFrom">
+                    {{paymentRequestsFilter.dateFrom | ecdate("L")}}
+                  </template>
+                  <span>-</span>
+                  <template v-if="paymentRequestsFilter.dateTo">
+                    {{paymentRequestsFilter.dateTo | ecdate("L")}}
+                  </template>
+                </span>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" md="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">{{numberOfRecords || '-'}}</v-col>
@@ -124,14 +142,21 @@ export default {
       customerInfo: null,
       moment: moment,
       loading: false,
-      paymentRequestsFilter: {
+      defaultFilter: {
         take: this.$appConstants.config.ui.defaultTake,
         skip: 0,
-        ...this.filters
+        dateFrom: this.$formatDate(moment().startOf('month')),
+        dateTo: this.$formatDate(new Date()),
+      },
+      paymentRequestsFilter: {   
+        ...this.filters,
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
     };
   },
   methods: {
@@ -145,6 +170,9 @@ export default {
         let paymentRequests = data.data || [];
         this.paymentRequests = extendData ? [...this.paymentRequests, ...paymentRequests] : paymentRequests;
         this.numberOfRecords = data.numberOfRecords || 0;
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
 
         if (paymentRequests.length > 0) {
           let newest = this.paymentRequests[0].$paymentRequestTimestamp;
@@ -161,6 +189,7 @@ export default {
     },
     async applyFilters(data) {
       this.paymentRequestsFilter = {
+        ...this.defaultFilter,
         ...data,
         skip: 0,
       };
@@ -201,15 +230,12 @@ export default {
       );
     }
   },
-  watch:{
-    /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
+  /** Header is initialized in mounted but since components are cached (keep-alive) it's required to
     manually update menu on route change to make sure header has correct value*/
-    $route (to, from){
-      /** only update header if we returned to the same (cached) page */
-      if(to.meta.keepAlive == this.$options.name){
-        this.initThreeDotMenu();
-      }
-    }
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.initThreeDotMenu();
+    });
   },
   async mounted() {
     await this.applyFilters({

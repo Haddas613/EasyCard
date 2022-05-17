@@ -2,32 +2,40 @@
 using Newtonsoft.Json.Converters;
 using Shared.Api.UI;
 using Shared.Helpers;
+using Shared.Helpers.Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Models;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Models.Billing
 {
     public class BillingDealSummaryAdmin : BillingDealSummary
     {
-        /// <summary>
-        /// Currency
-        /// </summary>
-        [EnumDataType(typeof(CurrencyEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        [MetadataOptions(Hidden = true)]
-        public new CurrencyEnum Currency { get; set; }
+        public new Guid BillingDealID { get; set; }
 
         public string MerchantName { get; set; }
 
         [MetadataOptions(Hidden = true)]
+        [ExcelIgnore]
         public new Guid MerchantID { get; set; }
 
-        public string TerminalName { get; set; }
+        [MetadataOptions(Hidden = true)]
+        [ExcelIgnore]
+        public new Guid TerminalID { get; set; }
+
+        public new BillingSchedule BillingSchedule { get; set; }
 
         [MetadataOptions(Hidden = true)]
-        public new Guid TerminalID { get; set; }
+        [ExcelIgnore]
+        public new SharedIntegration.Models.DealDetails DealDetails { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token
+        /// </summary>
+        public new Guid? CreditCardToken { get; set; }
     }
 }

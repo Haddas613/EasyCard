@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ExportEmailTemplates": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\tmp\\emailtemplates\\"
+    }
+  }
+}

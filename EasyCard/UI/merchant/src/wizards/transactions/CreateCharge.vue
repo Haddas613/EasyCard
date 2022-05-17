@@ -42,6 +42,7 @@
             :show-previously-charged="true"
             :filter-by-terminal="true"
             v-on:ok="processCustomer($event)"
+            support-create
           ></customers-list>
         </v-stepper-content>
 
@@ -277,10 +278,10 @@ export default {
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
 
-    window.addEventListener("keydown", this.handleKeyPress);
+    //window.addEventListener("keydown", this.handleKeyPress);
   },
   destroyed () {
-    window.removeEventListener("keydown", this.handleKeyPress);
+    //window.removeEventListener("keydown", this.handleKeyPress);
   },
   methods: {
     handleKeyPress($event){

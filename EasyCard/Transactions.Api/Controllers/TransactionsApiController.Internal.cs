@@ -67,6 +67,11 @@ namespace Transactions.Api.Controllers
 
             var transaction = mapper.Map<PaymentTransaction>(model);
 
+            if (jDealType == JDealTypeEnum.J5)
+            {
+                transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
+            }
+
             // NOTE: this is security assignment
             mapper.Map(terminal, transaction);
 
@@ -229,13 +234,11 @@ namespace Transactions.Api.Controllers
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-            processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
-
             // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
 
             ActionResult<OperationResponse> failedRsponse =
-             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, dbToken, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest);
+             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, dbToken, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest, terminal);
 
             if (failedRsponse != null)
             {
@@ -300,7 +303,7 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest)
+        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest, Terminal terminal)
         {
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
 
@@ -337,6 +340,19 @@ namespace Transactions.Api.Controllers
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: ex.Message);
 
                     return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult?.Errors));
+                }
+            }
+            else
+            {
+                try
+                {
+                    processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
+                }
+                catch (Exception ex)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedBy3Dsecure, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedBy3DSecure}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), $"{transaction.ThreeDSServerTransID}"));
                 }
             }
 
@@ -567,14 +583,12 @@ namespace Transactions.Api.Controllers
                 if (!string.IsNullOrWhiteSpace(transaction.ThreeDSServerTransID))
                 {
                     var threeDSecure = await threeDSIntermediateStorage.GetIntermediateData(transaction.ThreeDSServerTransID);
+                    transaction.ThreeDSChallengeID = threeDSecure?.ThreeDSChallengeID;
 
                     // TODO: add converter
                     if (threeDSecure?.TransStatus != "Y")
                     {
-                        if (terminal.CheckoutSettings.ContinueInCaseOf3DSecureError != true)
-                        {
-                            throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}: {transaction.ThreeDSServerTransID}");
-                        }
+                         throw new BusinessException($"{Transactions.Shared.Messages.RejectedBy3DSecure}: {transaction.ThreeDSServerTransID}");
                     }
                     else
                     {

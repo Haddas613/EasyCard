@@ -63,7 +63,7 @@
     [DocumentOrigin]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [TerminalTemplateID]             BIGINT           NULL,
     [TotalDiscount]                  DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
-    [ShvaTranRecord]                 VARCHAR (600)    NULL,
+    [ShvaTranRecord]                 VARCHAR (700)    NULL,
     [CardBrand]                      VARCHAR (20)     NULL,
     [ShvaAuthNum]                    VARCHAR (20)     NULL,
     [UpayCreditCardCompanyCode]      NVARCHAR (64)    NULL,
@@ -107,8 +107,14 @@
     [Department]                     NVARCHAR (50)    NULL,
     [ExternalUserID]                 VARCHAR (50)     NULL,
     [ResponsiblePerson]              NVARCHAR (50)    NULL,
+    [TransactionJ5ExpiredDate]       DATETIME2 (7)    NULL,
+    [ThreeDSChallengeID]             UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
+
+
 
 
 

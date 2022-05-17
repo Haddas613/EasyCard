@@ -701,17 +701,17 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AccountNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("AccountNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<int?>("Bankcode")
-                        .HasColumnType("int");
+                    b.Property<long?>("Bankcode")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("BranchNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("BranchNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("ConsumerID")
                         .HasColumnType("uniqueidentifier");
@@ -721,8 +721,8 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("InstituteNumber")
-                        .HasColumnType("int");
+                    b.Property<long?>("InstituteNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
@@ -730,8 +730,8 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("MasavFileID")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("NationalID")
-                        .HasColumnType("int");
+                    b.Property<long?>("NationalID")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
@@ -757,6 +757,12 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("NayaxTransactionsParametersTimestamp")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("PinPadTranRecordReceiptNumber")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTranRecordReceiptNumber");
+
                     b.Property<string>("PinPadTransactionID")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -764,12 +770,16 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadTransactionID");
 
                     b.Property<string>("TranRecord")
-                        .HasMaxLength(600)
+                        .HasMaxLength(700)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(600)")
+                        .HasColumnType("varchar(700)")
                         .HasColumnName("ShvaTranRecord");
 
                     b.HasKey("NayaxTransactionsParametersID");
+
+                    b.HasIndex("PinPadTranRecordReceiptNumber")
+                        .IsUnique()
+                        .HasFilter("[PinPadTranRecordReceiptNumber] IS NOT NULL");
 
                     b.HasIndex("PinPadTransactionID")
                         .IsUnique()
@@ -1118,6 +1128,9 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ThreeDSChallengeID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ThreeDSServerTransID")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -1138,6 +1151,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("TransactionDate")
                         .IsRequired()
                         .HasColumnType("date");
+
+                    b.Property<DateTime?>("TransactionJ5ExpiredDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("TransactionTimestamp")
                         .HasColumnType("datetime2");
@@ -1166,6 +1182,45 @@ namespace Transactions.Business.Migrations
                     b.HasIndex("TerminalID", "PaymentTypeEnum", "MasavFileID");
 
                     b.ToTable("PaymentTransaction");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.ThreeDSChallenge", b =>
+                {
+                    b.Property<Guid>("ThreeDSChallengeID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<Guid?>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("MessageDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("MessageTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ThreeDSServerTransID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("TransStatus")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("ThreeDSChallengeID");
+
+                    b.HasIndex("ThreeDSServerTransID");
+
+                    b.ToTable("ThreeDSChallenge");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.TransactionHistory", b =>
@@ -2243,9 +2298,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("TelToGetAuthNum");
 
                             b1.Property<string>("TranRecord")
-                                .HasMaxLength(600)
+                                .HasMaxLength(700)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(600)")
+                                .HasColumnType("varchar(700)")
                                 .HasColumnName("ShvaTranRecord");
 
                             b1.Property<DateTime?>("TransmissionDate")

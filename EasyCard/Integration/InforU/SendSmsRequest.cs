@@ -34,6 +34,13 @@ namespace InforU
         public string PhoneNumber { get; set; }
     }
 
+    [XmlRoot(ElementName = "Settings")]
+    public class Settings
+    {
+        [XmlElement(ElementName = "Sender")]
+        public string Sender { get; set; }
+    }
+
     [XmlRoot(ElementName = "Inforu")]
     public class Inforu
     {
@@ -45,6 +52,9 @@ namespace InforU
 
         [XmlElement(ElementName = "Recipients")]
         public Recipients Recipients { get; set; }
+
+        [XmlElement(ElementName = "Settings")]
+        public Settings Settings { get; set; }
     }
 #pragma warning restore SA1649 // File name should match first type name
 #pragma warning restore SA1402 // File may only contain a single type

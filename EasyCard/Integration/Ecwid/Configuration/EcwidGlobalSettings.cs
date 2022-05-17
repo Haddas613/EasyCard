@@ -11,6 +11,8 @@ namespace Ecwid.Configuration
         /// </summary>
         public string ClientSecret { get; set; }
 
+        public string AppID { get; set; }
+
         public string ApiBaseAddress { get; set; }
     }
 }

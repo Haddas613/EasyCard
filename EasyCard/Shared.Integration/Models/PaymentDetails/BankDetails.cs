@@ -26,7 +26,7 @@ namespace Shared.Integration.Models.PaymentDetails
 
         [JsonProperty(PropertyName = "bankAccount")]
         [Required(AllowEmptyStrings = false)]
-        [StringLength(12, MinimumLength = 6)]
+        [StringLength(13, MinimumLength = 5)]
         public string BankAccount { get; set; }
     }
 }

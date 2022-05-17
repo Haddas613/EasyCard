@@ -55,5 +55,7 @@ namespace Transactions.Shared
         public string SmsTableName { get; set; }
 
         public bool DoNotSendSms { get; set; }
+
+        public string SmsFrom { get; set; }
     }
 }

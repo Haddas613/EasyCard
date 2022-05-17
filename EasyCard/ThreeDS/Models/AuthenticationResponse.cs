@@ -24,6 +24,8 @@ namespace ThreeDS.Models
         public string Eci { get; set; }
         public string Xid { get; set; }
 
+        public string CardholderInfo { get; set; }
+
         public TransStatusEnum TransStatusEnum
         {
             get

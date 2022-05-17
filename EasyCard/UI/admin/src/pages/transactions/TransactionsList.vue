@@ -21,7 +21,7 @@
           :headers="headers"
           :items="transactions"
           :options.sync="options"
-          :server-items-length="totalAmount"
+          :server-items-length="numberOfRecords"
           :loading="loading"
           :header-props="{ sortIcon: null }"
           class="elevation-1">
@@ -77,6 +77,16 @@
         <template v-slot:item.paymentTransactionID="{ item }">
           <small>{{item.paymentTransactionID}}</small>
         </template> 
+        <template v-slot:footer>
+          <p class="text-end px-4 pt-4 mb-2 body-2">
+            {{$t("TotalAmount")}}
+          </p>
+          <p class="text-end mx-4">
+            <v-chip color="primary" small>{{ totalAmountILS | currency('ILS') }}</v-chip>
+            <v-chip class="mx-2" color="success" small>{{ totalAmountUSD | currency('USD') }}</v-chip>
+            <v-chip color="secondary" small>{{ totalAmountEUR | currency('EUR') }}</v-chip>
+          </p>
+        </template> 
       </v-data-table>
     </div>
   </v-card>
@@ -102,7 +112,10 @@ export default {
   },
   data() {
     return {
-      totalAmount: 0,
+      numberOfRecords: 0,
+      totalAmountILS: null,
+      totalAmountUSD: null,
+      totalAmountEUR: null,
       transactions: [],
       loading: false,
       options: {},
@@ -142,7 +155,10 @@ export default {
       try{
         let data = await this.$api.transactions.get({ ...this.transactionsFilter, ...this.options });
         this.transactions = data.data;
-        this.totalAmount = data.numberOfRecords;
+        this.numberOfRecords = data.numberOfRecords;
+        this.totalAmountILS = data.totalAmountILS;
+        this.totalAmountUSD = data.totalAmountUSD;
+        this.totalAmountEUR = data.totalAmountEUR;
 
         if(!this.headers || this.headers.length === 0){
           this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];

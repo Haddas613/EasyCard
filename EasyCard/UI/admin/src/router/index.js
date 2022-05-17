@@ -203,6 +203,14 @@ const routes = [
             import ('../pages/reporting/TokensTransactionsReportList.vue'),
       },
       {
+        name: '3DSecureChallenge',
+        path: 'reporting/3ds-challenge',
+        keepAlive: true,
+        props: true,
+        component: () =>
+            import ('../pages/reporting/TDSChallengeReportList.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

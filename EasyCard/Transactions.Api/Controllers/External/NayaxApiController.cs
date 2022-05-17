@@ -90,15 +90,18 @@ namespace Transactions.Api.Controllers.External
             // TODO: check if entity already exist
             try
             {
+                Guid tranRecordReceiptNumber = Guid.NewGuid();
                 await nayaxTransactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
                 {
                     TranRecord = model.TranRecord,
-                    PinPadTransactionID = model.Vuid
+                    PinPadTransactionID = model.Vuid,
+                    PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString()
                 });
 
                 return new NayaxUpdateTranRecordResponse
                 {
-                    Status = "0"
+                    Status = "0",
+                    ReceiptNumber = tranRecordReceiptNumber.ToString()
                 };
             }
             catch (Exception ex)
@@ -115,10 +118,15 @@ namespace Transactions.Api.Controllers.External
 
                 return new NayaxUpdateTranRecordResponse
                 {
-                    Status = "0"
+                    StatusCode = 14,
+                    Status = "error",
+                    ErrorMsg = $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} "
                 };
+
+
             }
         }
+
 
         [HttpPost]
         [ValidateModelState]

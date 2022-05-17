@@ -288,4 +288,7 @@
   <data name="YouCanNowCloseThePage" xml:space="preserve">
     <value>כעת ניתן לסגור את העמוד</value>
   </data>
+  <data name="HowToSetUp" xml:space="preserve">
+    <value>איך להגדיר?</value>
+  </data>
 </root>

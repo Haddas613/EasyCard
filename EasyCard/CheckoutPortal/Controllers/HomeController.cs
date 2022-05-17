@@ -28,6 +28,9 @@ using CheckoutPortal.Services;
 using CheckoutPortal.Models.Bit;
 using System.Threading;
 using System.Globalization;
+using CheckoutPortal.Resources;
+using System.IO;
+using System.Text;
 
 namespace CheckoutPortal.Controllers
 {
@@ -93,11 +96,6 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
-            {
-                return RedirectToAction(null, new { r });
-            }
-
             return IndexViewResult(checkoutConfig);
         }
 
@@ -136,11 +134,6 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            if (ChangeLocalizationInternal(checkoutConfig.Settings?.Language))
-            {
-                return RedirectToAction(null, new { r });
-            }
-
             return IndexViewResult(checkoutConfig);
         }
 
@@ -159,11 +152,6 @@ namespace CheckoutPortal.Controllers
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
             }
 
-            if (ChangeLocalizationInternal(request?.Language))
-            {
-                return RedirectToAction(null, new { request });
-            }
-
             return IndexViewResult(checkoutConfig, request);
         }
 
@@ -173,22 +161,8 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
-            CheckoutData checkoutConfig;
             bool isPaymentIntent = request.PaymentIntent != null;
-
-            if (request.ApiKey != null)
-            {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
-            }
-            else
-            {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
-                {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
-                }
-
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
-            }
+            CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
             if (checkoutConfig == null)
             {
@@ -555,7 +529,7 @@ namespace CheckoutPortal.Controllers
                     {
                         mobileRedirectUrl = bitTransaction.ApplicationSchemeAndroid + scheme;
                     }
-                    
+
                     return Json(new BitPaymentMobileModel
                     {
                         MobileRedirectUrl = mobileRedirectUrl,
@@ -609,6 +583,27 @@ namespace CheckoutPortal.Controllers
                     }
                 }
             }
+        }
+
+        private async Task<CheckoutData> GetCheckoutConfigForCharge(ChargeViewModel request, bool isPaymentIntent)
+        {
+            CheckoutData checkoutConfig;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
+
+            return checkoutConfig;
         }
 
         [HttpPost]
@@ -766,14 +761,31 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Versioning3Ds(ChargeViewModel request)
         {
-            var validationResponse = await transactionsApiClient.Versioning3Ds(
-                new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest
-                {
-                    CardNumber = request.CardNumber
-                }
-            );
+            try
+            {
+                bool isPaymentIntent = request.PaymentIntent != null;
+                CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
-            return Json(validationResponse);
+                if (checkoutConfig == null)
+                {
+                    return Json(new { errorMessage = CommonResources.PaymentLinkNoLongerAvailable });
+                }
+
+                var validationResponse = await transactionsApiClient.Versioning3Ds(
+                    new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest
+                    {
+                        CardNumber = request.CardNumber,
+                        TerminalID = checkoutConfig.Settings.TerminalID
+                    }
+                );
+
+                return Json(validationResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not possible to process 3DS Versioning request: {ex.Message}");
+                return Json(new { errorMessage = CommonResources.ErrorGeneral });
+            }
         }
 
         [HttpPost]
@@ -781,62 +793,58 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Authenticate3Ds(ChargeViewModel request)
         {
-            CheckoutData checkoutConfig;
-            bool isPaymentIntent = request.PaymentIntent != null;
+            try
+            {
+                bool isPaymentIntent = request.PaymentIntent != null;
+                CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
-            if (request.ApiKey != null)
-            {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
-            }
-            else
-            {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                if (checkoutConfig == null)
                 {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
+                    return Json(new { errorMessage = CommonResources.PaymentLinkNoLongerAvailable });
                 }
 
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
-            }
-
-            if (checkoutConfig == null)
-            {
-                throw new BusinessException(Messages.InvalidCheckoutData);
-            }
-
-            // TODO: get from real browser
-            var browserDetails = new BrowserDetails
-            {
-                BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
-                BrowserLanguage = "en",
-                BrowserColorDepth = "8",
-                BrowserScreenHeight = "1050",
-                BrowserScreenWidth = "1680",
-                BrowserTZ = "1200",
-                BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;)"
-            };
-
-            var authResponse = await transactionsApiClient.Authenticate3Ds(
-                new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
+                // TODO: get from real browser
+                var browserDetails = new BrowserDetails
                 {
-                    Currency = request.Currency,
-                    CardNumber = request.CardNumber,
-                    TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
-                    ThreeDSServerTransID = request.ThreeDSServerTransID,
-                    Amount = request.Amount ?? checkoutConfig.PaymentRequest?.PaymentRequestAmount,
-                    BrowserDetails = browserDetails,
-                    CardExpiration = CreditCardHelpers.ParseCardExpiration(request.CardExpiration)
-                }
-            );
+                    BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
+                    BrowserLanguage = "en",
+                    BrowserColorDepth = "8",
+                    BrowserScreenHeight = "1050",
+                    BrowserScreenWidth = "1680",
+                    BrowserTZ = "1200",
+                    BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;)"
+                };
 
-            return Json(authResponse);
+                var authResponse = await transactionsApiClient.Authenticate3Ds(
+                    new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
+                    {
+                        Currency = request.Currency,
+                        CardNumber = request.CardNumber,
+                        TerminalID = checkoutConfig.Settings.TerminalID,
+                        ThreeDSServerTransID = request.ThreeDSServerTransID,
+                        Amount = request.Amount ?? checkoutConfig.PaymentRequest?.PaymentRequestAmount,
+                        BrowserDetails = browserDetails,
+                        CardExpiration = CreditCardHelpers.ParseCardExpiration(request.CardExpiration)
+                    }
+                );
+
+                return Json(authResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not possible to process 3DS Authenticate request: {ex.Message}");
+                return Json(new { errorMessage = CommonResources.ErrorGeneral });
+            }
         }
 
         [HttpPost]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
+        public async Task<IActionResult> Notification3Ds(Models.ThreeDS.Notification request)
         {
-            // TODO: log this message
-            var cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+            string cresDecoded = null;
+
+            cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+
             if (!string.IsNullOrWhiteSpace(cresDecoded))
             {
                 try
@@ -848,6 +856,8 @@ namespace CheckoutPortal.Controllers
                         logger.LogError($"Notification3Ds ThreeDSServerTransID is empty: {cresDecoded}");
                         return View(new Models.ThreeDS.NotificationResult { Success = false });
                     }
+
+
 
                     return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID, Error = cresObj.ErrorDescription });
                 }
@@ -926,15 +936,13 @@ namespace CheckoutPortal.Controllers
 
         /// <summary>
         /// Changes current localization to specified one if required.
-        /// Redirect is required for cookies to work.
         /// </summary>
         /// <param name="culture"></param>
-        /// <returns>Boolean, whether redirect (to apply locale) is required</returns>
-        private bool ChangeLocalizationInternal(string culture)
+        private void ChangeLocalizationInternal(string culture)
         {
             if (string.IsNullOrWhiteSpace(culture))
             {
-                return false;
+                return;
             }
 
             var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
@@ -942,7 +950,7 @@ namespace CheckoutPortal.Controllers
 
             if (!allowed || currentCulture.RequestCulture.Culture.Name == culture)
             {
-                return false;
+                return;
             }
 
             var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
@@ -953,9 +961,6 @@ namespace CheckoutPortal.Controllers
                 SameSite = SameSiteMode.None,
                 Secure = true
             });
-
-            //TODO: ECNG-1472 (return true instead)
-            return false;
         }
 
         private IActionResult IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)

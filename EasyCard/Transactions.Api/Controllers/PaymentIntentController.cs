@@ -153,11 +153,6 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            if (terminal.SharedApiKey == null)
-            {
-                return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, correlationId: httpContextAccessor.TraceIdentifier));
-            }
-
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
@@ -270,6 +265,12 @@ namespace Transactions.Api.Controllers
 
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["r"] = encrypted;
+
+            if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
+            {
+                query["l"] = dbPaymentRequest.Language;
+            }
+
             uriBuilder.Query = query.ToString();
 
             return uriBuilder.ToString();

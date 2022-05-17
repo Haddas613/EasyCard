@@ -138,11 +138,17 @@
   <data name="ConsumerName" xml:space="preserve">
     <value>לקוח</value>
   </data>
+  <data name="CreditCardToken" xml:space="preserve">
+    <value>תוקן כרטיס אשראי</value>
+  </data>
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
   <data name="CurrentDeal" xml:space="preserve">
     <value>עסקה נוכחית</value>
+  </data>
+  <data name="CurrentTransactionTimestamp" xml:space="preserve">
+    <value>תאריך עסקה אחרונה</value>
   </data>
   <data name="InvoiceOnly" xml:space="preserve">
     <value>חשבונית מס בלבד</value>
@@ -161,6 +167,9 @@
   </data>
   <data name="Paused" xml:space="preserve">
     <value>מושהה</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>סוג תשלום</value>
   </data>
   <data name="Schedule" xml:space="preserve">
     <value>תדירות</value>

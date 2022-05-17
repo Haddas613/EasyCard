@@ -382,6 +382,11 @@
             Merchant deal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.CurrentTransactionTimestamp">
+            <summary>
+            Date-time when last created initially in UTC
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule
@@ -397,9 +402,9 @@
             Stored credit card details token
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.CreditCardToken">
             <summary>
-            Currency
+            Stored credit card details token
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Billing.BillingDealSummaryResource">
@@ -453,6 +458,11 @@
               Looks up a localized string similar to Customer.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CreditCardToken">
+            <summary>
+              Looks up a localized string similar to Card Token.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
             <summary>
               Looks up a localized string similar to Currency.
@@ -461,6 +471,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentDeal">
             <summary>
               Looks up a localized string similar to Current deal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentTransactionTimestamp">
+            <summary>
+              Looks up a localized string similar to Last Transaction Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.InvoiceOnly">
@@ -491,6 +506,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Paused">
             <summary>
               Looks up a localized string similar to Paused.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.PaymentType">
+            <summary>
+              Looks up a localized string similar to Payment Type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Schedule">
@@ -2203,6 +2223,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AllowInvoiceCreation">
             <summary>
             Invoice can be created for this transaction
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantName">
+            <summary>
+            Merchant name
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">

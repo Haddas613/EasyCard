@@ -19,25 +19,26 @@
     <script src="https://d35z3p2poghz10.cloudfront.net/ecwid-sdk/css/1.3.16/ecwid-app-ui.min.js"></script>
 </head>
 <!-- Back button block START -->
-
-<div id="go-back-btn" class="content-control-menu-nav settings-page">
+@*<div id="go-back-btn" class="content-control-menu-nav settings-page">
     <a class="horizontal-icolink icolink-small icolink-prepend">
-        <span class="icon-arr-left"></span> <span class="gwt-InlineLabel">@localizer.Get("PayWithEasyCard")</span>
+    <span class="icon-arr-left"></span> <span class="gwt-InlineLabel">@localizer.Get("PayWithEasyCard")</span>
     </a>
-</div>
+    </div>*@
 
 <!-- Back button block END -->
 <!-- Main app block START -->
 
 <body dir="@(currentUICulture.Name == "he" ? "rtl" : "ltr")" class="@(currentUICulture.Name == "he" ? "rtl" : "ltr")">
-    <div class="ecwid-lang-area">
-        <vc:culture-switcher />
-    </div>
     <div class="settings-page cf">
         <div class="settings-page__header">
-            <div class="settings-page__titles settings-page__titles--left">
-                <h1 class="settings-page__title">@localizer.Get("PayWithEasyCard")</h1>
-                <div class="settings-page__subtitle">@localizer.Get("EcwidGeneralInfoMessage")</div>
+            <div class="settings-page__titles settings-page__titles--left d-flex justify-space-between">
+                <div>
+                    <h1 class="settings-page__title">@localizer.Get("PayWithEasyCard")</h1>
+                    <div class="settings-page__subtitle">@localizer.Get("EcwidGeneralInfoMessage")</div>
+                </div>
+                <div class="ecwid-lang-area">
+                    <vc:culture-switcher />
+                </div>
             </div>
 
             <div hidden id="saved-alert" class="alert alert-success alert-icon">
@@ -62,46 +63,313 @@
                 <div class="named-area__header">
                     <div class="named-area__titles">
                         <div class="named-area__title">@localizer.Get("Settings")</div>
-                        <div class="named-area__subtitle">
-                            @localizer.Get("EcwidSettingsInfoMessage")
-                        </div>
                     </div>
                     <div class="named-area__description"></div>
                     <div class="named-area__additional"></div>
                 </div>
                 <div class="named-area__body">
-                    <div class="a-card a-card--normal">
-                        <div class="a-card__paddings">
-                            <div class="form-area">
-                                <div class="form-area__content">
-                                    <div class="fieldsets-batch">
-                                        <div class="fieldset">
-                                            <div class="fieldset__title">@localizer.Get("TerminalApiKey")</div>
-                                            <div class="field field--medium">
-                                                <input placeholder="@localizer.Get("TerminalApiKey")" data-visibility="private" data-name="apiKey" type="text" class="ecwid-input" tabindex="4" maxlength="64">
-                                            </div>
-                                            <div class="field__error" aria-hidden="true" style="display: none;"></div>
-                                            @*<div class="fieldset__note">...and some description below</div>*@
+                    <div class="payment-card payment-card--extended">
+                        <div class="payment-card__main">
+                            <div class="payment-card__header">
+                                <div class="payment-card__logo">
+                                    <img src="~/img/logon.png" alt="EasyCard" height="64px" />
+                                </div>
+                            </div>
+                            <div class="payment-card__content">
+                                <div>
+                                    <div class="form-area">
+                                        <div class="form-area__content">
+                                            <p>
+                                                @localizer.Get("EcwidSettingsInfoMessage")
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="payment-card__action">
+                                <div class="form-area">
+                                    <div class="form-area__content">
+                                        <div class="fieldsets-batch">
+                                            <div class="fieldset">
+                                                <div class="fieldset__title">@localizer.Get("TerminalApiKey")</div>
+                                                <div class="field field--medium">
+                                                    <input placeholder="@localizer.Get("TerminalApiKey")" data-visibility="private" data-name="apiKey" type="text" class="ecwid-input" tabindex="4" maxlength="64">
+                                                </div>
+                                                <div class="field__error" aria-hidden="true" style="display: none;"></div>
+                                                @*<div class="fieldset__note">...and some description below</div>*@
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div class="form-area__action">
-                                    <button id="save-btn" type="button" class="btn btn-primary btn-medium" tabindex="5">@localizer.Get("Save")</button>
+                                    <div class="form-area__action">
+                                        <button id="save-btn" type="button" class="btn btn-primary btn-medium" tabindex="5">@localizer.Get("Save")</button>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="payment-card__terms" aria-hidden="true" style="display: none;"></div>
+                        </div>
+                        <div class="payment-card__side">
+                            <div class="payment-card__credit-cards">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 26">
+                                    <path fill="#F7B600" d="M1 22h38v3H1z"></path>
+                                    <path fill="#1A1F71"
+                                          d="M1 1h38v3H1zM15.46 8l-4.13 9.84H8.64L6.61 9.99c-.12-.48-.23-.66-.61-.86-.61-.34-1.62-.65-2.51-.84L3.55 8h4.33c.55 0 1.05.37 1.17 1l1.07 5.7L12.78 8h2.68zM26 14.63c.01-2.6-3.59-2.74-3.57-3.9.01-.35.34-.73 1.08-.82.36-.05 1.37-.08 2.51.44l.45-2.09c-.61-.22-1.4-.43-2.38-.43-2.52 0-4.29 1.34-4.3 3.25-.02 1.42 1.26 2.21 2.23 2.68.99.48 1.33.79 1.32 1.22-.01.66-.79.95-1.52.96-1.28.02-2.02-.35-2.61-.62l-.46 2.16c.6.27 1.69.51 2.83.52 2.66 0 4.41-1.32 4.42-3.37m6.65 3.22H35L32.94 8h-2.17c-.49 0-.9.28-1.08.72l-3.82 9.12h2.67l.53-1.47h3.27l.31 1.48zm-2.85-3.49l1.34-3.7.77 3.7H29.8zM19.09 8l-2.1 9.84h-2.55L16.55 8h2.54z">
+                                    </path>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 26">
+                                    <path fill="#FF5F00" d="M14.59 3.21h10.82v19.44H14.59z"></path>
+                                    <path fill="#EB001B"
+                                          d="M15.28 12.93c0-3.94 1.85-7.46 4.72-9.72A12.28 12.28 0 0012.36.57C5.53.56 0 6.1 0 12.93c0 6.83 5.53 12.36 12.36 12.36 2.88 0 5.54-.99 7.64-2.64a12.341 12.341 0 01-4.72-9.72z">
+                                    </path>
+                                    <path fill="#F79E1B"
+                                          d="M40 12.93c0 6.83-5.53 12.36-12.36 12.36-2.88 0-5.54-.99-7.64-2.64 2.88-2.26 4.72-5.78 4.72-9.72S22.88 5.47 20 3.21A12.28 12.28 0 0127.64.57C34.47.56 40 6.1 40 12.93z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="payment-card__content">
+                                <p class="payment-card__title payment-card__title--medium d-block">
+                                    @localizer.Get("HowToSetUp")
+                                </p>
+                                <ul class="numeric">
+                                    @if (currentUICulture.Name == "he")
+                                    {
+                                        <li><a href="https://identity.e-c.co.il/registration">הרשם לחשבון סוחר באיזי קארד.</a> יש לך כבר חשבון? התקדם לשלב 3</li>
+                                        <li>המתן לקבלת אימייל מאיזי קארד, המאשר שהחשבון שלך ולידי</li>
+                                        <li>הכנס מפתח עבור המסוף שסופק לך ע"י איזי קארד.</li>
+                                        <li>שמור שינויים</li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="https://identity.e-c.co.il/registration">Sign up for an EasyCard merchant account.</a> If you already have an account proceed to step 3.</li>
+                                        <li>Wait for an email from EasyCard confirming that your account is verified.</li>
+                                        <li>Enter Terminal ID private key supplied by EasyCard.</li>
+                                        <li>Save the changes.</li>
+                                    }
+                                </ul>
+                            </div>
+                            @*<div class="payment-card__footer">
+                                <p>
+                                By using EasyCard you agree to their
+                                <a target="_blank">Terms of Service</a>.
+                                </p>
+                                </div>*@
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 <!-- Main app block END -->
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/ecwid-functions.js"></script>
 <script src="~/lib/toastr/toastr.min.js"></script>
 <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
+
+<script>
+    // Initialize the application
+	EcwidApp.init({
+		app_id: '@Model.AppID', // use your application namespace
+		autoloadedflag: true,
+		autoheight: true,
+		installed: "yes"
+	});
+
+	var storeData = EcwidApp.getPayload();
+
+	var storeId = storeData.store_id;
+	var accessToken = storeData.access_token;
+	var language = storeData.lang;
+	var viewMode = storeData.view_mode;
+
+	if (storeData.public_token !== undefined) {
+		var publicToken = storeData.public_token;
+	}
+
+	if (storeData.app_state !== undefined) {
+		var appState = storeData.app_state;
+	}
+
+	// Function to go to edit product label page
+
+	function showEditPage(elementClass) {
+		document.querySelector('.main').style.display = 'none';
+		document.querySelector(elementClass).style.display = 'block';
+		document.querySelector('.content-control-menu-nav').style.display = 'flex';
+	}
+
+
+	// Function to retutn back to main app page after editing product label page
+
+	function goBack() {
+		document.querySelector('.content-control-menu-nav').style.display = 'none';
+		document.querySelector('.main').style.display = 'block';
+
+		// hide all separate pages for editing
+		for (i = 0; i < document.querySelectorAll('.separate-editing-page').length; i++) {
+			document.querySelectorAll('.separate-editing-page')[i].style.display = 'none';
+		}
+	}
+
+
+	// Reads values from HTML page and sends them to application config
+	// To fill values successfully, the input, select or textarea elements on a page must have 'data-name' and 'data-visibility' attributes set. See appProto.html for examples
+
+	function readValuesFromPage() {
+
+		var applicationConfig = {
+			public: {},
+			private: {}
+		}
+
+		var allInputs = document.querySelectorAll('input, select, textarea');
+
+		for (i = 0; i < allInputs.length; i++) {
+			var fieldVisibility = allInputs[i].dataset.visibility;
+
+			if (fieldVisibility !== undefined) {
+				if (allInputs[i].tagName == "INPUT") {
+
+					if (allInputs[i].type == 'checkbox' || allInputs[i].type == 'radio') {
+						applicationConfig[fieldVisibility][allInputs[i].dataset.name] = String(allInputs[i].checked);
+					}
+					if (allInputs[i].type == 'text' || allInputs[i].type == 'number' || allInputs[i].type == 'date') {
+						applicationConfig[fieldVisibility][allInputs[i].dataset.name] = allInputs[i].value;
+					}
+				}
+				if (allInputs[i].tagName == "SELECT" || allInputs[i].tagName == "TEXTAREA") {
+					applicationConfig[fieldVisibility][allInputs[i].dataset.name] = allInputs[i].value;
+				}
+			}
+		}
+
+		applicationConfig.public = JSON.stringify(applicationConfig.public);
+
+		return applicationConfig;
+	}
+
+	// Reads values from provided config and sets them for inputs on the page. 
+	// To fill values successfully, the input, select or textarea elements must have 'data-name' and 'data-visibility' attributes set. See appProto.html for examples
+
+	function setValuesForPage(applicationConfig) {
+
+		var applicationConfigTemp = {
+			public: {},
+			private: {}
+		};
+
+		// for cases when we get existing users' data
+
+		if (applicationConfig.constructor === Array) {
+			for (i = 0; i < applicationConfig.length; i++) {
+				if (applicationConfig[i].key !== 'public') {
+					applicationConfigTemp.private[applicationConfig[i].key] = applicationConfig[i].value;
+				} else {
+					applicationConfigTemp[applicationConfig[i].key] = applicationConfig[i].value;
+				}
+			}
+			applicationConfig = applicationConfigTemp;
+		}
+
+		applicationConfig.public = JSON.parse(applicationConfig.public);
+		var allInputs = document.querySelectorAll('input, select, textarea');
+
+		// Set values from config for input, select, textarea elements
+
+		for (i = 0; i < allInputs.length; i++) {
+			var fieldVisibility = allInputs[i].dataset.visibility;
+
+			if (fieldVisibility !== undefined && applicationConfig[fieldVisibility][allInputs[i].dataset.name] !== undefined) {
+				if (allInputs[i].tagName == "INPUT") {
+
+					if (allInputs[i].type == 'checkbox' || allInputs[i].type == 'radio') {
+						allInputs[i].checked = (applicationConfig[fieldVisibility][allInputs[i].dataset.name] == "true");
+						checkFieldChange(allInputs[i]);
+					}
+					if (allInputs[i].type == 'text' || allInputs[i].type == 'number' || allInputs[i].type == 'date') {
+						allInputs[i].value = applicationConfig[fieldVisibility][allInputs[i].dataset.name];
+						checkFieldChange(allInputs[i]);
+					}
+				}
+				if (allInputs[i].tagName == "SELECT" || allInputs[i].tagName == "TEXTAREA") {
+					allInputs[i].value = applicationConfig[fieldVisibility][allInputs[i].dataset.name];
+					checkFieldChange(allInputs[i]);
+				}
+			}
+		}
+	}
+
+	// Default settings for new accounts
+
+	var initialConfig = {
+		private: {
+			apiKey: "example-api-key",
+			installed: "yes"
+		}
+	};
+
+	initialConfig.public = JSON.stringify(initialConfig.public);
+
+	// Executes when we have a new user install the app. It creates and sets the default data using Ecwid JS SDK and Application storage
+
+	function createUserData() {
+
+		// Saves data for application storage 
+		EcwidApp.setAppStorage(initialConfig.private, function (value) {
+			console.log('Initial private user preferences saved!');
+		});
+
+		// Saves data for public app config
+		EcwidApp.setAppPublicConfig(initialConfig.public, function (value) {
+			console.log('Initial public user preferences saved!');
+		});
+
+		// Function to prepopulate values of select, input and textarea elements based on default settings for new accounts
+		setValuesForPage(initialConfig);
+	}
+
+
+	// Executes if we have a user who logs in to the app not the first time. We load their preferences from Application storage with Ecwid JS SDK and display them in the app interface
+
+	function getUserData() {
+
+		// Retrieve all keys and values from application storage, including public app config. Set the values for select, input and textarea elements on a page in a callback
+
+		EcwidApp.getAppStorage(function (allValues) {
+			setValuesForPage(allValues);
+		});
+
+	}
+
+	// Executes when we need to save data. Gets all elements' values and saves them to Application storage and public app config via Ecwid JS SDK
+
+	function saveUserData() {
+
+		var saveData = readValuesFromPage();
+
+		EcwidApp.setAppStorage(saveData.private, function (savedData) {
+			console.log('Private preferences saved!');
+		});
+
+		EcwidApp.setAppPublicConfig(saveData.public, function (savedData) {
+			console.log('Public preferences saved!');
+		})
+
+	}
+
+
+	// Main app function to determine if the user is new or just logs into the app
+
+	EcwidApp.getAppStorage('installed', function (value) {
+
+		if (value != null) {
+			getUserData();
+		}
+		else {
+			createUserData();
+		}
+	})
+</script>
 
 <script nws-csp-add-nonce="true">
     (function() {
@@ -116,38 +384,6 @@
             });
         });
     })()
-    // Autosave feature for fields. Complimentary JS for the one from SDK above
-
-    //(function initFieldset() {
-
-    //    var elms = document.querySelectorAll('.field__input, .field__select, .field__textarea, .radio');
-    //    for (var i = 0; i < elms.length; i++) {
-    //        elms[i].addEventListener('blur', function (e) {
-    //            checkFieldChange(this);
-    //            if (this.classList.contains('field__input') || this.classList.contains('field__textarea')) {
-    //                saveUserData();
-    //            }
-    //        }, false);
-
-    //        elms[i].addEventListener('change', function () {
-    //            if (this.value) {
-    //                saveUserData();
-    //            }
-    //            else {
-    //                saveUserData();
-    //            }
-    //        }, false);
-
-    //        elms[i].addEventListener('click', function () {
-    //            if (this.value) {
-    //                saveUserData();
-    //            }
-    //            else {
-    //                saveUserData();
-    //            }
-    //        }, false);
-    //    }
-    //})();
 
 </script>
 

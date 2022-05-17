@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using ThreeDS;
@@ -38,6 +39,7 @@ namespace Transactions.Api.Controllers.External
         private readonly ApiSettings apiSettings;
         private readonly IExternalSystemsService externalSystemsService;
         private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
+        private readonly IThreeDSChallengeService threeDSChallengeService;
 
         public ThreeDSController(
              ThreeDSService threeDSService,
@@ -47,7 +49,8 @@ namespace Transactions.Api.Controllers.External
              ISystemSettingsService systemSettingsService,
              IOptions<ApiSettings> apiSettings,
              IExternalSystemsService externalSystemsService,
-             IThreeDSIntermediateStorage threeDSIntermediateStorage)
+             IThreeDSIntermediateStorage threeDSIntermediateStorage,
+             IThreeDSChallengeService threeDSChallengeService)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.threeDSService = threeDSService;
@@ -57,6 +60,7 @@ namespace Transactions.Api.Controllers.External
             this.apiSettings = apiSettings.Value;
             this.externalSystemsService = externalSystemsService;
             this.threeDSIntermediateStorage = threeDSIntermediateStorage;
+            this.threeDSChallengeService = threeDSChallengeService;
         }
 
         [HttpPost]
@@ -64,29 +68,52 @@ namespace Transactions.Api.Controllers.External
         [Route("versioning")]
         public async Task<ActionResult<Versioning3DsResponse>> Versioning([FromBody] Versioning3DsRequest model)
         {
-            var request = new ThreeDS.Contract.Versioning3DsRequestModel
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID.GetValueOrDefault()));
+
+            var reportEntity = new Business.Entities.ThreeDSChallenge
             {
-                CardNumber = model.CardNumber,
-                NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds"
+                Action = "Versioning",
+                TerminalID = terminal.TerminalID,
+                MerchantID = terminal.MerchantID,
+                TransStatus = "exception"
             };
 
-            var res = await threeDSService.Versioning(request, GetCorrelationID());
+            try
+            {
+                var request = new ThreeDS.Contract.Versioning3DsRequestModel
+                {
+                    CardNumber = model.CardNumber,
+                    NotificationURL = $"{apiSettings.CheckoutPortalUrl}/Home/Notification3Ds"
+                };
 
-            if (res.ErrorDetails != null)
-            {
-                return new Versioning3DsResponse
+                var res = await threeDSService.Versioning(request, GetCorrelationID(), reportEntity.ThreeDSChallengeID);
+
+                if (res.ErrorDetails != null)
                 {
-                    ErrorMessage = res.ErrorDetails.ErrorDescription,
-                };
+                    reportEntity.TransStatus = "error";
+
+                    return new Versioning3DsResponse
+                    {
+                        ErrorMessage = res.ErrorDetails.ErrorDescription,
+                        PassThrough = res.ErrorDetails.PassThrough
+                    };
+                }
+                else
+                {
+                    reportEntity.ThreeDSServerTransID = res.VersioningResponse.ThreeDSServerTransID;
+                    reportEntity.TransStatus = "success";
+
+                    return new Versioning3DsResponse
+                    {
+                        ThreeDSMethodUrl = res.VersioningResponse.ThreeDSMethodURL,
+                        ThreeDSMethodData = res.VersioningResponse.ThreeDSMethodDataForm.ThreeDSMethodData,
+                        ThreeDSServerTransID = res.VersioningResponse.ThreeDSServerTransID
+                    };
+                }
             }
-            else
+            finally
             {
-                return new Versioning3DsResponse
-                {
-                    ThreeDSMethodUrl = res.VersioningResponse.ThreeDSMethodURL,
-                    ThreeDSMethodData = res.VersioningResponse.ThreeDSMethodDataForm.ThreeDSMethodData,
-                    ThreeDSServerTransID = res.VersioningResponse.ThreeDSServerTransID
-                };
+                await threeDSChallengeService.CreateEntity(reportEntity);
             }
         }
 
@@ -95,8 +122,16 @@ namespace Transactions.Api.Controllers.External
         [Route("authenticate")]
         public async Task<ActionResult<Authenticate3DsResponse>> Authenticate([FromBody] Authenticate3DsRequest request)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
+            var reportEntity = EnsureExists(await threeDSChallengeService.GetThreeDSChallenge(request.ThreeDSServerTransID));
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID.GetValueOrDefault()));
+
+            if (reportEntity.TerminalID != terminal.TerminalID)
+            {
+                throw new SecurityException("Invalid 3DSecure storage data access");
+            }
+
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID.GetValueOrDefault());
 
             var shvaIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
 
@@ -125,43 +160,64 @@ namespace Transactions.Api.Controllers.External
                 CardExpiration = request.CardExpiration
             };
 
-            var res = await threeDSService.Authentication(model, GetCorrelationID());
+            reportEntity.Action = "Authentication";
+            reportEntity.TransStatus = "exception";
 
-            if (res.ErrorDetails != null ||
-                res.ResponseData?.AuthenticationResponse == null ||
-                string.IsNullOrWhiteSpace(res.ResponseData?.ThreeDSServerTransID) ||
-                res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.N)
+            try
             {
-                return new Authenticate3DsResponse
-                {
-                    ErrorMessage = res.ErrorDetails.ErrorDescription ?? "rejected",
-                    ErrorDetail = res.ErrorDetails.ErrorDetail
-                };
-            }
-            else
-            {
-                bool chalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C;
+                var res = await threeDSService.Authentication(model, GetCorrelationID(), reportEntity.ThreeDSChallengeID);
 
-                if (!chalengeRequired)
+                if (res.ErrorDetails != null ||
+                    res.ResponseData?.AuthenticationResponse == null ||
+                    string.IsNullOrWhiteSpace(res.ResponseData?.ThreeDSServerTransID) ||
+                    res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.N)
                 {
-                    if (string.IsNullOrWhiteSpace(res.ResponseData.AuthenticationResponse.AuthenticationValue))
+                    reportEntity.TransStatus = "error";
+
+                    return new Authenticate3DsResponse
                     {
-                        return new Authenticate3DsResponse
+                        ErrorMessage = (res.ErrorDetails?.ErrorDescription ?? res.ResponseData?.AuthenticationResponse?.CardholderInfo) ?? "rejected",
+                        ErrorDetail = res.ErrorDetails?.ErrorDetail,
+                        PassThrough = res.ErrorDetails.PassThrough
+                    };
+                }
+                else
+                {
+                    bool chalengeRequired = res.ResponseData?.AuthenticationResponse.TransStatusEnum == ThreeDS.Models.TransStatusEnum.C;
+
+                    if (!chalengeRequired)
+                    {
+                        if (string.IsNullOrWhiteSpace(res.ResponseData.AuthenticationResponse.AuthenticationValue))
                         {
-                            ErrorMessage = "AuthenticationValue is empty",
-                        };
+                            reportEntity.TransStatus = "error";
+
+                            return new Authenticate3DsResponse
+                            {
+                                ErrorMessage = "AuthenticationValue is empty",
+                            };
+                        }
+
+                        reportEntity.TransStatus = "success";
+
+                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(res.ResponseData.ThreeDSServerTransID, res.ResponseData.AuthenticationResponse.AuthenticationValue, res.ResponseData.AuthenticationResponse.Eci, res.ResponseData.AuthenticationResponse.Xid, reportEntity.ThreeDSChallengeID));
+                    }
+                    else
+                    {
+                        reportEntity.TransStatus = "chalengeRequired";
                     }
 
-                    await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(res.ResponseData.ThreeDSServerTransID, res.ResponseData.AuthenticationResponse.AuthenticationValue, res.ResponseData.AuthenticationResponse.Eci, res.ResponseData.AuthenticationResponse.Xid));
+                    return new Authenticate3DsResponse
+                    {
+                        ChalengeRequired = chalengeRequired,
+                        AcsURL = res.ResponseData?.AuthenticationResponse?.AcsURL,
+                        Base64EncodedChallengeRequest = res.ResponseData?.Base64EncodedChallengeRequest,
+                        ThreeDSServerTransID = res.ResponseData?.ThreeDSServerTransID
+                    };
                 }
-
-                return new Authenticate3DsResponse
-                {
-                     ChalengeRequired = chalengeRequired,
-                     AcsURL = res.ResponseData?.AuthenticationResponse?.AcsURL,
-                     Base64EncodedChallengeRequest = res.ResponseData?.Base64EncodedChallengeRequest,
-                     ThreeDSServerTransID = res.ResponseData?.ThreeDSServerTransID
-                };
+            }
+            finally
+            {
+                await threeDSChallengeService.UpdateEntity(reportEntity);
             }
         }
 
@@ -180,7 +236,20 @@ namespace Transactions.Api.Controllers.External
 
                     if (authRes != null)
                     {
-                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid)
+                        var reportEntity = await threeDSChallengeService.GetThreeDSChallenge(authRes.ThreeDSServerTransID);
+
+                        if (reportEntity == null)
+                        {
+                            logger.LogError($"ThreeDSChallenge entity is not found: {authRes.ThreeDSServerTransID}");
+                        }
+                        else
+                        {
+                            reportEntity.Action = "AuthenticateCallback";
+                            reportEntity.TransStatus = authRes.TransStatus;
+                            await threeDSChallengeService.UpdateEntity(reportEntity);
+                        }
+
+                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid, reportEntity?.ThreeDSChallengeID)
                         {
                             TransStatus = authRes.TransStatus,
                             Request = res

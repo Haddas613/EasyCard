@@ -1,8 +1,8 @@
 import store from '../../store/index';
 
 export default function (value, currency) {
-    if(!value || !currency){
-        return value;
+    if((!value && value !== 0) || !currency){
+        return '-';
     }
     
     value = parseFloat(value);
