@@ -1070,6 +1070,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("varchar(32)")
                         .HasColumnName("MerchantIP");
 
+                    b.Property<decimal?>("NetDiscountTotal")
+                        .HasColumnType("decimal(19,4)");
+
                     b.Property<decimal>("NetTotal")
                         .HasColumnType("decimal(19,4)");
 
@@ -1168,6 +1171,9 @@ namespace Transactions.Business.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("UserAmount")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("VATRate")
                         .HasColumnType("decimal(19,4)");

@@ -290,6 +290,8 @@ namespace Transactions.Business.Entities
 
         public decimal? NetDiscountTotal { get; set; }
 
+        public bool UserAmount { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()
@@ -388,8 +390,6 @@ namespace Transactions.Business.Entities
         public string ThreeDSServerTransID { get; set; }
 
         public string Origin { get; set; }
-
-        public bool UserAmount { get; set; }
 
         [NotMapped]
         public bool AllowRefund

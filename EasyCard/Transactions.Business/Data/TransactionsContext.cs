@@ -275,6 +275,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
 
+                builder.Property(b => b.NetDiscountTotal).HasColumnType("decimal(19,4)").IsRequired(false);
+
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
