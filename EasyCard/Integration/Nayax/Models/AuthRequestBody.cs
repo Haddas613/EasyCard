@@ -18,7 +18,7 @@ namespace Nayax.Models
             this.clientID = clientID;
             this.terminalID = terminalID;
             this.posID = posID;
-            this.paramss = new object[2];
+            this.paramss = new object[1];
             paramss[0] = "ashrait";
             //paramss[1] = new ObjectInAuthRequestParams(otp);
         }

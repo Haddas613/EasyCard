@@ -353,8 +353,7 @@ namespace Nayax
             var authReq = EMVDealHelper.GetAutheRequestBody(configuration, authRequest.terminalID);
             try
             {
-                var response = this.apiClient.Post<HttpResponseMessage>(configuration.BaseUrl, GetDetails, authReq, BuildHeaders);
-                var responseRes = response.Result.Content.ReadAsStringAsync().Result;
+                var responseRes = await  this.apiClient.Post<string>(configuration.BaseUrl, GetDetails, authReq, BuildHeaders);
                 return (!string.IsNullOrEmpty(responseRes) && (responseRes.ToLower().Contains("ashraitready") || responseRes.ToLower().Contains("ashraitreadyonline")));
             }
             catch (Exception ex)
