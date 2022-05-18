@@ -10,19 +10,18 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
-        v-model="model"
+        :value="$options.filters.ecdate(model, 'd')"
         :label="inputText"
         readonly
         v-bind="attrs"
         v-on="on"
-        outlined
         hide-details="auto"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="model" no-title scrollable>
+    <v-date-picker v-model="model" no-title scrollable :min="min" :max="max">
       <v-spacer></v-spacer>
-      <v-btn text color="primary" @click="cancel()">{{$t("Clear")}}</v-btn>
-      <v-btn text color="primary" @click="save(model)">{{$t("OK")}}</v-btn>
+      <v-btn text color="primary" @click="cancel()">{{ $t("Clear") }}</v-btn>
+      <v-btn text color="primary" @click="save(model)">{{ $t("OK") }}</v-btn>
     </v-date-picker>
   </v-menu>
 </template>
@@ -30,22 +29,28 @@
 <script>
 export default {
   model: {
-    prop: 'data',
-    event: 'change'
+    prop: "data",
+    event: "change",
   },
   props: {
     data: {
-      required: true
+      required: true,
     },
     label: {
-      type: String
-    }
+      type: String,
+    },
+    min: {
+      default: null,
+    },
+    max: {
+      default: null,
+    },
   },
   data() {
     return {
       model: this.data,
       inputText: this.label || this.$t("SelectDate"),
-      menu: false
+      menu: false,
     };
   },
   methods: {
@@ -54,11 +59,11 @@ export default {
       this.$emit("ok", this.model);
       this.$emit("change", this.model);
     },
-    cancel(){
-        this.menu = false;
-        this.model = null;
-        this.save();
-    }
-  }
+    cancel() {
+      this.menu = false;
+      this.model = null;
+      this.save();
+    },
+  },
 };
 </script>

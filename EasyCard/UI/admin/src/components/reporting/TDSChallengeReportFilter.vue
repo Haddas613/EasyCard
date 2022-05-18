@@ -3,7 +3,7 @@
     <v-form ref="form" v-model="formIsValid">
       <v-row>
         <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
-        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3 pt-3" v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">

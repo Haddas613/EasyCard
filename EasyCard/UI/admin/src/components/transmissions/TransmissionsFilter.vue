@@ -4,7 +4,7 @@
       <v-row>
         <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
         <!-- <terminal-template-filter md="4" class="pt-3" v-model="model"></terminal-template-filter> -->
-        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3 pt-3" v-model="model"></date-from-to-filter>
       </v-row>
       <!-- <v-row no-gutters>
         <v-switch

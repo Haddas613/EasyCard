@@ -74,7 +74,7 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3 pt-3" v-model="model"></date-from-to-filter>
         <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickStatusFilterTypeEnum"

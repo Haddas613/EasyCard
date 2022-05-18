@@ -26,7 +26,7 @@
             :label="$t('ProcessorTerminalReference')"
           ></v-text-field>
         </v-col>
-        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3 pt-3" v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">

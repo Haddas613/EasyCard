@@ -1,40 +1,10 @@
 <template>
   <v-row class="d-flex">
     <v-col cols="12" :md="md">
-      <v-menu
-        ref="dateFromMenu"
-        v-model="dateFromMenu"
-        :close-on-content-click="false"
-        :return-value.sync="dateFromRaw"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t(dateFromLabel)" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
-        </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary" :min="fromToday ? today : null">
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
-        </v-date-picker>
-      </v-menu>
+      <ec-date-input v-model="dateFromRaw" :min="fromToday ? today : null" :label="$t(dateFromLabel)" />
     </v-col>
     <v-col cols="12" :md="md">
-      <v-menu
-        ref="dateToMenu"
-        v-model="dateToMenu"
-        :close-on-content-click="false"
-        :return-value.sync="dateToRaw"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateToRaw" :label="$t(dateToLabel)" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
-        </template>
-        <v-date-picker v-model="dateToRaw" no-title scrollable color="primary" :min="dateFromRaw ? dateFromRaw : null">
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="$refs.dateToMenu.save(dateToRaw)">{{$t("Ok")}}</v-btn>
-        </v-date-picker>
-      </v-menu>
+      <ec-date-input v-model="dateToRaw" :min="dateFromRaw ? dateFromRaw : null" :label="$t(dateToLabel)" />
     </v-col>
   </v-row>
 </template>
@@ -43,6 +13,9 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  components: {
+    EcDateInput: () => import("../inputs/EcDateInput"),
+  },
   model: {
     prop: "data",
     event: "change"
@@ -81,7 +54,6 @@ export default {
       dateToMenu: false,
       dateFromRaw: null,
       dateToRaw: null,
-      rules: [],
       today: new Date().toISOString()
     };
   },

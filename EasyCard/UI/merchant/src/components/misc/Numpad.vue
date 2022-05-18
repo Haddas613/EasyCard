@@ -200,9 +200,6 @@ export default {
         1000
       );
     },
-    'defaultItem.price': (newValue, oldValue) => {
-      console.log(newValue);
-    }
   },
   computed: {
     totalAmount() {

@@ -1,40 +1,10 @@
 <template>
-  <v-row class="px-3">
-    <v-col cols="12" md="6">
-      <v-menu
-        ref="dateFromMenu"
-        v-model="dateFromMenu"
-        :close-on-content-click="false"
-        :return-value.sync="dateFromRaw"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t(dateFromLabel)" readonly v-on="on" clearable></v-text-field>
-        </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable :min="fromToday ? today : null">
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
-        </v-date-picker>
-      </v-menu>
+  <v-row class="d-flex">
+    <v-col cols="12" :md="md">
+      <ec-date-input v-model="dateFromRaw" :min="fromToday ? today : null" :label="$t(dateFromLabel)" />
     </v-col>
-    <v-col cols="12" md="6">
-      <v-menu
-        ref="dateToMenu"
-        v-model="dateToMenu"
-        :close-on-content-click="false"
-        :return-value.sync="dateToRaw"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateToRaw" :label="$t(dateToLabel)" readonly v-on="on" clearable></v-text-field>
-        </template>
-        <v-date-picker v-model="dateToRaw" no-title scrollable>
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="$refs.dateToMenu.save(dateToRaw)">{{$t("Ok")}}</v-btn>
-        </v-date-picker>
-      </v-menu>
+    <v-col cols="12" :md="md">
+      <ec-date-input v-model="dateToRaw" :min="dateFromRaw ? dateFromRaw : null" :label="$t(dateToLabel)" />
     </v-col>
   </v-row>
 </template>
@@ -43,6 +13,9 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  components: {
+    EcDateInput: () => import("../inputs/EcDateInput"),
+  },
   model: {
     prop: "data",
     event: "change"
@@ -52,6 +25,14 @@ export default {
       type: Object,
       default: null,
       required: true
+    },
+    md: {
+      type: String,
+      default: "6"
+    },
+    required: {
+      type: Boolean,
+      default: false
     },
     fromToday: {
       type: Boolean,
@@ -71,10 +52,17 @@ export default {
       vr: ValidationRules,
       dateFromMenu: false,
       dateToMenu: false,
-      dateFromRaw: this.data.dateFrom,
-      dateToRaw: this.data.dateTo,
+      dateFromRaw: null,
+      dateToRaw: null,
       today: new Date().toISOString()
     };
+  },
+  mounted () {
+    if (this.required){
+      this.rules = [this.vr.primitives.required]
+    }
+    this.dateFromRaw = this.data.dateFrom ? this.$formatDate(this.data.dateFrom) : null;
+    this.dateToRaw = this.data.dateTo ? this.$formatDate(this.data.dateTo) : null;
   },
   watch: {
     dateFromRaw: function(val) {

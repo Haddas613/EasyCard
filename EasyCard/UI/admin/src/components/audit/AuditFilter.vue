@@ -72,7 +72,7 @@ export default {
   name: "AuditFilter",
   components: {
     MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
-    EcDateInput: () => import("../ec/EcDateInput"),
+    EcDateInput: () => import("../inputs/EcDateInput"),
   },
   data() {
     return {

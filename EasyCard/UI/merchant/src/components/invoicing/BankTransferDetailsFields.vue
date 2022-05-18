@@ -25,7 +25,7 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    EcDateInput: () => import("../ec/EcDateInput"),
+    EcDateInput: () => import("../inputs/EcDateInput"),
     BankFields: () => import("../transactions/BankDetailsFields"),
   },
   props: {
