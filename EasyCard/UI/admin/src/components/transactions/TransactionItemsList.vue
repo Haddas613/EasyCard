@@ -50,7 +50,7 @@
             </td>
             <td>
               <ec-money
-                :amount="item.price - (item.discount ? item.discount : 0)"
+                :amount="item.amount"
                 :currency="currency"
               ></ec-money>
             </td>
