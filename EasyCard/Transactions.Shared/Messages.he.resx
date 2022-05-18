@@ -457,6 +457,6 @@
     <value>תשלום בוצע בהצלחה</value>
   </data>
   <data name="PaymentWasNotCompleted" xml:space="preserve">
-    <value>תשלום לא בוצעה</value>
+    <value>התשלום לא בוצע</value>
   </data>
 </root>

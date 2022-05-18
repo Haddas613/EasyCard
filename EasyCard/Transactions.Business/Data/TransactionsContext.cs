@@ -107,6 +107,8 @@ namespace Transactions.Business.Data
 
         public DbSet<NayaxTransactionsParameters> NayaxTransactionsParameters { get; set; }
 
+        public DbSet<ThreeDSChallenge> ThreeDSChallenges { get; internal set; }
+
         private readonly ClaimsPrincipal user;
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -137,6 +139,7 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
             modelBuilder.ApplyConfiguration(new NayaxTransactionsParametersConfiguration());
+            modelBuilder.ApplyConfiguration(new ThreeDSChallengeConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -271,6 +274,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.NetDiscountTotal).HasColumnType("decimal(19,4)").IsRequired(false);
 
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
@@ -821,7 +826,25 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.PinPadTranRecordReceiptNumber).HasColumnName("PinPadTranRecordReceiptNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 builder.HasIndex(d => d.PinPadTranRecordReceiptNumber).IsUnique();
+            }
+        }
 
+        internal class ThreeDSChallengeConfiguration : IEntityTypeConfiguration<ThreeDSChallenge>
+        {
+            public void Configure(EntityTypeBuilder<ThreeDSChallenge> builder)
+            {
+                builder.ToTable("ThreeDSChallenge");
+
+                builder.HasKey(b => b.ThreeDSChallengeID);
+                builder.Property(b => b.ThreeDSChallengeID).ValueGeneratedNever();
+
+                builder.Property(p => p.ThreeDSServerTransID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.HasIndex(d => d.ThreeDSServerTransID);
+
+                builder.Property(p => p.MessageDate).HasColumnType("date").IsRequired(false);
+
+                builder.Property(d => d.Action).IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(d => d.TransStatus).IsRequired(false).HasMaxLength(20).IsUnicode(false);
             }
         }
 

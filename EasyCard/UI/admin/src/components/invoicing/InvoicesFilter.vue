@@ -95,7 +95,7 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
@@ -126,8 +126,6 @@ export default {
       dictionaries: {},
       vr: ValidationRules,
       formIsValid: true,
-      dateFromMenu: false,
-      dateToMenu: false,
     };
   },
   async mounted() {

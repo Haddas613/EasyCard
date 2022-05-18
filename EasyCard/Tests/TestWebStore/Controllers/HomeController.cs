@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Shared.Helpers;
 using TestWebStore.Models;
 using Transactions.Business.Services;
+using Dapper;
 
 namespace TestWebStore.Controllers
 {
@@ -100,11 +102,13 @@ namespace TestWebStore.Controllers
 
                     if (authRes != null)
                     {
-                        await threeDSIntermediateStorage.StoreIntermediateData(new Shared.Integration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid)
+                        await threeDSIntermediateStorage.StoreIntermediateData(new Shared.Integration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid, Guid.NewGuid())
                         {
                             TransStatus = authRes.TransStatus,
                             Request = res
                         });
+
+                        await UpdateThreeDSChallengeTmp(authRes.ThreeDSServerTransID, authRes.TransStatus);
                     }
                     else
                     {
@@ -118,6 +122,14 @@ namespace TestWebStore.Controllers
             }
 
             return Ok();
+        }
+
+        private async Task UpdateThreeDSChallengeTmp(string threeDSServerTransID, string transStatus)
+        {
+            using (var con = new SqlConnection("Server=tcp:ecng-sql.database.windows.net,1433;Initial Catalog=ecng-transactions;Persist Security Info=False;User ID=transactionsapi;Password=K69PwAZsucVeYSWr;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+            {
+                await con.ExecuteScalarAsync("update ThreeDSChallenge set transStatus = @transStatus where threeDSServerTransID = @threeDSServerTransID", new { threeDSServerTransID, transStatus });
+            }
         }
 
         [HttpPost]

@@ -21,12 +21,14 @@ namespace Reporting.Business.Services
     public class AdminService : IAdminService
     {
         private readonly string connectionString;
+        private readonly string transactionsConnectionString;
         private readonly IAppInsightReaderService appInsightReaderService;
 
-        public AdminService(string connectionString, IAppInsightReaderService appInsightReaderService)
+        public AdminService(string connectionString, string transactionsConnection, IAppInsightReaderService appInsightReaderService)
         {
             this.connectionString = connectionString;
             this.appInsightReaderService = appInsightReaderService;
+            this.transactionsConnectionString = transactionsConnection;
         }
 
         public async Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query)
@@ -122,29 +124,43 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<ThreeDSChallengeSummary>> GetThreeDSChallengeReport(ThreeDSChallengeReportQuery query)
         {
-            //query.Skip TODO: pagination
+            var builder = new SqlBuilder();
 
-            var result = new List<ThreeDSChallengeSummary>();
+            var sql = @"select ROW_NUMBER() OVER(ORDER BY d.[TerminalID] DESC) AS RowN,
+d.[TerminalID], min(d.[MessageDate]) as DateFrom,  max(d.[MessageDate]) as DateTo,
+COUNT(d.[ThreeDSChallengeID]) as NumberOfChallengeRequests, 
+COUNT(t.[PaymentTransactionID]) as NumberOfTransactions
+from [dbo].[ThreeDSChallenge] as d 
+left outer join [dbo].[PaymentTransaction] as t on t.[ThreeDSServerTransID] = d.[ThreeDSServerTransID]
+/**where**/
+group by d.[TerminalID]";
 
-            var rand = new Random();
+            var selector = builder.AddTemplate(sql, query);
 
-            for (int i = 1; i <= 10; i++)
+            if (query.DateFrom.HasValue)
             {
-                var from = DateTime.UtcNow.AddDays(-1 * i);
-
-                result.Add(new ThreeDSChallengeSummary
-                {
-                    TerminalID = new Guid("fd483f66-7cf0-4e57-8661-ab9200804615"),
-                    TerminalName = "Vlad's terminal 29/07",
-                    MerchantID = new Guid("632eb049-8562-411d-ab9f-ab92007f0293"),
-                    MerchantName = "Main Merchant Bob",
-                    NumberOfChallengeRequests = rand.Next(0, 50),
-                    DateFrom = from,
-                    DateTo = from.AddDays(1),
-                });
+                builder.Where($"d.[MessageDate] >= @DateFrom");
             }
 
-            return result;
+            if (query.DateTo.HasValue)
+            {
+                builder.Where($"d.[MessageDate] <= @DateTo");
+            }
+
+            if (query.TerminalID.HasValue)
+            {
+                builder.Where($"d.[TerminalID] = @TerminalID");
+            }
+
+            if (query.MerchantID.HasValue)
+            {
+                builder.Where($"d.[MerchantID] = @MerchantID");
+            }
+
+            using (var connection = new SqlConnection(transactionsConnectionString))
+            {
+                return await connection.QueryAsync<ThreeDSChallengeSummary>(selector.RawSql, selector.Parameters);
+            }
         }
 
         private string KustoAgo(DateTime from, DateTime to)

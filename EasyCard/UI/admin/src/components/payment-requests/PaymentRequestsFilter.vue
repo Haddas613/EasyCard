@@ -52,7 +52,7 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
         <v-col cols="12" md="4" sm="6" class="py-0">
           <v-text-field
             v-model="model.consumerExternalReference"
@@ -89,8 +89,6 @@ export default {
       dictionaries: {},
       vr: ValidationRules,
       formIsValid: true,
-      dateFromMenu: false,
-      dateToMenu: false,
     };
   },
   async mounted() {

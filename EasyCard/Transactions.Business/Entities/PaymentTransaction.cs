@@ -288,6 +288,10 @@ namespace Transactions.Business.Entities
         [NotMapped]
         public string ConnectionID { get; set; }
 
+        public decimal? NetDiscountTotal { get; set; }
+
+        public bool UserAmount { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()
@@ -312,7 +316,12 @@ namespace Transactions.Business.Entities
                 InitialPaymentAmount = TransactionAmount;
             }
 
-            if (DealDetails?.Items?.Count() > 0)
+            if (NetDiscountTotal > 0 && TotalDiscount == 0)
+            {
+                TotalDiscount = Math.Round((NetDiscountTotal * (1 + VATRate)).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+            }
+
+            if (TotalDiscount == 0 && DealDetails?.Items?.Count() > 0)
             {
                 TotalDiscount = DealDetails.Items.Sum(e => e.Discount.GetValueOrDefault(0));
             }
@@ -334,6 +343,8 @@ namespace Transactions.Business.Entities
         public string OperationDoneBy { get; set; }
 
         public Guid? OperationDoneByID { get; set; }
+
+        public Guid? ThreeDSChallengeID { get; set; }
 
         [NotMapped]
         public string SourceIP { get { return MerchantIP; } set { MerchantIP = value; } }

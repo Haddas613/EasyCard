@@ -93,7 +93,7 @@ var cards = [
     },
     {
         type: 'diarect',
-        patterns: [59, 54],
+        patterns: [59, 54, 78],
         format: /(\d{1,3})/g,
         length: [9],
         cvcLength: [3],

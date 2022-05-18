@@ -19,8 +19,10 @@ namespace Reporting.Shared.Models.Admin
 
         public int NumberOfChallengeRequests { get; set; }
 
-        public DateTime DateFrom { get; set; }
+        //public DateTime DateFrom { get; set; }
 
-        public DateTime DateTo { get; set; }
+        //public DateTime DateTo { get; set; }
+
+        public int NumberOfTransactions { get; set; }
     }
 }

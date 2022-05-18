@@ -25,29 +25,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
-        <v-menu
-          ref="startAtMenu"
-          v-model="startAtMenu"
-          :close-on-content-click="false"
-          :return-value.sync="model.startAt"
-          v-if="model.startAtType == 'specifiedDate'"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="model.startAt"
-              :label="$t('StartAt')"
-              readonly
-              outlined
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker @change="checkDates()" v-model="model.startAt" no-title scrollable color="primary">
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="$refs.startAtMenu.save(model.startAt)">{{$t("Ok")}}</v-btn>
-          </v-date-picker>
-        </v-menu>
+        <ec-date-input v-model="model.startAt" :min="minDate" :label="$t('StartAt')" />
       </v-col>
 
       <v-col cols="12" md="6" class="px-1">
@@ -62,29 +40,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
-        <v-menu
-          ref="endAtMenu"
-          v-model="endAtMenu"
-          :close-on-content-click="false"
-          :return-value.sync="model.endAt"
-          v-if="model.endAtType == 'specifiedDate'"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="model.endAt"
-              :label="$t('EndAt')"
-              readonly
-              outlined
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="model.endAt" :min="model.startAt || minDate" no-title scrollable color="primary">
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="$refs.endAtMenu.save(model.endAt)">{{$t("Ok")}}</v-btn>
-          </v-date-picker>
-        </v-menu>
+        <ec-date-input v-if="model.endAtType == 'specifiedDate'" v-model="model.endAt" :min="model.startAt || minDate" :label="$t('EndAt')" />
         <v-text-field
           v-else-if="model.endAtType == 'afterNumberOfPayments'"
           v-model.number="model.endAtNumberOfPayments"
@@ -100,6 +56,9 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 export default {
+  components: {
+    EcDateInput: () => import("../../components/inputs/EcDateInput"),
+  },
   props: {
     data: {
       type: Object,
@@ -117,8 +76,6 @@ export default {
       vr: ValidationRules,
       dictionaries: {},
       minDate: new Date().toISOString(),
-      startAtMenu: false,
-      endAtMenu: false
     };
   },
   async mounted() {

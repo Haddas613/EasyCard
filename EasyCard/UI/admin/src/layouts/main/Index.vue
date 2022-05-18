@@ -26,7 +26,10 @@
 
     data: () => ({
       dialog: false,
-      drawer: false
+      drawer: false,
     }),
+    mounted () {
+      this.drawer = this.$vuetify.breakpoint.mdAndUp;
+    },
   }
 </script>

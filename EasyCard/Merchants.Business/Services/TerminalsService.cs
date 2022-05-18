@@ -91,6 +91,8 @@ namespace Merchants.Business.Services
             return terminal;
         }
 
+        // TODO: to be removed - use GetTerminal() instead
+        [Obsolete]
         public async Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID)
         {
             IQueryable<TerminalExternalSystem> query = context.TerminalExternalSystems.AsNoTracking();

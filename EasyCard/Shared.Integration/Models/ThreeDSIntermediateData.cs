@@ -18,19 +18,22 @@ namespace Shared.Integration.Models
 
         public string Request { get; set; }
 
+        public Guid? ThreeDSChallengeID { get; set; }
+
         private readonly string partitionKey = "1";
 
         public ThreeDSIntermediateData()
         {
         }
 
-        public ThreeDSIntermediateData(string threeDSServerTransID, string authenticationValue, string eci, string xid)
+        public ThreeDSIntermediateData(string threeDSServerTransID, string authenticationValue, string eci, string xid, Guid? threeDSChallengeID)
         {
             this.PartitionKey = partitionKey;
             this.ThreeDSServerTransID = threeDSServerTransID;
             this.AuthenticationValue = authenticationValue;
             this.Eci = eci;
             this.Xid = xid;
+            this.ThreeDSChallengeID = threeDSChallengeID;
         }
 
         public string ThreeDSServerTransID

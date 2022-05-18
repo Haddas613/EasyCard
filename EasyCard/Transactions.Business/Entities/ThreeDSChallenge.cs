@@ -12,10 +12,10 @@ namespace Transactions.Business.Entities
         {
             MessageTimestamp = DateTime.UtcNow;
             MessageDate = TimeZoneInfo.ConvertTimeFromUtc(MessageTimestamp.Value, UserCultureInfo.TimeZone).Date;
-            IntegrationMessageID = Guid.NewGuid().GetSequentialGuid(MessageTimestamp.Value);
+            ThreeDSChallengeID = Guid.NewGuid().GetSequentialGuid(MessageTimestamp.Value);
         }
 
-        public Guid IntegrationMessageID { get; set; }
+        public Guid ThreeDSChallengeID { get; set; }
 
         /// <summary>
         /// Legal transaction day
@@ -39,7 +39,7 @@ namespace Transactions.Business.Entities
 
         public Guid GetID()
         {
-            return IntegrationMessageID;
+            return ThreeDSChallengeID;
         }
     }
 }
