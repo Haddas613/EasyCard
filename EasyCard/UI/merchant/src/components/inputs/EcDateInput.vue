@@ -2,8 +2,7 @@
   <v-menu
     ref="menu"
     v-model="menu"
-    :close-on-content-click="false"
-    :return-value.sync="model"
+    :close-on-content-click="true"
     transition="scale-transition"
     offset-y
     min-width="auto"
@@ -19,10 +18,9 @@
         hide-details="auto"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="model" no-title scrollable :min="min" :max="max">
+    <v-date-picker v-model="model" no-title scrollable :min="min" :max="max" @change="onChange($event)">
       <v-spacer></v-spacer>
-      <v-btn text color="primary" @click="cancel()">{{ $t("Clear") }}</v-btn>
-      <v-btn text color="primary" @click="save(model)">{{ $t("OK") }}</v-btn>
+      <v-btn text color="error" @click="cancel()">{{ $t("Clear") }}</v-btn>
     </v-date-picker>
   </v-menu>
 </template>
@@ -63,6 +61,10 @@ export default {
     cancel() {
       this.menu = false;
       this.model = null;
+      this.save();
+    },
+    onChange(data){
+      this.model = data;
       this.save();
     },
   },
