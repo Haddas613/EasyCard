@@ -124,7 +124,7 @@
     <value>Credit Card Billing</value>
   </data>
   <data name="CreditNote" xml:space="preserve">
-    <value>Credit Note</value>
+    <value>Refund Invoice</value>
   </data>
   <data name="Initial" xml:space="preserve">
     <value>Pending</value>
@@ -136,13 +136,13 @@
     <value>Invoice only Billing</value>
   </data>
   <data name="InvoiceWithPaymentInfo" xml:space="preserve">
-    <value>Invoice WIth Payment Info</value>
+    <value>Invoice/Receipt</value>
   </data>
   <data name="ManualInvoice" xml:space="preserve">
     <value>Manual Invoice</value>
   </data>
   <data name="PaymentInfo" xml:space="preserve">
-    <value>Payment Info</value>
+    <value>Receipt</value>
   </data>
   <data name="RefundInvoice" xml:space="preserve">
     <value>Refund Invoice with Payment Info</value>
