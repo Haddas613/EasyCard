@@ -315,7 +315,7 @@ namespace MerchantProfileApi.Controllers
 
         [HttpGet]
         [Route("tds-consent-message")]
-        public async Task<ActionResult<OperationResponse>> Get3DSConsentMessage2()
+        public async Task<ActionResult<OperationResponse>> Get3DSConsentMessage()
         {
             var response = new OperationResponse(ConsentMessages.ThreeDSConsentMessage, StatusEnum.Success);
 
