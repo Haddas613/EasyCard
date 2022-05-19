@@ -66,6 +66,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Billing\ConsumerResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConsumerResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Billing\ItemResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -87,6 +92,10 @@
     <EmbeddedResource Update="Messages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Billing\ConsumerResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConsumerResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Billing\ItemResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

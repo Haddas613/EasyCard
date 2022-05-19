@@ -69,7 +69,7 @@ namespace MerchantProfileApi.Controllers
             return new TableMeta
             {
                 Columns = typeof(ConsumerSummary)
-                    .GetObjectMeta(ItemResource.ResourceManager, CurrentCulture)
+                    .GetObjectMeta(ConsumerResource.ResourceManager, CurrentCulture)
             };
         }
 

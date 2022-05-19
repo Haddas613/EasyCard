@@ -6,6 +6,7 @@
       :filter-by-terminal="true"
       allow-show-deleted
       overview
+      support-table
     ></customers-list-component>
   </v-flex>
 </template>

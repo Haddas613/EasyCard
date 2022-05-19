@@ -11,6 +11,7 @@ namespace MerchantProfileApi.Models.Billing
         [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public Guid ConsumerID { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public Guid TerminalID { get; set; }
 
         /// <summary>
@@ -24,6 +25,7 @@ namespace MerchantProfileApi.Models.Billing
 
         public string ConsumerNationalID { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public Address ConsumerAddress { get; set; }
 
         public string ExternalReference { get; set; }
@@ -31,11 +33,15 @@ namespace MerchantProfileApi.Models.Billing
         /// <summary>
         /// External ID inside https://woocommerce.com system
         /// </summary>
+        [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public string WoocommerceID { get; set; }
 
         /// <summary>
         /// External ID inside https://www.ecwid.com system
         /// </summary>
+        [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public string EcwidID { get; set; }
+
+        public bool Active { get; set; }
     }
 }
