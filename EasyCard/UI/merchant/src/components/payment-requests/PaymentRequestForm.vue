@@ -3,8 +3,6 @@
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
 
-        <ec-date-input v-model="model.dueDate" :min="minDate" :label="$t('DueDate')" />
-        
         <v-row no-gutters>
           <v-col cols="12" md="6" class="pb-2">
             <v-switch 
@@ -55,6 +53,8 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
           :isPaymentRequest = true
         ></deal-details>
+
+        <ec-date-input v-model="model.dueDate" :min="minDate" :label="$t('DueDate')" />
 
         <invoice-details-fields v-if="invoiceAvailable" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
