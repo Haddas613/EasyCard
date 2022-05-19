@@ -28,6 +28,9 @@ using CheckoutPortal.Services;
 using CheckoutPortal.Models.Bit;
 using System.Threading;
 using System.Globalization;
+using CheckoutPortal.Resources;
+using System.IO;
+using System.Text;
 
 namespace CheckoutPortal.Controllers
 {
@@ -398,14 +401,15 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
+                    // TODO: move it to appropriate calculator
                     mdel.TransactionAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
-                    mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
-                    mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
+                    //mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    //mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
                 }
-                else
-                {
-                    mdel.Calculate();
-                }
+                //else
+                //{
+                //    mdel.Calculate();
+                //}
 
                 mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
 
@@ -442,9 +446,10 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
+                    // TODO: move it to appropriate calculator
                     mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
-                    mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
-                    mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
+                    //mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    //mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
 
                 mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
@@ -472,7 +477,7 @@ namespace CheckoutPortal.Controllers
                     mdel.CreditCardSecureDetails = null;
                 }
 
-                mdel.Calculate();
+                //mdel.Calculate();
 
                 mdel.Origin = Request.GetTypedHeaders().Referer?.Host;
 
@@ -756,14 +761,31 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Versioning3Ds(ChargeViewModel request)
         {
-            var validationResponse = await transactionsApiClient.Versioning3Ds(
-                new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest
-                {
-                    CardNumber = request.CardNumber
-                }
-            );
+            try
+            {
+                bool isPaymentIntent = request.PaymentIntent != null;
+                CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
-            return Json(validationResponse);
+                if (checkoutConfig == null)
+                {
+                    return Json(new { errorMessage = CommonResources.PaymentLinkNoLongerAvailable });
+                }
+
+                var validationResponse = await transactionsApiClient.Versioning3Ds(
+                    new Transactions.Api.Models.External.ThreeDS.Versioning3DsRequest
+                    {
+                        CardNumber = request.CardNumber,
+                        TerminalID = checkoutConfig.Settings.TerminalID
+                    }
+                );
+
+                return Json(validationResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not possible to process 3DS Versioning request: {ex.Message}");
+                return Json(new { errorMessage = CommonResources.ErrorGeneral });
+            }
         }
 
         [HttpPost]
@@ -771,62 +793,58 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Authenticate3Ds(ChargeViewModel request)
         {
-            CheckoutData checkoutConfig;
-            bool isPaymentIntent = request.PaymentIntent != null;
+            try
+            {
+                bool isPaymentIntent = request.PaymentIntent != null;
+                CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
-            if (request.ApiKey != null)
-            {
-                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
-            }
-            else
-            {
-                if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                if (checkoutConfig == null)
                 {
-                    throw new BusinessException(Messages.InvalidCheckoutData);
+                    return Json(new { errorMessage = CommonResources.PaymentLinkNoLongerAvailable });
                 }
 
-                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
-            }
-
-            if (checkoutConfig == null)
-            {
-                throw new BusinessException(Messages.InvalidCheckoutData);
-            }
-
-            // TODO: get from real browser
-            var browserDetails = new BrowserDetails
-            {
-                BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
-                BrowserLanguage = "en",
-                BrowserColorDepth = "8",
-                BrowserScreenHeight = "1050",
-                BrowserScreenWidth = "1680",
-                BrowserTZ = "1200",
-                BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;)"
-            };
-
-            var authResponse = await transactionsApiClient.Authenticate3Ds(
-                new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
+                // TODO: get from real browser
+                var browserDetails = new BrowserDetails
                 {
-                    Currency = request.Currency,
-                    CardNumber = request.CardNumber,
-                    TerminalID = checkoutConfig.Settings.TerminalID.GetValueOrDefault(),
-                    ThreeDSServerTransID = request.ThreeDSServerTransID,
-                    Amount = request.Amount ?? checkoutConfig.PaymentRequest?.PaymentRequestAmount,
-                    BrowserDetails = browserDetails,
-                    CardExpiration = CreditCardHelpers.ParseCardExpiration(request.CardExpiration)
-                }
-            );
+                    BrowserAcceptHeader = "text/html,application/xhtml+xml,application/xml;",
+                    BrowserLanguage = "en",
+                    BrowserColorDepth = "8",
+                    BrowserScreenHeight = "1050",
+                    BrowserScreenWidth = "1680",
+                    BrowserTZ = "1200",
+                    BrowserUserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64;)"
+                };
 
-            return Json(authResponse);
+                var authResponse = await transactionsApiClient.Authenticate3Ds(
+                    new Transactions.Api.Models.External.ThreeDS.Authenticate3DsRequest
+                    {
+                        Currency = request.Currency,
+                        CardNumber = request.CardNumber,
+                        TerminalID = checkoutConfig.Settings.TerminalID,
+                        ThreeDSServerTransID = request.ThreeDSServerTransID,
+                        Amount = request.Amount ?? checkoutConfig.PaymentRequest?.PaymentRequestAmount,
+                        BrowserDetails = browserDetails,
+                        CardExpiration = CreditCardHelpers.ParseCardExpiration(request.CardExpiration)
+                    }
+                );
+
+                return Json(authResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Not possible to process 3DS Authenticate request: {ex.Message}");
+                return Json(new { errorMessage = CommonResources.ErrorGeneral });
+            }
         }
 
         [HttpPost]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Notification3Ds([FromForm]Models.ThreeDS.Notification request)
+        public async Task<IActionResult> Notification3Ds(Models.ThreeDS.Notification request)
         {
-            // TODO: log this message
-            var cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+            string cresDecoded = null;
+
+            cresDecoded = request.Cres?.ConvertFromBase64() ?? request.Error?.ConvertFromBase64();
+
             if (!string.IsNullOrWhiteSpace(cresDecoded))
             {
                 try
@@ -838,6 +856,8 @@ namespace CheckoutPortal.Controllers
                         logger.LogError($"Notification3Ds ThreeDSServerTransID is empty: {cresDecoded}");
                         return View(new Models.ThreeDS.NotificationResult { Success = false });
                     }
+
+
 
                     return View(new Models.ThreeDS.NotificationResult { Success = cresObj.Success, ThreeDSServerTransID = cresObj.ThreeDSServerTransID, Error = cresObj.ErrorDescription });
                 }

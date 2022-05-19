@@ -132,6 +132,9 @@
   <data name="NumberOfChallengeRequests" xml:space="preserve">
     <value>מספר בקשות</value>
   </data>
+  <data name="NumberOfTransactions" xml:space="preserve">
+    <value>מספר עסקאות</value>
+  </data>
   <data name="TerminalID" xml:space="preserve">
     <value>מזהה מסוף</value>
   </data>

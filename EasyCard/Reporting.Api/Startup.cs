@@ -264,7 +264,7 @@ namespace Reporting.Api
             {
                 var appInsightReaderService = serviceProvider.GetRequiredService<IAppInsightReaderService>();
 
-                return new AdminService(Configuration.GetConnectionString("DefaultConnection"), appInsightReaderService);
+                return new AdminService(Configuration.GetConnectionString("DefaultConnection"), Configuration.GetConnectionString("TransactionsConnection"), appInsightReaderService);
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();

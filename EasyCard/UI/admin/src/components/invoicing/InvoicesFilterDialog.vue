@@ -81,60 +81,10 @@
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
-            <v-menu
-              ref="dateFromMenu"
-              v-model="dateFromMenu"
-              :close-on-content-click="false"
-              :return-value.sync="model.dateFrom"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="model.dateFrom"
-                  :label="$t('DateFrom')"
-                  readonly
-                  outlined
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="model.dateFrom" no-title scrollable>
-                <v-spacer></v-spacer>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.dateFromMenu.save(model.dateFrom)"
-                >{{$t("Ok")}}</v-btn>
-              </v-date-picker>
-            </v-menu>
+            <ec-date-input :key="model.from" v-model="model.dateFrom" :label="$t('DateFrom')"></ec-date-input>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
-            <v-menu
-              ref="dateToMenu"
-              v-model="dateToMenu"
-              :close-on-content-click="false"
-              :return-value.sync="model.dateTo"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="model.dateTo"
-                  :label="$t('DateTo')"
-                  readonly
-                  outlined
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="model.dateTo" no-title scrollable>
-                <v-spacer></v-spacer>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.dateToMenu.save(model.dateTo)"
-                >{{$t("Ok")}}</v-btn>
-              </v-date-picker>
-            </v-menu>
+            <ec-date-input :key="model.from" v-model="model.dateTo" :label="$t('DateTo')"></ec-date-input>
           </v-col>
         </v-row>
       </div>
@@ -145,7 +95,8 @@
 <script>
 export default {
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    EcDateInput: () => import("../../components/inputs/EcDateInput"),
   },
   props: {
     show: {
@@ -164,8 +115,6 @@ export default {
       model: { ...this.filter },
       dictionaries: {},
       terminals: [],
-      dateFromMenu: false,
-      dateToMenu: false
     };
   },
   async mounted() {

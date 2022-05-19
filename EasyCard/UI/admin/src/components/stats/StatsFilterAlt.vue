@@ -39,7 +39,7 @@
               <v-switch v-model="model.customDate" :label="$t('Custom')"></v-switch>
             </v-col>
             <template v-if="model.customDate">
-              <date-from-to-filter class="px-6" v-model="model"></date-from-to-filter>
+              <date-from-to-filter class="px-3 px-6" v-model="model"></date-from-to-filter>
             </template>
             <v-col cols="12" class="py-0" v-else>
               <ec-radio-group

@@ -13,5 +13,7 @@ namespace Transactions.Api.Models.External.ThreeDS
         [JsonConverter(typeof(TrimmingJsonConverter), true, true)]
         [Required]
         public string CardNumber { get; set; }
+
+        public Guid? TerminalID { get; set; }
     }
 }

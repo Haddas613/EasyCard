@@ -278,10 +278,10 @@ export default {
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
 
-    window.addEventListener("keydown", this.handleKeyPress);
+    //window.addEventListener("keydown", this.handleKeyPress);
   },
   destroyed () {
-    window.removeEventListener("keydown", this.handleKeyPress);
+    //window.removeEventListener("keydown", this.handleKeyPress);
   },
   methods: {
     handleKeyPress($event){

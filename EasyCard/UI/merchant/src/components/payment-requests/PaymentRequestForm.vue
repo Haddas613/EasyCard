@@ -3,28 +3,7 @@
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
 
-        <v-menu
-          ref="dueDateMenu"
-          v-model="dueDateMenu"
-          :close-on-content-click="false"
-          :return-value.sync="model.dueDate"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="model.dueDate"
-              :label="$t('DueDate')"
-              readonly
-              outlined
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="model.dueDate" :min="minDate" no-title scrollable color="primary">
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="$refs.dueDateMenu.save(model.dueDate)">{{$t("Ok")}}</v-btn>
-          </v-date-picker>
-        </v-menu>
+        <ec-date-input v-model="model.dueDate" :min="minDate" :label="$t('DueDate')" />
         
         <v-row no-gutters>
           <v-col cols="12" md="6" class="pb-2">
@@ -105,7 +84,8 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
-    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup")
+    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
+    EcDateInput: () => import("../../components/inputs/EcDateInput"),
   },
   props: {
     data: {
@@ -123,7 +103,6 @@ export default {
       },
       vr: ValidationRules,
       messageDialog: false,
-      dueDateMenu: false,
       minDate: new Date().toISOString(),
       isInstallmentTransaction: false,
       invoiceAvailable: false

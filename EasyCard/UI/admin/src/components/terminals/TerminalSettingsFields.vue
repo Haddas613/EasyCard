@@ -467,11 +467,6 @@
               @change="disable3DSecure()"
               hide-details
             ></v-switch>
-            <v-switch
-              v-model="model.checkoutSettings.continueInCaseOf3DSecureError"
-              :label="$t('ContinueInCaseOf3DSecureError')"
-              hide-details
-            ></v-switch>
           </v-col>
         </v-row>
       </v-card-text>

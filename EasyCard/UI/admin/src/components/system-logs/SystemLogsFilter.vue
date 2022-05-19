@@ -57,7 +57,7 @@ export default {
   name: "SystemLogsFilter",
   components: {
     MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
-    EcDateInput: () => import("../ec/EcDateInput"),
+    EcDateInput: () => import("../inputs/EcDateInput"),
   },
   data() {
     return {

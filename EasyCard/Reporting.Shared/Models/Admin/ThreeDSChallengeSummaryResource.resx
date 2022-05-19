@@ -132,6 +132,9 @@
   <data name="NumberOfChallengeRequests" xml:space="preserve">
     <value>Num. of Challenges</value>
   </data>
+  <data name="NumberOfTransactions" xml:space="preserve">
+    <value>Number of Transactions</value>
+  </data>
   <data name="TerminalID" xml:space="preserve">
     <value>Terminal ID</value>
   </data>

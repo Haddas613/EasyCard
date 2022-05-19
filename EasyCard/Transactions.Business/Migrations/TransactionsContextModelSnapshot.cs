@@ -1070,6 +1070,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("varchar(32)")
                         .HasColumnName("MerchantIP");
 
+                    b.Property<decimal?>("NetDiscountTotal")
+                        .HasColumnType("decimal(19,4)");
+
                     b.Property<decimal>("NetTotal")
                         .HasColumnType("decimal(19,4)");
 
@@ -1128,6 +1131,9 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("TerminalTemplateID")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ThreeDSChallengeID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ThreeDSServerTransID")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -1166,6 +1172,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("UserAmount")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("VATRate")
                         .HasColumnType("decimal(19,4)");
 
@@ -1179,6 +1188,45 @@ namespace Transactions.Business.Migrations
                     b.HasIndex("TerminalID", "PaymentTypeEnum", "MasavFileID");
 
                     b.ToTable("PaymentTransaction");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.ThreeDSChallenge", b =>
+                {
+                    b.Property<Guid>("ThreeDSChallengeID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<Guid?>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("MessageDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("MessageTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ThreeDSServerTransID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("TransStatus")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("ThreeDSChallengeID");
+
+                    b.HasIndex("ThreeDSServerTransID");
+
+                    b.ToTable("ThreeDSChallenge");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.TransactionHistory", b =>

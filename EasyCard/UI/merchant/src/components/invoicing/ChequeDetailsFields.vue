@@ -51,7 +51,7 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    EcDateInput: () => import("../ec/EcDateInput"),
+    EcDateInput: () => import("../inputs/EcDateInput"),
     BankSelect: () => import("../bank/BankSelect")
   },
   props: {

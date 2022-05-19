@@ -18,5 +18,7 @@ namespace Transactions.Api.Models.External.ThreeDS
         public string ThreeDSServerTransID { get; set; }
 
         public bool ChalengeRequired { get; set; }
+
+        public bool PassThrough { get; set; }
     }
 }

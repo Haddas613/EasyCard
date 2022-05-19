@@ -81,7 +81,7 @@
               <p class="caption ecgray--text text--darken-2">{{$t('ExternalReference')}}</p>
               <p>{{model.externalReference || '-'}}</p>
             </div>
-            <div class="info-block">
+            <div class="info-block" v-if="model.woocommerceID">
               <p class="caption ecgray--text text--darken-2">{{$t('WoocommerceID')}}</p>
               <p>{{model.woocommerceID || '-'}}</p>
             </div>

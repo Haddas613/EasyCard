@@ -9,7 +9,7 @@
           outlined
           v-model="model.reference"
           max="30"
-          :rules="[vr.primitives.required, vr.primitives.stringLength(3, 30)]"
+          :rules="[vr.primitives.stringLength(3, 30)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
@@ -25,7 +25,7 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    EcDateInput: () => import("../ec/EcDateInput"),
+    EcDateInput: () => import("../inputs/EcDateInput"),
     BankFields: () => import("../transactions/BankDetailsFields"),
   },
   props: {

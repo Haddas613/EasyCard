@@ -76,6 +76,52 @@ namespace Transactions.Api.Extensions
                 };
             }
 
+            if (dealDetails.Items?.Count() > 0)
+            {
+                foreach (var item in dealDetails.Items)
+                {
+                    if (item.VATRate == null)
+                    {
+                        item.VATRate = financialItem.VATRate;
+                    }
+
+                    if (item.NetDiscount > 0 && item.Discount.GetValueOrDefault(0) == 0)
+                    {
+                        item.Discount = Math.Round((item.NetDiscount * (1 + item.VATRate)).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+                    }
+
+                    if (item.NetPrice > 0 && item.Price.GetValueOrDefault(0) == 0)
+                    {
+                        item.Price = Math.Round((item.NetPrice * (1 + item.VATRate)).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+                    }
+
+                    if (item.Amount > 0 && item.NetAmount == null && item.VAT.HasValue)
+                    {
+                        item.NetAmount = item.Amount - item.VAT;
+                    }
+
+                    if (item.Amount > 0 && item.NetAmount > 0 && item.VAT == null)
+                    {
+                        item.VAT = item.Amount - item.NetAmount;
+                    }
+
+                    if (item.NetAmount == null && item.NetPrice > 0)
+                    {
+                        item.NetAmount = Math.Round((item.NetPrice * item.Quantity).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+                    }
+
+                    if (item.NetAmount > 0 && item.VAT == null)
+                    {
+                        item.VAT = Math.Round((item.NetAmount * item.VATRate).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+                    }
+
+                    if (item.Amount.GetValueOrDefault() == 0 && item.VAT.HasValue && item.NetAmount > 0)
+                    {
+                        item.Amount = item.VAT + item.NetAmount;
+                    }
+                }
+            }
+
             //if (dealDetails.Items?.Count() > 0 &&
             //    (dealDetails.Items?.Sum(i => i.Amount).GetValueOrDefault(0) != financialItem.Amount
             //    || dealDetails.Items?.Sum(i => i.VAT).GetValueOrDefault(0) != financialItem.VATTotal))
