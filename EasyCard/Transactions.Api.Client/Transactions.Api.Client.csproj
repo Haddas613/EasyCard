@@ -7,7 +7,6 @@
   <ItemGroup>
     <Compile Include="..\Integration\Bit\Models\BitRequestStatusCodeEnum.cs" Link="Models\BitRequestStatusCodeEnum.cs" />
     <Compile Include="..\Shared.Api\Models\Enums\QuickDateFilterTypeEnum.cs" Link="Models\QuickDateFilterTypeEnum.cs" />
-    <Compile Include="..\Shared.Api\UI\MetadataOptionsAttribute.cs" Link="MetadataOptionsAttribute.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealInvoiceOnlyRequest.cs" Link="Models\BillingDealInvoiceOnlyRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealInvoiceOnlyUpdateRequest.cs" Link="Models\BillingDealInvoiceOnlyUpdateRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\BillingDealRequest.cs" Link="Models\BillingDealRequest.cs" />

@@ -8,6 +8,7 @@ namespace MerchantProfileApi.Models.Billing
 {
     public class ConsumerSummary
     {
+        [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public Guid ConsumerID { get; set; }
 
         public Guid TerminalID { get; set; }
