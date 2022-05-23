@@ -248,6 +248,52 @@
             External ID inside https://www.ecwid.com system
             </summary>
         </member>
+        <member name="T:MerchantProfileApi.Models.Billing.ConsumerResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.Active">
+            <summary>
+              Looks up a localized string similar to Active.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ConsumerEmail">
+            <summary>
+              Looks up a localized string similar to Email.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ConsumerName">
+            <summary>
+              Looks up a localized string similar to Name.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ConsumerNationalID">
+            <summary>
+              Looks up a localized string similar to National ID.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ConsumerPhone">
+            <summary>
+              Looks up a localized string similar to Phone.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.ExternalReference">
+            <summary>
+              Looks up a localized string similar to External Reference.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerEmail">
             <summary>
             End-customer Email

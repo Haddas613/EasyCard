@@ -2,7 +2,7 @@
   <v-main class="ecbg">
     <v-container fluid ma-0 pa-0 center>
       <v-row no-gutters>
-        <v-col cols="2" class="hidden-sm-and-down" v-bind:class="{'d-none' : drawer}">
+        <v-col cols="2" class="hidden-md-and-down" v-bind:class="{'d-none' : drawer}">
           <v-spacer></v-spacer>
         </v-col>
         <v-col class="d-flex justify-space-around">
@@ -15,7 +15,7 @@
             </keep-alive>
           </v-flex>
         </v-col>
-        <v-col cols="2" class="hidden-sm-and-down" v-bind:class="{'d-none' : drawer}">
+        <v-col cols="2" class="hidden-md-and-down" v-bind:class="{'d-none' : drawer}">
           <v-spacer></v-spacer>
         </v-col>
       </v-row>
