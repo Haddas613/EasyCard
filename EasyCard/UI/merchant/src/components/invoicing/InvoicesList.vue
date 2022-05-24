@@ -32,6 +32,7 @@
           md="6"
           lg="6"
           class="text-end font-weight-bold button"
+          v-bind:class="{'red--text': item.invoiceType == 'creditNote' || item.invoiceType == 'refundInvoice'}"
         >{{item.invoiceAmount | currency(item.$currency)}}</v-col>
       </template>
 

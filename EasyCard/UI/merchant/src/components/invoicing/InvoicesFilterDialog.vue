@@ -27,7 +27,7 @@
                 :items="dictionaries.invoiceTypeEnum"
                 item-text="description"
                 item-value="code"
-                v-model="model.invoiceTypeFilter"
+                v-model="model.invoiceType"
                 :label="$t('InvoiceType')"
                 outlined
                 clearable
