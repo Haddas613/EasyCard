@@ -6,7 +6,7 @@ namespace Ecwid.Models
 {
     public class EcwidItemDiscount
     {
-        public decimal Total { get; set; }
+        public decimal? Total { get; set; }
 
         public EcwidItemDiscountInfo DiscountInfo { get; set; }
     }

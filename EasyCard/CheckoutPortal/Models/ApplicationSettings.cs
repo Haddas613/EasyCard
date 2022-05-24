@@ -10,5 +10,7 @@ namespace CheckoutPortal.Models
         public string EncrKeyForSharedApiKey { get; set; }
 
         public string AzureSignalRConnectionString { get; set; }
+
+        public string DefaultStorageConnectionString { get; set; }
     }
 }
