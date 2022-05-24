@@ -633,7 +633,9 @@ export default {
     }),
   },
   async mounted() {
-    await this.applyFilters();
+    await this.applyFilters({
+      consumerID: this.filters ? this.filters.consumerID : null,
+    });
     await this.initThreeDotMenu();
   },
   /** Header is initialized in mounted but since components are cached (keep-alive) it's required to

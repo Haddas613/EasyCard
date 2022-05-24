@@ -10,12 +10,19 @@
           color="primary"
           :block="$vuetify.breakpoint.smAndDown"
           outlined
-          @click="model = {}"
+          @click="resetFilter()"
         >{{$t("Reset")}}</v-btn>
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
           <v-row>
+            <v-col cols="12" md="12" class="pb-2 pt-0">
+              <customer-dialog-invoker 
+              :key="model.consumerID" 
+              :terminal="model.terminalID" 
+              :customer-id="model.consumerID"
+              @update="processCustomer($event)"></customer-dialog-invoker>
+            </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-text-field v-model="model.invoiceID" :label="$t('InvoiceID')" :rules="[vr.primitives.guid]" outlined></v-text-field>
             </v-col>
@@ -27,7 +34,7 @@
                 :items="dictionaries.invoiceTypeEnum"
                 item-text="description"
                 item-value="code"
-                v-model="model.invoiceTypeFilter"
+                v-model="model.invoiceType"
                 :label="$t('InvoiceType')"
                 outlined
                 clearable
@@ -106,6 +113,7 @@ export default {
   components: {
     EcDialog: () => import("../ec/EcDialog"),
     DateFromToFilter: () => import("../filtering/DateFromToFilter"),
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker"),
   },
   props: {
     show: {
@@ -124,7 +132,8 @@ export default {
       model: { ...this.filter },
       dictionaries: {},
       formIsValid: true,
-      vr: ValidationRules
+      vr: ValidationRules,
+      selectedCustomer: null,
     };
   },
   async mounted() {
@@ -152,7 +161,15 @@ export default {
         dateTo: this.$formatDate(this.model.dateTo),
       });
       this.visible = false;
-    }
+    },
+    processCustomer(data) {
+      this.$set(this.model, 'terminalID', data.terminalID);
+      this.model.consumerID = data.consumerID;
+    },
+    resetFilter(){
+      this.model = {};
+      this.selectedCustomer = null;
+    },
   }
 };
 </script>
