@@ -92,6 +92,10 @@ namespace CheckoutPortal.Controllers
             var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidPayload.MerchantAppSettings.ApiKey);
             var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
 
+            var terminalID = (await merchantMetadataApiClient.GetTerminals()).Data.FirstOrDefault();
+            var terminall = await merchantMetadataApiClient.GetTerminal(terminalID.TerminalID);
+            var issueInvoice = terminall.CheckoutSettings.IssueInvoice;
+
             Guid? consumerID = null;
 
             var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
@@ -130,6 +134,7 @@ namespace CheckoutPortal.Controllers
             }
 
             paymentRequestPayload.DealDetails.ConsumerID = consumerID;
+            paymentRequestPayload.IssueInvoice = issueInvoice;
 
             var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);
 

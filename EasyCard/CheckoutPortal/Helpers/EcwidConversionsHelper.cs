@@ -45,7 +45,8 @@ namespace CheckoutPortal.Helpers
                     ReferenceTransactionID = ecwidOrder.ReferenceTransactionId,
                     StoreID = payload.StoreId,
                     Token = payload.Token,
-                })
+                }),
+                
             };
 
             if (ecwidOrder.BillingPerson != null)
@@ -106,12 +107,12 @@ namespace CheckoutPortal.Helpers
                 SKU = e.Sku,
                 EcwidID = e.ProductId.ToString(),
                 Price = e.Price,
-                Quantity = e.Quantity,
+                Quantity = e.Quantity.GetValueOrDefault(1),
                 ItemName = e.Name,
                 VAT = e.Tax,
                 Discount = e.CouponAmount,
-                NetAmount = e.PriceWithoutTax * e.Quantity,
-                Amount = e.PriceWithoutTax * e.Quantity + e.Tax
+                NetAmount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault() - e.Tax.GetValueOrDefault(),
+                Amount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault()
             });
         }
     }
