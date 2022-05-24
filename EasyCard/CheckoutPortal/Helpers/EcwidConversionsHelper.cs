@@ -2,6 +2,7 @@
 using MerchantProfileApi.Models.Billing;
 using Newtonsoft.Json.Linq;
 using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transactions.Api.Models.PaymentRequests;
@@ -27,7 +28,8 @@ namespace CheckoutPortal.Helpers
                 PaymentRequestAmount = ecwidOrder.Total,
                 VATTotal = ecwidOrder.Tax,
                 NetTotal = ecwidOrder.Total - ecwidOrder.Tax,
-                VATRate = (ecwidOrder.CustomerTaxExempt || ecwidOrder.Tax == 0) ? 0m : (ecwidOrder.Total / ecwidOrder.Tax) - 1,
+                DiscountTotal = ecwidOrder.SubTotal - ecwidOrder.Total,
+                VATRate = (ecwidOrder.Total - ecwidOrder.Tax > 0) ? Math.Round(ecwidOrder.Tax/(ecwidOrder.Total - ecwidOrder.Tax), 2, MidpointRounding.AwayFromZero) : 0,
 
                 CardOwnerNationalID = ecwidOrder.CustomerTaxId,
 
@@ -100,10 +102,16 @@ namespace CheckoutPortal.Helpers
         {
             return source.Select(e => new Item
             {
+                ExternalReference = e.Id.ToString(),
+                SKU = e.Sku,
                 EcwidID = e.ProductId.ToString(),
                 Price = e.Price,
                 Quantity = e.Quantity,
-                ItemName = e.Name
+                ItemName = e.Name,
+                VAT = e.Tax,
+                Discount = e.CouponAmount,
+                NetAmount = e.PriceWithoutTax * e.Quantity,
+                Amount = e.PriceWithoutTax * e.Quantity + e.Tax
             });
         }
     }
