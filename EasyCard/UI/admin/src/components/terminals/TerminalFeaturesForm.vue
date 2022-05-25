@@ -70,6 +70,10 @@ export default {
     async switchFeature(feature) {
       if(feature.enabled && feature.featureID == 'Checkout'){
         let f = this.lodash.find(this.features, feature => feature.featureID == 'Api');
+        await this.$api[this.apiName].switchTerminalFeature(
+          this.terminal[this.idKey],
+          f.featureID
+        );
         this.$set(f, 'enabled', true);
       }
       this.$set(feature, 'disabled', true);

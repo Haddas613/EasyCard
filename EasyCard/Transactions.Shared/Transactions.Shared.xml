@@ -852,7 +852,7 @@
         </member>
         <member name="P:Transactions.Shared.Messages.EmailRequired">
             <summary>
-              Looks up a localized string similar to EmailAddressRequired.
+              Looks up a localized string similar to Email required.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal">
@@ -908,11 +908,6 @@
         <member name="P:Transactions.Shared.Messages.FailedToProcessTransaction">
             <summary>
               Looks up a localized string similar to Failed To Process Transaction.
-            </summary>
-        </member>
-        <member name="P:Transactions.Shared.Messages.FeatureSMSNotificationIsNotEnabledForThisTerminal">
-            <summary>
-              Looks up a localized string similar to Feature SMS Notification is not enabled for this terminal.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.InstallmentDetailsRequired">
