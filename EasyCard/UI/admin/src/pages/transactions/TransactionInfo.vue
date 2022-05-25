@@ -138,7 +138,7 @@
             >{{$t("Items")}}</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency"></transaction-items-list>
+              <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency || model.currency"></transaction-items-list>
             </v-card-text>
           </v-card>
           <deal-details
