@@ -255,8 +255,14 @@
   <data name="DeviceIsProcessingTransaction" xml:space="preserve">
     <value>Device is processing transaction</value>
   </data>
+  <data name="EitherEmailOrPhoneMustBeSpecified" xml:space="preserve">
+    <value>Either Email or Phone must be specified</value>
+  </data>
   <data name="EmailRequired" xml:space="preserve">
-    <value>EmailAddressRequired</value>
+    <value>Email required</value>
+  </data>
+  <data name="EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal" xml:space="preserve">
+    <value>Email is required. Feature SMS Notification is not enabled for this terminal</value>
   </data>
   <data name="EmailSent" xml:space="preserve">
     <value>Email sent</value>

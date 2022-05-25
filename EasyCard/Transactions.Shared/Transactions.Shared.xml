@@ -845,9 +845,19 @@
               Looks up a localized string similar to Device is processing transaction.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.EitherEmailOrPhoneMustBeSpecified">
+            <summary>
+              Looks up a localized string similar to Either Email or Phone must be specified.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.EmailRequired">
             <summary>
               Looks up a localized string similar to EmailAddressRequired.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal">
+            <summary>
+              Looks up a localized string similar to Email is required. Feature SMS Notification is not enabled for this terminal.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.EmailSent">
@@ -898,6 +908,11 @@
         <member name="P:Transactions.Shared.Messages.FailedToProcessTransaction">
             <summary>
               Looks up a localized string similar to Failed To Process Transaction.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.FeatureSMSNotificationIsNotEnabledForThisTerminal">
+            <summary>
+              Looks up a localized string similar to Feature SMS Notification is not enabled for this terminal.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.InstallmentDetailsRequired">
