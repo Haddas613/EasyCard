@@ -46,7 +46,7 @@
                 item-text="description"
                 item-value="code"
                 v-model="model.invoiceBillingType"
-                :label="$t('InvoiceBillingType')"
+                :label="$t('InvoiceOrigin')"
                 outlined
                 clearable
               ></v-select>

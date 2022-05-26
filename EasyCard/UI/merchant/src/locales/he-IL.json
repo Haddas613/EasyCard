@@ -384,6 +384,7 @@
   "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
   "Donation": "תרומה",
   "NumberOfChargedCustomers": "מספר הלקוחות ששילמו",
+  "InvoiceOrigin": "מקור החשבונית",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

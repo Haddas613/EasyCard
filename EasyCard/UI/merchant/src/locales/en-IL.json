@@ -385,6 +385,7 @@
   "UsePaymentInfoAsDonation": "Use Payment Info as Donation",
   "Donation": "Donation",
   "NumberOfChargedCustomers": "# Charged Customers",
+  "InvoiceOrigin": "Invoice Origin",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
