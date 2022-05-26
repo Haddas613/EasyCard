@@ -11,7 +11,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-select
           :items="dictionaries.currencyEnum"
           item-text="description"
@@ -23,7 +23,7 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model.lazy="model.price"
           :label="$t('Price')"
@@ -33,7 +33,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" class="py-0">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.externalReference"
           :counter="50"
@@ -43,7 +43,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" class="py-0">
+      <!-- <v-col cols="12" md="6" class="py-0">
         <v-text-field
           v-model="model.woocommerceID"
           :counter="50"
@@ -52,7 +52,7 @@
           class="px-1"
           outlined
         ></v-text-field>
-      </v-col>
+      </v-col> -->
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="'/admin/items/list'">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>
