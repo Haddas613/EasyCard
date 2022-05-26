@@ -60,7 +60,7 @@
                 outlined
                 :label="$t('Discount')"
                 hide-details="true"
-                :rules="[vr.primitives.positiveOnly, vr.primitives.precision(2)]"
+                :rules="[vr.primitives.inRange(0, model.quantity * model.price), vr.primitives.positiveOnly, vr.primitives.precision(2)]"
                 @input="calculateItemPricing()"
               >
               </v-text-field>
