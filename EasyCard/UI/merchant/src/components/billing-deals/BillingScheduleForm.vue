@@ -25,7 +25,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
-        <ec-date-input v-model="model.startAt" :min="minDate" :label="$t('StartAt')" />
+        <ec-date-input v-if="model.startAtType == 'specifiedDate'" v-model="model.startAt" :min="minDate" :label="$t('StartAt')" />
       </v-col>
 
       <v-col cols="12" md="6" class="px-1">
