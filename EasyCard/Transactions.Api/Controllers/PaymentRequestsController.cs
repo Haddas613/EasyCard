@@ -235,6 +235,11 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
+            if (terminal.CheckoutSettings.IssueInvoice == true)
+            {
+                model.IssueInvoice = true;
+            }
+
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 if (model.InvoiceDetails == null)
