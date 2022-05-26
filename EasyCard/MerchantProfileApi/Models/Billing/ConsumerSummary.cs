@@ -17,17 +17,22 @@ namespace MerchantProfileApi.Models.Billing
         /// <summary>
         /// End-customer Email
         /// </summary>
+        [Shared.Api.UI.MetadataOptions(Order = 4)]
         public string ConsumerEmail { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Order = 1)]
         public string ConsumerName { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Order = 3)]
         public string ConsumerPhone { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Order = 2)]
         public string ConsumerNationalID { get; set; }
 
         [Shared.Api.UI.MetadataOptions(Hidden = true)]
         public Address ConsumerAddress { get; set; }
 
+        [Shared.Api.UI.MetadataOptions(Order = 5)]
         public string ExternalReference { get; set; }
 
         /// <summary>
