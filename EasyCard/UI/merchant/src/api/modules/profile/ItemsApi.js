@@ -38,4 +38,9 @@ export default class ItemsApi {
     async bulkDeleteItems(ids){
         return await this.base.post(this.itemsUrl + '/bulkdelete', ids);
     }
+
+    async getExcel(params) {
+        let data = await this.base.get(this.itemsUrl + '/$excel', params);
+        return data;
+    }
 }

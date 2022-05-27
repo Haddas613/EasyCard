@@ -30,7 +30,7 @@
             item-text="description"
             item-value="code"
             v-model="model.invoiceBillingType"
-            :label="$t('InvoiceBillingType')"
+            :label="$t('InvoiceOrigin')"
             clearable
           ></v-select>
         </v-col>
@@ -39,7 +39,7 @@
             :items="dictionaries.invoiceTypeEnum"
             item-text="description"
             item-value="code"
-            v-model="model.invoiceTypeFilter"
+            v-model="model.invoiceType"
             :label="$t('InvoiceType')"
             clearable
           ></v-select>
@@ -82,6 +82,16 @@
             v-model="model.consumerExternalReference"
             :label="$t('CustomerExternalReference')"
           ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" sm="6" class="py-0">
+          <v-select
+            :items="dictionaries.paymentTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            clearable
+          ></v-select>
         </v-col>
       </v-row>
       <v-row>

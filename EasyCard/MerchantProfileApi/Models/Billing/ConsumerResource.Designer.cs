@@ -22,14 +22,14 @@ namespace MerchantProfileApi.Models.Billing {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ItemResource {
+    public class ConsumerResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ItemResource() {
+        internal ConsumerResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace MerchantProfileApi.Models.Billing {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MerchantProfileApi.Models.Billing.ItemResource", typeof(ItemResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MerchantProfileApi.Models.Billing.ConsumerResource", typeof(ConsumerResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,47 @@ namespace MerchantProfileApi.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Currency.
+        ///   Looks up a localized string similar to Active.
         /// </summary>
-        public static string Currency {
+        public static string Active {
             get {
-                return ResourceManager.GetString("Currency", resourceCulture);
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string ConsumerEmail {
+            get {
+                return ResourceManager.GetString("ConsumerEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string ConsumerName {
+            get {
+                return ResourceManager.GetString("ConsumerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to National ID.
+        /// </summary>
+        public static string ConsumerNationalID {
+            get {
+                return ResourceManager.GetString("ConsumerNationalID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string ConsumerPhone {
+            get {
+                return ResourceManager.GetString("ConsumerPhone", resourceCulture);
             }
         }
         
@@ -75,33 +111,6 @@ namespace MerchantProfileApi.Models.Billing {
         public static string ExternalReference {
             get {
                 return ResourceManager.GetString("ExternalReference", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ID.
-        /// </summary>
-        public static string ItemID {
-            get {
-                return ResourceManager.GetString("ItemID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string ItemName {
-            get {
-                return ResourceManager.GetString("ItemName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Price.
-        /// </summary>
-        public static string Price {
-            get {
-                return ResourceManager.GetString("Price", resourceCulture);
             }
         }
     }

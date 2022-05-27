@@ -256,8 +256,10 @@ export default {
     });
   },
   async mounted() {
+
     await this.applyFilters({
       terminalID: this.terminalStore.terminalID,
+      consumerID: this.filters ? this.filters.consumerID : null,
     });
     this.initThreeDotMenu();
   }

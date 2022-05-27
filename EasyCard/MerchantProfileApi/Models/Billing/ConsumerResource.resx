@@ -117,19 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Currency" xml:space="preserve">
-    <value>Currency</value>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="ConsumerEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ConsumerName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ConsumerNationalID" xml:space="preserve">
+    <value>National ID</value>
+  </data>
+  <data name="ConsumerPhone" xml:space="preserve">
+    <value>Phone</value>
   </data>
   <data name="ExternalReference" xml:space="preserve">
     <value>External Reference</value>
-  </data>
-  <data name="ItemID" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="ItemName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Price" xml:space="preserve">
-    <value>Price</value>
   </data>
 </root>

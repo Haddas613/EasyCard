@@ -53,6 +53,12 @@ export default {
         {
           text: this.showDeletedItems ? this.$t("ShowActive") : this.$t("ShowDeleted"),
           fn: () => this.$store.commit("ui/setShowDeletedItems", !this.showDeletedItems)
+        },
+        {
+          text: this.$t("Excel"),
+          fn: () => {
+            this.exportExcel();
+          }
         }
       ];
       this.$store.commit("ui/changeHeader", {
@@ -61,7 +67,12 @@ export default {
           text: { translate: true, value: this.showDeletedItems ? "DeletedItems" : "Items" }
         }
       });
-    }
+    },
+    async exportExcel() {
+      let operation = await this.$api.items.getExcel(this.$refs.itemsListComponent.filterParams);
+      if(!this.$apiSuccess(operation)) return;
+      window.open(operation.entityReference, "_blank");
+    },
   },
   async mounted() {
     this.initThreeDotMenu();

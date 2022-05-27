@@ -44,6 +44,7 @@ namespace CheckoutPortal.Controllers
         private readonly IMapper mapper;
         private readonly ApiSettings apiSettings;
         private readonly EcwidGlobalSettings ecwidSettings;
+        private readonly EcwidIntermediateStorage ecwidIntermediateStorage;
 
         private readonly EcwidConvertor ecwidConvertor;
 
@@ -53,7 +54,8 @@ namespace CheckoutPortal.Controllers
             ITerminalApiKeyTokenServiceFactory terminalApiKeyTokenServiceFactory,
             IMapper mapper,
             IOptions<ApiSettings> apiSettings,
-            IOptions<EcwidGlobalSettings> ecwidSettings)
+            IOptions<EcwidGlobalSettings> ecwidSettings,
+            EcwidIntermediateStorage ecwidIntermediateStorage)
         {
             this.logger = logger;
             this.apiClientsFactory = apiClientsFactory;
@@ -61,8 +63,9 @@ namespace CheckoutPortal.Controllers
             this.apiSettings = apiSettings.Value;
             this.ecwidSettings = ecwidSettings.Value;
             this.terminalApiKeyTokenServiceFactory = terminalApiKeyTokenServiceFactory;
+            this.ecwidIntermediateStorage = ecwidIntermediateStorage;
 
-            ecwidConvertor = new EcwidConvertor(this.ecwidSettings);
+            ecwidConvertor = new EcwidConvertor(this.ecwidSettings, this.ecwidIntermediateStorage);
         }
 
         [HttpPost]
@@ -72,7 +75,7 @@ namespace CheckoutPortal.Controllers
 
             try
             {
-                ecwidPayload = ecwidConvertor.DecryptEcwidPayload(request.Data);
+                ecwidPayload = await ecwidConvertor.DecryptEcwidPayload(request.Data, GetCorrelationID());
             }
             catch (Exception ex)
             {
@@ -88,6 +91,10 @@ namespace CheckoutPortal.Controllers
 
             var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidPayload.MerchantAppSettings.ApiKey);
             var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
+
+            var terminalID = (await merchantMetadataApiClient.GetTerminals()).Data.FirstOrDefault();
+            var terminall = await merchantMetadataApiClient.GetTerminal(terminalID.TerminalID);
+            var issueInvoice = terminall.CheckoutSettings.IssueInvoice;
 
             Guid? consumerID = null;
 
@@ -127,6 +134,7 @@ namespace CheckoutPortal.Controllers
             }
 
             paymentRequestPayload.DealDetails.ConsumerID = consumerID;
+            paymentRequestPayload.IssueInvoice = issueInvoice;
 
             var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);
 
@@ -148,6 +156,11 @@ namespace CheckoutPortal.Controllers
         {
             request.AppID = ecwidSettings.AppID;
             return View(request);
+        }
+
+        protected string GetCorrelationID()
+        {
+            return HttpContext?.TraceIdentifier;
         }
 
         //[Route("test")]

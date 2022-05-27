@@ -120,6 +120,9 @@
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
+  <data name="ExternalReference" xml:space="preserve">
+    <value>מזהה חיצוני</value>
+  </data>
   <data name="ItemID" xml:space="preserve">
     <value>מק"ט</value>
   </data>

@@ -40,6 +40,7 @@
           ref="dealDetails"
           :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+          required
         ></deal-details>
 
         <template v-if="paymentInfoAvailable">

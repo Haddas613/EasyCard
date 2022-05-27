@@ -79,7 +79,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Credit Note.
+        ///   Looks up a localized string similar to Refund Invoice.
         /// </summary>
         public static string CreditNote {
             get {
@@ -115,7 +115,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoice WIth Payment Info.
+        ///   Looks up a localized string similar to Invoice/Receipt.
         /// </summary>
         public static string InvoiceWithPaymentInfo {
             get {
@@ -133,7 +133,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Info.
+        ///   Looks up a localized string similar to Receipt.
         /// </summary>
         public static string PaymentInfo {
             get {
