@@ -83,6 +83,16 @@
             :label="$t('CustomerExternalReference')"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" md="4" sm="6" class="py-0">
+          <v-select
+            :items="dictionaries.paymentTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            clearable
+          ></v-select>
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="4" class="py-0">
