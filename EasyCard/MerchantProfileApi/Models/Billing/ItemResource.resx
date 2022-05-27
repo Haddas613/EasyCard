@@ -120,6 +120,9 @@
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
+  <data name="ExternalReference" xml:space="preserve">
+    <value>External Reference</value>
+  </data>
   <data name="ItemID" xml:space="preserve">
     <value>ID</value>
   </data>
