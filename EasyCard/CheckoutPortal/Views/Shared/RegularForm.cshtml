@@ -587,7 +587,7 @@
             $("#InstallmentPaymentAmount").val(newAmount)
             $("#initial-payment-amount").val(initialAmount);
 
-            $("#total-amount").text(totalAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
+            $("#total-amount").text(totalAmount.toFixed(2) + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
         });
 
         $("#initial-payment-amount").on("input", function (e) {
