@@ -245,7 +245,7 @@ namespace MerchantProfileApi.Controllers
 
                 var mapping = ItemResource.ResourceManager.GetExcelColumnNames<ItemSummary>();
 
-                var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Items-{DateTime.Now.ToString("DD/MM/YYYY HH:mm")}.xlsx");
+                var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Items-{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}.xlsx");
                 var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Invoices", items, mapping);
 
                 return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
