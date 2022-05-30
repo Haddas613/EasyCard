@@ -147,7 +147,7 @@ namespace EasyInvoice.Converters
                 TotalAmount = message.Amount,
 
                 Price = message.Price,
-                PriceNet = message.NetAmount,
+                PriceNet = message.NetPrice,
                 TaxAmount = message.VAT,
                 TotalNetAmount = message.NetAmount,
                 TotalTaxAmount = message.VAT,

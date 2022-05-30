@@ -124,6 +124,11 @@ namespace Transactions.Api.Extensions
                     {
                         item.NetAmount = item.Amount - item.VAT;
                     }
+
+                    if (item.NetPrice == null)
+                    {
+                        item.NetPrice = Math.Round((item.Price / (1 + item.VATRate.GetValueOrDefault())).GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
+                    }
                 }
             }
 
