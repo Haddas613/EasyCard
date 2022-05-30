@@ -32,6 +32,7 @@
           md="6"
           lg="6"
           class="text-end font-weight-bold button"
+          v-bind:class="{'red--text': isRefundInvoice(item)}"
         >{{item.invoiceAmount | currency(item.$currency)}}</v-col>
       </template>
 
@@ -107,6 +108,13 @@ export default {
         for(var link of opResult.downloadLinks){
           window.open(link, '_blank');
         }
+      }
+    },
+    isRefundInvoice(invoice) {
+      if(invoice.$invoiceType){
+        return invoice.$invoiceType == 'creditNote' || invoice.$invoiceType == 'refundInvoice';
+      }else{
+        return invoice.invoiceType == 'creditNote' || invoice.invoiceType == 'refundInvoice';
       }
     }
   }

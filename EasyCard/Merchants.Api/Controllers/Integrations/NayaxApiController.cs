@@ -48,7 +48,7 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpPost]
         [Route("test-connection")]
-        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request/*, string terminalID*/)
+        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);

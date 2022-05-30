@@ -20,12 +20,12 @@
             class="subtitle-1 ecgray--text"
           >{{terminalName}}</v-toolbar-title>
         </v-col>
-        <v-col cols="1" md="3" lg="4" class="d-flex px-1 justify-end" v-if="oneLevel && closeable">
+        <v-col v-if="$vuetify.breakpoint.smAndDown" cols="1" md="3" lg="4" class="d-flex px-1 justify-end">
           <v-btn color="error darken-3" icon>
             <v-icon icon size="1.5rem" @click="onClickClose()">mdi-close</v-icon>
           </v-btn>
         </v-col>
-        <v-col v-else-if="$vuetify.breakpoint.mdAndUp" cols="1" md="3" lg="4" class="d-flex justify-end">
+        <v-col v-else cols="1" md="3" lg="4" class="d-flex justify-end">
           <v-menu offset-y dark v-if="tdmenuitems && tdmenuitems.length > 0">
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
@@ -37,6 +37,9 @@
             </v-list>
           </v-menu>
           <v-spacer v-if="!tdmenuitems || tdmenuitems.length == 0"></v-spacer>
+          <v-btn color="error darken-3" icon>
+            <v-icon icon size="1.5rem" @click="onClickClose()">mdi-close</v-icon>
+          </v-btn>
         </v-col>
         <span v-else class="delimiter-m"></span>
       </v-row>

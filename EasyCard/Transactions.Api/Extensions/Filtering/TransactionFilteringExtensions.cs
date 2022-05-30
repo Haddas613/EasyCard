@@ -268,12 +268,12 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
+                    src = src.Where(t => t.UpdatedDate.Value.Date >= filter.DateFrom.Value);
                 }
 
                 if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
+                    src = src.Where(t => t.UpdatedDate.Value.Date <= filter.DateTo.Value);
                 }
             }
 

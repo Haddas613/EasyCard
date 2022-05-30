@@ -73,14 +73,14 @@
             <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
             <p>{{customer.consumerName}}</p>
             <div class="pt-5">
-              <p>{{$t("ChargedCustomer")}}</p>
+              <p>{{$t("TransactionPassed")}}</p>
               <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
             </div>
           </template>
           <template v-else>
             <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
             <div class="pt-5">
-              <p>{{$t("ChargedCustomer")}}</p>
+              <p>{{$t("TransactionPassed")}}</p>
               <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
             </div>
           </template>

@@ -30,6 +30,7 @@ using Ecwid.Configuration;
 using BasicServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
+using Ecwid;
 
 namespace CheckoutPortal
 {
@@ -138,6 +139,14 @@ namespace CheckoutPortal
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
                 return new TerminalApiKeyTokenServiceFactory(cfg);
             });
+
+            services.AddSingleton<EcwidIntermediateStorage, EcwidIntermediateStorage>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
+                return new EcwidIntermediateStorage(cfg.Value.DefaultStorageConnectionString, "ecwidintr");
+            });
+
+            
 
             services.Configure<RequestLocalizationOptions>(options =>
             {

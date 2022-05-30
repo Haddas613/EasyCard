@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ThreeDSConsentMessage" xml:space="preserve">
-    <value>By clicking on 'Aggree' you agree with our terms in conditions in using 3D Secure feature</value>
+    <value>Dear customer, 3DSECURE services make it possible to conduct secure transactions with MasterCard Visa cards and dual cards (which combine diners and MasterCard). The cost of the service is 0.3 NIS (excluding VAT) for each transaction (billing or billing experience). Activation of the service constitutes your agreement to the terms and price</value>
   </data>
 </root>

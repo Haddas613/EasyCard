@@ -5,7 +5,7 @@
         <v-text-field
           v-model="model.consumerName"
           :counter="50"
-          :rules="[vr.primitives.requiredDepends(this.saveCreditCard), vr.primitives.maxLength(50)]"
+          :rules="[vr.primitives.requiredDepends(fieldsRequired), vr.primitives.maxLength(50)]"
           :label="$t('CustomerName')"
           outlined
         ></v-text-field>
@@ -14,7 +14,7 @@
         <v-text-field
           v-model="model.consumerEmail"
           :label="$t('CustomerEmail')"
-          :rules="[vr.primitives.requiredDepends(this.saveCreditCard), vr.primitives.email]"
+          :rules="[vr.primitives.requiredDepends(fieldsRequired), vr.primitives.email]"
           outlined
           @keydown.native.space.prevent
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -72,6 +72,10 @@ export default {
       required: false,
       default: false
     },
+    required: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -111,6 +115,9 @@ export default {
     // ...mapState({
     //   terminalStore: state => state.settings.terminalStore
     // })
+    fieldsRequired() {
+      return this.required || this.saveCreditCard;
+    },
   }
 };
 </script>

@@ -31,7 +31,7 @@ namespace EasyInvoice.Converters
                 DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
                 TaxAmount = message.VATTotal,
                 TaxPercentage = message.VATRate,
-                TotalAmountBeforeDiscount = message.InvoiceAmount,
+                TotalAmountBeforeDiscount = message.InvoiceAmount + message.TotalDiscount.GetValueOrDefault(0),
                 TotalNetAmount = message.NetTotal,
                 TotalPaidAmount = message.InvoiceAmount,
 
@@ -147,7 +147,7 @@ namespace EasyInvoice.Converters
                 TotalAmount = message.Amount,
 
                 Price = message.Price,
-                PriceNet = message.NetAmount,
+                PriceNet = message.NetPrice,
                 TaxAmount = message.VAT,
                 TotalNetAmount = message.NetAmount,
                 TotalTaxAmount = message.VAT,

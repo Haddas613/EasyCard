@@ -10,13 +10,20 @@
           color="primary"
           :block="$vuetify.breakpoint.smAndDown"
           outlined
-          @click="model = {}"
+          @click="resetFilter()"
           >{{ $t('Reset') }}</v-btn
         >
       </div>
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
           <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
+            <v-col cols="12" md="12" class="pb-2 pt-0">
+              <customer-dialog-invoker 
+              :key="model.consumerID" 
+              :terminal="model.terminalID" 
+              :customer-id="model.consumerID"
+              @update="processCustomer($event)"></customer-dialog-invoker>
+            </v-col>
             <!-- <v-col cols="4" md="3">
               <v-switch
                 v-model="model.actual"
@@ -208,6 +215,7 @@ export default {
     EcDialog: () => import('../../components/ec/EcDialog'),
     PaymentType: () => import('../transactions/PaymentType'),
     DateFromToFilter: () => import('../filtering/DateFromToFilter'),
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker"),
   },
   props: {
     show: {
@@ -268,6 +276,14 @@ export default {
       //     this.$set(this.model, t, false);
       //   }
       // }
+    },
+    processCustomer(data) {
+      this.$set(this.model, 'terminalID', data.terminalID);
+      this.model.consumerID = data.consumerID;
+    },
+    resetFilter(){
+      this.model = {};
+      this.selectedCustomer = null;
     },
   },
 };

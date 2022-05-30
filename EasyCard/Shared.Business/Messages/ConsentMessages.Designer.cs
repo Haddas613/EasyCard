@@ -19,7 +19,7 @@ namespace Shared.Business.Messages {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ConsentMessages {
@@ -61,7 +61,7 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By clicking on &apos;Aggree&apos; you agree with our terms in conditions in using 3D Secure feature.
+        ///   Looks up a localized string similar to Dear customer, 3DSECURE services make it possible to conduct secure transactions with MasterCard Visa cards and dual cards (which combine diners and MasterCard). The cost of the service is 0.3 NIS (excluding VAT) for each transaction (billing or billing experience). Activation of the service constitutes your agreement to the terms and price.
         /// </summary>
         public static string ThreeDSConsentMessage {
             get {

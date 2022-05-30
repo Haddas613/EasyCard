@@ -85,14 +85,14 @@
               ></billing-schedule-string>
             </v-card-text>
           </v-card>
-          <amount-details :model="model" amount-key="transactionAmount"></amount-details>
+          <amount-details :model="model" amount-key="transactionAmount" :currency="model.$currency || model.currency"></amount-details>
           <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
             <v-card-title
               class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
             >{{$t("Items")}}</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency"></transaction-items-list>
+              <transaction-items-list :items="model.dealDetails.items" :currency="model.$currency || model.currency"></transaction-items-list>
             </v-card-text>
           </v-card>
 

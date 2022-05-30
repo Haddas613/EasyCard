@@ -340,9 +340,7 @@ export default {
           params = {
             ...params,
             ...this.options,
-            showDeleted: this.showDeletedCustomers ?
-              this.$showDeleted(this.showDeletedCustomers)
-              : this.displayTable ? 2 : 0,
+            showDeleted: this.$showDeleted(this.showDeletedCustomers),
           };
         } else {
           params.showDeleted= this.allowShowDeleted

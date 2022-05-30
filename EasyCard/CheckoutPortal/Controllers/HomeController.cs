@@ -403,8 +403,8 @@ namespace CheckoutPortal.Controllers
                 {
                     // TODO: move it to appropriate calculator
                     mdel.TransactionAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
-                    //mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
-                    //mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
+                    mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
                 }
                 //else
                 //{
@@ -448,8 +448,8 @@ namespace CheckoutPortal.Controllers
                 {
                     // TODO: move it to appropriate calculator
                     mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
-                    //mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
-                    //mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
+                    mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
 
                 mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;

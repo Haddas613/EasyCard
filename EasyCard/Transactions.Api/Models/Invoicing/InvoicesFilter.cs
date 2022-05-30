@@ -1,6 +1,7 @@
 ﻿using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
@@ -47,5 +48,7 @@ namespace Transactions.Api.Models.Invoicing
         public decimal InvoiceAmount { get; set; }
 
         public string ConsumerExternalReference { get; set; }
+
+        public PaymentTypeEnum PaymentType { get; set; }
     }
 }

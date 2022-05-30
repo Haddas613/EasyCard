@@ -1,4 +1,5 @@
 ﻿using Shared.Helpers;
+using Shared.Helpers.Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +19,19 @@ namespace MerchantProfileApi.Models.Billing
 
         public string ExternalReference { get; set; }
 
+        [ExcelIgnore]
         public string BillingDesktopRefNumber { get; set; }
 
         /// <summary>
         /// External ID inside https://woocommerce.com system
         /// </summary>
+        [ExcelIgnore]
         public string WoocommerceID { get; set; }
 
         /// <summary>
         /// External ID inside https://www.ecwid.com system
         /// </summary>
+        [ExcelIgnore]
         public string EcwidID { get; set; }
     }
 }

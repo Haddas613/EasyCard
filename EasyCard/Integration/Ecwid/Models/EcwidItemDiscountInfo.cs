@@ -6,7 +6,7 @@ namespace Ecwid.Models
 {
     public class EcwidItemDiscountInfo
     {
-        public decimal Value { get; set; }
+        public decimal? Value { get; set; }
 
         /// <summary>
         /// Discount type: ABS or PERCENT
@@ -21,7 +21,7 @@ namespace Ecwid.Models
         /// <summary>
         /// Minimum order subtotal the discount applies to
         /// </summary>
-        public decimal OrderTotal { get; set; }
+        public decimal? OrderTotal { get; set; }
 
         /// <summary>
         /// Description of a discount (for discounts with base == CUSTOM)

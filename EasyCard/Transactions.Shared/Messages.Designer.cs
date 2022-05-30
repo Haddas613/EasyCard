@@ -475,11 +475,29 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EmailAddressRequired.
+        ///   Looks up a localized string similar to Either Email or Phone must be specified.
+        /// </summary>
+        public static string EitherEmailOrPhoneMustBeSpecified {
+            get {
+                return ResourceManager.GetString("EitherEmailOrPhoneMustBeSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email required.
         /// </summary>
         public static string EmailRequired {
             get {
                 return ResourceManager.GetString("EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email is required. Feature SMS Notification is not enabled for this terminal.
+        /// </summary>
+        public static string EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal {
+            get {
+                return ResourceManager.GetString("EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal", resourceCulture);
             }
         }
         

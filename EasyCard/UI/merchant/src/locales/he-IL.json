@@ -384,6 +384,7 @@
   "UsePaymentInfoAsDonation": "סמן קבלות כתרומה",
   "Donation": "תרומה",
   "NumberOfChargedCustomers": "מספר הלקוחות ששילמו",
+  "InvoiceOrigin": "מקור החשבונית",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -514,6 +515,7 @@
   "SelectDealsFirst": "בחר עסקאות קודם",
   "RefundedCustomer": "לקוחות שזוכו",
   "ChargedCustomer": "לקוח שחויב",
+  "TransactionPassed": "עסקה אושרה",
   "SelectTransactionsFirst": "בחר עסקאות קודם",
   "Today": "היום",
   "Yes": "כן",
