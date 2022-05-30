@@ -552,5 +552,7 @@
   "FormInvalidSaveNotAllowed": "Can not save. Please check form values.",
   "DeleteCustomerMessageText": "By deleting the customer you will also deactivate all related billing deals",
   "3DSecureEnabledMessage": "3D Secure is enabled and ready to use.",
-  "3DSecureNotEnabledMessage": "3D Secure is not active."
+  "3DSecureNotEnabledMessage": "3D Secure is not active.",
+
+  "Reject": "Reject"
 }

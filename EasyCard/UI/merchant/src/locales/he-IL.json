@@ -551,5 +551,7 @@
   "FormInvalidSaveNotAllowed": "לא ניתן לשמור. אנא בדוק את ההגדרות",
   "DeleteCustomerMessageText": "במחיקת הלקוח ימחקו גם כל העסקאות המחזוריות",
   "3DSecureEnabledMessage": "3D Secure פעיל",
-  "3DSecureNotEnabledMessage": "3D Secure לא פעיל"
+  "3DSecureNotEnabledMessage": "3D Secure לא פעיל",
+
+  "Reject": "לדחות"
 }
