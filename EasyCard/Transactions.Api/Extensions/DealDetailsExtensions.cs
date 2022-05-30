@@ -119,6 +119,11 @@ namespace Transactions.Api.Extensions
                     {
                         item.Amount = item.VAT + item.NetAmount;
                     }
+
+                    if (item.NetAmount.GetValueOrDefault() == 0)
+                    {
+                        item.NetAmount = item.Amount - item.VAT;
+                    }
                 }
             }
 
