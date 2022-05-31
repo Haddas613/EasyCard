@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Shared.Integration.Models.PaymentDetails
@@ -15,6 +16,7 @@ namespace Shared.Integration.Models.PaymentDetails
     {
         public virtual PaymentTypeEnum PaymentType { get; set; }
 
+        [NotMapped]
         public virtual decimal Amount { get; set; }
     }
 }
