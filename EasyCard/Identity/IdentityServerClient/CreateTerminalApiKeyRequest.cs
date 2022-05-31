@@ -13,5 +13,9 @@ namespace IdentityServerClient
 
         [Required]
         public Guid MerchantID { get; set; }
+
+        public bool WoocommerceEnabled { get; set; }
+
+        public bool EcwidEnabled { get; set; }
     }
 }

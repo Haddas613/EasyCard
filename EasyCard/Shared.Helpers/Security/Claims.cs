@@ -14,6 +14,9 @@ namespace Shared.Helpers.Security
         public const string FirstNameClaim = "extension_FirstName";
         public const string LastNameClaim = "extension_LastName";
 
+        public const string WoocommerceEnabled = "extension_Woocommerce";
+        public const string EcwidEnabled = "extension_Ecwid";
+
         public const string UserIdClaim = ClaimTypes.NameIdentifier;
         public const string SubjClaim = JwtClaimTypes.Subject;
         public const string NameClaim = JwtClaimTypes.Name;
