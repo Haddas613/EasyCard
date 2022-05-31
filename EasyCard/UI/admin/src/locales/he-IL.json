@@ -457,6 +457,7 @@
   "ThisIsARefundTransaction": "זוהי עסקת זיכוי",
   "TotalRefundOutOf": "סה\"כ סכום לזיכוי",
   "InvoiceBillingType": "סוג חשבונית חיוב",
+  "InvoiceOrigin": "מקור החשבונית",
   "ResponsiblePerson": "אדם אחראי",
   "ExternalUserID": "חיצוני תעודת זהות",
 

@@ -459,6 +459,11 @@
             after code 3 or 4 user can insert this value from credit company
             </summary>
         </member>
+        <member name="T:Shared.Integration.Models.JDealTypeEnum">
+            <summary>
+            Type of Deal. optional values are; J2 for Check,J4 for Charge, J5 for Block card
+            </summary>
+        </member>
         <member name="F:Shared.Integration.Models.JDealTypeEnum.J2">
             <summary>
             Check
@@ -956,7 +961,7 @@
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CreditNote">
             <summary>
-              Looks up a localized string similar to Credit Note.
+              Looks up a localized string similar to Refund Invoice.
             </summary>
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Initial">
@@ -976,7 +981,7 @@
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.InvoiceWithPaymentInfo">
             <summary>
-              Looks up a localized string similar to Invoice WIth Payment Info.
+              Looks up a localized string similar to Invoice/Receipt.
             </summary>
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.ManualInvoice">
@@ -986,7 +991,7 @@
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.PaymentInfo">
             <summary>
-              Looks up a localized string similar to Payment Info.
+              Looks up a localized string similar to Receipt.
             </summary>
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.RefundInvoice">

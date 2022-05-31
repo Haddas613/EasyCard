@@ -50,27 +50,38 @@
         outlined
       ></v-text-field>
     </v-col>
-    <v-col cols="12" md="6" class="py-0">
+    <v-col cols="12" class="hidden-sm-and-down"></v-col>
+    <v-col cols="12" md="3" class="py-0">
       <v-text-field
-        v-model="model.origin"
+        v-model="model.consumerAddress.street"
         :counter="50"
         :rules="[vr.primitives.maxLength(50)]"
-        :label="$t('Origin')"
+        :label="$t('Street')"
         class="px-1"
         outlined
       ></v-text-field>
     </v-col>
-    <v-col cols="12" md="6" class="py-0">
+    <v-col cols="12" md="2" class="py-0">
       <v-text-field
-        v-model="model.woocommerceID"
+        v-model="model.consumerAddress.house"
         :counter="50"
         :rules="[vr.primitives.maxLength(50)]"
-        :label="$t('WoocommerceID')"
+        :label="$t('House')"
         class="px-1"
         outlined
       ></v-text-field>
     </v-col>
-    <v-col cols="12" md="4" class="py-0">
+    <v-col cols="12" md="2" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.apartment"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('Apartment')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="3" class="py-0">
       <v-text-field
         v-model="model.consumerAddress.city"
         :counter="50"
@@ -86,36 +97,6 @@
         :counter="50"
         :rules="[vr.primitives.maxLength(50)]"
         :label="$t('Zip')"
-        class="px-1"
-        outlined
-      ></v-text-field>
-    </v-col>
-    <v-col cols="12" md="6" class="py-0">
-      <v-text-field
-        v-model="model.consumerAddress.street"
-        :counter="50"
-        :rules="[vr.primitives.maxLength(50)]"
-        :label="$t('Street')"
-        class="px-1"
-        outlined
-      ></v-text-field>
-    </v-col>
-    <v-col cols="12" md="6" class="py-0">
-      <v-text-field
-        v-model="model.consumerAddress.house"
-        :counter="50"
-        :rules="[vr.primitives.maxLength(50)]"
-        :label="$t('House')"
-        class="px-1"
-        outlined
-      ></v-text-field>
-    </v-col>
-    <v-col cols="12" md="6" class="py-0">
-      <v-text-field
-        v-model="model.consumerAddress.apartment"
-        :counter="50"
-        :rules="[vr.primitives.maxLength(50)]"
-        :label="$t('Apartment')"
         class="px-1"
         outlined
       ></v-text-field>

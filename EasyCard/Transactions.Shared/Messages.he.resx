@@ -459,4 +459,10 @@
   <data name="PaymentWasNotCompleted" xml:space="preserve">
     <value>התשלום לא בוצע</value>
   </data>
+  <data name="EitherEmailOrPhoneMustBeSpecified" xml:space="preserve">
+    <value>אימייל או טלפון  חובה</value>
+  </data>
+  <data name="EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal" xml:space="preserve">
+    <value>נדרשת כתובת מייל. תכונת התראת sms לא מאופשרת למסוף הזה.</value>
+  </data>
 </root>

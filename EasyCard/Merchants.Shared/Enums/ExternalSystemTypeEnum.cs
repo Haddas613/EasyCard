@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Merchants.Shared.Enums
 {
+    /// <summary>
+    /// External System options are: Processor, Aggregator, Invoicing, Marketer, PinpadProcessor, VirtualWalletProcessor
+    /// </summary>
     public enum ExternalSystemTypeEnum
     {
         [EnumMember(Value = "processor")]

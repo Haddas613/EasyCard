@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasicServices.BlobStorage;
@@ -129,6 +130,11 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID:guid}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
         {
+            if (model.TerminalID.HasValue && model.TerminalID != terminalID)
+            {
+                throw new SecurityException("Invalid data access");
+            }
+
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             mapper.Map(model, terminal);
@@ -315,7 +321,7 @@ namespace MerchantProfileApi.Controllers
 
         [HttpGet]
         [Route("tds-consent-message")]
-        public async Task<ActionResult<OperationResponse>> Get3DSConsentMessage2()
+        public async Task<ActionResult<OperationResponse>> Get3DSConsentMessage()
         {
             var response = new OperationResponse(ConsentMessages.ThreeDSConsentMessage, StatusEnum.Success);
 

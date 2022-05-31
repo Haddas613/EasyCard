@@ -103,6 +103,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get payment requests by filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<PaymentRequestSummary>>> GetPaymentRequests([FromQuery] PaymentRequestsFilter filter)
         {
@@ -163,6 +168,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get payment request details by ID
+        /// </summary>
+        /// <param name="paymentRequestID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{paymentRequestID}")]
         public async Task<ActionResult<PaymentRequestResponse>> GetPaymentRequest([FromRoute] Guid paymentRequestID)
@@ -190,6 +200,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create payment request
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreatePaymentRequest([FromBody] PaymentRequestCreate model)
@@ -220,6 +235,11 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
+            if (!model.IssueInvoice.HasValue && terminal.CheckoutSettings.IssueInvoice == true)
+            {
+                model.IssueInvoice = true;
+            }
+
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 if (model.InvoiceDetails == null)
@@ -247,6 +267,21 @@ namespace Transactions.Api.Controllers
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
 
+            // if phone is present but sms notification feature is not enabled, show the error
+            if (!string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone)
+               && !terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification))
+            {
+                return BadRequest(new OperationResponse(Messages.EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal, StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+            else if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone) 
+                && string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail)) // if phone is not present, email is required
+            {
+                var msg = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification)
+                    ? Messages.EitherEmailOrPhoneMustBeSpecified : Messages.EmailRequired;
+
+                return BadRequest(new OperationResponse(msg, StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -259,12 +294,6 @@ namespace Transactions.Api.Controllers
                 {
                     newPaymentRequest.DealDetails.ConsumerID = consumerID;
                 }
-            }
-
-            if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail))
-            {
-                // TODO: prper message
-                return BadRequest(new OperationResponse("Email required", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             }
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
@@ -280,7 +309,10 @@ namespace Transactions.Api.Controllers
             //    return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             //}
 
-            await emailSender.SendEmail(BuildPaymentRequestEmail(newPaymentRequest, terminal));
+            if (newPaymentRequest.DealDetails.ConsumerEmail != null)
+            {
+                await emailSender.SendEmail(BuildPaymentRequestEmail(newPaymentRequest, terminal));
+            }
 
             if (newPaymentRequest.DealDetails.ConsumerPhone != null
                 && terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification))
@@ -295,6 +327,11 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Cancel payment request
+        /// </summary>
+        /// <param name="paymentRequestID"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{paymentRequestID}")]
         public async Task<ActionResult<OperationResponse>> CancelPaymentRequest([FromRoute] Guid paymentRequestID)

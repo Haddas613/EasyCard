@@ -40,6 +40,7 @@
           ref="dealDetails"
           :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+          required
         ></deal-details>
 
         <template v-if="paymentInfoAvailable">
@@ -48,7 +49,7 @@
             <invoice-credit-card-details-fields ref="ccDetails"></invoice-credit-card-details-fields>
           </template>
           <template v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.cheque">
-            <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
+            <cheque-details-list-form ref="chequeDetails"></cheque-details-list-form>
           </template>
           <template v-else-if="model.paymentType == $appConstants.transaction.paymentTypes.bank">
             <bank-transfer-details-fields ref="bankDetails"></bank-transfer-details-fields>
@@ -72,6 +73,7 @@ export default {
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
     ChequeDetailsFields: () => import("./ChequeDetailsFields"),
+    ChequeDetailsListForm: () => import("./ChequeDetailsListForm"),
     BankTransferDetailsFields: () => import("./BankTransferDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -164,10 +166,12 @@ export default {
           case this.$appConstants.transaction.paymentTypes.cheque:
             data = this.$refs.chequeDetails.getData();
             if(data){
-              result.paymentDetails.push({
-                ...data,
-                paymentType: this.$appConstants.transaction.paymentTypes.cheque
-              });
+              for(var cheque of data){
+                result.paymentDetails.push({
+                  ...cheque,
+                  paymentType: this.$appConstants.transaction.paymentTypes.cheque
+                });
+              }
             }
             break;
           case this.$appConstants.transaction.paymentTypes.bank:

@@ -401,14 +401,15 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
+                    // TODO: move it to appropriate calculator
                     mdel.TransactionAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
                     mdel.NetTotal = Math.Round(mdel.TransactionAmount / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.TransactionAmount - mdel.NetTotal;
                 }
-                else
-                {
-                    mdel.Calculate();
-                }
+                //else
+                //{
+                //    mdel.Calculate();
+                //}
 
                 mdel.Origin = request.Origin ?? checkoutConfig.PaymentRequest.Origin ?? Request.GetTypedHeaders().Referer?.Host;
 
@@ -445,6 +446,7 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
+                    // TODO: move it to appropriate calculator
                     mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
@@ -475,7 +477,7 @@ namespace CheckoutPortal.Controllers
                     mdel.CreditCardSecureDetails = null;
                 }
 
-                mdel.Calculate();
+                //mdel.Calculate();
 
                 mdel.Origin = Request.GetTypedHeaders().Referer?.Host;
 

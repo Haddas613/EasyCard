@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ThreeDSConsentMessage" xml:space="preserve">
-    <value>By clicking on 'Aggree' you agree with our terms in conditions in using 3D Secure feature</value>
+    <value>לקוח /ה יקר שירותי 3  DSECURE מאפשרים לקיים עסקאות מאובטחות בכרטיסי ויזה מאסטרקארד וכרטיסים דואלים (המשלבים בין דיינרס למסאסטרקארד). עלות השירות היא 0.3 ש"ח (לא כולל מע"מ) בעבור כל טרנזקציה (חיוב או ניסיון חיוב ). הפעלת השירות מהווה הסכמתך לתנאים ולמחיר, בברכה צוות איזיקארד.</value>
   </data>
 </root>

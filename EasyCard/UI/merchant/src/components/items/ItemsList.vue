@@ -90,12 +90,7 @@ export default {
       if(this.loading){ return; }
       let searchApply = this.search && this.search.trim().length >= 3;
 
-      let data = await this.$api.items.getItems({
-          search: searchApply ? this.search : null,
-          terminalID: this.terminalStore.terminalID,
-          showDeleted: this.$showDeleted(this.showDeletedItems),
-          ...this.paging
-      });
+      let data = await this.$api.items.getItems(this.filterParams);
       if (data) {
         this.totalAmount = data.numberOfRecords;
         if(extendData){
@@ -147,7 +142,15 @@ export default {
     }),
     canLoadMore() {
       return (this.paging.take + this.paging.skip) < this.totalAmount;
-    }
+    },
+    filterParams(){
+      return {
+          search: this.search && this.search.trim().length >= 3 ? this.search : null,
+          terminalID: this.terminalStore.terminalID,
+          showDeleted: this.$showDeleted(this.showDeletedItems),
+          ...this.paging
+      };
+    },
   }
 };
 </script>

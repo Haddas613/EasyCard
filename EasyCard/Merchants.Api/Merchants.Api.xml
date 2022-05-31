@@ -4,6 +4,18 @@
         <name>Merchants.Api</name>
     </assembly>
     <members>
+        <member name="T:Merchants.Api.Controllers.DictionariesApiController">
+            <summary>
+            show enums translated to hebrew on UI
+            </summary>
+        </member>
+        <member name="M:Merchants.Api.Controllers.DictionariesApiController.GetExternalSystems(System.Boolean)">
+            <summary>
+             show enums translated to hebrew on UI
+            </summary>
+            <param name="showForTemplatesOnly"></param>
+            <returns></returns>
+        </member>
         <member name="M:Merchants.Api.Controllers.TerminalsApiController.CreateTerminal(Merchants.Api.Models.Terminal.TerminalRequest)">
             <summary>
             Add terminal basic information

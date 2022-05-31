@@ -191,6 +191,16 @@ namespace IdentityServer.Controllers
 
                     if (!twfEnabled)
                     {
+                        if (!user.EmailConfirmed)
+                        {
+                            //var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+                            //return RedirectToAction(nameof(ConfirmEmail), new { code });
+
+                            user.EmailConfirmed = true;
+                            await userManager.UpdateAsync(user);
+                        }
+
                         //Force enable 2fa for user
                         await userManager.SetTwoFactorEnabledAsync(user, true);
                     }
@@ -706,6 +716,13 @@ namespace IdentityServer.Controllers
 
                     //Don't reveail if user doesn't exists
                     return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                }
+
+                if (string.IsNullOrWhiteSpace(user.PasswordHash))
+                {
+                    var code2 = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+                    return RedirectToAction(nameof(ConfirmEmail), new { code = code2 });
                 }
 
                 //Validate user bank account

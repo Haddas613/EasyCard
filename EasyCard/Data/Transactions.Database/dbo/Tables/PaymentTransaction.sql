@@ -108,8 +108,11 @@
     [ExternalUserID]                 VARCHAR (50)     NULL,
     [ResponsiblePerson]              NVARCHAR (50)    NULL,
     [TransactionJ5ExpiredDate]       DATETIME2 (7)    NULL,
+    [ThreeDSChallengeID]             UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

@@ -22,6 +22,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.IO;
 using Shared.Helpers.Security;
 using Z.EntityFramework.Plus;
 
@@ -40,6 +41,7 @@ namespace MerchantProfileApi.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly ICurrencyRateService currencyRateService;
         private readonly ITerminalsService terminalsService;
+        private readonly BasicServices.Services.IExcelService excelService;
 
         public ItemsApiController(
             IItemsService itemsService,
@@ -47,6 +49,7 @@ namespace MerchantProfileApi.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             IMerchantsService merchantsService,
             ICurrencyRateService currencyRateService,
+            BasicServices.Services.IExcelService excelService,
             ITerminalsService terminalsService)
         {
             this.itemsService = itemsService;
@@ -55,6 +58,7 @@ namespace MerchantProfileApi.Controllers
             this.merchantsService = merchantsService;
             this.currencyRateService = currencyRateService;
             this.terminalsService = terminalsService;
+            this.excelService = excelService;
         }
 
         [HttpGet]
@@ -197,6 +201,55 @@ namespace MerchantProfileApi.Controllers
             }
 
             return Ok(new OperationResponse(Messages.ItemsDeletedCnt?.Replace("{count}", deletedCount.ToString()), StatusEnum.Success));
+        }
+
+        [HttpGet]
+        [Route("$excel")]
+        public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItemsExcel([FromQuery] ItemsFilter filter)
+        {
+            var query = itemsService.GetItems().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+
+            using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                List<ItemSummary> items = null;
+
+                if (filter.Currency == null)
+                {
+                    items = await mapper.ProjectTo<ItemSummary>(query.OrderByDescending(i => i.Created).ApplyPagination(filter)).Future().ToListAsync();
+                }
+                else
+                {
+                    var rates = await currencyRateService.GetLatestRates(); // TODO: caching
+                    var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
+
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID.Value));
+                        rates.EURRate = terminal.Settings.EuroRate > 0 ? terminal.Settings.EuroRate : rates.EURRate;
+                        rates.USDRate = terminal.Settings.DollarRate > 0 ? terminal.Settings.DollarRate : rates.USDRate;
+                    }
+
+                    var data = await query.OrderByDescending(i => i.Created).ApplyPagination(filter).Future().ToListAsync();
+
+                    items = data.Select(d => new ItemSummary
+                    {
+                        Currency = currency,
+                        ItemID = d.ItemID,
+                        ItemName = d.ItemName,
+                        Price = rates.Convert(d.Currency, d.Price, currency),
+                        ExternalReference = d.ExternalReference,
+                        WoocommerceID = d.WoocommerceID
+                    }).ToList();
+                }
+
+                var mapping = ItemResource.ResourceManager.GetExcelColumnNames<ItemSummary>();
+
+                var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Items-{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}.xlsx");
+                var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Invoices", items, mapping);
+
+                return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
+            }
         }
     }
 }

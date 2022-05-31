@@ -154,7 +154,8 @@ export default {
         dateFrom: this.$formatDate(this.storeDateFilter.dateFrom),
         dateTo: this.$formatDate(this.storeDateFilter.dateTo),
         quickDateFilter: this.storeDateFilter.quickDateType,
-        altQuickDateFilter: this.storeDateFilter.altQuickDateFilter
+        altQuickDateFilter: this.storeDateFilter.altQuickDateFilter,
+        granularity: this.storeDateFilter.granularity,
       });
 
       if(!report || report.givenPeriod.length < 3){
@@ -172,6 +173,7 @@ export default {
       // this.chartOptions.scales.yAxes[1].ticks.stepSize = Math.ceil(this.lodash.meanBy(this.chartData.datasets[1].data) / 10) * 10;
 
 
+      this.nothingToShow = false;
       this.draw = true;
     }
   },

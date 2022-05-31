@@ -84,6 +84,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get masav files details
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesAmountResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
         {
@@ -123,6 +128,11 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Get masav file per id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:long}")]
         public async Task<ActionResult<MasavFileSummary>> GetMasavFile([FromRoute] long id)
         {
@@ -142,6 +152,11 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Get masav files rows data
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet("rows")]
         public async Task<ActionResult<SummariesResponse<MasavFileRowSummary>>> GetMasavFileRows([FromQuery] MasavFileRowFilter filter)
         {
@@ -165,6 +180,11 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Generate masav file
+        /// </summary>
+        /// <param name="terminalID"></param>
+        /// <returns></returns>
         [HttpPost("generate/{terminalID:guid}")]
         public async Task<ActionResult<OperationResponse>> PrepareMasavFile(Guid terminalID)
         {
@@ -196,6 +216,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Download masav file, return url
+        /// </summary>
+        /// <param name="masavFileID"></param>
+        /// <returns></returns>
         [HttpPost("download/{masavFileID}")]
         public async Task<ActionResult<OperationResponse>> GenerateMasavFile(long masavFileID)
         {
@@ -226,6 +251,7 @@ namespace Transactions.Api.Controllers
 
             return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
         }
+
 
         [HttpPost("setPayed/{masavFileID}")]
         public async Task<ActionResult<OperationResponse>> SetPayed(long masavFileID, DateTime? payedDate)

@@ -90,6 +90,11 @@ namespace Transactions.Api.Controllers
             this.emailSender = emailSender;
         }
 
+        /// <summary>
+        /// Get payment intent details
+        /// </summary>
+        /// <param name="paymentIntentID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{paymentIntentID}")]
         public async Task<ActionResult<PaymentRequestResponse>> GetPaymentIntent([FromRoute] Guid paymentIntentID)
@@ -156,6 +161,11 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
+            if (!model.IssueInvoice.HasValue && terminal.CheckoutSettings.IssueInvoice == true)
+            {
+                model.IssueInvoice = true;
+            }
+
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 if (model.InvoiceDetails == null)
@@ -212,6 +222,11 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Delete payment intent
+        /// </summary>
+        /// <param name="paymentIntentID"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{paymentIntentID}")]
         public async Task<ActionResult<OperationResponse>> DeletePaymentIntent([FromRoute] Guid paymentIntentID)

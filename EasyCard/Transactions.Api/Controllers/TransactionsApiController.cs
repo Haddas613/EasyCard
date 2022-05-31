@@ -950,6 +950,12 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// send Shovar
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("send-transaction-slip-email")]
         public async Task<ActionResult<OperationResponse>> SendTransactionSlipEmail(SendTransactionSlipEmailRequest request)

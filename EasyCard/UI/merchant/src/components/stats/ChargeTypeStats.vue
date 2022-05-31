@@ -98,7 +98,8 @@ export default {
         terminalID: this.terminalStore.terminalID,
         dateFrom: this.$formatDate(this.storeDateFilter.dateFrom),
         dateTo: this.$formatDate(this.storeDateFilter.dateTo),
-        quickDateFilter: this.storeDateFilter.quickDateType
+        quickDateFilter: this.storeDateFilter.quickDateType,
+        granularity: this.storeDateFilter.granularity,
       });
       
       if(!report || report.length === 0){

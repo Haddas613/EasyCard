@@ -23,6 +23,7 @@ namespace MerchantProfileApi.Mapping
         private void RegisterTerminalMappings()
         {
             CreateMap<UpdateTerminalRequest, Terminal>()
+                .ForMember(d => d.TerminalID, o => o.Ignore())
                 .ForMember(d => d.CheckoutSettings, o => o.MapFrom(d => d.CheckoutSettings));
 
             CreateMap<TerminalSettingsUpdate, Merchants.Shared.Models.TerminalSettings>();

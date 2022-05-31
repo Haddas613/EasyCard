@@ -9,11 +9,77 @@
             This controller not in use
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetBillingDeals(Transactions.Api.Models.Billing.BillingDealsFilter)">
+            <summary>
+            Get billing deals details using filter
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetBillingDealsExcel(Transactions.Api.Models.Billing.BillingDealsFilter)">
+            <summary>
+             Get billing deals details using filter
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetBillingDeal(System.Guid)">
+            <summary>
+            Get billing deal details
+            </summary>
+            <param name="billingDealID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDeal(Transactions.Api.Models.Billing.BillingDealRequest)">
+            <summary>
+            Create billing deal
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.UpdateBillingDeal(System.Guid,Transactions.Api.Models.Billing.BillingDealUpdateRequest)">
+            <summary>
+            Update billing deal
+            </summary>
+            <param name="billingDealID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDealInvoice(Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest)">
             <summary>
             Billing deal that only process invoice. Does not produce transaction
             </summary>
             <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.UpdateBillingDealInvoice(System.Guid,Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest)">
+            <summary>
+            Update invoice only billing deal details. 
+            </summary>
+            <param name="billingDealID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.UpdateBillingDealToken(System.Guid,System.Guid)">
+            <summary>
+            Update credit card token for billing deal
+            </summary>
+            <param name="billingDealID"></param>
+            <param name="tokenID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.DisableBillingDeals(Transactions.Api.Models.Billing.DisableBillingDealsRequest)">
+            <summary>
+            Disable billing deals
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.ActivateBillingDeals(Transactions.Api.Models.Billing.ActivateBillingDealsRequest)">
+            <summary>
+            Enable billing deals
+            </summary>
+            <param name="request"></param>
             <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.BillingController.SendDueBillingDealsToQueue(System.Guid)">
@@ -23,11 +89,40 @@
             <param name="terminalID"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.TriggerBillingDealsByTerminal(System.Guid)">
+            <summary>
+            Trigger billing deals by terminalID
+            </summary>
+            <param name="terminalID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.BillingController.CreateTransactionsFromBillingDeals(Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest)">
             <summary>
             Start process of creating transactions from billing deals
             </summary>
             <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.GetBillingDealHistory(System.Guid)">
+            <summary>
+            Get Billing deal history
+            </summary>
+            <param name="billingDealID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.PauseBilling(System.Guid,Transactions.Api.Models.Billing.PauseBillingDealRequest)">
+            <summary>
+            Pause billing deal
+            </summary>
+            <param name="billingDealID"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.BillingController.UnpauseBilling(System.Guid)">
+            <summary>
+            Unpause billing deal
+            </summary>
+            <param name="billingDealID"></param>
             <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.BillingController.ProcessSendDueBillingDealsToQueue(System.Guid)">
@@ -41,6 +136,101 @@
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.CardTokenController.CreateToken(Transactions.Api.Models.Tokens.TokenRequest)">
+            <summary>
+            Create token for credit card details
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.CardTokenController.GetTokens(Transactions.Api.Models.Tokens.CreditCardTokenFilter)">
+            <summary>
+            Get tokens by filters
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.CardTokenController.DeleteToken(System.String)">
+            <summary>
+            Delete credit card token
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.GetTransactionDictionaries">
+            <summary>
+            show enums translated to hebrew on UI GetTransactionDictionaries
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.GetBanks">
+            <summary>
+            show enums translated to hebrew on UI GetBanks
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.DictionariesApiController.AvailableWebhooks">
+            <summary>
+             show enums translated to hebrew on UI AvailableWebhooks
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.FutureBillingsController.GetFutureBillingDeals(Transactions.Api.Models.Billing.FutureBillingDealsFilter)">
+            <summary>
+            Get future billing by filters
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetInvoices(Transactions.Api.Models.Invoicing.InvoicesFilter)">
+            <summary>
+            Get invoices details by filters
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetInvoice(System.Guid)">
+            <summary>
+            Get invoice by invoiceID
+            </summary>
+            <param name="invoiceID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetInvoiceDownloadURL(System.Guid)">
+            <summary>
+            Get invoice download URL
+            </summary>
+            <param name="invoiceID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.CreateInvoice(Transactions.Api.Models.Invoicing.InvoiceRequest)">
+            <summary>
+            Create invoice
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.CreateInvoiceForTransaction(System.Guid)">
+            <summary>
+            Create invoice for transaction ID
+            </summary>
+            <param name="transactionID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.Resend(Transactions.Api.Models.Invoicing.ResendInvoiceRequest)">
+            <summary>
+            Resend invoices to customer
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.Resend(Transactions.Api.Models.Invoicing.ResendSingleInvoiceRequest)">
+            <summary>
+            Resend one invoice 
+            </summary>
+            <param name="request"></param>
             <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid},System.Boolean)">
@@ -57,10 +247,52 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.MasavFileController.GetMasavFiles(Transactions.Api.Models.Masav.MasavFileFilter)">
+            <summary>
+            Get masav files details
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.MasavFileController.GetMasavFile(System.Int64)">
+            <summary>
+            Get masav file per id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.MasavFileController.GetMasavFileRows(Transactions.Api.Models.Masav.MasavFileRowFilter)">
+            <summary>
+            Get masav files rows data
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.MasavFileController.PrepareMasavFile(System.Guid)">
+            <summary>
+            Generate masav file
+            </summary>
+            <param name="terminalID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.MasavFileController.GenerateMasavFile(System.Int64)">
+            <summary>
+            Download masav file, return url
+            </summary>
+            <param name="masavFileID"></param>
+            <returns></returns>
+        </member>
         <member name="T:Transactions.Api.Controllers.PaymentIntentController">
             <summary>
             Payment link API
             </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentIntentController.GetPaymentIntent(System.Guid)">
+            <summary>
+            Get payment intent details
+            </summary>
+            <param name="paymentIntentID"></param>
+            <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.PaymentIntentController.CreatePaymentIntent(Transactions.Api.Models.PaymentRequests.PaymentRequestCreate)">
             <summary>
@@ -68,6 +300,41 @@
             </summary>
             <param name="model">Payment parameters</param>
             <returns>Redirect url</returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentIntentController.DeletePaymentIntent(System.Guid)">
+            <summary>
+            Delete payment intent
+            </summary>
+            <param name="paymentIntentID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentRequestsController.GetPaymentRequests(Transactions.Api.Models.PaymentRequests.PaymentRequestsFilter)">
+            <summary>
+            Get payment requests by filters
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentRequestsController.GetPaymentRequest(System.Guid)">
+            <summary>
+            Get payment request details by ID
+            </summary>
+            <param name="paymentRequestID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentRequestsController.CreatePaymentRequest(Transactions.Api.Models.PaymentRequests.PaymentRequestCreate)">
+            <summary>
+            Create payment request
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.PaymentRequestsController.CancelPaymentRequest(System.Guid)">
+            <summary>
+            Cancel payment request
+            </summary>
+            <param name="paymentRequestID"></param>
+            <returns></returns>
         </member>
         <member name="T:Transactions.Api.Controllers.TransactionsApiController">
             <summary>
@@ -133,6 +400,13 @@
             <param name="request"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.SendTransactionSlipEmail(Transactions.Api.Models.Transactions.SendTransactionSlipEmailRequest)">
+            <summary>
+            send Shovar
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction,System.String)">
             <summary>
             Notify SignalR (if needed) about transaction status change
@@ -145,6 +419,13 @@
             Get transactions which are not transmitted yet
             </summary>
             <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransmissionController.TransmitTransactions(Transactions.Api.Models.Transactions.TransmitTransactionsRequest)">
+            <summary>
+            Transmit transactions
+            </summary>
+            <param name="transmitTransactionsRequest"></param>
             <returns></returns>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.TerminalID">

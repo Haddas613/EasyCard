@@ -354,6 +354,15 @@ namespace ProfileApi
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
 
+            services.AddSingleton<BasicServices.Services.IExcelService, BasicServices.Services.ExcelService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BasicServices.Services.ExcelService>>();
+                var blobStorageService = new BasicServices.BlobStorage.BlobStorageService(appCfg.PublicStorageConnectionString, "excel", logger);
+
+                return new BasicServices.Services.ExcelService(blobStorageService);
+            });
+
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false;  // TODO: remove for production
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 

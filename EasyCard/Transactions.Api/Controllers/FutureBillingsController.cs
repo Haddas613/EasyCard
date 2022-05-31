@@ -49,6 +49,11 @@ namespace Transactions.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get future billing by filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<FutureBillingSummary>>> GetFutureBillingDeals([FromQuery] FutureBillingDealsFilter filter)
         {

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
+    /// <summary>
+    /// Type of Deal. optional values are; J2 for Check,J4 for Charge, J5 for Block card
+    /// </summary>
     public enum JDealTypeEnum : short
     {
         /// <summary>

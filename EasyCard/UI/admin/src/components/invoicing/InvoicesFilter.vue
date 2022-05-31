@@ -30,7 +30,7 @@
             item-text="description"
             item-value="code"
             v-model="model.invoiceBillingType"
-            :label="$t('InvoiceBillingType')"
+            :label="$t('InvoiceOrigin')"
             clearable
           ></v-select>
         </v-col>
@@ -39,7 +39,7 @@
             :items="dictionaries.invoiceTypeEnum"
             item-text="description"
             item-value="code"
-            v-model="model.invoiceTypeFilter"
+            v-model="model.invoiceType"
             :label="$t('InvoiceType')"
             clearable
           ></v-select>
@@ -83,6 +83,16 @@
             :label="$t('CustomerExternalReference')"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" md="4" sm="6" class="py-0">
+          <v-select
+            :items="dictionaries.paymentTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            clearable
+          ></v-select>
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="4" class="py-0">
@@ -95,7 +105,7 @@
             clearable
           ></v-select>
         </v-col>
-        <date-from-to-filter v-model="model"></date-from-to-filter>
+        <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
@@ -126,8 +136,6 @@ export default {
       dictionaries: {},
       vr: ValidationRules,
       formIsValid: true,
-      dateFromMenu: false,
-      dateToMenu: false,
     };
   },
   async mounted() {

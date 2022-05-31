@@ -22,5 +22,6 @@ namespace Nayax.Models
             paramss[0] = "connector";
             paramss[1] = new ObjectInAuthRequestParams(otp);
         }
+
     }
 }

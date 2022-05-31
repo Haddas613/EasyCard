@@ -916,7 +916,7 @@ namespace Transactions.Api.Controllers
             res.TransactionAmount = refundAmount;
             res.NetTotal = null;
             res.VATTotal = null;
-            res.Calculate();
+            //res.Calculate();
 
             return res;
         }

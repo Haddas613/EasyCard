@@ -152,21 +152,21 @@ namespace Transactions.Api.Models.Transactions
         // ShvaAuthNum
         public string OKNumber { get; set; }
 
-        public void Calculate()
-        {
-            if (NetTotal.GetValueOrDefault(0) == 0)
-            {
-                NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
-                VATTotal = TransactionAmount - NetTotal;
-            }
-        }
+        //public void Calculate()
+        //{
+        //    if (NetTotal.GetValueOrDefault(0) == 0)
+        //    {
+        //        NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+        //        VATTotal = TransactionAmount - NetTotal;
+        //    }
+        //}
 
-        public void Calculate(decimal vatRate)
-        {
-            VATRate = vatRate;
-            NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
-            VATTotal = TransactionAmount - NetTotal;
-        }
+        //public void Calculate(decimal vatRate)
+        //{
+        //    VATRate = vatRate;
+        //    NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+        //    VATTotal = TransactionAmount - NetTotal;
+        //}
 
         /// <summary>
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
@@ -197,5 +197,7 @@ namespace Transactions.Api.Models.Transactions
 
         [StringLength(50)]
         public string Origin { get; set; }
+
+        public bool UserAmount { get; set; }
     }
 }

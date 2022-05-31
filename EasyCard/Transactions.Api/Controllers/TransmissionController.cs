@@ -147,6 +147,11 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Transmit transactions
+        /// </summary>
+        /// <param name="transmitTransactionsRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("transmit")]
         public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)

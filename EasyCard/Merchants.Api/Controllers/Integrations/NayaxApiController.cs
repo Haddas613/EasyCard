@@ -52,7 +52,7 @@ namespace Merchants.Api.Controllers.Integrations
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
-
+           // NayaxTerminalSettings
             var nayaxIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
 
             if (nayaxIntegration == null)
@@ -78,12 +78,22 @@ namespace Merchants.Api.Controllers.Integrations
                 nayaxIntegration.Valid = true;
             }
 
+            bool connection = true;
+            foreach (var device in settings.devices)
+            {
+                AuthRequest req = new AuthRequest(device.TerminalID, request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
+
+                var getDetailsResult = await nayaxProcessor.TestConnection(req);
+                connection = connection && getDetailsResult;
+            }
+            
+
             //TODO: save on success?
             //mapper.Map(request, nayaxIntegration);
             //await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
             var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
 
-            if (!nayaxIntegration.Valid)
+            if (!nayaxIntegration.Valid || !connection)
             {
                 response.Status = StatusEnum.Error;
                 response.Message = Resources.MessagesResource.ConnectionFailed;
@@ -188,6 +198,9 @@ namespace Merchants.Api.Controllers.Integrations
 
             return Ok(response);
         }
+
+
+       
 
         [HttpGet]
         [Route("request-logs/{entityID}")]
