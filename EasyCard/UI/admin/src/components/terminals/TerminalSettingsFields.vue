@@ -428,6 +428,20 @@
               :label="$t('PrivateApiKey')"
               readonly
             ></v-text-field>
+
+            <v-text-field
+              v-if="woocommerceApiKey"
+              :value="woocommerceApiKey"
+              :label="$t('WoocommerceApiKey')"
+              readonly
+            ></v-text-field>
+
+            <v-text-field
+              v-if="ecwidApiKey"
+              :value="ecwidApiKey"
+              :label="$t('EcwidApiKey')"
+              readonly
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
@@ -651,6 +665,8 @@ export default {
       dictionaries: {},
       merchantDictionaries: {},
       privateApiKey: null,
+      woocommerceApiKey: null,
+      ecwidApiKey: null,
       showSharedApiKey: false,
       appConstants: appConstants,
       changed: false,
@@ -729,7 +745,9 @@ export default {
       );
       if (!this.$apiSuccess(operation)) return;
 
-      this.privateApiKey = operation.entityReference;
+      this.privateApiKey = operation.apiKey;
+      this.woocommerceApiKey = operation.woocommerceApiKey;
+      this.ecwidApiKey = operation.ecwidApiKey;
     },
     async showPrivateKey(){
       if (!this.model.terminalID || this.privateApiKey) {
@@ -740,7 +758,9 @@ export default {
       );
       if (!this.$apiSuccess(operation)) return;
 
-      this.privateApiKey = operation.entityReference;
+      this.privateApiKey = operation.apiKey;
+      this.woocommerceApiKey = operation.woocommerceApiKey;
+      this.ecwidApiKey = operation.ecwidApiKey;
     },
     async resetSharedKey() {
       if (!this.model.terminalID) {

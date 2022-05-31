@@ -66,6 +66,8 @@ namespace IdentityServer.Security
 
                 //var claims = new List<Claim>() { new Claim("extension_TerminalID", apiKey.TerminalID.ToString()) };
 
+                userId = userId?.Replace("-wc", string.Empty);
+
                 context.Result = new GrantValidationResult(userId, GrantType);
                 return;
             }
