@@ -109,8 +109,12 @@
     [ResponsiblePerson]              NVARCHAR (50)    NULL,
     [TransactionJ5ExpiredDate]       DATETIME2 (7)    NULL,
     [ThreeDSChallengeID]             UNIQUEIDENTIFIER NULL,
+    [NetDiscountTotal]               DECIMAL (19, 4)  NULL,
+    [UserAmount]                     BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 
