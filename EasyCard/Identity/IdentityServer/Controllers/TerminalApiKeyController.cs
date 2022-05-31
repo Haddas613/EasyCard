@@ -80,9 +80,42 @@ namespace IdentityServer.Controllers
             await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, model.TerminalID.ToString());
             await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID.ToString());
 
+            if (model.WoocommerceEnabled)
+            {
+                await userManager.AddClaim(allClaims, user, Claims.WoocommerceEnabled, "true");
+            }
+
+            if (model.EcwidEnabled)
+            {
+                await userManager.AddClaim(allClaims, user, Claims.EcwidEnabled, "true");
+            }
+
             await merchantsApiClient.AuditResetApiKey(model.TerminalID, model.MerchantID);
 
-            return Ok(new ApiKeyOperationResponse { ApiKey = cryptoServiceCompact.EncryptCompact(user.Id) });
+            return Ok(GetApiKeyOperationResponse(user.Id, true, true));
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiKeyOperationResponse>> Update([FromBody] CreateTerminalApiKeyRequest model)
+        {
+            var user = await userManager.FindByNameAsync($"terminal_{model.TerminalID}");
+
+            if (user == null)
+            {
+                logger.LogError($"Failed to update terminal Api Key, TerminalID: {model.TerminalID}");
+                return NotFound("Failed to update terminal Api Key");
+            }
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            await userManager.AddClaim(allClaims, user, Claims.WoocommerceEnabled, model.WoocommerceEnabled.ToString().ToLower());
+
+            await userManager.AddClaim(allClaims, user, Claims.EcwidEnabled, model.EcwidEnabled.ToString().ToLower());
+
+            await merchantsApiClient.AuditResetApiKey(model.TerminalID, model.MerchantID);
+
+            return Ok(GetApiKeyOperationResponse(user.Id, true, true));
         }
 
         // admin only
@@ -116,9 +149,21 @@ namespace IdentityServer.Controllers
                 return NotFound("Terminal Api Key does not exist");
             }
 
-            var key = cryptoServiceCompact.EncryptCompact(user.Id);
+            return Ok(GetApiKeyOperationResponse(user.Id, true, true));
+        }
 
-            return Ok(new ApiKeyOperationResponse { ApiKey = key });
+        private ApiKeyOperationResponse GetApiKeyOperationResponse(string userId, bool woocommerce, bool ecwid)
+        {
+            var key = cryptoServiceCompact.EncryptCompact(userId);
+
+            var res = new ApiKeyOperationResponse { ApiKey = key };
+
+            if (woocommerce)
+            {
+                res.WoocommerceApiKey = cryptoServiceCompact.EncryptCompact($"{userId}-wc");
+            }
+
+            return res;
         }
     }
 }
