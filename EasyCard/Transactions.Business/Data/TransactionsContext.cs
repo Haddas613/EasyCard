@@ -194,6 +194,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.DueDate).IsRequired(false).HasColumnName("BankTransferDueDate");
                     s.Ignore(p => p.PaymentType);
                     s.Property(p => p.Reference).IsRequired(false).HasColumnName("BankTransferReference").HasMaxLength(50);
+                    s.Ignore(p => p.Amount);
                 });
 
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
@@ -439,6 +440,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
                     s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
                     s.Ignore(p => p.PaymentType);
+                    s.Ignore(p => p.Amount);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>

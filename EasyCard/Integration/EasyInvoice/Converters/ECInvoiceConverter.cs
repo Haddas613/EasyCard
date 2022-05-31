@@ -189,6 +189,8 @@ namespace EasyInvoice.Converters
                     res.ChequeBranch = chequeDetails.BankBranch?.ToString();
                     res.ChequeDate = chequeDetails.ChequeDate?.ToString("yyyy-MM-ddThh:mm");
 
+                    res.Amount = chequeDetails.Amount;
+
                     //TODO: cheque number
                 }
                 else if (d.PaymentType == PaymentTypeEnum.Cash)

@@ -354,26 +354,26 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [Route("{terminalID}/resetApiKey")]
-        public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
+        public async Task<ActionResult<ApiKeyOperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
 
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 
             // TODO: failed case
-            return Ok(new OperationResponse { EntityReference = opResult.ApiKey, Status = StatusEnum.Success });
+            return Ok(opResult);
         }
 
         [HttpGet]
         [Route("{terminalID}/getApiKey")]
-        public async Task<ActionResult<OperationResponse>> GetTerminalApiKey([FromRoute] Guid terminalID)
+        public async Task<ActionResult<ApiKeyOperationResponse>> GetTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
 
             var opResult = await userManagementClient.GetTerminalApiKey(terminal.TerminalID);
 
             // TODO: failed case
-            return Ok(new OperationResponse { EntityReference = opResult.ApiKey, Status = StatusEnum.Success });
+            return Ok(opResult);
         }
 
         [HttpPost]

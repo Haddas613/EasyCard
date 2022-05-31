@@ -5,7 +5,7 @@
     >{{$t("PaymentDetails")}}</v-card-title>
     <v-divider></v-divider>
     <v-card-text v-if="dictionaries">
-      <fieldset v-for="d in model" :key="d.paymentType" class="ec-fieldset mb-2">
+      <fieldset v-for="(d, index) in model" :key="d.paymentType+index" class="ec-fieldset mb-2">
         <legend>
             <b>{{dictionaries.paymentTypeEnum[d.paymentType]}}</b>
         </legend>
