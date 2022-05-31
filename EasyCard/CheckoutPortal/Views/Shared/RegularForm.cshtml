@@ -579,7 +579,7 @@
         };
 
         $("#number-of-payments").on("change", function (e) {
-            let totalAmount = $("#Amount").val();
+            let totalAmount = parseFloat( $("#Amount").val() || 0);
             let newAmount = Math.floor((totalAmount / e.target.value));
             let initialAmount = parseFloat((totalAmount - newAmount * (e.target.value - 1)).toFixed(2));
 
