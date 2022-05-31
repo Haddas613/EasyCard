@@ -1,6 +1,16 @@
 <template>
   <v-flex class="d-flex flex-column">
     <v-row no-gutters>
+      <v-col cols="12" md="6" v-if="showAmount">
+        <v-text-field
+          :label="$t('Amount')"
+          outlined
+          v-model="model.amount"
+          max="12"
+          :rules="[vr.primitives.positiveOnly]"
+          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+        ></v-text-field>
+      </v-col>
       <v-col cols="12" md="6">
         <v-text-field
           :label="$t('ChequeNumber')"
@@ -63,7 +73,11 @@ export default {
     required: {
       type: Boolean,
       default: false
-    }
+    },
+    showAmount: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

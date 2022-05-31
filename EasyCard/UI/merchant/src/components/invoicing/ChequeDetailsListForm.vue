@@ -13,6 +13,7 @@
         >
       </div>
       <cheque-details-fields
+        show-amount
         class="cheque-highligted"
         :ref="`cheque${index}`"
       ></cheque-details-fields>

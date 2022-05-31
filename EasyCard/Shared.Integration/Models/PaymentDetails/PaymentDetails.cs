@@ -14,5 +14,7 @@ namespace Shared.Integration.Models.PaymentDetails
     public class PaymentDetails
     {
         public virtual PaymentTypeEnum PaymentType { get; set; }
+
+        public virtual decimal Amount { get; set; }
     }
 }
