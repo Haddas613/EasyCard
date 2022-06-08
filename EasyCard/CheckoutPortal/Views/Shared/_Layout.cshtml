@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="~/css/threedots.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
+    <link href="http://fonts.cdnfonts.com/css/anelisa" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600&display=swap" rel="stylesheet">
+
 
     @if (viewModel?.CustomCssReference != null)
     {
@@ -26,21 +31,19 @@
         </div>
     </div>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand">
-                    @if (viewModel?.MerchantLogo != null)
-                    {
-                        <img src="@viewModel.BlobBaseAddress/@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo" />
-                    }
-                    else
-                    {
-                        <img src="~/img/logo.png" alt="EasyCard" />
-                    }
-                    <span>@viewModel?.MarketingName</span>
-                </a>
+        <nav class="checkout_navbar">
+            <a>
+                @if (viewModel?.MerchantLogo != null)
+                {
+                    <img src="@viewModel.BlobBaseAddress/@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo" />
+                }
+                else
+                {
+                    <img src="~/img/logon.png" alt="EasyCard" />
+                }
+            </a>
+            <span>@viewModel?.MarketingName</span>
                 <vc:culture-switcher />
-            </div>
         </nav>
     </header>
     <div class="container">

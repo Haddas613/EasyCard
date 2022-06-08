@@ -19,29 +19,26 @@
 </form>
 
 
-<div class="row justify-content-center">
-    <div class="col-md-10 col-lg-8 col-xl-6 col-sm-11">
-        <div class="panel panel-default">
+<div class="payment-panel_container">
+        <div class="payment-panel">
             <partial name="_ValidationSummary" />
 
-            <div class="panel-heading">
-                <p class="px-3 font-italic">@Model.Description</p>
-            </div>
+            <p class="payment-panel_heading">@Model.Description</p>
 
 
             <div class="panel-body">
                 @if (Model.AllowBit == true)
                 {
-                    <div id="payment-type-area" class="row justify-content-center text-center">
+                    <div id="payment-type-area" class="row justify-content-center text-center payment-type-area">
                         <div class="col-md-12">
-                            <h3>@localizer.Get("ChoosePaymentMethod")</h3>
+                            <h3 class="payment-panel_method">@localizer.Get("ChoosePaymentMethod")</h3>
                         </div>
                         <div class="col-md-12">
-                            <div class="btn-group btn-group-toggle payment-type-select" data-toggle="buttons">
-                                <label class="btn btn-outline-primary">
+                            <div class="btn-group btn-group-toggle payment-type-select payment-panel_button-group" data-toggle="buttons">
+                                <label class="btn btn-outline btn-outline-primary">
                                     <input type="radio" name="formPaymentType" id="formPaymentType_regular" autocomplete="off" value="regular"> @localizer.Get("CreditCardPayment")
                                 </label>
-                                <label class="btn btn-outline-secondary">
+                                <label class="btn btn-outline btn-outline-secondary">
                                     <input type="radio" name="formPaymentType" id="formPaymentType_bit" autocomplete="off" value="bit">
                                     <img id="bitlogo" height="20px" src="~/img/bit-logo-gray.svg" />
                                 </label>
@@ -63,8 +60,7 @@
                 }
             </div>
         </div>
-    </div>
-
+        <img src="~/img/payment-cards.png" alt="PaymentCards" />
 </div>
 
 @section Scripts {

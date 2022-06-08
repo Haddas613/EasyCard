@@ -35,7 +35,7 @@
             </select>
             <span asp-validation-for="TransactionType"></span>
         </div>
-        <ul class="list-group px-2" id="installments-area" hidden="@(Model.TransactionType == Shared.Integration.Models.TransactionTypeEnum.RegularDeal)">
+        <ul class="list-group" id="installments-area" hidden="@(Model.TransactionType == Shared.Integration.Models.TransactionTypeEnum.RegularDeal)">
             <li class="list-group-item">
                 <div class="form-group">
                     <label for="number-of-payments">@localizer.Get("NumberOfPayments")</label>
@@ -50,8 +50,8 @@
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 @localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())
-                @*<label asp-for="InitialPaymentAmount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
-                <div class="col">
+                @*<label asp-for="InitialPaymentAmount">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
+                <div>
                     <input id="initial-payment-amount" type="number" step="0.01" class="form-control form-control-sm text-end"
                            placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
                     <span asp-validation-for="InitialPaymentAmount"></span>
@@ -78,19 +78,19 @@
     {
         <input type="hidden" asp-for="Amount" />
 
-        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
+        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="payment-panel_title @(Model.IsRefund ? "text-danger" : "")">
             @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("TotalSum")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
         </h3>
     }
 
     @if (Model.UserAmount || (Model.SavedTokens?.Count() > 0 && !Model.OnlyAddCard))
     {
-        <fieldset class="border rounded p-2 m-2" id="amount-area">
+        <fieldset id="amount-area">
             @if (Model.UserAmount)
             {
                 <div class="form-group row">
-                    <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
-                    <div class="col-sm-9">
+                    <label asp-for="Amount">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
+                    <div>
                         <input type="number" step="0.01" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
                         <span asp-validation-for="Amount"></span>
                     </div>
@@ -99,8 +99,8 @@
             @if (Model.SavedTokens?.Count() > 0 && !Model.OnlyAddCard)
             {
                 <div class="form-group row">
-                    <label asp-for="CreditCardToken" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("UseSavedCard")</label>
-                    <div class="col-sm-9">
+                    <label asp-for="CreditCardToken">@localizer.Get("UseSavedCard")</label>
+                    <div>
 
                         <div class="form-check">
                             @foreach (var savedToken in Model.SavedTokens)
@@ -127,12 +127,12 @@
         </fieldset>
     }
 
-    <fieldset class="border rounded p-2 m-2" id="card-info-group-area">
+    <fieldset id="card-info-group-area">
         @if (Model.AllowPinPad ?? false)
         {
             <div class="form-group row mb-0">
                 <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPad">@localizer.Get("MakePinPadDeal")</label>
-                <div class="col-sm-9">
+                <div>
                     <div class="form-check">
                         <input id="pin-pad-deal" type="checkbox" class="form-check-input" asp-for="PinPad">
                         <span asp-validation-for="PinPad"></span>
@@ -153,30 +153,42 @@
             }
         }
         <div id="credit-card-info-area">
-            <div class="form-group row">
-                <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardNumber")</label>
-                <div class="col-sm-9">
-                    <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
-                    <span asp-validation-for="CardNumber"></span>
-                    <span class="control-validation"></span>
-                    <span hidden id="cc-added-warn" class="text-warning">@localizer.Get("ThisCreditCardIsAlreadyAddedAsToken")</span>
+            <div class="form-group__line">
+                <div class="form-group row">
+                    <label asp-for="CardNumber">@localizer.Get("CardNumber")</label>
+                    <div>
+                        <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
+                        <span asp-validation-for="CardNumber"></span>
+                        <span class="control-validation"></span>
+                        <span hidden id="cc-added-warn" class="text-warning">@localizer.Get("ThisCreditCardIsAlreadyAddedAsToken")</span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label asp-for="CardExpiration" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Expiration")</label>
-                <div class="col-sm-9">
-                    <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
-                    <span asp-validation-for="CardExpiration"></span>
-                    <span class="control-validation"></span>
+                <div class="form-group row">
+                    <label asp-for="CardExpiration">@localizer.Get("Expiration")</label>
+                    <div>
+                        <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
+                        <span asp-validation-for="CardExpiration"></span>
+                        <span class="control-validation"></span>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label asp-for="Cvv" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CVV")</label>
-                <div class="col-sm-9">
-                    <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
-                    <span asp-validation-for="Cvv"></span>
-                    <span class="control-validation"></span>
+            <div class="form-group__line">
+                <div class="form-group row">
+                    <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
+                    <div>
+                        <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
+                        <span asp-validation-for="Name"></span>
+                 </div>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="Cvv">@localizer.Get("CVV")</label>
+                    <div>
+                        <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
+                        <span asp-validation-for="Cvv"></span>
+                        <span class="control-validation"></span>
+                    </div>
                 </div>
             </div>
 
@@ -186,7 +198,7 @@
                 {
                     <div class="form-group row">
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                        <div class="col-sm-9">
+                        <div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard" checked disabled>
                             </div>
@@ -197,7 +209,7 @@
                 {
                     <div class="form-group row">
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                        <div class="col-sm-9">
+                        <div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
                             </div>
@@ -207,38 +219,31 @@
             }
         </div>
     </fieldset>
-    <fieldset class="border rounded p-2 m-2">
+    <fieldset>
         <div class="form-group row">
-            <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardOwnerName")</label>
-            <div class="col-sm-9">
-                <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
-                <span asp-validation-for="Name"></span>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label asp-for="Email" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Email")</label>
-            <div class="col-sm-9">
+            <label asp-for="Email">@localizer.Get("Email")</label>
+            <div>
                 <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" autocomplete="off">
                 <span asp-validation-for="Email"></span>
             </div>
         </div>
         <div class="form-group row">
-            <label asp-for="NationalID" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("NationalID")</label>
-            <div class="col-sm-9">
+            <label asp-for="NationalID">@localizer.Get("NationalID")</label>
+            <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" autocomplete="off">
                 <span asp-validation-for="NationalID"></span>
             </div>
         </div>
         <div class="form-group row">
-            <label asp-for="Phone" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Phone")</label>
-            <div class="col-sm-9">
+            <label asp-for="Phone">@localizer.Get("Phone")</label>
+            <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" autocomplete="off">
                 <span asp-validation-for="Phone"></span>
             </div>
         </div>
         <div class="form-group row">
-            <label asp-for="AuthNum" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("AuthorizationCodeOptional")</label>
-            <div class="col-sm-9">
+            <label asp-for="AuthNum">@localizer.Get("AuthorizationCodeOptional")</label>
+            <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("AuthorizationCode")" asp-for="AuthNum" autocomplete="off">
                 <span asp-validation-for="AuthNum"></span>
             </div>
@@ -246,21 +251,21 @@
 
     </fieldset>
 
-    <div class="form-group d-flex justify-content-end">
-        <button class="btn btn-outline-danger mx-1" id="cancel-btn">
+    <div class="form-group payment-panel_button-group">
+        <button class="btn btn-secondary" id="cancel-btn">
             @localizer.Get("CancelPayment")
         </button>
         @if (Model.IsRefund)
         {
-            <input class="btn btn-danger" type="button" id="submitbtn" value="@localizer.Get("Refund")" />
+            <input class="btn-danger" type="button" id="submitbtn" value="@localizer.Get("Refund")" />
         }
         else if (Model.OnlyAddCard)
         {
-            <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("OnlyAddCard")" />
+            <input class="btn-primary" type="button" id="submitbtn" value="@localizer.Get("OnlyAddCard")" />
         }
         else
         {
-            <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
+            <input class="btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
         }
     </div>
 

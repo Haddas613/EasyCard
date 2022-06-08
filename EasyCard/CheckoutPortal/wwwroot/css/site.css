@@ -1,6 +1,29 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+:root {
+    --light-blue: #CFEBF4;
+    --dark-blue: #0F99C7;
+
+    --gray-0: #ffffff;
+    --gray-1: #F2F3F4;
+    --gray-2: #E6E7EB;
+    --gray-3: #CECFD7;
+    --gray-4: #9D9FAF;
+    --gray-5: #6C6E87;
+    --gray-6: #3B3E5E;
+    --gray-7: #090E36;
+
+    --error-light: #FEEAF1;
+    --error-dark: #DC3545;
+
+    --border-radius: 6px;
+}
+
+* {
+    font-family: 'IBM Plex Sans Hebrew', 'Anelisa', sans-serif;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -9,11 +32,229 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+  color: var(--dark-blue);
 }
 
 .navbar-dark {
-    background-color: #0f99c7;
+    background-color: var(--dark-blue);
+}
+
+.checkout_navbar {
+   background-color: white;
+    border-bottom: 2px solid var(--gray-2);
+    max-width: 1138px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    font-size: 25px;
+}
+
+.checkout_navbar span {
+    color: var(--gray-5);
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+    font-size: 1.1rem;
+}
+
+.payment-panel_container {
+    display: flex;
+    max-width: 1135px;
+    margin: 0 auto;
+    justify-content: space-between;
+}
+
+.payment-panel_container > img {
+    max-height: 600px;
+    margin-top: 100px;
+}
+
+@media screen and (max-width: 1135px) {
+    .payment-panel_container {
+        flex-direction: column;
+    }
+    .payment-panel {
+        align-self: center;
+    }
+    .payment-panel_container > img {
+        display: none;
+    }
+    .checkout_navbar {
+        padding: 0 1rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .checkout_navbar {
+        border-bottom: none;
+    }
+    .payment-panel {
+        padding-top: 0.5rem !important;
+    }
+}
+
+.payment-panel {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    padding: 1rem 0;
+}
+
+.payment-panel_heading,
+.payment-panel_method {
+    font-weight: 600;
+    font-size: 1.6rem;
+    text-align: start;
+}
+
+.payment-panel_title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 1.4rem 0;
+}
+
+.payment-panel_method  {
+    font-size: 1.4rem;
+}
+
+.payment-panel input,
+.payment-panel select {
+    background-color: var(--gray-1);
+    border-radius: var(--border-radius);
+    border: none;
+    height: 35px;
+}
+
+.payment-panel input::placeholder,
+.payment-panel select::placeholder {
+    color: var(--gray-5);
+    font-weight: 400;
+    font-size: 0.875rem;
+    padding-left: 1rem;
+}
+
+.payment-panel label {
+    font-weight: 700;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--gray-5);
+    margin-bottom: 0.4rem;
+    max-width: 100%;
+}
+
+.payment-type-area label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.4rem;
+    margin-bottom: 0;
+}
+
+.form-group__line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form-group__line > div:first-of-type {
+    width: 77.5%;
+}
+
+.form-group__line > div:last-of-type {
+    width: 27%;
+}
+
+fieldset {
+    border-top: 1px solid var(--gray-2);
+    padding: 0.5rem;
+    margin: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.payment-panel_button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.payment-panel_button-group button,
+.payment-panel_button-group input {
+    width: 48%;
+    height: 35px;
+}
+
+input {
+    color: black !important;
+    font-weight: 500 !important;
+}
+
+.btn, button, input {
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.125rem;
+    border-radius: var(--border-radius);
+    height: 35px;
+}
+
+.btn-outline {
+    border: 1px solid !important;
+}
+.btn-outline-primary {
+    color: black !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary.active,
+.payment-panel_button-group input {
+    color: white !important;
+}
+
+button:hover,
+.payment-panel_button-group input:hover,
+.payment-type-select label:hover {
+    transform: scale(1.02);
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: var(--dark-blue) !important;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--light-blue);
+    color: var(--dark-blue);
+}
+
+.btn-danger {
+    background-color: var(--error-dark);
+    color: white;
+}
+
+.btn-danger:hover {
+    color: white;
+}
+
+.text-danger {
+   color: var(--error-dark);
+}
+
+.culture-select {
+    background-color: var(--light-blue);
+    color: var(--dark-blue);
+    font-weight: bold;
+    font-family: "Open Sans Semibold", sans-serif;
+    border-radius: var(--border-radius);
+    border: none;
 }
 
 /*.btn-primary {
@@ -24,7 +265,7 @@ a {
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
-    background-color: #0f99c7;
+    background-color: var(--dark-blue);
   border-color: #1861ac;
 }
 
@@ -65,7 +306,7 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
-    background-color: #f4f6f7;
+    background-color: white;
 }
 .footer {
   position: absolute;
@@ -76,7 +317,9 @@ body {
 }
 
 .field-validation-error {
-    color: #b94a48;
+    color: var(--error-dark);
+    font-weight: 400;
+    font-size: 0.75rem;
 }
 
 .field-validation-valid {
@@ -84,7 +327,12 @@ body {
 }
 
 input.input-validation-error {
-    border: 1px solid #b94a48;
+    background-color: var(--error-light);
+}
+
+input.input-validation-error::placeholder {
+    color: var(--error-dark);
+    font-weight: 500;
 }
 
 input[type="checkbox"].input-validation-error {
@@ -127,11 +375,14 @@ input[type="checkbox"].input-validation-error {
     text-align: right;
 }
 #merchant-logo{
-    max-height: 135px;
+    max-height: 80px;
     max-width: 135px;
 }
 .list-group-item {
     background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0.75rem 0;
 }
 
 .spanner {
@@ -165,7 +416,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .signalr-toast.toast-info {
-    background-color: #0f99c7;
+    background-color: var(--dark-blue);
     opacity: 1 !important;
 }
 .text-end {
