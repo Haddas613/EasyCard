@@ -27,7 +27,8 @@ steps:
 - checkout: self
 - checkout: FrontendRepo
 
-
+- script: dir $(Build.SourcesDirectory)
+- script: dir $(system.defaultworkingdirectory)
 
 - task: NodeTool@0
   inputs:
