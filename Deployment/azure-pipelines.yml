@@ -11,7 +11,7 @@ resources:
   repositories:
   - repository: FrontendRepo
     type: bitbucket
-    endpoint: vladmrvolkov2
+    endpoint: Bitbucket
     name: benamardan/ecng-frontend
 
 
