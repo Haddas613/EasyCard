@@ -7,6 +7,14 @@
 pool:
   vmImage: 'windows-latest'
 
+resources:
+  repositories:
+  - repository: FrontendRepo
+    type: bitbucket
+    endpoint: vladmrvolkov2
+    name: benamardan/ecng-frontend
+
+
 variables:
   solution: '**/EasyCard.sln'
   buildPlatform: 'Any CPU'
@@ -16,6 +24,9 @@ variables:
 
 
 steps:
+- checkout: FrontendRepo
+
+- script: dir $(Build.SourcesDirectory)
 
 - task: NodeTool@0
   inputs:
