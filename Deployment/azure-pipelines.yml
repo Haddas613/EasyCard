@@ -3,8 +3,17 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+
 pool:
   vmImage: 'windows-latest'
+
+resources:
+  repositories:
+  - repository: FrontendRepo
+    type: bitbucket
+    endpoint: "Bitbucket - vladmrvolkov2"
+    name: benamardan/ecng-frontend
+
 
 variables:
   solution: '**/EasyCard.sln'
@@ -12,9 +21,15 @@ variables:
   buildConfiguration: 'Release'
   buildNumber: $[ variables['Build.BuildNumber'] ]
   versionNumber: '1.0.0.$(buildNumber)'
+  uiPath: '$(system.defaultworkingdirectory)/ecng-frontend/EasyCard/UI'
 
 
 steps:
+- checkout: self
+- checkout: FrontendRepo
+
+- script: dir $(Build.SourcesDirectory)
+- script: dir $(system.defaultworkingdirectory)
 
 - task: NodeTool@0
   inputs:
@@ -23,7 +38,7 @@ steps:
 
 - task: replacetokens@3
   inputs:
-    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard/UI'
+    rootDirectory: '$(uiPath)'
     targetFiles: '**/.env.$(Build.SourceBranchName)'
     encoding: 'auto'
     writeBOM: true
@@ -37,19 +52,19 @@ steps:
 
 - script: npm install
   displayName: 'npm install'
-  workingDirectory: 'EasyCard\UI\merchant'
+  workingDirectory: '$(uiPath)\merchant'
   
 - script: npm run build $(Build.SourceBranchName)
   displayName: 'npm build'
-  workingDirectory: 'EasyCard\UI\merchant'
+  workingDirectory: '$(uiPath)\merchant'
 
 - script: npm install
   displayName: 'npm install'
-  workingDirectory: 'EasyCard\UI\admin'
+  workingDirectory: '$(uiPath)\admin'
 
 - script: npm run build $(Build.SourceBranchName)
   displayName: 'npm build'
-  workingDirectory: 'EasyCard\UI\admin'
+  workingDirectory: '$(uiPath)\admin'
 
 - task: NuGetToolInstaller@1
 
@@ -60,21 +75,21 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/merchant/dist'
+    SourceFolder: '$(uiPath)/merchant/dist'
     Contents: '**'
-    TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/MerchantProfileApi/wwwroot'
+    TargetFolder: '$(system.defaultworkingdirectory)/easycardng/EasyCard/MerchantProfileApi/wwwroot'
     overWrite: true
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/admin/dist'
+    SourceFolder: '$(uiPath)/admin/dist'
     Contents: '**'
-    TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/Merchants.Api/wwwroot'
+    TargetFolder: '$(system.defaultworkingdirectory)/easycardng/EasyCard/Merchants.Api/wwwroot'
     overWrite: true
 
 - task: replacetokens@3
   inputs:
-    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard'
+    rootDirectory: '$(system.defaultworkingdirectory)/easycardng/EasyCard'
     targetFiles: '**/appsettings.json'
     encoding: 'auto'
     writeBOM: true
@@ -119,13 +134,7 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)/publishable'
     
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(system.defaultworkingdirectory)/EasyCard/Functions/FunctionsCompositionApp/obj/Release/netcoreapp3.1/PubTmp/Out'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/publishable/FunctionsCompositionApp.zip'
-    replaceExistingArchive: true
+
 
 - task: PublishBuildArtifacts@1
   inputs:
