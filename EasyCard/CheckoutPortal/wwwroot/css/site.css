@@ -129,7 +129,7 @@ a {
 
 .payment-panel input::placeholder,
 .payment-panel select::placeholder {
-    color: var(--gray-5);
+    color: var(--gray-4);
     font-weight: 400;
     font-size: 0.875rem;
     padding-left: 1rem;
@@ -363,6 +363,10 @@ input[type="checkbox"].input-validation-error {
     position: initial !important;
     margin: 0 3px;
 }
+.form-control {
+    font-weight: 500;
+    font-size: 0.875rem;
+}
 .form-check{
     padding-left: 0;
 }
@@ -375,8 +379,9 @@ input[type="checkbox"].input-validation-error {
     text-align: right;
 }
 #merchant-logo{
-    max-height: 80px;
+    max-height: 40px;
     max-width: 135px;
+    margin: 0.4rem;
 }
 .list-group-item {
     background-color: transparent;
