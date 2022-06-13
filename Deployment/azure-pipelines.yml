@@ -13,7 +13,7 @@ resources:
     type: bitbucket
     endpoint: "Bitbucket - vladmrvolkov2"
     name: benamardan/ecng-frontend
-    ref: env.$(Build.SourceBranchName)
+    ref: $(Build.SourceBranchName)
 
 
 variables:
