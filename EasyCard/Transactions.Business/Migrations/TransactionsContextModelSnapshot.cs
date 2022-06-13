@@ -1295,6 +1295,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
 
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
                                 .IsUnicode(true)
@@ -1618,6 +1624,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
 
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
                                 .IsUnicode(true)
@@ -1780,6 +1792,12 @@ namespace Transactions.Business.Migrations
 
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
+
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)

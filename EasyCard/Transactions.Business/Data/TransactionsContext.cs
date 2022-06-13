@@ -472,6 +472,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
                         .Metadata.SetValueComparer(StringArrayComparer);
+
+                    s.Property(p => p.InvoiceLanguage).HasColumnName("InvoiceLanguage").IsRequired(false).IsUnicode(false).HasMaxLength(20);
                 });
 
                 builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
@@ -585,6 +587,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
                         .Metadata.SetValueComparer(StringArrayComparer);
+                    s.Property(p => p.InvoiceLanguage).HasColumnName("InvoiceLanguage").IsRequired(false).IsUnicode(false).HasMaxLength(20);
                 });
 
                 builder.Property(b => b.InvoiceAmount).HasColumnType("decimal(19,4)").IsRequired();
@@ -702,6 +705,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
                         .Metadata.SetValueComparer(StringArrayComparer);
+                    s.Property(p => p.InvoiceLanguage).HasColumnName("InvoiceLanguage").IsRequired(false).IsUnicode(false).HasMaxLength(20);
                 });
 
                 builder.OwnsOne(b => b.PinPadDetails, s =>
