@@ -233,5 +233,13 @@ namespace Transactions.Business.Entities
 
         [NotMapped]
         public WebHooksConfiguration WebHooksConfiguration { get; set; }
+
+        public bool CanCancel
+        {
+            get
+            {
+                return Status == InvoiceStatusEnum.Sent || Status == InvoiceStatusEnum.CancellationFailed;
+            }
+        }
     }
 }
