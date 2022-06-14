@@ -320,7 +320,7 @@ namespace Transactions.Api.Controllers
                 await SendPaymentRequestSMS(newPaymentRequest, terminal);
             }
 
-            newPaymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(newPaymentRequest);
+            newPaymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(newPaymentRequest, terminal.CheckoutSettings.DefaultLanguage);
 
             await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
 
@@ -348,7 +348,7 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
         }
 
-        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest)
+        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, string defaultLanguage)
         {
             var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
             uriBuilder.Path = "/p";
@@ -363,6 +363,10 @@ namespace Transactions.Api.Controllers
             {
                 query["l"] = dbPaymentRequest.Language;
             }
+            else if (!string.IsNullOrWhiteSpace(defaultLanguage))
+            {
+                query["l"] = defaultLanguage;
+            }
 
             var url = uriBuilder.ToString();
 
@@ -373,7 +377,7 @@ namespace Transactions.Api.Controllers
             return Tuple.Create(url, rejectUrl);
         }
 
-        private string GetPaymentRequestSMSUrl(PaymentRequest dbPaymentRequest)
+        private string GetPaymentRequestSMSUrl(PaymentRequest dbPaymentRequest, string defaultLanguage)
         {
             var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
             uriBuilder.Path = "/p";
@@ -385,6 +389,10 @@ namespace Transactions.Api.Controllers
             if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
             {
                 query["l"] = dbPaymentRequest.Language;
+            }
+            else if (!string.IsNullOrWhiteSpace(defaultLanguage))
+            {
+                query["l"] = defaultLanguage;
             }
 
             uriBuilder.Query = query.ToString();
@@ -398,7 +406,7 @@ namespace Transactions.Api.Controllers
 
             var emailSubject = paymentRequest.RequestSubject ?? (paymentRequest.IsRefund ? settings.DefaultRefundRequestSubject : settings.DefaultRequestSubject);
             var emailTemplateCode = $"{settings.EmailTemplateCode ?? nameof(PaymentRequest)}{(paymentRequest.IsRefund ? "Refund" : string.Empty)}";
-            var url = GetPaymentRequestUrl(paymentRequest);
+            var url = GetPaymentRequestUrl(paymentRequest, terminal.CheckoutSettings.DefaultLanguage);
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"));
@@ -431,7 +439,7 @@ namespace Transactions.Api.Controllers
             var messageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             var template = paymentRequest.IsRefund ? Resources.SMSResource.PaymentRequestRefund : Resources.SMSResource.PaymentRequest;
-            var url = GetPaymentRequestSMSUrl(paymentRequest);
+            var url = GetPaymentRequestSMSUrl(paymentRequest, terminal.CheckoutSettings.DefaultLanguage);
 
             //TODO: due date?
             template = template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName)
