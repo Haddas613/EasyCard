@@ -21,6 +21,7 @@ using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.PaymentRequests;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
+using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api.Controllers
 {
@@ -189,7 +190,12 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            response.Settings.AllowBit = terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID);
+            response.Settings.AllowBit =
+                terminal.IntegrationEnabled(ExternalSystemHelpers.BitVirtualWalletProcessorExternalSystemID)
+                && response.PaymentRequest.Currency == SharedHelpers.CurrencyEnum.ILS
+                && !response.PaymentRequest.IsRefund
+                && (response.PaymentRequest.PaymentRequestAmount > 0 == true || response.PaymentRequest.UserAmount);
+
             response.Settings.EnableThreeDS = terminal.Support3DSecure;
             response.Settings.Language = paymentRequest?.Language ?? terminal.CheckoutSettings.DefaultLanguage;
 

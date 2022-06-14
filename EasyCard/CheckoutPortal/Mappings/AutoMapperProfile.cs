@@ -68,7 +68,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.EnabledFeatures, o => o.MapFrom(src => src.EnabledFeatures))
                 .ForMember(d => d.EnableThreeDS, o => o.MapFrom(src => src.EnableThreeDS))
                 .ForMember(d => d.ContinueInCaseOf3DSecureError, o => o.MapFrom(src => src.ContinueInCaseOf3DSecureError))
-                .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => !d.IsRefund && (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
+                .ForMember(d => d.AllowBit, o => o.MapFrom(src => src.AllowBit.GetValueOrDefault(false)))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
