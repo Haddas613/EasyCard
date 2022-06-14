@@ -209,7 +209,7 @@ namespace Transactions.Api.Controllers
                 RedirectUrlHelpers.CheckRedirectUrls(terminal.CheckoutSettings.RedirectUrls, model.RedirectUrl);
             }
 
-            string url = GetPaymentIntentShortUrl(newPaymentRequest);
+            string url = GetPaymentIntentShortUrl(newPaymentRequest, terminal.CheckoutSettings.DefaultLanguage);
 
             newPaymentRequest.PaymentRequestUrl = url;
 
@@ -272,7 +272,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private string GetPaymentIntentShortUrl(PaymentRequest dbPaymentRequest)
+        private string GetPaymentIntentShortUrl(PaymentRequest dbPaymentRequest, string defaultLanguage)
         {
             var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
             uriBuilder.Path = "/i";
@@ -284,6 +284,10 @@ namespace Transactions.Api.Controllers
             if (!string.IsNullOrWhiteSpace(dbPaymentRequest.Language))
             {
                 query["l"] = dbPaymentRequest.Language;
+            }
+            else if (!string.IsNullOrWhiteSpace(defaultLanguage))
+            {
+                query["l"] = defaultLanguage;
             }
 
             uriBuilder.Query = query.ToString();
