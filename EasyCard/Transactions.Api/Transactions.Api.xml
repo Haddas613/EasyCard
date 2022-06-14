@@ -212,6 +212,12 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.CancelInvoice(System.Nullable{System.Guid})">
+            <summary>
+            Cancel invoice
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.CreateInvoiceForTransaction(System.Guid)">
             <summary>
             Create invoice for transaction ID
@@ -228,7 +234,7 @@
         </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.Resend(Transactions.Api.Models.Invoicing.ResendSingleInvoiceRequest)">
             <summary>
-            Resend one invoice 
+            Resend one invoice
             </summary>
             <param name="request"></param>
             <returns></returns>

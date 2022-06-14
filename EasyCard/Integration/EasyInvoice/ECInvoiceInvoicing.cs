@@ -90,7 +90,8 @@ namespace EasyInvoice
                     Request = requestStr,
                     Response = responseStr,
                     ResponseStatus = responseStatusStr,
-                    Address = requestUrl
+                    Address = requestUrl,
+                    Method = "POST"
                 };
 
                 await storageService.Save(integrationMessage);
@@ -199,7 +200,6 @@ namespace EasyInvoice
             }
         }
 
-
         public async Task<OperationResponse> GenerateCertificate(EasyInvoiceTerminalSettings terminal, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -254,36 +254,6 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<OperationResponse> CancelDocument(ECInvoiceSetDocumentNumberRequest request, string correlationId)
-        {
-            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-
-            var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, request.Email);
-
-            try
-            {
-                var json = new SetDocNextNumberModel
-                {
-                    DocumentType = request.DocType.ToString(),
-                    NextDocumentNumber = request.CurrentNum
-                };
-
-                var result = await this.apiClient.Delete<Object>(this.configuration.BaseUrl, string.Format("/api/v1/docs/{0}/{1}", request.DocType, request.CurrentNum), () => Task.FromResult(headers));
-
-                return new OperationResponse
-                {
-                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
-                    Message = "Document Cancelled"
-                };
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"EasyInvoice cancel Document request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
-
-                throw new IntegrationException("EasyInvoice cancel document request failed", integrationMessageId);
-            }
-        }
-
         public async Task<OperationResponse> SetDocumentNumber(ECInvoiceSetDocumentNumberRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -315,7 +285,6 @@ namespace EasyInvoice
                 throw new IntegrationException("EasyInvoice Change Document Number request failed", integrationMessageId);
             }
         }
-
 
         public async Task<DocumentNextNumberModel> GetDocumentNumber(ECInvoiceGetDocumentNumberRequest request, string correlationId)
         {
@@ -379,7 +348,6 @@ namespace EasyInvoice
             }
         }
 
-
         public async Task<Object> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -414,7 +382,6 @@ namespace EasyInvoice
             }
         }
 
-
         public async Task<Object> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
@@ -448,7 +415,6 @@ namespace EasyInvoice
                 throw new IntegrationException("EasyInvoice Get Hash Report request failed", integrationMessageId);
             }
         }
-
 
         public async Task<OperationResponse> GetDocumentTypes(ECInvoiceGetDocumentNumberRequest request, string correlationId)
         {
@@ -540,6 +506,76 @@ namespace EasyInvoice
         public bool CanCreateConsumer()
         {
             return false;
+        }
+
+        public bool CanCancelDocument()
+        {
+            return true;
+        }
+
+        public async Task<InvoicingCancelDocumentResponse> CancelDocument(InvoicingCancelDocumentRequest documentCancelRequest)
+        {
+            var terminal = documentCancelRequest.InvoiceingSettings as EasyInvoiceTerminalSettings;
+
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            NameValueCollection headers = await
+                GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, documentCancelRequest.CorrelationId, documentCancelRequest.InvoiceID);
+
+            ECInvoiceDocumentResponse svcRes = null;
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            try
+            {
+                var invoiceType = ECInvoiceConverter.GetECInvoiceDocumentType(documentCancelRequest.InvoiceDetails.InvoiceType, documentCancelRequest.InvoiceDetails.Donation);
+
+                svcRes = await this.apiClient.Delete<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, $"/api/v1/docs/{invoiceType}/{documentCancelRequest.InvoiceNumber}", () => Task.FromResult(headers),
+                     (url, request) =>
+                     {
+                         requestStr = request;
+                         requestUrl = url;
+                     },
+                     (response, responseStatus, responseHeaders) =>
+                     {
+                         responseStr = response;
+                         responseStatusStr = responseStatus.ToString();
+                     });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCancelRequest.CorrelationId}");
+
+                throw new IntegrationException("EasyInvoice integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, documentCancelRequest.InvoiceID, integrationMessageId, documentCancelRequest.CorrelationId)
+                {
+                    Request = requestStr,
+                    Response = responseStr,
+                    ResponseStatus = responseStatusStr,
+                    Address = requestUrl,
+                    Method = "DELETE"
+                };
+
+                await storageService.Save(integrationMessage);
+            }
+
+            var response = new InvoicingCancelDocumentResponse
+            {
+                DocumentNumber = svcRes.DocumentNumber?.ToString()
+            };
+
+            if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
+            {
+                response.Success = false;
+                response.ErrorMessage = svcRes.Message ?? svcRes.Error;
+            }
+
+            return response;
         }
 
         private async Task<NameValueCollection> GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId, string entityId)

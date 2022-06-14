@@ -108,25 +108,14 @@ namespace Transactions.Api.Controllers.External
             {
                 logger.LogWarning(ex, $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} ");
 
-                //return BadRequest(new NayaxUpdateTranRecordResponse
-                //{
-                //    StatusCode = 14,
-                //    ErrorMsg = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
-                //    Status = "error",
-                //    CorrelationID = GetCorrelationID()
-                //});
-
                 return new NayaxUpdateTranRecordResponse
                 {
                     StatusCode = 14,
                     Status = "error",
                     ErrorMsg = $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} "
                 };
-
-
             }
         }
-
 
         [HttpPost]
         [ValidateModelState]

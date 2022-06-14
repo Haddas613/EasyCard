@@ -387,6 +387,16 @@ namespace RapidOne
             return true;
         }
 
+        public bool CanCancelDocument()
+        {
+            return false;
+        }
+
+        public Task<InvoicingCancelDocumentResponse> CancelDocument(InvoicingCancelDocumentRequest documentCancelRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         private string GetDocumentNumber(IEnumerable<DocumentItemModel> documents)
         {
             var invoice = documents.FirstOrDefault(d => d.DocType == 13)?.DocEntry;

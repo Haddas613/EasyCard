@@ -19,7 +19,7 @@ namespace Transactions.Shared {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Messages {
@@ -601,6 +601,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Canceled.
+        /// </summary>
+        public static string InvoiceCanceled {
+            get {
+                return ResourceManager.GetString("InvoiceCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoice Created.
         /// </summary>
         public static string InvoiceCreated {
@@ -732,6 +741,15 @@ namespace Transactions.Shared {
         public static string NothingToTransmit {
             get {
                 return ResourceManager.GetString("NothingToTransmit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not possible to cancel invoice.
+        /// </summary>
+        public static string NotPossibleToCancelInvoice {
+            get {
+                return ResourceManager.GetString("NotPossibleToCancelInvoice", resourceCulture);
             }
         }
         

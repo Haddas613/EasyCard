@@ -34,6 +34,10 @@ namespace Shared.Helpers.Events
 
         public const string ConsumerUpdated = "ConsumerUpdated";
 
+        public const string InvoiceCanceled = "InvoiceCanceled";
+
+        public const string InvoiceCancellationFailed = "InvoiceCancellationFailed";
+
         [JsonIgnore]
         public object Entity { get; set; }
     }

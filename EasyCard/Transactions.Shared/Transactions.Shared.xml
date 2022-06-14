@@ -915,6 +915,11 @@
               Looks up a localized string similar to InstallmentDetails required.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.InvoiceCanceled">
+            <summary>
+              Looks up a localized string similar to Invoice Canceled.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.InvoiceCreated">
             <summary>
               Looks up a localized string similar to Invoice Created.
@@ -988,6 +993,11 @@
         <member name="P:Transactions.Shared.Messages.NothingToTransmit">
             <summary>
               Looks up a localized string similar to Nothing to transmit.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.NotPossibleToCancelInvoice">
+            <summary>
+              Looks up a localized string similar to Not possible to cancel invoice.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.NumberOfPaymentsShouldBeGreaterThan">

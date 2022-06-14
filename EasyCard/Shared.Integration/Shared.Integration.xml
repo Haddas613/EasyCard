@@ -329,6 +329,21 @@
             Billing's invoice. Billing payment type is bank
             </summary>
         </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCancelDocumentRequest.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCancelDocumentRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Models.Invoicing.InvoicingCancelDocumentResponse.ErrorMessage">
+            <summary>
+            General error mesage which can be displayed to merchant
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Models.Invoicing.InvoicingCreateDocumentRequest.CorrelationId">
             <summary>
             Request ID
@@ -952,6 +967,16 @@
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.BankBilling">
             <summary>
               Looks up a localized string similar to Bank Billing.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.Canceled">
+            <summary>
+              Looks up a localized string similar to Canceled.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CancellationFailed">
+            <summary>
+              Looks up a localized string similar to Cancellation Failed.
             </summary>
         </member>
         <member name="P:Shared.Integration.Resources.InvoiceEnumsResource.CreditCardBilling">

@@ -120,6 +120,12 @@
   <data name="BankBilling" xml:space="preserve">
     <value>Bank Billing</value>
   </data>
+  <data name="Canceled" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="CancellationFailed" xml:space="preserve">
+    <value>Cancellation Failed</value>
+  </data>
   <data name="CreditCardBilling" xml:space="preserve">
     <value>Credit Card Billing</value>
   </data>

@@ -15,7 +15,7 @@ namespace EasyInvoice.Converters
         public static ECInvoiceCreateDocumentRequest GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message, EasyInvoiceTerminalSettings settings)
         {
             string description;
-            fillDonationDescription(message, settings, out description);
+            FillDonationDescription(message, settings, out description);
 
             var json = new ECInvoiceCreateDocumentRequest
             {
@@ -25,7 +25,7 @@ namespace EasyInvoice.Converters
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
                 CustomerTaxId = message.ConsumerNationalID,
                 Description = description,
-                DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault(), message.Donation || message.InvoiceDetails.Donation).ToString(),
+                DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault(), message.InvoiceDetails.Donation).ToString(),
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
                 DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
@@ -57,16 +57,6 @@ namespace EasyInvoice.Converters
             }
 
             return json;
-        }
-
-        private static void fillDonationDescription(InvoicingCreateDocumentRequest message, EasyInvoiceTerminalSettings settings, out string description)
-        {
-            description = message.DealDetails?.DealDescription;
-            var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
-            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "התרומה מוכרת לצרכי מס לפי סעיף 46 א" : "Receiving a donation according to Section 46";
-
-            if ((documentType == ECInvoiceDocumentType.PAYMENT_INFO || documentType == ECInvoiceDocumentType.PAYMENT_INFO_DONATION) && (message.Donation || message.InvoiceDetails.Donation))
-                description = String.Format("{0}{1} {2}", description, string.IsNullOrEmpty(description) ? "" : ",", donationDescription);
         }
 
         public static UpdateUserDetailsRequest GetUpdateUserDataRequest(UpdateUserDetailsRequest message)
@@ -211,7 +201,7 @@ namespace EasyInvoice.Converters
             return result;
         }
 
-        public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType,bool donation = false)
+        public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType, bool donation = false)
         {
             return documentType switch
             {
@@ -222,6 +212,18 @@ namespace EasyInvoice.Converters
                 InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE_WITH_PAYMENT_INFO,
                 _ => throw new NotImplementedException(),
             };
+        }
+
+        private static void FillDonationDescription(InvoicingCreateDocumentRequest message, EasyInvoiceTerminalSettings settings, out string description)
+        {
+            description = message.DealDetails?.DealDescription;
+            var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
+            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "התרומה מוכרת לצרכי מס לפי סעיף 46 א" : "Receiving a donation according to Section 46";
+
+            if ((documentType == ECInvoiceDocumentType.PAYMENT_INFO || documentType == ECInvoiceDocumentType.PAYMENT_INFO_DONATION) && message.InvoiceDetails.Donation)
+            {
+                description = string.Format("{0}{1} {2}", description, string.IsNullOrEmpty(description) ? string.Empty : ",", donationDescription);
+            }
         }
     }
 }
