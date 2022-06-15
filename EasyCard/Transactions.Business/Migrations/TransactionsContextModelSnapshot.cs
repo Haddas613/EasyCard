@@ -730,6 +730,12 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("PaymentRequestID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool?>("AllowCredit")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("AllowInstallments")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("AllowPinPad")
                         .HasColumnType("bit");
 
@@ -767,6 +773,15 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("HideEmail")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("HideNationalID")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("HidePhone")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("InitialPaymentAmount")
                         .HasColumnType("decimal(19,4)");
@@ -827,6 +842,9 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(250)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<bool?>("ShowAuthCode")
+                        .HasColumnType("bit");
 
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)

@@ -25,5 +25,15 @@ namespace Merchants.Shared.Models
         public bool? ContinueInCaseOf3DSecureError { get; set; }
 
         public string DefaultLanguage { get; set; }
+
+        public bool? AllowInstallments { get; set; }
+
+        public bool? AllowCredit { get; set; }
+
+        public bool? HidePhone { get; set; }
+
+        public bool? HideEmail { get; set; }
+
+        public bool? HideNationalID { get; set; }
     }
 }
