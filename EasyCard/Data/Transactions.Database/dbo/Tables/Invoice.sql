@@ -60,8 +60,11 @@
     [ExternalUserID]            VARCHAR (50)     NULL,
     [ResponsiblePerson]         NVARCHAR (50)    NULL,
     [InvoiceDetails_Donation]   BIT              NULL,
+    [InvoiceLanguage]           VARCHAR (20)     NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 

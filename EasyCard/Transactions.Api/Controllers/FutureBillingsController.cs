@@ -57,14 +57,13 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<FutureBillingSummary>>> GetFutureBillingDeals([FromQuery] FutureBillingDealsFilter filter)
         {
-            var query = futureBillingsService.GetFutureBillings().Filter(filter);
-            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+            var queryRes = await futureBillingsService.GetFutureBillings(filter.TerminalID, filter.ConsumerID, filter.BillingDealID, filter.DateFrom, filter.DateTo);
 
             var response = new SummariesResponse<FutureBillingSummary>();
 
-            response.Data = await mapper.ProjectTo<FutureBillingSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+            response.Data = mapper.Map<IEnumerable<FutureBillingSummary>>(queryRes);
 
-            response.NumberOfRecords = numberOfRecordsFuture.Value;
+            response.NumberOfRecords = queryRes.Count();
 
             return Ok(response);
         }

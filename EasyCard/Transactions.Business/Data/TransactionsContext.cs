@@ -99,8 +99,6 @@ namespace Transactions.Business.Data
 
         public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
 
-        public DbSet<FutureBilling> FutureBillings { get; set; }
-
         public DbSet<MasavFile> MasavFiles { get; set; }
 
         public DbSet<MasavFileRow> MasavFileRows { get; set; }
@@ -135,7 +133,6 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new InvoiceHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
-            modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
             modelBuilder.ApplyConfiguration(new NayaxTransactionsParametersConfiguration());
@@ -772,47 +769,6 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
-            }
-        }
-
-        internal class FutureBillingConfiguration : IEntityTypeConfiguration<FutureBilling>
-        {
-            public void Configure(EntityTypeBuilder<FutureBilling> builder)
-            {
-                builder.ToTable("vFutureBillings", t => t.ExcludeFromMigrations());
-
-                builder.HasKey(b => new { b.BillingDealID, b.CurrentDeal });
-
-                builder.Property(p => p.TerminalID).HasColumnName("TerminalID");
-                builder.Property(p => p.MerchantID).HasColumnName("MerchantID");
-
-                //TODO: remove
-                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
-
-                builder.OwnsOne(b => b.CreditCardDetails, s =>
-                {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                        .HasColumnName("CardExpirationDate")
-                        .HasColumnType("date");
-
-                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Ignore(p => p.CardOwnerNationalID);
-                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
-                    s.Ignore(p => p.CardBin);
-                    s.Ignore(p => p.CardVendor);
-                    s.Ignore(b => b.CardReaderInput);
-                    s.Ignore(b => b.CardBrand);
-                    s.Ignore(b => b.Solek);
-                });
-
-                builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
-
-                //builder.Property(b => b.Active).HasColumnName("Active");
-
-                builder.Property(b => b.NextScheduledTransaction).HasColumnName("NextScheduledTransaction");
-                builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");
-                builder.Property(b => b.PausedFrom).HasColumnName("PausedFrom");
-                builder.Property(b => b.PausedTo).HasColumnName("PausedTo");
             }
         }
 

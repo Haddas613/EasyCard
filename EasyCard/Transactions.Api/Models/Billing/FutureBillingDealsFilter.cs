@@ -14,10 +14,9 @@ namespace Transactions.Api.Models.Billing
     {
         public Guid? TerminalID { get; set; }
 
-        [SwaggerExclude]
-        public Guid? MerchantID { get; set; }
-
         public Guid? BillingDealID { get; set; }
+
+        public Guid? ConsumerID { get; set; }
 
         public CurrencyEnum? Currency { get; set; }
 
@@ -26,14 +25,5 @@ namespace Transactions.Api.Models.Billing
 
         [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
-
-        public string CardNumber { get; set; }
-
-        public string CardOwnerNationalID { get; set; }
-
-        public string CardOwnerName { get; set; }
-
-        [SwaggerExclude]
-        public string CreditCardVendor { get; set; }
     }
 }

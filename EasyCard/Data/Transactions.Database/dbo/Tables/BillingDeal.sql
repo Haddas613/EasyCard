@@ -71,8 +71,11 @@
     [TokenCreated]                DATE             NULL,
     [TokenUpdated]                DATE             NULL,
     [InvoiceDetails_Donation]     BIT              NULL,
+    [InvoiceLanguage]             VARCHAR (20)     NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

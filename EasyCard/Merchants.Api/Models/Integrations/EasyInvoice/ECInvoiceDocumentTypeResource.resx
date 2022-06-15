@@ -129,6 +129,9 @@
   <data name="PAYMENT_INFO" xml:space="preserve">
     <value>Payment Info</value>
   </data>
+  <data name="PAYMENT_INFO_DONATION" xml:space="preserve">
+    <value>Donation</value>
+  </data>
   <data name="REFUND_INVOICE_WITH_PAYMENT_INFO" xml:space="preserve">
     <value>Refund Invoice with Payment Info</value>
   </data>
