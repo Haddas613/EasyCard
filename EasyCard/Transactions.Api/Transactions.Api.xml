@@ -434,6 +434,13 @@
             <param name="transmitTransactionsRequest"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.WebhooksController.GeExecutedWebhooks(Shared.Api.WebHooks.WebhooksFilter)">
+            <summary>
+            Get transactions which are not transmitted yet
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.TerminalID">
             <summary>
             EasyCard terminal reference

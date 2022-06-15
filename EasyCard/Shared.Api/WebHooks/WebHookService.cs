@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared.Api.Models;
+using Shared.Api.WebHooks;
+using Shared.Helpers.Events;
 using Shared.Helpers.Services;
 using System;
 using System.Collections.Generic;
@@ -71,6 +73,27 @@ namespace Shared.Helpers.WebHooks
 
                 return new OperationResponse(ex.Message, Api.Models.Enums.StatusEnum.Error);
             }
+        }
+
+        public Task<IEnumerable<ExecutedWebhookSummary>> GetWebHooks(WebhooksFilter filter)
+        {
+            var res = new List<ExecutedWebhookSummary> {
+                new ExecutedWebhookSummary
+                {
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    EventID = Guid.NewGuid(),
+                    MerchantID = Guid.NewGuid(),
+                    TerminalID = Guid.NewGuid(),
+                    Url = "https://test.com",
+                    Payload = new CustomEvent
+                    {
+                        EntityType = CustomEvent.BillingDealCreated,
+                        EntityReference = Guid.NewGuid().ToString(),
+                    }
+                }
+            };
+
+            return Task.FromResult((IEnumerable<ExecutedWebhookSummary>)res);
         }
     }
 }
