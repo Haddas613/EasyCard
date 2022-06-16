@@ -48,7 +48,7 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
-        /// Get transactions which are not transmitted yet
+        /// Get executed webhooks history
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>

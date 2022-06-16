@@ -53,6 +53,13 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.IsRefund, o => o.MapFrom(src => src.IsRefund))
                 .ForMember(d => d.UserAmount, o => o.MapFrom(src => src.UserAmount))
                 .ForMember(d => d.OnlyAddCard, o => o.MapFrom(src => src.OnlyAddCard))
+
+                .ForMember(d => d.AllowInstallments, o => o.MapFrom(src => src.AllowInstallments))
+                .ForMember(d => d.AllowCredit, o => o.MapFrom(src => src.AllowCredit))
+                .ForMember(d => d.HidePhone, o => o.MapFrom(src => src.HidePhone))
+                .ForMember(d => d.HideEmail, o => o.MapFrom(src => src.HideEmail))
+                .ForMember(d => d.HideNationalID, o => o.MapFrom(src => src.HideNationalID))
+                .ForMember(d => d.ShowAuthCode, o => o.MapFrom(src => src.ShowAuthCode))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
