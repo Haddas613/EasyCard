@@ -87,6 +87,20 @@ namespace Transactions.Shared.Models
         {
             var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
+            if (EndAtType == EndAtTypeEnum.AfterNumberOfPayments && EndAtNumberOfPayments.GetValueOrDefault() <= 0)
+            {
+                EndAt = null;
+                EndAtType = EndAtTypeEnum.Never;
+                EndAtNumberOfPayments = null;
+            }
+
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt == null)
+            {
+                EndAt = null;
+                EndAtType = EndAtTypeEnum.Never;
+                EndAtNumberOfPayments = null;
+            }
+
             if (existingTransactionTimestamp.HasValue)
             {
                 var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
