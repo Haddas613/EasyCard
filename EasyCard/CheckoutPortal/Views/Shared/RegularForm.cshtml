@@ -208,6 +208,8 @@
         </div>
     </fieldset>
     <fieldset>
+        @if (Model.HideEmail != true)
+        {
         <div class="form-group">
             <label asp-for="Email">@localizer.Get("Email")</label>
             <div>
@@ -215,6 +217,9 @@
                 <span asp-validation-for="Email"></span>
             </div>
         </div>
+        }
+        @if (Model.HideNationalID != true)
+        {
         <div class="form-group">
             <label asp-for="NationalID">@localizer.Get("NationalID")</label>
             <div>
@@ -222,6 +227,9 @@
                 <span asp-validation-for="NationalID"></span>
             </div>
         </div>
+        }
+        @if (Model.HidePhone != true)
+        {
         <div class="form-group">
             <label asp-for="Phone">@localizer.Get("Phone")</label>
             <div>
@@ -229,6 +237,9 @@
                 <span asp-validation-for="Phone"></span>
             </div>
         </div>
+        }
+        @if (Model.ShowAuthCode == true)
+        {
         <div class="form-group">
             <label asp-for="AuthNum">@localizer.Get("AuthorizationCodeOptional")</label>
             <div>
@@ -236,6 +247,7 @@
                 <span asp-validation-for="AuthNum"></span>
             </div>
         </div>
+        }
 
     </fieldset>
 

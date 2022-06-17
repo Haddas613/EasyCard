@@ -54,6 +54,8 @@
                 <span asp-validation-for="Name"></span>
             </div>
         </div>
+        @if (Model.HideEmail != true)
+        {
         <div class="form-group row">
             <label asp-for="Email" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Email")</label>
             <div>
@@ -61,6 +63,9 @@
                 <span asp-validation-for="Email"></span>
             </div>
         </div>
+        }
+        @if (Model.HideNationalID != true)
+        {
         <div class="form-group row">
             <label asp-for="NationalID" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("NationalID")</label>
             <div>
@@ -68,6 +73,9 @@
                 <span asp-validation-for="NationalID"></span>
             </div>
         </div>
+        }
+        @if (Model.HidePhone != true)
+        {
         <div class="form-group row">
             <label asp-for="Phone" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Phone")</label>
             <div>
@@ -75,6 +83,7 @@
                 <span asp-validation-for="Phone"></span>
             </div>
         </div>
+        }
     </fieldset>
 
     <div class="form-group d-flex payment-panel_button-group__bit">
