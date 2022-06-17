@@ -99,6 +99,7 @@ a {
     display: flex;
     flex-direction: column;
     max-width: 400px;
+    min-width: 350px;
     padding: 1rem 0;
 }
 
@@ -117,6 +118,10 @@ a {
 
 .payment-panel_method  {
     font-size: 1.4rem;
+}
+
+.payment-type-select{
+    direction: ltr;
 }
 
 .payment-panel input,
@@ -157,6 +162,25 @@ a {
     margin-bottom: 0;
 }
 
+.checkbox-group{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    padding-bottom: 0.3rem;
+}
+
+.checkbox-group label {
+    margin-bottom: 0 !important;
+    white-space: nowrap;
+    padding-left: 0.2rem;
+}
+
+.checkbox-group input {
+    position: initial !important;
+    margin: 0 3px 0.25rem 3px;
+    height: 18px !important;
+}
+
 .form-group__line {
     display: flex;
     flex-direction: row;
@@ -164,25 +188,35 @@ a {
 }
 
 .form-group__line > div:first-of-type {
-    width: 77.5%;
+    width: 70%;
 }
 
 .form-group__line > div:last-of-type {
-    width: 27%;
+    width: 25%;
 }
 
 fieldset {
     border-top: 1px solid var(--gray-2);
-    padding: 0.5rem;
-    margin: 0.5rem;
-    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0 1rem 0;
 }
 
-.payment-panel_button-group {
+.payment-panel_button-group,
+.payment-panel_button-group__bit {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-top: 0.5rem;
+}
+.payment-panel_button-group__bit{
+    justify-content: space-around;
+    margin-top: 1.4rem;
+}
+
+.payment-panel_button-group__bit button{
+    border-radius: 12px;
+    width: 167px;
+    height: 47px;
 }
 
 .payment-panel_button-group button,
@@ -216,11 +250,13 @@ input {
 .btn-outline-primary.active,
 .payment-panel_button-group input {
     color: white !important;
+    text-align: center !important;
 }
 
 button:hover,
 .payment-panel_button-group input:hover,
-.payment-type-select label:hover {
+.payment-type-select label:hover,
+.payment-panel_button-group__bit img:hover{
     transform: scale(1.02);
     font-weight: 600;
 }
@@ -359,10 +395,6 @@ input[type="checkbox"].input-validation-error {
     content: 'Validation passed';
 }
 
-.form-check-input {
-    position: initial !important;
-    margin: 0 3px;
-}
 .form-control {
     font-weight: 500;
     font-size: 0.875rem;
@@ -374,13 +406,33 @@ input[type="checkbox"].input-validation-error {
     text-align: right;
 }
 
+.card_number{
+    padding: 0 1.25rem;
+    display: flex;
+}
+.card_number input{
+    height: 10px !important;
+    margin: 0.3rem -1.25rem;
+}
+.card_number span,
+.card_expiration{
+    line-height: 18px;
+    font-size: 0.875rem;
+    /*font-family: 'Anelisa', sans-serif;*/
+}
+
+/*card block rtl*/
+.card_number .rtl .form-check {
+    transform: none;
+}
+
+
 .rtl input {
     direction: ltr;
     text-align: right;
 }
 #merchant-logo{
     max-height: 40px;
-    max-width: 135px;
     margin: 0.4rem;
 }
 .list-group-item {

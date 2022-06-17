@@ -345,7 +345,7 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID));
 
-            if (dbInvoice.CanCancel)
+            if (!dbInvoice.CanCancel)
             {
                 return BadRequest(new OperationResponse($"{Messages.NotPossibleToCancelInvoice}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
             }

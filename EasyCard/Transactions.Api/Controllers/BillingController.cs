@@ -120,7 +120,6 @@ namespace Transactions.Api.Controllers
             this.events = events;
         }
 
-
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("$meta")]

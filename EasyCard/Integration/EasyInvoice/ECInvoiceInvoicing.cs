@@ -566,10 +566,10 @@ namespace EasyInvoice
 
             var response = new InvoicingCancelDocumentResponse
             {
-                DocumentNumber = svcRes.DocumentNumber?.ToString()
+                DocumentNumber = documentCancelRequest.InvoiceNumber
             };
 
-            if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
+            if (svcRes?.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes?.Error))
             {
                 response.Success = false;
                 response.ErrorMessage = svcRes.Message ?? svcRes.Error;

@@ -88,7 +88,7 @@
         <fieldset id="amount-area">
             @if (Model.UserAmount)
             {
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="Amount">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
                     <div>
                         <input type="number" step="0.01" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
@@ -98,27 +98,28 @@
             }
             @if (Model.SavedTokens?.Count() > 0 && !Model.OnlyAddCard)
             {
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="CreditCardToken">@localizer.Get("UseSavedCard")</label>
                     <div>
 
-                        <div class="form-check">
                             @foreach (var savedToken in Model.SavedTokens)
                             {
-                                <div class="d-flex justify-content-between">
-                                    <div>
+                                <div class="form-check d-flex justify-content-between">
+                                    <div class="card_number">
                                         <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.CreditCardTokenID" />
                                         <span dir="ltr">@savedToken.Label</span>
                                     </div>
                                     @if (savedToken.Created.HasValue)
                                     {
                                         <span class="align-self-end">
-                                            <small>@(savedToken.Created?.ToString("dd/MM/yyyy"))</small>
+                                            <small class="card_expiration">@(savedToken.Created?.ToString("dd/MM/yyyy"))</small>
                                         </span>
                                     }
                                 </div>
                             }
-                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />@localizer.Get("EnterNewCard")<br />
+                            <div class="card_number">
+                                <input class="form-check-input enter-new-card" type="radio" asp-for="CreditCardToken" value="@(null)" checked />
+                                <span>@localizer.Get("EnterNewCard")</span>
                         </div>
 
                     </div>
@@ -130,14 +131,9 @@
     <fieldset id="card-info-group-area">
         @if (Model.AllowPinPad ?? false)
         {
-            <div class="form-group row mb-0">
-                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPad">@localizer.Get("MakePinPadDeal")</label>
-                <div>
-                    <div class="form-check">
+            <div class="form-group checkbox-group mb-0">
                         <input id="pin-pad-deal" type="checkbox" class="form-check-input" asp-for="PinPad">
-                        <span asp-validation-for="PinPad"></span>
-                    </div>
-                </div>
+                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPad">@localizer.Get("MakePinPadDeal")</label>
             </div>
             @if (Model.PinPadDevices?.Any() == true)
             {
@@ -154,7 +150,7 @@
         }
         <div id="credit-card-info-area">
             <div class="form-group__line">
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="CardNumber">@localizer.Get("CardNumber")</label>
                     <div>
                         <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
@@ -163,7 +159,7 @@
                         <span hidden id="cc-added-warn" class="text-warning">@localizer.Get("ThisCreditCardIsAlreadyAddedAsToken")</span>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="CardExpiration">@localizer.Get("Expiration")</label>
                     <div>
                         <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
@@ -174,7 +170,7 @@
             </div>
 
             <div class="form-group__line">
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
                     <div>
                         <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
@@ -182,7 +178,7 @@
                  </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group">
                     <label asp-for="Cvv">@localizer.Get("CVV")</label>
                     <div>
                         <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
@@ -196,52 +192,44 @@
             {
                 @if (Model.OnlyAddCard)
                 {
-                    <div class="form-group row">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" asp-for="SaveCreditCard" checked disabled>
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                        <div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard" checked disabled>
-                            </div>
-                        </div>
                     </div>
                 }
                 else if (Model.ConsumerID.HasValue)
                 {
-                    <div class="form-group row">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" asp-for="SaveCreditCard">
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
-                        <div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
-                            </div>
-                        </div>
                     </div>
                 }
             }
         </div>
     </fieldset>
     <fieldset>
-        <div class="form-group row">
+        <div class="form-group">
             <label asp-for="Email">@localizer.Get("Email")</label>
             <div>
                 <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" autocomplete="off">
                 <span asp-validation-for="Email"></span>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group">
             <label asp-for="NationalID">@localizer.Get("NationalID")</label>
             <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" autocomplete="off">
                 <span asp-validation-for="NationalID"></span>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group">
             <label asp-for="Phone">@localizer.Get("Phone")</label>
             <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" autocomplete="off">
                 <span asp-validation-for="Phone"></span>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group">
             <label asp-for="AuthNum">@localizer.Get("AuthorizationCodeOptional")</label>
             <div>
                 <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("AuthorizationCode")" asp-for="AuthNum" autocomplete="off">
