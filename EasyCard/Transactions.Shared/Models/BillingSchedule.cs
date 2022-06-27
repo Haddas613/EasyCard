@@ -125,5 +125,24 @@ namespace Transactions.Shared.Models
                 }
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            var c = obj as BillingSchedule;
+            if (c == null)
+                return false;
+
+            return RepeatPeriodType == c.RepeatPeriodType 
+                && StartAtType == c.StartAtType
+                && EndAtType == c.EndAtType 
+                && StartAt == c.StartAt
+                && EndAt == c.EndAt 
+                && EndAtNumberOfPayments == c.EndAtNumberOfPayments;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
