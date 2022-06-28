@@ -88,14 +88,14 @@ namespace IdentityServer
                     ClientId = "merchant_frontend_mobile",
                     ClientName = "Merchant's Frontend mobile",
 
-                    RedirectUris = { "com.ecng.ecng://login-callback", "com.ecng.ecng.dev://login-callback", "com.ecng.ecng://login-callback/", "com.ecng.ecng.dev://login-callback/", "com.auth0.flutterdemo://login-callback", "il.co.e-c.EasyCardNG://login-callback" },
+                    RedirectUris = { "com.ecng.ecng://login-callback", "com.ecng.ecng.dev://login-callback", "com.ecng.ecng://login-callback/", "com.ecng.ecng.dev://login-callback/", "com.auth0.flutterdemo://login-callback", "il.co.e-c.EasyCardNG://login-callback", "il.co.ec.EasyCardNG://login-callback" },
 
                     PostLogoutRedirectUris =
                     {
                         $"{identitySettings.Authority}",
                         $"{apiSettings.MerchantProfileURL}/",
                         "http://localhost:8080/",
-                        "com.ecng.ecng://login-callback", "com.ecng.ecng.dev://login-callback", "com.ecng.ecng://login-callback/", "com.ecng.ecng.dev://login-callback/", "com.auth0.flutterdemo://login-callback", "il.co.e-c.EasyCardNG://login-callback"
+                        "com.ecng.ecng://login-callback", "com.ecng.ecng.dev://login-callback", "com.ecng.ecng://login-callback/", "com.ecng.ecng.dev://login-callback/", "com.auth0.flutterdemo://login-callback", "il.co.e-c.EasyCardNG://login-callback", "il.co.ec.EasyCardNG://login-callback"
                     },
 
                     ClientSecrets = { new Secret("secret".Sha256()) },

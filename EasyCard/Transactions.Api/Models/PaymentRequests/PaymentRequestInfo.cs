@@ -99,16 +99,6 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public string Origin { get; set; }
 
-        public bool? AllowInstallments { get; set; }
-
-        public bool? AllowCredit { get; set; }
-
-        public bool? HidePhone { get; set; }
-
-        public bool? HideEmail { get; set; }
-
-        public bool? HideNationalID { get; set; }
-
         public bool? ShowAuthCode { get; set; }
     }
 }

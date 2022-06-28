@@ -26,14 +26,18 @@ namespace Merchants.Shared.Models
 
         public string DefaultLanguage { get; set; }
 
-        public bool? AllowInstallments { get; set; }
+        private bool? allowInstallments;
 
-        public bool? AllowCredit { get; set; }
+        private bool? allowCredit;
 
-        public bool? HidePhone { get; set; }
+        public bool? AllowInstallments { get => allowInstallments.GetValueOrDefault(true); set => allowInstallments = value; }
 
-        public bool? HideEmail { get; set; }
+        public bool? AllowCredit { get => allowCredit.GetValueOrDefault(true); set => allowCredit = value; }
 
-        public bool? HideNationalID { get; set; }
+        public bool HidePhone { get; set; }
+
+        public bool HideEmail { get; set; }
+
+        public bool HideNationalID { get; set; }
     }
 }

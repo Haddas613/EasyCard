@@ -32,5 +32,8 @@ namespace Merchants.Shared.Models
         public string EmailTemplateCode { get; set; }
 
         public bool PaymentInfoAsDonation { get; set; }
+
+        [StringLength(50)]
+        public string DefaultInvoiceLanguage { get; set; }
     }
 }
