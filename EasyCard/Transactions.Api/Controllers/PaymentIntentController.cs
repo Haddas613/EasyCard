@@ -166,6 +166,8 @@ namespace Transactions.Api.Controllers
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
             newPaymentRequest.TerminalID = terminal.TerminalID;
 
+            newPaymentRequest.Calculate();
+
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
             if (consumer != null)
@@ -181,8 +183,6 @@ namespace Transactions.Api.Controllers
                     newPaymentRequest.DealDetails.ConsumerID = consumerID;
                 }
             }
-
-            newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 
