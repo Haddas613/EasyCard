@@ -16,7 +16,7 @@ namespace Transactions.Api.Extensions
 {
     public static class DealDetailsExtensions
     {
-        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem, CreditCardDetailsBase creditCardDetails)
+        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem, CreditCardDetailsBase creditCardDetails, bool createDefaultItem = true)
         {
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerEmail))
             {
@@ -58,7 +58,7 @@ namespace Transactions.Api.Extensions
                 dealDetails.ConsumerWoocommerceID = consumer?.WoocommerceID;
             }
 
-            if (!(dealDetails.Items?.Count() > 0))
+            if (!(dealDetails.Items?.Count() > 0) && createDefaultItem)
             {
                 dealDetails.Items = new List<SharedIntegration.Models.Item>
                 {
@@ -162,16 +162,19 @@ namespace Transactions.Api.Extensions
                 dealDetails.DealDescription = terminalSettings.DefaultChargeDescription;
             }
 
-            foreach (var item in dealDetails.Items)
+            if (dealDetails.Items?.Count() > 0)
             {
-                if (string.IsNullOrWhiteSpace(item.ItemName))
+                foreach (var item in dealDetails.Items)
                 {
-                    item.ItemName = terminalSettings.DefaultItemName;
-                }
+                    if (string.IsNullOrWhiteSpace(item.ItemName))
+                    {
+                        item.ItemName = terminalSettings.DefaultItemName;
+                    }
 
-                if (string.IsNullOrWhiteSpace(item.SKU))
-                {
-                    item.SKU = terminalSettings.DefaultSKU;
+                    if (string.IsNullOrWhiteSpace(item.SKU))
+                    {
+                        item.SKU = terminalSettings.DefaultSKU;
+                    }
                 }
             }
         }

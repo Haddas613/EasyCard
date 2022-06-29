@@ -242,7 +242,7 @@ namespace Transactions.Api.Controllers
             newPaymentRequest.Calculate();
 
             // Update details if needed
-            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null, false);
 
             // if phone is present but sms notification feature is not enabled, show the error
             if (!string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone)
