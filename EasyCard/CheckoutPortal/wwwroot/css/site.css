@@ -101,12 +101,13 @@ a {
     max-width: 400px;
     min-width: 350px;
     padding: 1rem 0;
+    text-align: start;
 }
 
 .payment-panel_heading,
 .payment-panel_method {
     font-weight: 600;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     text-align: start;
 }
 
@@ -272,12 +273,7 @@ button:hover,
 }
 
 .btn-danger {
-    background-color: var(--error-dark);
-    color: white;
-}
-
-.btn-danger:hover {
-    color: white;
+    background-color: var(--error-dark)!important;
 }
 
 .text-danger {

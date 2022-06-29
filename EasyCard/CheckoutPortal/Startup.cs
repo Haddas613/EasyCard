@@ -163,7 +163,7 @@ namespace CheckoutPortal
                 queryStringRequestCultureProvider.QueryStringKey = "l";
                 queryStringRequestCultureProvider.UIQueryStringKey = "l";
 
-                options.RequestCultureProviders = new List<IRequestCultureProvider> { queryStringRequestCultureProvider, new CookieRequestCultureProvider() };
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider(), queryStringRequestCultureProvider  };
             });
 
             services.AddMvc().AddViewLocalization();

@@ -30,14 +30,20 @@ namespace Merchants.Shared.Models
 
         private bool? allowCredit;
 
+        private bool? hidePhone;
+
+        private bool? hideEmail;
+
+        private bool? hideNationalID;
+
         public bool? AllowInstallments { get => allowInstallments.GetValueOrDefault(true); set => allowInstallments = value; }
 
         public bool? AllowCredit { get => allowCredit.GetValueOrDefault(true); set => allowCredit = value; }
 
-        public bool HidePhone { get; set; }
+        public bool? HidePhone { get => hidePhone.GetValueOrDefault(false); set => hidePhone = value; }
 
-        public bool HideEmail { get; set; }
+        public bool? HideEmail { get => hideEmail.GetValueOrDefault(false); set => hideEmail = value; }
 
-        public bool HideNationalID { get; set; }
+        public bool? HideNationalID { get => hideNationalID.GetValueOrDefault(false); set => hideNationalID = value; }
     }
 }
