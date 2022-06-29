@@ -114,7 +114,7 @@ namespace EasyInvoice.Converters
             }
             else
             {
-                return message.DealDetails.Items.Select(d => GetRow(d)).ToList();
+                return message.DealDetails.Items.Where(d => d.Price > 0).Select(d => GetRow(d)).ToList();
             }
         }
 
@@ -147,8 +147,8 @@ namespace EasyInvoice.Converters
                 TotalAmount = message.Amount,
 
                 Price = message.Price,
-                PriceNet = message.NetPrice,
-                TaxAmount = message.VAT,
+                PriceNet = message.NetPrice ?? message.NetAmount / message.Quantity,
+                TaxAmount = message.VAT / message.Quantity,
                 TotalNetAmount = message.NetAmount,
                 TotalTaxAmount = message.VAT,
             };
