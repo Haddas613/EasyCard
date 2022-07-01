@@ -257,7 +257,7 @@ namespace Transactions.Business.Entities
 
         public void UpdateNextScheduledDatInitial(BillingSchedule billingSchedule, DateTime? existingTransactionTimestamp = null)
         {
-            if (BillingSchedule.Equals(billingSchedule))
+            if (BillingSchedule?.Equals(billingSchedule) == true)
             {
                 return;
             }
