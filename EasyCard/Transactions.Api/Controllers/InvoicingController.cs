@@ -330,6 +330,14 @@ namespace Transactions.Api.Controllers
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPut]
+        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromBody] UpdateInvoiceRequest model)
+        {
+            // TODO:
+            return Ok(new OperationResponse("Invoice updated", StatusEnum.Success));
+        }
+
         /// <summary>
         /// Cancel invoice
         /// </summary>
