@@ -165,7 +165,7 @@ namespace EasyInvoice.Converters
                 var res = new ECInvoicePayment
                 {
                     PaymentMethod = message.TransactionType == TransactionTypeEnum.Credit ? ECInvoicePaymentMethodEnum.CREDIT_CARD_CREDITS.ToString() : (message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString()),
-                    Amount = message.InvoiceAmount,
+                    Amount = d.Amount,
                     PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
                     NumberOfPayments = message.NumberOfPayments
                 };
@@ -190,8 +190,7 @@ namespace EasyInvoice.Converters
                     res.ChequeDate = chequeDetails.ChequeDate?.ToString("yyyy-MM-ddThh:mm");
 
                     res.Amount = chequeDetails.Amount;
-
-                    //TODO: cheque number
+                    res.ChequeNumber = chequeDetails.ChequeNumber;
                 }
                 else if (d.PaymentType == PaymentTypeEnum.Cash)
                 {
