@@ -158,6 +158,8 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public bool? AllowCredit { get; set; }
 
+        public bool? AllowImmediate { get; set; }
+
         public bool? HidePhone { get; set; }
 
         public bool? HideEmail { get; set; }

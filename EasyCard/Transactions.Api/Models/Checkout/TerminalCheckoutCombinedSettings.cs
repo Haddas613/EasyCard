@@ -66,6 +66,8 @@ namespace Transactions.Api.Models.Checkout
 
         public bool? AllowInstallments { get; set; }
 
+        public bool? AllowImmediate { get; set; }
+
         public bool? AllowCredit { get; set; }
 
         public bool? HidePhone { get; set; }

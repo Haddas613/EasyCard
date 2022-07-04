@@ -36,7 +36,11 @@ namespace Merchants.Shared.Models
 
         private bool? hideNationalID;
 
+        private bool? allowImmediate;
+
         public bool? AllowInstallments { get => allowInstallments.GetValueOrDefault(true); set => allowInstallments = value; }
+
+        public bool? AllowImmediate { get => allowImmediate.GetValueOrDefault(true); set => allowImmediate = value; }
 
         public bool? AllowCredit { get => allowCredit.GetValueOrDefault(true); set => allowCredit = value; }
 

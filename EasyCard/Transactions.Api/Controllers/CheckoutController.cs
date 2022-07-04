@@ -11,6 +11,7 @@ using Shared.Api;
 using Shared.Api.Configuration;
 using Shared.Business.Security;
 using Shared.Integration;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -202,7 +203,49 @@ namespace Transactions.Api.Controllers
             if (paymentRequest != null)
             {
                 response.Settings.IssueInvoice = paymentRequest.IssueInvoice;
+
+                if (paymentRequest.HidePhone.HasValue)
+                {
+                    response.Settings.HidePhone = paymentRequest.HidePhone;
+                }
+
+                if (paymentRequest.HideEmail.HasValue)
+                {
+                    response.Settings.HideEmail = paymentRequest.HideEmail;
+                }
+
+                if (paymentRequest.HideNationalID.HasValue)
+                {
+                    response.Settings.HideNationalID = paymentRequest.HideNationalID;
+                }
             }
+
+            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal };
+
+            if (paymentRequest != null)
+            {
+                if (response.Settings.AllowImmediate == true && paymentRequest.AllowImmediate.GetValueOrDefault(true))
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Immediate);
+                }
+
+                if (response.Settings.MaxInstallments > 1 && response.Settings.AllowInstallments == true && paymentRequest.AllowInstallments.GetValueOrDefault(true))
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Installments);
+                }
+
+                if (response.Settings.MaxCreditInstallments > 1 && response.Settings.AllowCredit == true && paymentRequest.AllowCredit.GetValueOrDefault(true))
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Credit);
+                }
+            }
+            else
+            {
+                transactionTypes.Add(TransactionTypeEnum.Installments);
+                transactionTypes.Add(TransactionTypeEnum.Credit);
+            }
+
+            response.Settings.TransactionTypes = transactionTypes;
 
             return response;
         }

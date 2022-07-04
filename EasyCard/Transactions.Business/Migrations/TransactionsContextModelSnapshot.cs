@@ -733,6 +733,9 @@ namespace Transactions.Business.Migrations
                     b.Property<bool?>("AllowCredit")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("AllowImmediate")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("AllowInstallments")
                         .HasColumnType("bit");
 

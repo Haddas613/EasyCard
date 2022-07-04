@@ -1106,27 +1106,27 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
-            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
+            //var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
 
-            if (checkoutConfig.PaymentRequest != null)
-            {
-                if (checkoutConfig.Settings.MaxInstallments > 1)
-                {
-                    transactionTypes.Add(TransactionTypeEnum.Installments);
-                }
+            //if (checkoutConfig.PaymentRequest != null)
+            //{
+            //    if (checkoutConfig.Settings.MaxInstallments > 1)
+            //    {
+            //        transactionTypes.Add(TransactionTypeEnum.Installments);
+            //    }
 
-                if (checkoutConfig.Settings.MaxCreditInstallments > 1)
-                {
-                    transactionTypes.Add(TransactionTypeEnum.Credit);
-                }
-            }
-            else
-            {
-                transactionTypes.Add(TransactionTypeEnum.Installments);
-                transactionTypes.Add(TransactionTypeEnum.Credit);
-            }
+            //    if (checkoutConfig.Settings.MaxCreditInstallments > 1)
+            //    {
+            //        transactionTypes.Add(TransactionTypeEnum.Credit);
+            //    }
+            //}
+            //else
+            //{
+            //    transactionTypes.Add(TransactionTypeEnum.Installments);
+            //    transactionTypes.Add(TransactionTypeEnum.Credit);
+            //}
 
-            checkoutConfig.Settings.TransactionTypes = transactionTypes;
+            //checkoutConfig.Settings.TransactionTypes = transactionTypes;
             checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
             return checkoutConfig;
         }
@@ -1214,27 +1214,27 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
-            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
+            //var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
 
-            if (checkoutConfig.PaymentRequest != null)
-            {
-                if (checkoutConfig.Settings.MaxInstallments > 1)
-                {
-                    transactionTypes.Add(TransactionTypeEnum.Installments);
-                }
+            //if (checkoutConfig.PaymentRequest != null)
+            //{
+            //    if (checkoutConfig.Settings.MaxInstallments > 1)
+            //    {
+            //        transactionTypes.Add(TransactionTypeEnum.Installments);
+            //    }
 
-                if (checkoutConfig.Settings.MaxCreditInstallments > 1)
-                {
-                    transactionTypes.Add(TransactionTypeEnum.Credit);
-                }
-            }
-            else
-            {
-                transactionTypes.Add(TransactionTypeEnum.Installments);
-                transactionTypes.Add(TransactionTypeEnum.Credit);
-            }
+            //    if (checkoutConfig.Settings.MaxCreditInstallments > 1)
+            //    {
+            //        transactionTypes.Add(TransactionTypeEnum.Credit);
+            //    }
+            //}
+            //else
+            //{
+            //    transactionTypes.Add(TransactionTypeEnum.Installments);
+            //    transactionTypes.Add(TransactionTypeEnum.Credit);
+            //}
 
-            checkoutConfig.Settings.TransactionTypes = transactionTypes;
+            //checkoutConfig.Settings.TransactionTypes = transactionTypes;
             checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
 
             return checkoutConfig;
