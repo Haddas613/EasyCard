@@ -276,6 +276,8 @@ namespace Transactions.Business.Entities
             {
                 NextScheduledTransaction = null;
             }
+
+            Active = NextScheduledTransaction != null;
         }
 
         public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)

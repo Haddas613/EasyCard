@@ -87,6 +87,16 @@ namespace Transactions.Shared.Models
         {
             var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && EndAt < today)
+            {
+                throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {today}");
+            }
+
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue == true && EndAt < StartAt)
+            {
+                throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {StartAt}");
+            }
+
             if (EndAtType == EndAtTypeEnum.AfterNumberOfPayments && EndAtNumberOfPayments.GetValueOrDefault() <= 0)
             {
                 EndAt = null;
