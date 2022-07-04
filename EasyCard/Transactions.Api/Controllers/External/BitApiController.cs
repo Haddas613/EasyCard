@@ -335,7 +335,7 @@ namespace Transactions.Api.Controllers.External
 
             Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            var bitTransaction = string.IsNullOrWhiteSpace(transaction.BitTransactionDetails.BitPaymentInitiationId) ? null : await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+            var bitTransaction = string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) ? null : await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
 
             bool successCapture = true;
 
