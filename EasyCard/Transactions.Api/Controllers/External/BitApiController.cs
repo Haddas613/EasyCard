@@ -143,6 +143,28 @@ namespace Transactions.Api.Controllers.External
                     model.VATRate = terminal.Settings.VATRate;
                 }
 
+                // payment request/intent
+                PaymentRequest dbPaymentRequest = null;
+
+                if (model.PaymentRequestID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == model.PaymentRequestID));
+
+                    if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                    {
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+                else if (model.PaymentIntentID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+                }
+
+                if (dbPaymentRequest != null)
+                {
+                    mapper.Map(dbPaymentRequest, model);
+                }
+
                 var transaction = mapper.Map<PaymentTransaction>(model);
 
                 transaction.ApplyAuditInfo(httpContextAccessor);
