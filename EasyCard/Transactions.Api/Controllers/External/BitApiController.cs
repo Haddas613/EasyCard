@@ -359,16 +359,24 @@ namespace Transactions.Api.Controllers.External
 
             var bitTransaction = string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) ? null : await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
 
-            bool successCapture = true;
-
-            if (bitTransaction.RequestStatusCodeResult?.BitRequestStatusCode == BitRequestStatusCodeEnum.CreditExtensionPerformed)
+            if (bitTransaction != null)
             {
-                successCapture = await CaptureInternal(transaction);
+                bool successCapture = true;
 
-                bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+                if (bitTransaction.RequestStatusCodeResult?.BitRequestStatusCode == BitRequestStatusCodeEnum.CreditExtensionPerformed)
+                {
+                    successCapture = await CaptureInternal(transaction);
+
+                    bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+                }
+
+                return await PostProcessTransaction(transaction, terminal, successCapture, bitTransaction);
             }
-
-            return await PostProcessTransaction(transaction, terminal, successCapture, bitTransaction);
+            else
+            {
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, transactionOperationCode: TransactionOperationCodesEnum.RejectedByProcessor);
+                return new OperationResponse($"Bit transaction for {transactionID} does exist", StatusEnum.Error);
+            }
         }
 
         internal async Task<OperationResponse> RefundInternal(PaymentTransaction transaction, Terminal terminal, ChargebackRequest request)
