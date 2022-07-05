@@ -26,6 +26,8 @@ namespace Merchants.Shared.Models
 
         public string DefaultLanguage { get; set; }
 
+        public bool? Donation { get; set; }
+
         private bool? allowInstallments;
 
         private bool? allowCredit;
