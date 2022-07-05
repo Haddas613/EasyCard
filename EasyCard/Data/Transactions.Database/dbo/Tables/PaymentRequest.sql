@@ -56,8 +56,17 @@
     [ResponsiblePerson]         NVARCHAR (50)    NULL,
     [InvoiceDetails_Donation]   BIT              NULL,
     [InvoiceLanguage]           VARCHAR (20)     NULL,
+    [AllowCredit]               BIT              NULL,
+    [AllowInstallments]         BIT              NULL,
+    [HideEmail]                 BIT              NULL,
+    [HideNationalID]            BIT              NULL,
+    [HidePhone]                 BIT              NULL,
+    [ShowAuthCode]              BIT              NULL,
+    [AllowImmediate]            BIT              NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 
