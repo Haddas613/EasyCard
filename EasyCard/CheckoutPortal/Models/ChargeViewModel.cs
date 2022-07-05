@@ -206,5 +206,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool? ShowAuthCode { get; set; }
+
+        public string QueryLang { get; set; }
     }
 }

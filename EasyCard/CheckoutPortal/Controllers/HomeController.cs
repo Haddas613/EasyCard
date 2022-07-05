@@ -70,7 +70,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("p")]
-        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery] string r)
+        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery] string r, string l)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -96,7 +96,7 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            return IndexViewResult(checkoutConfig);
+            return IndexViewResult(checkoutConfig, queryLang: l);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("i")]
-        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery] string r)
+        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery] string r, string l)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -134,7 +134,7 @@ namespace CheckoutPortal.Controllers
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
-            return IndexViewResult(checkoutConfig);
+            return IndexViewResult(checkoutConfig, queryLang: l);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -552,6 +552,11 @@ namespace CheckoutPortal.Controllers
 
             if (string.IsNullOrWhiteSpace(redirectUrl))
             {
+                if (!string.IsNullOrWhiteSpace(request.QueryLang))
+                {
+                    return RedirectToAction("PaymentResult", new { l = request.QueryLang });
+                }
+
                 return RedirectToAction("PaymentResult");
             }
             else
@@ -963,7 +968,7 @@ namespace CheckoutPortal.Controllers
             });
         }
 
-        private IActionResult IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)
+        private IActionResult IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null, string queryLang = null)
         {
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -1012,6 +1017,8 @@ namespace CheckoutPortal.Controllers
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
+
+            model.QueryLang = queryLang;
 
             return View(nameof(Index), model);
         }

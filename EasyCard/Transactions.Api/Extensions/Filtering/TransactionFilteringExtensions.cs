@@ -313,7 +313,7 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<PaymentTransaction> FilterByQuickStatus(IQueryable<PaymentTransaction> src, QuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
             {
-                QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 0 && (int)t.Status < 40),
+                QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 0 && (int)t.Status < 40 && t.Status != Shared.Enums.TransactionStatusEnum.AwaitingForTransmission),
                 QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Completed),
                 QuickStatusFilterTypeEnum.Chargeback => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Chargeback),
                 QuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CancelledByMerchant),
