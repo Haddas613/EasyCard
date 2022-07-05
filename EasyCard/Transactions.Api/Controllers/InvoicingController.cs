@@ -334,7 +334,18 @@ namespace Transactions.Api.Controllers
         [HttpPut]
         public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromBody] UpdateInvoiceRequest model)
         {
-            // TODO:
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == model.InvoiceID));
+
+            if (!dbInvoice.CanEdit)
+            {
+                return BadRequest(new OperationResponse($"{Messages.InvoiceEditingNotAllowed}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+            }
+
+            mapper.Map(model, dbInvoice);
+
+            await invoiceService.UpdateEntity(dbInvoice);
+
+            // TODO: add concurrency key
             return Ok(new OperationResponse("Invoice updated", StatusEnum.Success));
         }
 

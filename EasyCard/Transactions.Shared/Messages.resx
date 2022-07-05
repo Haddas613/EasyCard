@@ -303,6 +303,9 @@
   <data name="InvoiceCreated" xml:space="preserve">
     <value>Invoice Created</value>
   </data>
+  <data name="InvoiceEditingNotAllowed" xml:space="preserve">
+    <value>Invoice editing is not allowed</value>
+  </data>
   <data name="InvoiceGenerated" xml:space="preserve">
     <value>Invoice generated</value>
   </data>

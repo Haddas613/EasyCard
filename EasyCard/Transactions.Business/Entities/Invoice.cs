@@ -241,5 +241,13 @@ namespace Transactions.Business.Entities
                 return Status == InvoiceStatusEnum.Sent || Status == InvoiceStatusEnum.CancellationFailed;
             }
         }
+
+        public bool CanEdit
+        {
+            get
+            {
+                return Status == InvoiceStatusEnum.SendingFailed || Status == InvoiceStatusEnum.Initial || Status == InvoiceStatusEnum.CancellationFailed;
+            }
+        }
     }
 }

@@ -125,5 +125,7 @@ namespace Transactions.Api.Models.Invoicing
         public TransactionTypeEnum? TransactionType { get; set; }
 
         public bool CanCancel { get; set; }
+
+        public bool CanEdit { get; set; }
     }
 }

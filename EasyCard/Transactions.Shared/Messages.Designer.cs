@@ -619,6 +619,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice editing is not allowed.
+        /// </summary>
+        public static string InvoiceEditingNotAllowed {
+            get {
+                return ResourceManager.GetString("InvoiceEditingNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoice generated.
         /// </summary>
         public static string InvoiceGenerated {
