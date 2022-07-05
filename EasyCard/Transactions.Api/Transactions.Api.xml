@@ -747,6 +747,11 @@
               Looks up a localized string similar to Card Number.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerExternalReference">
+            <summary>
+              Looks up a localized string similar to Consumer Ref.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerName">
             <summary>
               Looks up a localized string similar to Customer.
@@ -2643,6 +2648,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardPresence">
             <summary>
               Looks up a localized string similar to Card Present.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ConsumerExternalReference">
+            <summary>
+              Looks up a localized string similar to Consumer Ref.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.Created">

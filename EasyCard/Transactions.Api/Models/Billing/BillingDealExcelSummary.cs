@@ -33,6 +33,8 @@ namespace Transactions.Api.Models.Billing
 
         public string ConsumerName { get; set; }
 
+        public string ConsumerExternalReference { get; set; }
+
         public string CardNumber { get; set; }
 
         public bool? CardExpired { get; set; }

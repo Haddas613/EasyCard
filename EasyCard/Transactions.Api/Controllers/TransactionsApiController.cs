@@ -399,7 +399,7 @@ namespace Transactions.Api.Controllers
                         }
                     });
 
-                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
+                    var mapping = TransactionSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
 
                     var terminalLabel = string.Empty;
                     if (filter.TerminalID.HasValue)
@@ -420,15 +420,31 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     var data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
-                    var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
+                    var mapping = TransactionSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
+
+                    var terminalsId = data.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    data.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                        }
+                    });
 
                     var terminalLabel = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
-                        var tlabel = await terminalsService.GetTerminals()
-                           .Where(t => t.TerminalID == filter.TerminalID)
-                           .Select(t => t.Label)
-                           .FirstOrDefaultAsync();
+                        var tlabel = terminals
+                           .Where(t => t.Key == filter.TerminalID)
+                           .Select(t => t.Value)
+                           .FirstOrDefault();
 
                         terminalLabel = $"-{tlabel}";
                     }

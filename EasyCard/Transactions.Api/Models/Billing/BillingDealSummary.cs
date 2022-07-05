@@ -81,5 +81,7 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         [MetadataOptions(Hidden = true)]
         public Guid? CreditCardToken { get; set; }
+
+        public string ConsumerExternalReference { get; set; }
     }
 }

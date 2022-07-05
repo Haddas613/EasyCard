@@ -300,10 +300,10 @@ namespace Transactions.Api.Controllers
                     var terminalLabel = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
-                        var tlabel = await terminalsService.GetTerminals()
-                           .Where(t => t.TerminalID == filter.TerminalID)
-                           .Select(t => t.Label)
-                           .FirstOrDefaultAsync();
+                        var tlabel = terminals
+                         .Where(t => t.Key == filter.TerminalID)
+                         .Select(t => t.Value)
+                         .FirstOrDefault();
 
                         terminalLabel = $"-{tlabel}";
                     }
