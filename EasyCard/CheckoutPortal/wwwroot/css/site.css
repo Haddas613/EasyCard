@@ -276,6 +276,10 @@ button:hover,
     background-color: var(--error-dark)!important;
 }
 
+.btn-outline-danger {
+    border: 2px solid var(--error-dark) !important;
+}
+
 .text-danger {
    color: var(--error-dark);
 }
