@@ -209,6 +209,13 @@
         </div>
     </fieldset>
     <fieldset>
+        <div class="form-group">
+            <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
+            <div>
+                <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
+                <span asp-validation-for="Name"></span>
+            </div>
+        </div>
         @if (Model.HideEmail != true)
         {
             <div class="form-group">
