@@ -336,69 +336,6 @@ namespace Transactions.Business.Migrations
                     b.ToTable("CreditCardTokenDetails");
                 });
 
-            modelBuilder.Entity("Transactions.Business.Entities.FutureBilling", b =>
-                {
-                    b.Property<Guid>("BillingDealID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("CurrentDeal")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("BillingDealTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CardExpiration")
-                        .HasMaxLength(5)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(5)");
-
-                    b.Property<string>("CardNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("FutureBilling_CardNumber");
-
-                    b.Property<string>("CardOwnerName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("FutureBilling_CardOwnerName");
-
-                    b.Property<short>("Currency")
-                        .HasColumnType("smallint");
-
-                    b.Property<int?>("FutureDeal")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("FutureScheduledTransaction")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("FutureScheduledTransaction");
-
-                    b.Property<Guid>("MerchantID")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("MerchantID");
-
-                    b.Property<DateTime?>("NextScheduledTransaction")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("NextScheduledTransaction");
-
-                    b.Property<DateTime?>("PausedFrom")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PausedFrom");
-
-                    b.Property<DateTime?>("PausedTo")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PausedTo");
-
-                    b.Property<Guid>("TerminalID")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("TerminalID");
-
-                    b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("decimal(19,4)")
-                        .HasColumnName("TransactionAmount");
-
-                    b.HasKey("BillingDealID", "CurrentDeal");
-
-                    b.ToTable("vFutureBillings", t => t.ExcludeFromMigrations());
-                });
-
             modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
                 {
                     b.Property<Guid>("InvoiceID")
@@ -793,6 +730,15 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("PaymentRequestID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool?>("AllowCredit")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("AllowImmediate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("AllowInstallments")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("AllowPinPad")
                         .HasColumnType("bit");
 
@@ -830,6 +776,15 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("HideEmail")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("HideNationalID")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("HidePhone")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("InitialPaymentAmount")
                         .HasColumnType("decimal(19,4)");
@@ -890,6 +845,9 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(250)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<bool?>("ShowAuthCode")
+                        .HasColumnType("bit");
 
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
@@ -1295,6 +1253,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
 
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
                                 .IsUnicode(true)
@@ -1568,46 +1532,6 @@ namespace Transactions.Business.Migrations
                     b.Navigation("ShvaInitialTransactionDetails");
                 });
 
-            modelBuilder.Entity("Transactions.Business.Entities.FutureBilling", b =>
-                {
-                    b.OwnsOne("Transactions.Business.Entities.CreditCardDetails", "CreditCardDetails", b1 =>
-                        {
-                            b1.Property<Guid>("FutureBillingBillingDealID")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("FutureBillingCurrentDeal")
-                                .HasColumnType("int");
-
-                            b1.Property<DateTime?>("CardExpiration")
-                                .HasColumnType("date")
-                                .HasColumnName("CardExpirationDate");
-
-                            b1.Property<string>("CardNumber")
-                                .HasMaxLength(20)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(20)")
-                                .HasColumnName("CardNumber");
-
-                            b1.Property<string>("CardOwnerName")
-                                .HasMaxLength(100)
-                                .IsUnicode(true)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("CardOwnerName");
-
-                            b1.Property<DateTime?>("ExpirationDate")
-                                .HasColumnType("datetime2");
-
-                            b1.HasKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
-
-                            b1.ToTable("vFutureBillings");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
-                        });
-
-                    b.Navigation("CreditCardDetails");
-                });
-
             modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
                 {
                     b.OwnsOne("Shared.Integration.Models.Invoicing.InvoiceDetails", "InvoiceDetails", b1 =>
@@ -1617,6 +1541,12 @@ namespace Transactions.Business.Migrations
 
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
+
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)
@@ -1780,6 +1710,12 @@ namespace Transactions.Business.Migrations
 
                             b1.Property<bool>("Donation")
                                 .HasColumnType("bit");
+
+                            b1.Property<string>("InvoiceLanguage")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("InvoiceLanguage");
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasMaxLength(250)

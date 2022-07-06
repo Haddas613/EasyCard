@@ -13,63 +13,63 @@ namespace Transactions.Api.Extensions.Filtering
     {
         public static IQueryable<FutureBilling> Filter(this IQueryable<FutureBilling> src, FutureBillingDealsFilter filter)
         {
-            if (filter.BillingDealID != null)
-            {
-                src = src.Where(t => t.BillingDealID == filter.BillingDealID);
-                return src;
-            }
-
-            if (filter.TerminalID != null)
-            {
-                src = src.Where(t => t.TerminalID == filter.TerminalID);
-            }
-
-            if (filter.MerchantID != null)
-            {
-                src = src.Where(t => t.MerchantID == filter.MerchantID);
-            }
-
-            if (filter.Currency != null)
-            {
-                src = src.Where(t => t.Currency == filter.Currency);
-            }
-
-            src = HandleDateFiltering(src, filter);
-
-            //if (filter.ConsumerID != null)
+            //if (filter.BillingDealID != null)
             //{
-            //    src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
+            //    src = src.Where(t => t.BillingDealID == filter.BillingDealID);
+            //    return src;
             //}
 
-            if (!string.IsNullOrWhiteSpace(filter.CardNumber))
-            {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
-            }
-
-            //if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
+            //if (filter.TerminalID != null)
             //{
-            //    src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
+            //    src = src.Where(t => t.TerminalID == filter.TerminalID);
             //}
 
-            if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
-            {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))
-            {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerNationalID, filter.CardOwnerNationalID.UseWildCard(true)));
-            }
-
-            //if (filter.CreditCardTokenID != null)
+            //if (filter.MerchantID != null)
             //{
-            //    src = src.Where(t => t.CreditCardToken == filter.CreditCardTokenID);
+            //    src = src.Where(t => t.MerchantID == filter.MerchantID);
             //}
 
-            if (!string.IsNullOrWhiteSpace(filter.CreditCardVendor))
-            {
-                src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
-            }
+            //if (filter.Currency != null)
+            //{
+            //    src = src.Where(t => t.Currency == filter.Currency);
+            //}
+
+            //src = HandleDateFiltering(src, filter);
+
+            ////if (filter.ConsumerID != null)
+            ////{
+            ////    src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
+            ////}
+
+            //if (!string.IsNullOrWhiteSpace(filter.CardNumber))
+            //{
+            //    src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+            //}
+
+            ////if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
+            ////{
+            ////    src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
+            ////}
+
+            //if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
+            //{
+            //    src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
+            //}
+
+            //if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))
+            //{
+            //    src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerNationalID, filter.CardOwnerNationalID.UseWildCard(true)));
+            //}
+
+            ////if (filter.CreditCardTokenID != null)
+            ////{
+            ////    src = src.Where(t => t.CreditCardToken == filter.CreditCardTokenID);
+            ////}
+
+            //if (!string.IsNullOrWhiteSpace(filter.CreditCardVendor))
+            //{
+            //    src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
+            //}
 
             return src;
         }

@@ -98,5 +98,7 @@ namespace Transactions.Api.Models.PaymentRequests
         }
 
         public string Origin { get; set; }
+
+        public bool? ShowAuthCode { get; set; }
     }
 }

@@ -196,6 +196,7 @@ namespace Transactions.Api.Controllers
         }
 
         // TODO: support several download urls
+
         /// <summary>
         /// Get invoice download URL
         /// </summary>
@@ -258,6 +259,7 @@ namespace Transactions.Api.Controllers
         }
 
         // NOTE: this creates only db record - Invoicing system integration should be processed in a queue
+
         /// <summary>
         /// Create invoice
         /// </summary>
@@ -326,6 +328,104 @@ namespace Transactions.Api.Controllers
             }
 
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPut]
+        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromBody] UpdateInvoiceRequest model)
+        {
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == model.InvoiceID));
+
+            if (!dbInvoice.CanEdit)
+            {
+                return BadRequest(new OperationResponse($"{Messages.InvoiceEditingNotAllowed}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+            }
+
+            mapper.Map(model, dbInvoice);
+
+            await invoiceService.UpdateEntity(dbInvoice);
+
+            // TODO: add concurrency key
+            return Ok(new OperationResponse("Invoice updated", StatusEnum.Success));
+        }
+
+        /// <summary>
+        /// Cancel invoice
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("cancel/{invoiceID}")]
+        public async Task<ActionResult<OperationResponse>> CancelInvoice(Guid? invoiceID)
+        {
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
+
+            var invoicingRequest = mapper.Map<InvoicingCancelDocumentRequest>(dbInvoice);
+
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID));
+
+            if (!dbInvoice.CanCancel)
+            {
+                return BadRequest(new OperationResponse($"{Messages.NotPossibleToCancelInvoice}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+            }
+
+            try
+            {
+                dbInvoice.WebHooksConfiguration = terminal.WebHooksConfiguration;
+
+                var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+                if (terminalInvoicing == null)
+                {
+                    throw new BusinessException(Messages.InvoicingNotDefined);
+                }
+
+                var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+
+                if (!invoicing.CanCancelDocument())
+                {
+                    return BadRequest(new OperationResponse($"{Messages.NotPossibleToCancelInvoice}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+                }
+
+                var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                invoicingRequest.InvoiceingSettings = invoicingSettings;
+
+                var invoicingResponse = await invoicing.CancelDocument(invoicingRequest);
+
+                if (!invoicingResponse.Success)
+                {
+                    logger.LogError($"Invoice cancellation failed. InvoiceID: {dbInvoice.InvoiceID}, response: {invoicingResponse.ErrorMessage}");
+
+                    // TODO: UpdateEntityWithStatus
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.CancellationFailed;
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    _ = events.RaiseInvoiceEvent(dbInvoice, CustomEvent.InvoiceCancellationFailed, invoicingResponse.ErrorMessage);
+
+                    return BadRequest(new OperationResponse($"{Messages.NotPossibleToCancelInvoice}: {invoicingResponse.ErrorMessage}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier, invoicingResponse.Errors));
+                }
+                else
+                {
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.Canceled;
+
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    _ = events.RaiseInvoiceEvent(dbInvoice, CustomEvent.InvoiceCanceled);
+
+                    return new OperationResponse(Messages.InvoiceCanceled, StatusEnum.Success, dbInvoice.InvoiceID);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Invoice cancellation failed. InvoiceID: {dbInvoice.InvoiceID}");
+
+                dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.CancellationFailed;
+                await invoiceService.UpdateEntity(dbInvoice);
+
+                _ = events.RaiseInvoiceEvent(dbInvoice, CustomEvent.InvoiceCancellationFailed, Messages.NotPossibleToCancelInvoice);
+
+                return BadRequest(new OperationResponse($"{Messages.NotPossibleToCancelInvoice}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+            }
         }
 
         /// <summary>
@@ -460,7 +560,7 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
-        /// Resend one invoice 
+        /// Resend one invoice
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>

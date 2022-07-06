@@ -212,6 +212,12 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.CancelInvoice(System.Nullable{System.Guid})">
+            <summary>
+            Cancel invoice
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.CreateInvoiceForTransaction(System.Guid)">
             <summary>
             Create invoice for transaction ID
@@ -228,7 +234,7 @@
         </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.Resend(Transactions.Api.Models.Invoicing.ResendSingleInvoiceRequest)">
             <summary>
-            Resend one invoice 
+            Resend one invoice
             </summary>
             <param name="request"></param>
             <returns></returns>
@@ -426,6 +432,13 @@
             Transmit transactions
             </summary>
             <param name="transmitTransactionsRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Transactions.Api.Controllers.WebhooksController.GeExecutedWebhooks(Shared.Api.WebHooks.WebhooksFilter)">
+            <summary>
+            Get executed webhooks history
+            </summary>
+            <param name="filter"></param>
             <returns></returns>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceOnlyRequest.TerminalID">
@@ -734,6 +747,11 @@
               Looks up a localized string similar to Card Number.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerExternalReference">
+            <summary>
+              Looks up a localized string similar to Consumer Ref.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ConsumerName">
             <summary>
               Looks up a localized string similar to Customer.
@@ -852,11 +870,6 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.InvoiceDetails">
             <summary>
             Invoice details
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CreditCardDetails">
-            <summary>
-            Credit card information(just to display)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
@@ -1274,6 +1287,16 @@
         <member name="P:Transactions.Api.Models.Invoicing.ResendSingleInvoiceRequest.Email">
             <summary>
             Required. New invoice consumer email.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.UpdateInvoiceRequest.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.UpdateInvoiceRequest.DealDetails">
+            <summary>
+            Deal information (optional)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Masav.MasavFileResource">
@@ -2625,6 +2648,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardPresence">
             <summary>
               Looks up a localized string similar to Card Present.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ConsumerExternalReference">
+            <summary>
+              Looks up a localized string similar to Consumer Ref.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.Created">

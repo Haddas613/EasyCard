@@ -88,6 +88,15 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer Ref.
+        /// </summary>
+        internal static string ConsumerExternalReference {
+            get {
+                return ResourceManager.GetString("ConsumerExternalReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Created.
         /// </summary>
         internal static string Created {

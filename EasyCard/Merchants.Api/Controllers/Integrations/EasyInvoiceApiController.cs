@@ -228,7 +228,6 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
-
         [HttpGet]
         [Route("request-logs/{entityID}")]
         public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute] string entityID)
@@ -254,7 +253,7 @@ namespace Merchants.Api.Controllers.Integrations
         public async Task<ActionResult<IEnumerable<DictionaryDetails>>> GetDocumentTypes()
         {
             var response = Enum.GetNames(typeof(ECInvoiceDocumentType))
-                .Select(e => new DictionaryDetails 
+                .Select(e => new DictionaryDetails
                 {
                     Code = e,
                     Description = ECInvoiceDocumentTypeResource.ResourceManager.GetString(e),
@@ -301,44 +300,6 @@ namespace Merchants.Api.Controllers.Integrations
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("cancel-document")]
-        public async Task<ActionResult<OperationResponse>> CancelDocument(SetDocumentNumberRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
-
-            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            //terminalSettings.Password = request.Password;
-            var cancelDocumentNumberResult = await eCInvoicing.CancelDocument(
-                new EasyInvoice.Models.ECInvoiceSetDocumentNumberRequest
-                {
-                    CurrentNum = request.CurrentNum,
-                    DocType = (ECInvoiceDocumentType)Enum.Parse(typeof(ECInvoiceDocumentType), request.DocType),
-                    Email = terminalSettings.UserName,
-                    Terminal = terminalSettings
-                },
-                GetCorrelationID());
-
-            var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentCancelledSuccessfully, StatusEnum.Success);
-
-            if (cancelDocumentNumberResult.Status != StatusEnum.Success)
-            {
-                response.Status = StatusEnum.Error;
-                response.Message = EasyInvoiceMessagesResource.DocumentCancelledFailed;
-
-                return BadRequest(response);
-            }
-
-            return Ok(response);
-        }
-
-
         [HttpGet]
         [Route("get-document-number")]
         public async Task<ActionResult<OperationResponse>> GetDocumentNumber([FromQuery] GetDocumentNumberRequest request)
@@ -374,8 +335,6 @@ namespace Merchants.Api.Controllers.Integrations
 
             return Ok(response);
         }
-
-
 
         [HttpGet]
         [Route("get-document-report")]
@@ -413,7 +372,6 @@ namespace Merchants.Api.Controllers.Integrations
             //
             // return Ok(response);
         }
-
 
         [HttpGet]
         [Route("get-document-tax-report")]
@@ -454,7 +412,6 @@ namespace Merchants.Api.Controllers.Integrations
             // return Ok(response);
         }
 
-
         [HttpGet]
         [Route("get-document-hash-report")]
         public async Task<Object> GetDocumentHashReport(GetDocumentTaxReportRequest request)
@@ -492,20 +449,6 @@ namespace Merchants.Api.Controllers.Integrations
             // }
             //
             // return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("languages")]
-        [ResponseCache(Duration = 3600)]
-        public async Task<ActionResult<IEnumerable<DictionarySummary<int>>>> GetECLanguages()
-        {
-            var response = Enum.GetNames(typeof(ECInvoiceLangEnum)).Select(x => new DictionarySummary<int>
-            {
-                Code = (int)Enum.Parse(typeof(ECInvoiceLangEnum), x),
-                Description = x
-            });
-
-            return Ok(response);
         }
     }
 }

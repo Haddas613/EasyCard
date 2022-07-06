@@ -164,18 +164,18 @@ namespace Transactions.Business.Entities
                 InitialPaymentAmount = PaymentRequestAmount;
             }
 
-            //if (PaymentRequestAmount > 0)
-            //{
-            //    if (NetTotal == default)
-            //    {
-            //        NetTotal = Math.Round(PaymentRequestAmount / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
-            //    }
+            if (PaymentRequestAmount > 0)
+            {
+                if (NetTotal == default)
+                {
+                    NetTotal = Math.Round(PaymentRequestAmount / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+                }
 
-            //    if (VATTotal == default)
-            //    {
-            //        VATTotal = PaymentRequestAmount - NetTotal;
-            //    }
-            //}
+                if (VATTotal == default)
+                {
+                    VATTotal = PaymentRequestAmount - NetTotal;
+                }
+            }
 
             TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
@@ -195,5 +195,19 @@ namespace Transactions.Business.Entities
         public string PaymentRequestUrl { get; set; }
 
         public string Origin { get; set; }
+
+        public bool? AllowInstallments { get; set; }
+
+        public bool? AllowCredit { get; set; }
+
+        public bool? AllowImmediate { get; set; }
+
+        public bool? HidePhone { get; set; }
+
+        public bool? HideEmail { get; set; }
+
+        public bool? HideNationalID { get; set; }
+
+        public bool? ShowAuthCode { get; set; }
     }
 }

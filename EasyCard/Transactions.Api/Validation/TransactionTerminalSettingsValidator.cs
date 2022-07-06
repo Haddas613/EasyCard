@@ -156,10 +156,10 @@ namespace Transactions.Api.Validation
                     errors.Add(new Error(nameof(model.VATTotal), Messages.ExpectedValue.Replace("@value", correctVatTotal.ToString()).Replace("@input", model.VATTotal.Value.ToString())));
                 }
             }
-            else if (!(!model.VATRate.HasValue && !model.VATTotal.HasValue && !model.NetTotal.HasValue)) //If not all fields are null, show an error
-            {
-                throw new BusinessException(Messages.AllVatCalculationsMustBeSpecified);
-            }
+            //else if (!(!model.VATRate.HasValue && !model.VATTotal.HasValue && !model.NetTotal.HasValue)) //If not all fields are null, show an error
+            //{
+            //    throw new BusinessException(Messages.AllVatCalculationsMustBeSpecified);
+            //}
 
             if (errors.Count == 1)
             {

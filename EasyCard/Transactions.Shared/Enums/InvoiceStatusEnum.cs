@@ -16,7 +16,13 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "sent")]
         Sent = 2,
 
+        [EnumMember(Value = "canceled")]
+        Canceled = 3,
+
         [EnumMember(Value = "sendingFailed")]
-        SendingFailed = -1
+        SendingFailed = -1,
+
+        [EnumMember(Value = "cancellationFailed")]
+        CancellationFailed = -2
     }
 }

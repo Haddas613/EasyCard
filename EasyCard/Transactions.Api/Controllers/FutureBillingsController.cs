@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
@@ -19,6 +20,7 @@ using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
+    // TODO: move to reporting service
     [Route("api/future-billings")]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -28,13 +30,16 @@ namespace Transactions.Api.Controllers
     {
         private readonly IFutureBillingsService futureBillingsService;
         private readonly IMapper mapper;
+        private readonly Shared.ApplicationSettings appSettings;
 
         public FutureBillingsController(
             IFutureBillingsService futureBillingsService,
-            IMapper mapper)
+            IMapper mapper,
+            IOptions<Shared.ApplicationSettings> appSettings)
         {
             this.futureBillingsService = futureBillingsService;
             this.mapper = mapper;
+            this.appSettings = appSettings.Value;
         }
 
         [HttpGet]
@@ -57,14 +62,13 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<FutureBillingSummary>>> GetFutureBillingDeals([FromQuery] FutureBillingDealsFilter filter)
         {
-            var query = futureBillingsService.GetFutureBillings().Filter(filter);
-            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+            var queryRes = (await futureBillingsService.GetFutureBillings(filter.TerminalID, filter.ConsumerID, filter.BillingDealID, filter.DateFrom, filter.DateTo))
+                .AsQueryable();
 
             var response = new SummariesResponse<FutureBillingSummary>();
+            response.NumberOfRecords = queryRes.Count();
 
-            response.Data = await mapper.ProjectTo<FutureBillingSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
-
-            response.NumberOfRecords = numberOfRecordsFuture.Value;
+            response.Data = mapper.Map<IEnumerable<FutureBillingSummary>>(queryRes.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit));
 
             return Ok(response);
         }

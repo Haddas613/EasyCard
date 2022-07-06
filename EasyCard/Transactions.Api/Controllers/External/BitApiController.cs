@@ -143,6 +143,28 @@ namespace Transactions.Api.Controllers.External
                     model.VATRate = terminal.Settings.VATRate;
                 }
 
+                // payment request/intent
+                PaymentRequest dbPaymentRequest = null;
+
+                if (model.PaymentRequestID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == model.PaymentRequestID));
+
+                    if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                    {
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+                else if (model.PaymentIntentID != null)
+                {
+                    dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(model.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+                }
+
+                if (dbPaymentRequest != null)
+                {
+                    mapper.Map(dbPaymentRequest, model);
+                }
+
                 var transaction = mapper.Map<PaymentTransaction>(model);
 
                 transaction.ApplyAuditInfo(httpContextAccessor);
@@ -335,18 +357,26 @@ namespace Transactions.Api.Controllers.External
 
             Terminal terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            var bitTransaction = string.IsNullOrWhiteSpace(transaction.BitTransactionDetails.BitPaymentInitiationId) ? null : await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+            var bitTransaction = string.IsNullOrWhiteSpace(transaction.BitTransactionDetails?.BitPaymentInitiationId) ? null : await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
 
-            bool successCapture = true;
-
-            if (bitTransaction.RequestStatusCodeResult?.BitRequestStatusCode == BitRequestStatusCodeEnum.CreditExtensionPerformed)
+            if (bitTransaction != null)
             {
-                successCapture = await CaptureInternal(transaction);
+                bool successCapture = true;
 
-                bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+                if (bitTransaction.RequestStatusCodeResult?.BitRequestStatusCode == BitRequestStatusCodeEnum.CreditExtensionPerformed)
+                {
+                    successCapture = await CaptureInternal(transaction);
+
+                    bitTransaction = await bitProcessor.GetBitTransaction(transaction.BitTransactionDetails.BitPaymentInitiationId, transaction.PaymentTransactionID.ToString(), Guid.NewGuid().ToString(), GetCorrelationID());
+                }
+
+                return await PostProcessTransaction(transaction, terminal, successCapture, bitTransaction);
             }
-
-            return await PostProcessTransaction(transaction, terminal, successCapture, bitTransaction);
+            else
+            {
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, transactionOperationCode: TransactionOperationCodesEnum.RejectedByProcessor);
+                return new OperationResponse($"Bit transaction for {transactionID} does exist", StatusEnum.Error);
+            }
         }
 
         internal async Task<OperationResponse> RefundInternal(PaymentTransaction transaction, Terminal terminal, ChargebackRequest request)

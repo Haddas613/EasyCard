@@ -60,11 +60,13 @@ namespace Transactions.Api.Mapping
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(src => src.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<PaymentTransaction, TransactionSummaryAdmin>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(src => src.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<TransactionSummaryDb, TransactionSummary>()
@@ -115,6 +117,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.Date, o => o.MapFrom(src => src.UpdatedDate))
                 .ForMember(d => d.TransmissionDate, o => o.MapFrom(src => src.ShvaTransactionDetails.TransmissionDate))
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForMember(d => d.ShvaTransmissionNumber, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaTransmissionNumber))
                 .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek));
 
             CreateMap<PaymentTransaction, TransmissionReportSummaryAdmin>()

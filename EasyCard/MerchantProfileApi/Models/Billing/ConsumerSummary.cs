@@ -48,5 +48,11 @@ namespace MerchantProfileApi.Models.Billing
         public string EcwidID { get; set; }
 
         public bool Active { get; set; }
+
+        [Shared.Api.UI.MetadataOptions(Order = 6)]
+        public bool HasBankAccount { get; set; }
+
+        [Shared.Api.UI.MetadataOptions(Order = 7)]
+        public bool HasCreditCard { get; set; }
     }
 }

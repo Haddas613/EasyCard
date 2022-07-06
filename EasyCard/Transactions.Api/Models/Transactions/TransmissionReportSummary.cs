@@ -24,5 +24,7 @@ namespace Transactions.Api.Models.Transactions
         public SolekEnum? Solek { get; set; }
 
         public string ConsumerName { get; set; }
+
+        public string ShvaTransmissionNumber { get; set; }
     }
 }

@@ -21,7 +21,5 @@ namespace Transactions.Api.Models.Transactions
 
         [MetadataOptions(Hidden = true)]
         public new CurrencyEnum Currency { get; set; }
-
-        public string ShvaTransmissionNumber { get; set; }
     }
 }

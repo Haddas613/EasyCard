@@ -13,14 +13,17 @@ namespace Transactions.Business.Entities
     {
         public FutureBilling()
         {
-            //CreditCardDetails = new CreditCardDetails();
         }
 
         public Guid BillingDealID { get; set; }
 
+        public DateTime? BillingDealTimestamp { get; set; }
+
         public Guid TerminalID { get; set; }
 
         public Guid MerchantID { get; set; }
+
+        public Guid? ConsumerID { get; set; }
 
         public decimal TransactionAmount { get; set; }
 
@@ -28,34 +31,29 @@ namespace Transactions.Business.Entities
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
-        public DateTime? BillingDealTimestamp { get; set; }
-
-        public DateTime? NextScheduledTransaction { get; set; }
-
-        public DateTime? FutureScheduledTransaction { get; set; }
-
         public string CardOwnerName { get; set; }
-
-        /// <summary>
-        /// Billing Schedule
-        /// </summary>
-        //public BillingSchedule BillingSchedule { get; set; }
 
         public string CardNumber { get; set; }
 
-        /// <summary>
-        /// Credit card information(just to display)
-        /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        [JsonIgnore]
+        public DateTime? CardExpirationDate { get; set; }
 
-        //public bool Active { get; set; }
-
-        public int? CurrentDeal { get; set; }
-
-        public int? FutureDeal { get; set; }
+        public CardExpiration CardExpiration
+        {
+            get { return CreditCardHelpers.ParseCardExpiration(CardExpirationDate); }
+            set { CardExpirationDate = value?.ToDate(); }
+        }
 
         public DateTime? PausedFrom { get; set; }
 
         public DateTime? PausedTo { get; set; }
+
+        public int? CurrentDeal { get; set; }
+
+        public DateTime? NextScheduledTransaction { get; set; }
+
+        public int? FutureDeal { get; set; }
+
+        public DateTime? FutureTransactionDate { get; set; }
     }
 }

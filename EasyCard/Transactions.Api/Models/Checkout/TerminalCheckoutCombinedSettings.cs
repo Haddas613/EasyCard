@@ -63,5 +63,17 @@ namespace Transactions.Api.Models.Checkout
         public bool? ContinueInCaseOf3DSecureError { get; set; }
 
         public string Language { get; set; }
+
+        public bool? AllowInstallments { get; set; }
+
+        public bool? AllowImmediate { get; set; }
+
+        public bool? AllowCredit { get; set; }
+
+        public bool? HidePhone { get; set; }
+
+        public bool? HideEmail { get; set; }
+
+        public bool? HideNationalID { get; set; }
     }
 }

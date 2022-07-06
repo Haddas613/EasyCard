@@ -188,5 +188,25 @@ namespace CheckoutPortal.Models
         /// </summary>
         [StringLength(2)]
         public string L { get; set; }
+
+        [BindNever]
+        public bool? AllowInstallments { get; set; }
+
+        [BindNever]
+        public bool? AllowCredit { get; set; }
+
+        [BindNever]
+        public bool? HidePhone { get; set; }
+
+        [BindNever]
+        public bool? HideEmail { get; set; }
+
+        [BindNever]
+        public bool? HideNationalID { get; set; }
+
+        [BindNever]
+        public bool? ShowAuthCode { get; set; }
+
+        public string QueryLang { get; set; }
     }
 }

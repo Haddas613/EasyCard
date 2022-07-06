@@ -28,7 +28,7 @@ namespace Transactions.Api.Mapping.ValueResolvers
                 {
                     var ccd = context.Mapper.Map<CreditCardPaymentDetails>(source.CreditCardDetails);
                     ccd.ShovarNumber = source.ShvaTransactionDetails?.ShvaShovarNumber;
-
+                    ccd.Amount = source.Amount;
                     pd.Add(ccd);
                 }
             }

@@ -18,5 +18,9 @@ namespace Shared.Integration.ExternalSystems
         Task<CreateConsumerResponse> CreateConsumerOrGetExisting(CreateConsumerRequest consumerRequest);
 
         bool CanCreateConsumer();
+
+        bool CanCancelDocument();
+
+        Task<InvoicingCancelDocumentResponse> CancelDocument(InvoicingCancelDocumentRequest documentCancelRequest);
     }
 }

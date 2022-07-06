@@ -289,5 +289,37 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
         }
+
+        public async Task<IEnumerable<FutureBilling>> GetFutureBillings(Guid? merchantID, Guid? terminalID, Guid? consumerID, Guid? billingDealID, DateTime? startDate, DateTime? endDate)
+        {
+            var connection = this.Database.GetDbConnection();
+            bool connectionOpened = connection.State == ConnectionState.Open;
+            try
+            {
+                if (!connectionOpened)
+                {
+                    await connection.OpenAsync();
+                }
+
+                var query = "[dbo].[PR_FutureBillings]";
+
+                var args = new DynamicParameters(new { merchantID, terminalID, consumerID, billingDealID, startDate, endDate });
+
+                var result = await connection.QueryAsync<FutureBilling>(query, args, commandType: CommandType.StoredProcedure);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (!connectionOpened)
+                {
+                    connection.Close();
+                }
+            }
+        }
     }
 }

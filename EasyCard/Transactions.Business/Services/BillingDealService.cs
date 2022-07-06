@@ -130,28 +130,9 @@ namespace Transactions.Business.Services
             }
         }
 
-        public IQueryable<FutureBilling> GetFutureBillings()
+        public async Task<IEnumerable<FutureBilling>> GetFutureBillings(Guid? terminalID, Guid? consumerID, Guid? billingDealID, DateTime? startDate, DateTime? endDate)
         {
-            if (user.IsAdmin())
-            {
-                return context.FutureBillings.AsNoTracking();
-            }
-            else if (user.IsTerminal())
-            {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.FutureBillings.AsNoTracking().Where(t => t.TerminalID == terminalID);
-            }
-            else
-            {
-                var response = context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID();
-                if (terminals?.Count() > 0)
-                {
-                    response = response.Where(d => terminals.Contains(d.TerminalID));
-                }
-
-                return response;
-            }
+            return await context.GetFutureBillings(user.GetMerchantID(), terminalID, consumerID, billingDealID, startDate, endDate);
         }
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)

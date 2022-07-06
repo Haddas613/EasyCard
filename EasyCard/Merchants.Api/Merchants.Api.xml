@@ -224,6 +224,11 @@
               Looks up a localized string similar to Payment Info.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.PAYMENT_INFO_DONATION">
+            <summary>
+              Looks up a localized string similar to Donation.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.REFUND_INVOICE_WITH_PAYMENT_INFO">
             <summary>
               Looks up a localized string similar to Refund Invoice with Payment Info.

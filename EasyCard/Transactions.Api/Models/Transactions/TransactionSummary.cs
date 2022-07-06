@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Shared.Api.UI;
 using Shared.Helpers;
+using Shared.Helpers.Models.Attributes;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Transactions.Api.Models.Transactions
 
         public string TerminalName { get; set; }
 
+        [ExcelIgnore]
         [MetadataOptions(Hidden = true)]
         public Guid TerminalID { get; set; }
 
@@ -102,9 +104,12 @@ namespace Transactions.Api.Models.Transactions
 
         public string CardOwnerName { get; set; }
 
+        public string ConsumerExternalReference { get; set; }
+
         [MetadataOptions(Order = 3, Hidden = true)]
         public string ShvaDealID { get; set; }
 
+        [ExcelIgnore]
         [MetadataOptions(Hidden = true)]
         public Guid? InvoiceID { get; set; }
     }

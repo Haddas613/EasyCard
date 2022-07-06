@@ -123,5 +123,9 @@ namespace Transactions.Api.Models.Invoicing
         public IEnumerable<object> PaymentDetails { get; set; }
 
         public TransactionTypeEnum? TransactionType { get; set; }
+
+        public bool CanCancel { get; set; }
+
+        public bool CanEdit { get; set; }
     }
 }

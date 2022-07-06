@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Mapping.ValueResolvers;
 using Transactions.Api.Models.Invoicing;
 using Transactions.Business.Entities;
+using SharedIntegration = Shared.Integration;
 using TransactionsApi = Transactions.Api;
 
 namespace Transactions.Api.Mapping
@@ -33,6 +34,8 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Transactions.Business.Entities.CreditCardDetails, TransactionsApi.Models.Transactions.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
+
+            CreateMap<Invoice, SharedIntegration.Models.Invoicing.InvoicingCancelDocumentRequest>();
 
             CreateMap<Invoice, InvoiceSummary>()
                   .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))

@@ -161,31 +161,15 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
-            if (!model.IssueInvoice.HasValue && terminal.CheckoutSettings.IssueInvoice == true)
-            {
-                model.IssueInvoice = true;
-            }
-
-            if (model.IssueInvoice.GetValueOrDefault())
-            {
-                if (model.InvoiceDetails == null)
-                {
-                    model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
-                }
-
-                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
-            }
-
-            if (model.AllowPinPad.GetValueOrDefault())
-            {
-                model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
-            }
+            model.UpdatePaymentRequest(terminal);
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
             newPaymentRequest.TerminalID = terminal.TerminalID;
 
+            newPaymentRequest.Calculate();
+
             // Update details if needed
-            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null, false);
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -199,8 +183,6 @@ namespace Transactions.Api.Controllers
                     newPaymentRequest.DealDetails.ConsumerID = consumerID;
                 }
             }
-
-            newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 

@@ -24,10 +24,12 @@ namespace Transactions.Api.Mapping
         private void RegisterBillingDealMappings()
         {
             CreateMap<BillingDealRequest, BillingDeal>()
-                .ForMember(d => d.CreditCardToken, o => o.Ignore());
+                .ForMember(d => d.CreditCardToken, o => o.Ignore())
+                .ForMember(d => d.BillingSchedule, o => o.Ignore());
 
             CreateMap<BillingDealInvoiceOnlyRequest, BillingDeal>()
                 .ForMember(d => d.InvoiceOnly, o => o.MapFrom(d => true))
+                .ForMember(d => d.BillingSchedule, o => o.Ignore())
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
 
             CreateMap<BillingDealUpdateRequest, BillingDeal>()
@@ -45,7 +47,6 @@ namespace Transactions.Api.Mapping
             CreateMap<BillingDealInvoiceOnlyUpdateRequest, BillingDeal>()
                 .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.TransactionAmount))
-                .ForMember(d => d.BillingSchedule, o => o.MapFrom(d => d.BillingSchedule))
                 .ForMember(d => d.VATRate, o => o.MapFrom(d => d.VATRate))
                 .ForMember(d => d.VATTotal, o => o.MapFrom(d => d.VATTotal))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
@@ -57,25 +58,26 @@ namespace Transactions.Api.Mapping
 
             CreateMap<BillingDeal, BillingDealSummary>()
                 .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
+                .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(d => d.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, BillingDealSummaryAdmin>()
                 .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
+                .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(d => d.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, BillingDealExcelSummary>()
                .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
+               .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(d => d.DealDetails.ConsumerExternalReference))
                .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
-            CreateMap<FutureBilling, FutureBillingSummary>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
-                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
+            CreateMap<FutureBilling, FutureBillingSummary>();
 
             CreateMap<BillingDeal, BillingDealResponse>()
                 .ForMember(d => d.CardExpired, o => o

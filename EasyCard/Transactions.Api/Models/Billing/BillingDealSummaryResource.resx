@@ -135,6 +135,9 @@
   <data name="CardNumber" xml:space="preserve">
     <value>Card Number</value>
   </data>
+  <data name="ConsumerExternalReference" xml:space="preserve">
+    <value>Consumer Ref</value>
+  </data>
   <data name="ConsumerName" xml:space="preserve">
     <value>Customer</value>
   </data>

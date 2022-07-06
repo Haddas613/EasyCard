@@ -297,8 +297,14 @@
   <data name="InstallmentDetailsRequired" xml:space="preserve">
     <value>InstallmentDetails required</value>
   </data>
+  <data name="InvoiceCanceled" xml:space="preserve">
+    <value>Invoice Canceled</value>
+  </data>
   <data name="InvoiceCreated" xml:space="preserve">
     <value>Invoice Created</value>
+  </data>
+  <data name="InvoiceEditingNotAllowed" xml:space="preserve">
+    <value>Invoice editing is not allowed</value>
   </data>
   <data name="InvoiceGenerated" xml:space="preserve">
     <value>Invoice generated</value>
@@ -341,6 +347,9 @@
   </data>
   <data name="NothingToTransmit" xml:space="preserve">
     <value>Nothing to transmit</value>
+  </data>
+  <data name="NotPossibleToCancelInvoice" xml:space="preserve">
+    <value>Not possible to cancel invoice</value>
   </data>
   <data name="NumberOfPaymentsShouldBeGreaterThan" xml:space="preserve">
     <value>NumberOfPayments should be greater than or equal {0}</value>

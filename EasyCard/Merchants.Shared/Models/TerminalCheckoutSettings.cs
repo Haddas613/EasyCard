@@ -25,5 +25,31 @@ namespace Merchants.Shared.Models
         public bool? ContinueInCaseOf3DSecureError { get; set; }
 
         public string DefaultLanguage { get; set; }
+
+        public bool? Donation { get; set; }
+
+        private bool? allowInstallments;
+
+        private bool? allowCredit;
+
+        private bool? hidePhone;
+
+        private bool? hideEmail;
+
+        private bool? hideNationalID;
+
+        private bool? allowImmediate;
+
+        public bool? AllowInstallments { get => allowInstallments.GetValueOrDefault(true); set => allowInstallments = value; }
+
+        public bool? AllowImmediate { get => allowImmediate.GetValueOrDefault(true); set => allowImmediate = value; }
+
+        public bool? AllowCredit { get => allowCredit.GetValueOrDefault(true); set => allowCredit = value; }
+
+        public bool? HidePhone { get => hidePhone.GetValueOrDefault(false); set => hidePhone = value; }
+
+        public bool? HideEmail { get => hideEmail.GetValueOrDefault(false); set => hideEmail = value; }
+
+        public bool? HideNationalID { get => hideNationalID.GetValueOrDefault(false); set => hideNationalID = value; }
     }
 }

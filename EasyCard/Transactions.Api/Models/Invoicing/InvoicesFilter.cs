@@ -14,6 +14,8 @@ namespace Transactions.Api.Models.Invoicing
 {
     public class InvoicesFilter : FilterBase
     {
+        public Guid? MerchantID { get; set; }
+
         public Guid? TerminalID { get; set; }
 
         public string InvoiceNumber { get; set; }

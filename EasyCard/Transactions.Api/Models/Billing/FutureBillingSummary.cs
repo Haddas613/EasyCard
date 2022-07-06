@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,14 @@ namespace Transactions.Api.Models.Billing
 {
     public class FutureBillingSummary
     {
+        [MetadataOptions(Hidden = true)]
         public Guid BillingDealID { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid TerminalID { get; set; }
 
-        public Guid MerchantID { get; set; }
+        [MetadataOptions(Hidden = true)]
+        public Guid? ConsumerID { get; set; }
 
         public decimal TransactionAmount { get; set; }
 
@@ -24,25 +28,26 @@ namespace Transactions.Api.Models.Billing
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
-        public DateTime? NextScheduledTransaction { get; set; }
-
-        public DateTime? FutureScheduledTransaction { get; set; }
-
         public string CardOwnerName { get; set; }
 
         public string CardNumber { get; set; }
 
-        /// <summary>
-        /// Credit card information(just to display)
-        /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        [MetadataOptions(Hidden = true)]
+        public CardExpiration CardExpiration { get; set; }
+
+        [MetadataOptions(Hidden = true)]
+        public DateTime? PausedFrom { get; set; }
+
+        [MetadataOptions(Hidden = true)]
+        public DateTime? PausedTo { get; set; }
 
         public int? CurrentDeal { get; set; }
 
+        [MetadataOptions(Hidden = true)]
+        public DateTime? NextScheduledTransaction { get; set; }
+
         public int? FutureDeal { get; set; }
 
-        public DateTime? PausedFrom { get; set; }
-
-        public DateTime? PausedTo { get; set; }
+        public DateTime? FutureTransactionDate { get; set; }
     }
 }

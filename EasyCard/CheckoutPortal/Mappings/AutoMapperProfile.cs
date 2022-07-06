@@ -53,6 +53,9 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.IsRefund, o => o.MapFrom(src => src.IsRefund))
                 .ForMember(d => d.UserAmount, o => o.MapFrom(src => src.UserAmount))
                 .ForMember(d => d.OnlyAddCard, o => o.MapFrom(src => src.OnlyAddCard))
+
+
+                .ForMember(d => d.ShowAuthCode, o => o.MapFrom(src => src.ShowAuthCode))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
@@ -68,7 +71,14 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.EnabledFeatures, o => o.MapFrom(src => src.EnabledFeatures))
                 .ForMember(d => d.EnableThreeDS, o => o.MapFrom(src => src.EnableThreeDS))
                 .ForMember(d => d.ContinueInCaseOf3DSecureError, o => o.MapFrom(src => src.ContinueInCaseOf3DSecureError))
-                .ForMember(d => d.AllowBit, o => o.MapFrom((src, d) => !d.IsRefund && (d.Amount > 0 == true || d.UserAmount) && src.AllowBit.GetValueOrDefault(false)))
+                .ForMember(d => d.AllowBit, o => o.MapFrom(src => src.AllowBit.GetValueOrDefault(false)))
+
+                .ForMember(d => d.AllowInstallments, o => o.MapFrom(src => src.AllowInstallments))
+                .ForMember(d => d.AllowCredit, o => o.MapFrom(src => src.AllowCredit))
+                .ForMember(d => d.HidePhone, o => o.MapFrom(src => src.HidePhone))
+                .ForMember(d => d.HideEmail, o => o.MapFrom(src => src.HideEmail))
+                .ForMember(d => d.HideNationalID, o => o.MapFrom(src => src.HideNationalID))
+
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()

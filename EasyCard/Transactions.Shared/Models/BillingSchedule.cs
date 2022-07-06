@@ -87,6 +87,30 @@ namespace Transactions.Shared.Models
         {
             var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && EndAt < today)
+            {
+                throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {today}");
+            }
+
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue == true && EndAt < StartAt)
+            {
+                throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {StartAt}");
+            }
+
+            if (EndAtType == EndAtTypeEnum.AfterNumberOfPayments && EndAtNumberOfPayments.GetValueOrDefault() <= 0)
+            {
+                EndAt = null;
+                EndAtType = EndAtTypeEnum.Never;
+                EndAtNumberOfPayments = null;
+            }
+
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt == null)
+            {
+                EndAt = null;
+                EndAtType = EndAtTypeEnum.Never;
+                EndAtNumberOfPayments = null;
+            }
+
             if (existingTransactionTimestamp.HasValue)
             {
                 var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
@@ -110,6 +134,25 @@ namespace Transactions.Shared.Models
                     }
                 }
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            var c = obj as BillingSchedule;
+            if (c == null)
+                return false;
+
+            return RepeatPeriodType == c.RepeatPeriodType 
+                && StartAtType == c.StartAtType
+                && EndAtType == c.EndAtType 
+                && StartAt == c.StartAt
+                && EndAt == c.EndAt 
+                && EndAtNumberOfPayments == c.EndAtNumberOfPayments;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

@@ -257,6 +257,11 @@ namespace Transactions.Business.Entities
 
         public void UpdateNextScheduledDatInitial(BillingSchedule billingSchedule, DateTime? existingTransactionTimestamp = null)
         {
+            if (BillingSchedule?.Equals(billingSchedule) == true)
+            {
+                return;
+            }
+
             BillingSchedule = billingSchedule;
             BillingSchedule.Validate(existingTransactionTimestamp);
 
@@ -271,6 +276,8 @@ namespace Transactions.Business.Entities
             {
                 NextScheduledTransaction = null;
             }
+
+            Active = NextScheduledTransaction != null;
         }
 
         public void UpdateNextScheduledDatAfterSuccess(Guid? paymentTransactionID, DateTime? timestamp, DateTime? legalDate)
