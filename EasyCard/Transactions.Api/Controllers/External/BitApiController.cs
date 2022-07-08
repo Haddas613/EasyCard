@@ -442,15 +442,15 @@ namespace Transactions.Api.Controllers.External
             {
                 try
                 {
-                    await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed);
+                    await transactionsService.UpdateEntityWithStatus(refundEntity, TransactionStatusEnum.Completed, dbTransaction: dbTransaction);
 
                     transaction.TotalRefund = transaction.TotalRefund.GetValueOrDefault() + request.RefundAmount;
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Chargeback, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Chargeback, transactionOperationCode: TransactionOperationCodesEnum.RefundCreated, dbTransaction: dbTransaction);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(RefundInternal)}: Failed to commitd db transaction. TransactionID: {transaction.PaymentTransactionID}");
+                    logger.LogError(ex, $"{nameof(BitApiController)}.{nameof(RefundInternal)}: Failed to commitd db transaction. TransactionID: {transaction.PaymentTransactionID}: {ex.Message}");
                     await dbTransaction.RollbackAsync();
                 }
             }
