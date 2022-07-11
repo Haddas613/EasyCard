@@ -17,14 +17,30 @@ namespace MerchantProfileApi.Models.Terminal
 
         public string DefaultLanguage { get; set; }
 
-        public bool? AllowInstallments { get; set; }
+        public bool? Donation { get; set; }
 
-        public bool? AllowCredit { get; set; }
+        private bool? allowInstallments;
 
-        public bool? HidePhone { get; set; }
+        private bool? allowCredit;
 
-        public bool? HideEmail { get; set; }
+        private bool? hidePhone;
 
-        public bool? HideNationalID { get; set; }
+        private bool? hideEmail;
+
+        private bool? hideNationalID;
+
+        private bool? allowImmediate;
+
+        public bool? AllowInstallments { get => allowInstallments.GetValueOrDefault(true); set => allowInstallments = value; }
+
+        public bool? AllowImmediate { get => allowImmediate.GetValueOrDefault(true); set => allowImmediate = value; }
+
+        public bool? AllowCredit { get => allowCredit.GetValueOrDefault(true); set => allowCredit = value; }
+
+        public bool? HidePhone { get => hidePhone.GetValueOrDefault(false); set => hidePhone = value; }
+
+        public bool? HideEmail { get => hideEmail.GetValueOrDefault(false); set => hideEmail = value; }
+
+        public bool? HideNationalID { get => hideNationalID.GetValueOrDefault(false); set => hideNationalID = value; }
     }
 }
