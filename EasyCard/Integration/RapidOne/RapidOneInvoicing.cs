@@ -62,6 +62,7 @@ namespace RapidOne
             if (string.IsNullOrWhiteSpace(documentCreationRequest.DealDetails?.ConsumerExternalReference))
             {
                 var cres = await CreateConsumerOrGetExisting(new CreateConsumerRequest {
+                     InvoiceingSettings = terminal,
                      ConsumerName = documentCreationRequest.ConsumerName ?? documentCreationRequest.DealDetails?.ConsumerName,
                      Email = documentCreationRequest.DealDetails?.ConsumerEmail,
                      CellPhone = documentCreationRequest.DealDetails?.ConsumerPhone,
