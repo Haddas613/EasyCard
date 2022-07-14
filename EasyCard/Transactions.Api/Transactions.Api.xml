@@ -4,6 +4,12 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="M:Transactions.Api.Controllers.CardTokenAdminController.RetentionCleanup">
+            <summary>
+            Delete credit card token older than 5 years
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Transactions.Api.Controllers.UpdateParametersController">
             <summary>
             This controller not in use

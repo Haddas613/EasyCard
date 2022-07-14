@@ -439,5 +439,17 @@ namespace Transactions.Api.Client
                 throw;
             }
         }
+
+        public async Task<OperationResponse> CardTokensRetentionCleanup()
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/cardtokensadmin/retentionCleanup", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
     }
 }
