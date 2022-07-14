@@ -15,7 +15,7 @@ namespace EasyInvoice
 
         public string Password { get; set; }
 
-        public ECInvoiceLangEnum? Lang { get; set; }
+        public string Lang { get; set; }
 
         public Task<bool> Valid()
         {

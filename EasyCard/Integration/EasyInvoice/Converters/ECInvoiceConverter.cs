@@ -5,6 +5,7 @@ using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -217,7 +218,7 @@ namespace EasyInvoice.Converters
         {
             description = message.DealDetails?.DealDescription;
             var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
-            string donationDescription = settings.Lang == ECInvoiceLangEnum.He ? "התרומה מוכרת לצרכי מס לפי סעיף 46 א" : "Receiving a donation according to Section 46";
+            string donationDescription = EasyInvoiceMessages.ResourceManager.GetString("DonationDescription", CultureInfo.GetCultureInfo(settings.Lang));
 
             if ((documentType == ECInvoiceDocumentType.PAYMENT_INFO || documentType == ECInvoiceDocumentType.PAYMENT_INFO_DONATION) && message.InvoiceDetails.Donation)
             {

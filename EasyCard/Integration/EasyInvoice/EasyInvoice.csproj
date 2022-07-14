@@ -16,4 +16,19 @@
     <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="EasyInvoiceMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EasyInvoiceMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="EasyInvoiceMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EasyInvoiceMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

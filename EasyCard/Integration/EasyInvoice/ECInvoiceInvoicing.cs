@@ -62,7 +62,7 @@ namespace EasyInvoice
 
             try
             {
-                string langInvoice = !string.IsNullOrWhiteSpace(documentCreationRequest.InvoiceDetails.InvoiceLanguage) ? documentCreationRequest.InvoiceDetails.InvoiceLanguage : (terminal.Lang.HasValue ? terminal.Lang.Value.ToString().ToLower() : "he");
+                string langInvoice = !string.IsNullOrWhiteSpace(documentCreationRequest.InvoiceDetails.InvoiceLanguage) ? documentCreationRequest.InvoiceDetails.InvoiceLanguage : (string.IsNullOrWhiteSpace(terminal.Lang) ? "he" : terminal.Lang);
                 headers.Add("Accept-language", langInvoice);
 
                 svcRes = await this.apiClient.Post<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers),
