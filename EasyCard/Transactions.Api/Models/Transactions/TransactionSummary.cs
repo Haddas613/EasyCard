@@ -112,5 +112,7 @@ namespace Transactions.Api.Models.Transactions
         [ExcelIgnore]
         [MetadataOptions(Hidden = true)]
         public Guid? InvoiceID { get; set; }
+
+        public string DealDescription { get; set; }
     }
 }

@@ -135,6 +135,9 @@
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
+  <data name="DealDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
   <data name="DocumentOrigin" xml:space="preserve">
     <value>Origin</value>
   </data>

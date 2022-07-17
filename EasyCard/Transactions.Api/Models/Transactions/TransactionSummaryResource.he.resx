@@ -132,6 +132,9 @@
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
+  <data name="DealDescription" xml:space="preserve">
+    <value>הערות</value>
+  </data>
   <data name="DocumentOrigin" xml:space="preserve">
     <value>מקור</value>
   </data>
