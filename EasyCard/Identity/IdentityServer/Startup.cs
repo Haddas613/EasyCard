@@ -106,6 +106,7 @@ namespace IdentityServer
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
             });
 
             services.Configure<SecuritySettings>(options =>
