@@ -2671,6 +2671,11 @@
               Looks up a localized string similar to Currency.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.DealDescription">
+            <summary>
+              Looks up a localized string similar to Description.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.DocumentOrigin">
             <summary>
               Looks up a localized string similar to Origin.

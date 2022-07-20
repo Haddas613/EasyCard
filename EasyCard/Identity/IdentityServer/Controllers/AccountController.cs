@@ -881,6 +881,23 @@ namespace IdentityServer.Controllers
                 return View(model);
             }
 
+            foreach (var passwordValidator in userManager.PasswordValidators)
+            {
+                var valres = await passwordValidator.ValidateAsync(userManager, user, model.NewPassword);
+                if (!valres.Succeeded)
+                {
+                    foreach (var err in valres.Errors)
+                    {
+                        ModelState.AddModelError(nameof(model.NewPassword), err.Description);
+                    }
+                }
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return View(model);
+            }
+
             var result = await userSecurityService.TrySetNewPassword(user, model.NewPassword);
 
             if (!result)
