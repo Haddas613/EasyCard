@@ -165,67 +165,61 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-                try
+
+                var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+                if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
                 {
-                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-
-                    if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+                    try
                     {
-                        try
+                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+                        aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
+                        mapper.Map(model, aggregatorRequest.CreditCardDetails);
+
+                        if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
                         {
-                            var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-                            aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
-                            mapper.Map(model, aggregatorRequest.CreditCardDetails);
-
-                            if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
-                            {
-                                //workaround for CH
-                                aggregatorRequest.DealDetails.DealDescription = "-";
-                            }
-
-                            aggregatorRequest.TransactionDate = DateTime.Now;
-                            var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
-                            aggregatorRequest.AggregatorSettings = aggregatorSettings;
-
-                            var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
-                            if (aggregatorValidationErrorMsg != null)
-                            {
-                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
-                            }
-
-                            var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
-                            mapper.Map(aggregatorResponse, transaction);
-
-                            if (!aggregatorResponse.Success)
-                            {
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
-
-                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
-                            }
-                            else
-                            {
-                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
-                            }
+                            //workaround for CH
+                            aggregatorRequest.DealDetails.DealDescription = "-";
                         }
-                        catch (Exception ex)
+
+                        aggregatorRequest.TransactionDate = DateTime.Now;
+                        var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+                        aggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                        var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
+                        if (aggregatorValidationErrorMsg != null)
                         {
-                            logger.LogError(ex, $"Aggregator Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                        }
 
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+                        var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
+                        mapper.Map(aggregatorResponse, transaction);
 
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        if (!aggregatorResponse.Success)
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
+
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
+                        }
+                        else
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Aggregator Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                    string sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
-                    return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                    }
                 }
-                catch (Exception ex)
-                {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
-                    logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
-                    return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
-                }
+
+                string sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
+                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
+
+
             }
             catch (Exception ex)
             {
@@ -461,7 +455,7 @@ namespace Transactions.Api.Controllers.External
             var terminalProcessor = terminalMakingTransaction.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor);
             Shva.ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<Shva.ShvaTerminalSettings>();
             ShvaTransactionDetails lastDealShvaDetails = transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == terminalSettings.MerchantNumber && x.ShvaTransactionDetails != null && x.ShvaTransactionDetails.ShvaShovarNumber != null).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync().Result;
-            var sysTranceNumber = Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDealShvaDetails.ShvaShovarNumber, lastDealShvaDetails.TransmissionDate);
+            var sysTranceNumber = lastDealShvaDetails == null ? "{1;1}" : Nayax.Converters.EMVDealHelper.GetFilNSeq(lastDealShvaDetails.ShvaShovarNumber, lastDealShvaDetails.TransmissionDate);
             return sysTranceNumber;
         }
 
