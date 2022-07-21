@@ -165,64 +165,72 @@ namespace Transactions.Api.Controllers.External
                 transaction.Calculate();
 
                 await transactionsService.CreateEntity(transaction);
-
-                var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-
-                if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+                try
                 {
-                    try
+                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+                    if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
                     {
-                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-                        aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
-                        mapper.Map(model, aggregatorRequest.CreditCardDetails);
-
-                        if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
+                        try
                         {
-                            //workaround for CH
-                            aggregatorRequest.DealDetails.DealDescription = "-";
+                            var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+                            aggregatorRequest.CreditCardDetails = new SharedIntegration.Models.CreditCardDetails();
+                            mapper.Map(model, aggregatorRequest.CreditCardDetails);
+
+                            if (string.IsNullOrWhiteSpace(aggregatorRequest.DealDetails.DealDescription))
+                            {
+                                //workaround for CH
+                                aggregatorRequest.DealDetails.DealDescription = "-";
+                            }
+
+                            aggregatorRequest.TransactionDate = DateTime.Now;
+                            var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+                            aggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                            var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
+                            if (aggregatorValidationErrorMsg != null)
+                            {
+                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                            }
+
+                            var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
+                            mapper.Map(aggregatorResponse, transaction);
+
+                            if (!aggregatorResponse.Success)
+                            {
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
+
+                                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
+                            }
+                            else
+                            {
+                                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
+                            }
                         }
-
-                        aggregatorRequest.TransactionDate = DateTime.Now;
-                        var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
-                        aggregatorRequest.AggregatorSettings = aggregatorSettings;
-
-                        var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
-                        if (aggregatorValidationErrorMsg != null)
+                        catch (Exception ex)
                         {
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
-                        }
+                            logger.LogError(ex, $"Aggregator Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                        var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
-                        mapper.Map(aggregatorResponse, transaction);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                        if (!aggregatorResponse.Success)
-                        {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
-
-                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
-                        }
-                        else
-                        {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Aggregator Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
-
-                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
-                    }
+                    string sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
+                    return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
                 }
-
-                string sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
-                return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
+                catch (Exception ex)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+                    logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
+                    return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
+                }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
-                return new NayaxResult(ex.Message, false /*ResultEnum.ServerError, false*/);
+                return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
             }
         }
 
