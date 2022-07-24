@@ -135,4 +135,10 @@
   <data name="ExternalReference" xml:space="preserve">
     <value>מזהה חיצוני</value>
   </data>
+  <data name="HasBankAccount" xml:space="preserve">
+    <value>בעל פרטי חשבון להוראת קבע</value>
+  </data>
+  <data name="HasCreditCard" xml:space="preserve">
+    <value>בעל פרטי כרטיס אשראי</value>
+  </data>
 </root>
