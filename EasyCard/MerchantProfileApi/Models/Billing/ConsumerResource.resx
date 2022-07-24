@@ -135,4 +135,10 @@
   <data name="ExternalReference" xml:space="preserve">
     <value>External Reference</value>
   </data>
+  <data name="HasBankAccount" xml:space="preserve">
+    <value>Has Bank Account</value>
+  </data>
+  <data name="HasCreditCard" xml:space="preserve">
+    <value>Has Credit Card</value>
+  </data>
 </root>
