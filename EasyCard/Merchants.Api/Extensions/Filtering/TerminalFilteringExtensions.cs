@@ -1,5 +1,7 @@
 ﻿using Merchants.Api.Models.Terminal;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared.Helpers;
 using Shared.Integration;
@@ -13,6 +15,8 @@ namespace Merchants.Api.Extensions.Filtering
 {
     public static class TerminalFilteringExtensions
     {
+        private static readonly PinPadDevicesService DevicesService;
+
         public static IQueryable<Terminal> Filter(this IQueryable<Terminal> src, TerminalsFilter filter)
         {
             if (filter.TerminalID.HasValue)
@@ -67,6 +71,12 @@ namespace Merchants.Api.Extensions.Filtering
             else if (filter.ActiveOnly)
             {
                 src = src.Where(t => t.Status != Shared.Enums.TerminalStatusEnum.Disabled);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.DeviceID))
+            {
+                var device = DevicesService.GetDevice(filter.DeviceID);
+                src = src.Where(t => t.TerminalID == device.Result.TerminalID);
             }
 
             if (!string.IsNullOrWhiteSpace(filter.AggregatorTerminalReference))

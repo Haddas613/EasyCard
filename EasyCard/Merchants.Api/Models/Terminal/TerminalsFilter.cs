@@ -38,5 +38,8 @@ namespace Merchants.Api.Models.Terminal
         public FeatureEnum? HasFeature { get; set; }
 
         public bool HasShvaTerminal { get; set; }
+
+        public string DeviceID { get; set; }
+
     }
 }
