@@ -468,12 +468,13 @@
                     return $("#checkout-form").submit();
                 }
 
+                let cardNumber = document.getElementById("cc-number");
+                if (cardNumber.value.length == 9) {//direct
+                      return $("#checkout-form").submit();
+                }
 
                 let payload = $('#checkout-form').serialize();
                 window.switchLoadingSpinner(true);
-
-                if (payload.CardNumber.value.length == 9)
-                    return $("#checkout-form").submit();
 
                 return $.post("/Home/Versioning3Ds", payload, function (data, status, xhr) {
                     if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
