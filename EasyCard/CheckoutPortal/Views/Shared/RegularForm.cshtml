@@ -468,6 +468,10 @@
                     return $("#checkout-form").submit();
                 }
 
+                let cardNumber = document.getElementById("cc-number");
+                if (cardNumber.value.length == 9) {//direct
+                      return $("#checkout-form").submit();
+                }
 
                 let payload = $('#checkout-form').serialize();
                 window.switchLoadingSpinner(true);
