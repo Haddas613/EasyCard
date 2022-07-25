@@ -25,6 +25,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+//using Shared.Helpers.Models;
 using Shared.Helpers.Security;
 using Shared.Integration;
 using System;
@@ -43,6 +44,7 @@ namespace Merchants.Api.Controllers
     [ApiController]
     public class TerminalsApiController : ApiControllerBase
     {
+        private readonly IPinPadDevicesService devicesService;
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
@@ -60,6 +62,7 @@ namespace Merchants.Api.Controllers
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
+            IPinPadDevicesService devicesService,
             IMerchantsService merchantsService,
             ITerminalsService terminalsService,
             IMapper mapper,
@@ -74,6 +77,7 @@ namespace Merchants.Api.Controllers
             ECInvoiceInvoicing eCInvoiceInvoicing,
             IPinPadDevicesService pinPadDevicesService)
         {
+            this.devicesService = devicesService;
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
@@ -129,8 +133,22 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             // TODO: validate filters (see transactions list)
+            var devices = devicesService.GetDevices();
+            bool containdeviceIDFilter = !string.IsNullOrEmpty(filter.DeviceID);
 
-            var query = terminalsService.GetTerminals().Filter(filter);
+            if (containdeviceIDFilter)
+            {
+                devices = devices.Where(d => d.DeviceTerminalID == filter.DeviceID);
+            }
+
+            var terminals = terminalsService.GetTerminals();
+
+            if (containdeviceIDFilter)
+            {
+                terminals.Where(t => t.TerminalID.IsIn(devices.Select(d => d.TerminalID.Value).ToArray()));
+            }
+
+            var query = terminals.Filter(filter);
 
             using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
