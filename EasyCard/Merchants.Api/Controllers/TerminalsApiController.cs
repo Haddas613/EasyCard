@@ -134,7 +134,7 @@ namespace Merchants.Api.Controllers
         {
             // TODO: validate filters (see transactions list)
             var devices = devicesService.GetDevices();
-            bool containdeviceIDFilter = !string.IsNullOrEmpty(filter.DeviceID);
+            bool containdeviceIDFilter = !string.IsNullOrWhiteSpace(filter.DeviceID);
 
             if (containdeviceIDFilter)
             {
@@ -145,7 +145,9 @@ namespace Merchants.Api.Controllers
 
             if (containdeviceIDFilter)
             {
-                terminals.Where(t => t.TerminalID.IsIn(devices.Select(d => d.TerminalID.Value).ToArray()));
+                var devicesTerminals = await devices.Where(d => d.DeviceTerminalID == filter.DeviceID).Select(d => d.TerminalID.Value).ToArrayAsync();
+
+                terminals = terminals.Where(d => devicesTerminals.Contains(d.TerminalID));
             }
 
             var query = terminals.Filter(filter);
