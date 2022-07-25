@@ -41,7 +41,6 @@ namespace MerchantProfileApi.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class TerminalsApiController : ApiControllerBase
     {
-        
         private readonly ITerminalsService terminalsService;
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
@@ -58,7 +57,6 @@ namespace MerchantProfileApi.Controllers
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
-            
             IMerchantsService merchantsService,
             ITerminalsService terminalsService,
             IMapper mapper,
@@ -72,7 +70,6 @@ namespace MerchantProfileApi.Controllers
             ECInvoiceInvoicing eCInvoiceInvoicing,
             IMerchantConsentService merchantConsentService)
         {
-            
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
@@ -91,7 +88,6 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             var merchantId = User.GetMerchantID();
-            //var devices = devicesService.GetDevices().Where(d=>d.TerminalID==);
             var query = terminalsService.GetTerminals().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
