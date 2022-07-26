@@ -25,7 +25,6 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
-//using Shared.Helpers.Models;
 using Shared.Helpers.Security;
 using Shared.Integration;
 using System;
@@ -132,21 +131,12 @@ namespace Merchants.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
-            // TODO: validate filters (see transactions list)
-            var devices = devicesService.GetDevices();
-            bool containdeviceIDFilter = !string.IsNullOrWhiteSpace(filter.DeviceID);
-
-            if (containdeviceIDFilter)
-            {
-                devices = devices.Where(d => d.DeviceTerminalID == filter.DeviceID);
-            }
-
             var terminals = terminalsService.GetTerminals();
-
-            if (containdeviceIDFilter)
+           
+            if (!string.IsNullOrWhiteSpace(filter.DeviceID))
             {
+                var devices = devicesService.GetDevices();
                 var devicesTerminals = await devices.Where(d => d.DeviceTerminalID == filter.DeviceID).Select(d => d.TerminalID.Value).ToArrayAsync();
-
                 terminals = terminals.Where(d => devicesTerminals.Contains(d.TerminalID));
             }
 

@@ -1,7 +1,7 @@
 ﻿using Merchants.Api.Models.Terminal;
-using Merchants.Business.Entities.Integration;
+//using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Terminal;
-using Merchants.Business.Services;
+//using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared.Helpers;
 using Shared.Integration;
