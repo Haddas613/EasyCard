@@ -43,7 +43,6 @@ namespace Merchants.Api.Controllers
     [ApiController]
     public class TerminalsApiController : ApiControllerBase
     {
-        private readonly IPinPadDevicesService devicesService;
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
@@ -61,7 +60,6 @@ namespace Merchants.Api.Controllers
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
-            IPinPadDevicesService devicesService,
             IMerchantsService merchantsService,
             ITerminalsService terminalsService,
             IMapper mapper,
@@ -76,7 +74,6 @@ namespace Merchants.Api.Controllers
             ECInvoiceInvoicing eCInvoiceInvoicing,
             IPinPadDevicesService pinPadDevicesService)
         {
-            this.devicesService = devicesService;
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
@@ -132,10 +129,10 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             var terminals = terminalsService.GetTerminals();
-           
+
             if (!string.IsNullOrWhiteSpace(filter.DeviceID))
             {
-                var devices = devicesService.GetDevices();
+                var devices = pinPadDevicesService.GetDevices();
                 var devicesTerminals = await devices.Where(d => d.DeviceTerminalID == filter.DeviceID).Select(d => d.TerminalID.Value).ToArrayAsync();
                 terminals = terminals.Where(d => devicesTerminals.Contains(d.TerminalID));
             }

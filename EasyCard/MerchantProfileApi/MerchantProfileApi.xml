@@ -294,6 +294,16 @@
               Looks up a localized string similar to External Reference.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.HasBankAccount">
+            <summary>
+              Looks up a localized string similar to Has Bank Account.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResource.HasCreditCard">
+            <summary>
+              Looks up a localized string similar to Has Credit Card.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerEmail">
             <summary>
             End-customer Email
