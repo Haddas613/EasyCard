@@ -43,6 +43,7 @@ namespace Merchants.Api.Controllers
     [ApiController]
     public class TerminalsApiController : ApiControllerBase
     {
+        private readonly IPinPadDevicesService devicesService;
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
@@ -60,6 +61,7 @@ namespace Merchants.Api.Controllers
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
+            IPinPadDevicesService devicesService,
             IMerchantsService merchantsService,
             ITerminalsService terminalsService,
             IMapper mapper,
@@ -74,6 +76,7 @@ namespace Merchants.Api.Controllers
             ECInvoiceInvoicing eCInvoiceInvoicing,
             IPinPadDevicesService pinPadDevicesService)
         {
+            this.devicesService = devicesService;
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
@@ -128,9 +131,16 @@ namespace Merchants.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
-            // TODO: validate filters (see transactions list)
+            var terminals = terminalsService.GetTerminals();
+           
+            if (!string.IsNullOrWhiteSpace(filter.DeviceID))
+            {
+                var devices = devicesService.GetDevices();
+                var devicesTerminals = await devices.Where(d => d.DeviceTerminalID == filter.DeviceID).Select(d => d.TerminalID.Value).ToArrayAsync();
+                terminals = terminals.Where(d => devicesTerminals.Contains(d.TerminalID));
+            }
 
-            var query = terminalsService.GetTerminals().Filter(filter);
+            var query = terminals.Filter(filter);
 
             using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {

@@ -88,7 +88,6 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             var merchantId = User.GetMerchantID();
-
             var query = terminalsService.GetTerminals().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
