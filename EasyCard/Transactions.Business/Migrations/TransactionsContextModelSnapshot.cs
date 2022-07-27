@@ -864,6 +864,9 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<short?>("TransactionType")
+                        .HasColumnType("smallint");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -100,5 +101,10 @@ namespace Transactions.Api.Models.PaymentRequests
         public string Origin { get; set; }
 
         public bool? ShowAuthCode { get; set; }
+
+        /// <summary>
+        /// Transaction Type
+        /// </summary>
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }

@@ -138,7 +138,7 @@ namespace CheckoutPortal.Models
         [BindNever]
         public int? MaxInstallments { get; set; }
 
-        public TransactionTypeEnum TransactionType { get; set; }
+        public TransactionTypeEnum? TransactionType { get; set; }
 
         [BindNever]
         public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }

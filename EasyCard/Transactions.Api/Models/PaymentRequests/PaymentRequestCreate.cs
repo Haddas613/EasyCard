@@ -53,6 +53,11 @@ namespace Transactions.Api.Models.PaymentRequests
         public DateTime? DueDate { get; set; }
 
         /// <summary>
+        /// Transaction Type
+        /// </summary>
+        public TransactionTypeEnum? TransactionType { get; set; }
+
+        /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }

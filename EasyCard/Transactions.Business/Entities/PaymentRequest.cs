@@ -3,6 +3,7 @@ using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.Processor;
 using System;
@@ -209,5 +210,10 @@ namespace Transactions.Business.Entities
         public bool? HideNationalID { get; set; }
 
         public bool? ShowAuthCode { get; set; }
+
+        /// <summary>
+        /// Transaction Type
+        /// </summary>
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }

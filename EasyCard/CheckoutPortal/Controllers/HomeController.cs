@@ -421,7 +421,7 @@ namespace CheckoutPortal.Controllers
                 {
                     CreditCardSecureDetails = new CreditCardSecureDetails(),
                     InstallmentDetails = installmentDetails,
-                    TransactionType = request.TransactionType
+                    TransactionType = request.TransactionType.GetValueOrDefault()
                 };
 
                 // TODO: consumer IP
@@ -464,7 +464,7 @@ namespace CheckoutPortal.Controllers
                     DealDetails = new DealDetails(),
                     CreditCardToken = request.CreditCardToken,
                     InstallmentDetails = installmentDetails,
-                    TransactionType = request.TransactionType,
+                    TransactionType = request.TransactionType.GetValueOrDefault(),
                     PaymentIntentID = isPaymentIntent ? new Guid(request.PaymentIntent) : (Guid?)null
                 };
                 mapper.Map(request, mdel);

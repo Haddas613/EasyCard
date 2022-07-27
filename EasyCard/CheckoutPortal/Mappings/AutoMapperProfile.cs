@@ -49,7 +49,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
                 .ForMember(d => d.InitialPaymentAmount, o => o.MapFrom(d => d.InitialPaymentAmount))
                 .ForMember(d => d.TransactionType, o => o.MapFrom((f, src) =>
-                    src.NumberOfPayments > 1 ? (src.TransactionType == TransactionTypeEnum.RegularDeal ? TransactionTypeEnum.Installments : src.TransactionType) : TransactionTypeEnum.RegularDeal))
+                    src.NumberOfPayments > 1 && src.TransactionType != TransactionTypeEnum.Installments && src.TransactionType != TransactionTypeEnum.Credit ? TransactionTypeEnum.Installments : (src.TransactionType == null ? f.TransactionType ?? TransactionTypeEnum.RegularDeal: src.TransactionType)))
                 .ForMember(d => d.IsRefund, o => o.MapFrom(src => src.IsRefund))
                 .ForMember(d => d.UserAmount, o => o.MapFrom(src => src.UserAmount))
                 .ForMember(d => d.OnlyAddCard, o => o.MapFrom(src => src.OnlyAddCard))
