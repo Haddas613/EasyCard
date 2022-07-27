@@ -75,5 +75,7 @@ namespace Transactions.Api.Models.Checkout
         public bool? HideEmail { get; set; }
 
         public bool? HideNationalID { get; set; }
+
+        public bool? AllowSaveCreditCard { get; set; }
     }
 }

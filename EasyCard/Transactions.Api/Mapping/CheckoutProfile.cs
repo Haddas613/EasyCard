@@ -23,7 +23,10 @@ namespace Transactions.Api.Mapping
         private void RegisterTerminalMappings()
         {
             CreateMap<TerminalSettings, TerminalCheckoutCombinedSettings>();
-            CreateMap<TerminalCheckoutSettings, TerminalCheckoutCombinedSettings>();
+
+            CreateMap<TerminalCheckoutSettings, TerminalCheckoutCombinedSettings>()
+                .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(d => d.AllowSaveCreditCard));
+
             CreateMap<TerminalPaymentRequestSettings, TerminalCheckoutCombinedSettings>();
 
             CreateMap<Merchant, TerminalCheckoutCombinedSettings>()

@@ -164,6 +164,9 @@ namespace CheckoutPortal.Models
         public bool OnlyAddCard { get; set; }
 
         [BindNever]
+        public bool? AllowSaveCreditCard { get; set; }
+
+        [BindNever]
         public ICollection<Merchants.Shared.Enums.FeatureEnum> EnabledFeatures { get; set; }
 
         [BindNever]

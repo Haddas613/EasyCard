@@ -78,6 +78,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.HidePhone, o => o.MapFrom(src => src.HidePhone))
                 .ForMember(d => d.HideEmail, o => o.MapFrom(src => src.HideEmail))
                 .ForMember(d => d.HideNationalID, o => o.MapFrom(src => src.HideNationalID))
+                .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(src => src.AllowSaveCreditCard))
 
                 .ForAllOtherMembers(d => d.Ignore());
 
