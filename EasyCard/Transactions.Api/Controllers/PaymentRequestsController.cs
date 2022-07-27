@@ -246,11 +246,12 @@ namespace Transactions.Api.Controllers
 
             // if phone is present but sms notification feature is not enabled, show the error
             if (!string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone)
-               && !terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification))
+               && !terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification)
+               && string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail))
             {
                 return BadRequest(new OperationResponse(Messages.EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal, StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             }
-            else if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone) 
+            else if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerPhone)
                 && string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail)) // if phone is not present, email is required
             {
                 var msg = terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification)
