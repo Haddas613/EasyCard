@@ -36,7 +36,7 @@ namespace Transactions.Business.Services
 
         }
 
-        public async Task<PaymentRequest> GetPaymentIntent(Guid paymentIntentID)
+        public async Task<PaymentRequest> GetPaymentIntent(Guid paymentIntentID, bool showDeleted = false)
         {
             PaymentRequest response = null;
 
@@ -44,7 +44,7 @@ namespace Transactions.Business.Services
 
             if (paymentIntent != null)
             {
-                if (!paymentIntent.Deleted && !string.IsNullOrWhiteSpace(paymentIntent?.PaymentRequest))
+                if ((!paymentIntent.Deleted || showDeleted) && !string.IsNullOrWhiteSpace(paymentIntent?.PaymentRequest))
                 {
                     response = JsonConvert.DeserializeObject<PaymentRequest>(paymentIntent?.PaymentRequest);
                 }

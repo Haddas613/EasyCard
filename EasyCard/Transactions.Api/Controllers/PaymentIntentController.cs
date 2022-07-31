@@ -39,6 +39,7 @@ using Shared.Api.Validation;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Swagger;
 using SharedIntegration = Shared.Integration;
+using Transactions.Api.Validation;
 
 namespace Transactions.Api.Controllers
 {
@@ -145,6 +146,8 @@ namespace Transactions.Api.Controllers
             {
                 return BadRequest(new OperationResponse(Messages.CheckoutFeatureMustBeEnabled, StatusEnum.Error));
             }
+
+            PaymentRequestValidator.ValidatePaymentRequest(model);
 
             // TODO: validation procedure
             //if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))

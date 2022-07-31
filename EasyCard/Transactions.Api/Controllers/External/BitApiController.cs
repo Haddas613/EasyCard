@@ -541,16 +541,36 @@ namespace Transactions.Api.Controllers.External
         // TODO: return
         private async Task CreateInvoice(PaymentTransaction transaction, Terminal terminal)
         {
-            var invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
-            {
-                InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
-                InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
-                SendCCTo = terminal.InvoiceSettings.SendCCTo
-            };
+            PaymentRequest dbPaymentRequest = null;
+            SharedIntegration.Models.Invoicing.InvoiceDetails invoiceDetails = null;
 
-            if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+            if (transaction.PaymentRequestID != null)
             {
-                invoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
+                dbPaymentRequest = await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == transaction.PaymentRequestID);
+            }
+            else if (transaction.PaymentIntentID != null)
+            {
+                dbPaymentRequest = await paymentIntentService.GetPaymentIntent(transaction.PaymentIntentID.GetValueOrDefault(), true);
+            }
+
+            if (dbPaymentRequest != null)
+            {
+                invoiceDetails = dbPaymentRequest.InvoiceDetails;
+            }
+
+            if (invoiceDetails == null)
+            {
+                invoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails
+                {
+                    InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault(),
+                    InvoiceSubject = terminal.InvoiceSettings.DefaultInvoiceSubject,
+                    SendCCTo = terminal.InvoiceSettings.SendCCTo
+                };
+
+                if (transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+                {
+                    invoiceDetails.InvoiceType = terminal.InvoiceSettings.DefaultRefundInvoiceType.GetValueOrDefault();
+                }
             }
 
             await invoicingController.ProcessInvoice(terminal, transaction, invoiceDetails);
