@@ -98,6 +98,16 @@ namespace Transactions.Api.Controllers.External
                         PassThrough = res.ErrorDetails.PassThrough
                     };
                 }
+                else if (string.IsNullOrWhiteSpace(res.VersioningResponse.ThreeDSMethodURL) || string.IsNullOrWhiteSpace(res.VersioningResponse.ThreeDSMethodDataForm?.ThreeDSMethodData) || string.IsNullOrWhiteSpace(res.VersioningResponse.ThreeDSServerTransID))
+                {
+                    reportEntity.TransStatus = "error";
+
+                    return new Versioning3DsResponse
+                    {
+                        ErrorMessage = "3Ds response is not complete",
+                        PassThrough = true
+                    };
+                }
                 else
                 {
                     reportEntity.ThreeDSServerTransID = res.VersioningResponse.ThreeDSServerTransID;
