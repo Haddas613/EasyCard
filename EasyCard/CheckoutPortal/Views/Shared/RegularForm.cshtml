@@ -2,11 +2,6 @@
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
 
-<div id="toast-container" class="custom-toastr">
-    <!-- Only way to prevent the destruction -->
-    <span></span>
-</div>
-
 <form asp-action="Charge" method="post" id="checkout-form">
     <input type="hidden" asp-for="RedirectUrl" />
     <input type="hidden" asp-for="PaymentRequest" />
@@ -298,23 +293,7 @@
         @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
         {
             <text>
-                toastr.options = {
-                  "closeButton": false,
-                  "newestOnTop": false,
-                  "progressBar": false,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": false,
-                  "onclick": null,
-                  "timeOut": -1,
-                  "extendedTimeOut ": -1,
-                  "disableTimeOut": true,
-                  "tapToDismiss": false,
-                  "toastClass": "signalr-toast",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut",
-                }
+
                 let signalRClient = new (function() {
                     this.transactionsHub = null;
                     this.toast = null;

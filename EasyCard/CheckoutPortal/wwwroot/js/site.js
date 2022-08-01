@@ -15,3 +15,21 @@ window.switchLoadingSpinner = function(show = false) {
         document.getElementsByTagName("body")[0].classList.remove("no-scroll")
     }
 }
+
+toastr.options = {
+    "closeButton": false,
+    "newestOnTop": false,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "timeOut": -1,
+    "extendedTimeOut ": -1,
+    "disableTimeOut": true,
+    "tapToDismiss": false,
+    "toastClass": "signalr-toast",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut",
+}

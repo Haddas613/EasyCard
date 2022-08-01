@@ -198,23 +198,27 @@
         };
 
         function invokeBit(){
-            BitPayment.pay({
-                transactionSerialId: window.bitdata.transactionSerialId,
-                paymentInitiationId: window.bitdata.paymentInitiationId,
-                onCreate: function(openBitPaymentPage){
-                    openBitPaymentPage(transaction);
-                },
-                onApproved: function(details){
-                    window.switchLoadingSpinner(true);
-                    $("#bit-completed-form").submit();
-                },
-                onCancel: function (data) {
-                    window.bitdata = null;
-                    window.bitloading = false;
-                    window.switchLoadingSpinner(false);
-                },
-            });
-            window.bitloading = false;
+            if (typeof BitPayment === "undefined") {
+                 toastr["error"]("Bit payment is not available - please try again later");
+            } else {
+                BitPayment.pay({
+                    transactionSerialId: window.bitdata.transactionSerialId,
+                    paymentInitiationId: window.bitdata.paymentInitiationId,
+                    onCreate: function(openBitPaymentPage) {
+                        openBitPaymentPage(transaction);
+                    },
+                    onApproved: function(details) {
+                        window.switchLoadingSpinner(true);
+                        $("#bit-completed-form").submit();
+                    },
+                    onCancel: function(data) {
+                        window.bitdata = null;
+                        window.bitloading = false;
+                        window.switchLoadingSpinner(false);
+                    },
+                });
+                window.bitloading = false;
+            }
         };
     }
 </script>
