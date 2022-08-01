@@ -272,7 +272,7 @@ namespace Transactions.Business.Entities
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments &&
                 BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
                 (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue &&
-                BillingSchedule.EndAt <= legalDate))
+                (BillingSchedule.EndAt <= legalDate || BillingSchedule.EndAt <= NextScheduledTransaction)))
             {
                 NextScheduledTransaction = null;
             }
@@ -295,7 +295,7 @@ namespace Transactions.Business.Entities
             LastError = null;
             FailedAttemptsCount = 0;
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments && BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
-                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && BillingSchedule.EndAt <= legalDate))
+                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && (BillingSchedule.EndAt <= legalDate || BillingSchedule.EndAt <= NextScheduledTransaction)))
             {
                 NextScheduledTransaction = null;
             }
