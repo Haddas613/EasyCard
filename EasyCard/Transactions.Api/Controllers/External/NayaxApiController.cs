@@ -82,7 +82,12 @@ namespace Transactions.Api.Controllers.External
             this.mapper = mapper;
             this.pinPadDevicesService = pinPadDevicesService;
         }
-
+        /// <summary>
+        /// if settings in device are not correct and ec is set to legacy EasyCard
+        /// we need to insert records from legacy (tblTranRecordForMissingDeal) to ECNG
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("v1/tranRecord")]
         public async Task<ActionResult<NayaxUpdateTranRecordResponse>> UpdateTranRecord([FromBody] NayaxUpdateTranRecordRequest model)
