@@ -96,12 +96,22 @@ namespace Transactions.Api.Controllers.External
             try
             {
                 Guid tranRecordReceiptNumber = Guid.NewGuid();
-                await nayaxTransactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                var nayaxTransactionParameters = await nayaxTransactionsService.GetNayaxTransactionsParameter(model.Vuid);
+                if (nayaxTransactionParameters != null)
                 {
-                    TranRecord = model.TranRecord,
-                    PinPadTransactionID = model.Vuid,
-                    PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString()
-                });
+                    nayaxTransactionParameters.TranRecord = model.TranRecord;
+                    nayaxTransactionParameters.PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString();
+                    await nayaxTransactionsService.UpdateEntity(nayaxTransactionParameters);
+                }
+                else
+                {
+                    await nayaxTransactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                    {
+                        TranRecord = model.TranRecord,
+                        PinPadTransactionID = model.Vuid,
+                        PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString()
+                    });
+                }
 
                 return new NayaxUpdateTranRecordResponse
                 {
