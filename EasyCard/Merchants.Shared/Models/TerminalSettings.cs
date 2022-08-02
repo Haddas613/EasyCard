@@ -89,5 +89,9 @@ namespace Merchants.Shared.Models
         public bool? SharedCreditCardTokens { get; set; }
 
         public bool CreateInvoicingConsumer { get; set; }
+        /// <summary>
+        /// Merchant Category Code for 3DSecure
+        /// </summary>
+        public string MCC { get; set; }
     }
 }

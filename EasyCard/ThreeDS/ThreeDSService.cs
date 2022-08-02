@@ -5,6 +5,8 @@ using Shared.Helpers;
 using Shared.Integration;
 using Shared.Integration.Exceptions;
 using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using ThreeDS.Configuration;
 using ThreeDS.Contract;
@@ -89,6 +91,16 @@ namespace ThreeDS
             string responseStatusStr = null;
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            string ipAddress = string.Empty;
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ipAddress = ip.ToString();
+                }
+            }
+
             AuthenticationRequest request = new AuthenticationRequest()
             {
                 UserName = configuration.UserName,
@@ -106,7 +118,7 @@ namespace ThreeDS
                 AcquirerBin = "",
                 AcquirerMerchantId = "",
                 Brand = "",
-                Merchant_mcc = "1234",
+                Merchant_mcc = "5966",
                 PurchaseExponent = "2",
                 TransType = "01",
 
@@ -123,11 +135,12 @@ namespace ThreeDS
 
                 BrowserAcceptHeader = model.BrowserDetails?.BrowserAcceptHeader ?? "text/html,application/xhtml+xml,application/xml;",
                 BrowserLanguage = model.BrowserDetails?.BrowserLanguage ?? "en",
-                BrowserColorDepth = model.BrowserDetails?.BrowserColorDepth ?? "8", 
-                BrowserScreenHeight = model.BrowserDetails?.BrowserScreenHeight ?? "1050", 
-                BrowserScreenWidth = model.BrowserDetails?.BrowserScreenWidth ?? "1680", 
-                BrowserTZ = model.BrowserDetails?.BrowserTZ ?? "1200", 
+                BrowserColorDepth = model.BrowserDetails?.BrowserColorDepth ?? "8",
+                BrowserScreenHeight = model.BrowserDetails?.BrowserScreenHeight ?? "1050",
+                BrowserScreenWidth = model.BrowserDetails?.BrowserScreenWidth ?? "1680",
+                BrowserTZ = model.BrowserDetails?.BrowserTZ ?? "1200",
                 BrowserUserAgent = model.BrowserDetails?.BrowserUserAgent ?? "Mozilla/5.0 (Windows NT 6.1; Win64; x64;",
+                browserIP = ipAddress,
 
                 ChallengeWindowSize = "02"
             };
