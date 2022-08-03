@@ -305,7 +305,7 @@ namespace CheckoutPortal.Controllers
 
             InstallmentDetails installmentDetails = null;
 
-            if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
+            if (request.TransactionType != null && !checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
 
