@@ -424,11 +424,13 @@ namespace CheckoutPortal.Controllers
                     TransactionType = request.TransactionType.GetValueOrDefault()
                 };
 
+                // TODO: remove this block at all
+                mapper.Map(checkoutConfig.Settings, mdel);
+                mapper.Map(checkoutConfig.PaymentRequest, mdel);
+
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
-                mapper.Map(checkoutConfig.Settings, mdel);
-                mapper.Map(checkoutConfig.PaymentRequest, mdel);
 
                 if (checkoutConfig.PaymentIntentID != null)
                 {
