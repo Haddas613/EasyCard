@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20220802144816_updateTranRecordtoMax")]
+    partial class updateTranRecordtoMax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -862,9 +864,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
-
-                    b.Property<short?>("TransactionType")
-                        .HasColumnType("smallint");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()

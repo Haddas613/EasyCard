@@ -82,7 +82,12 @@ namespace Transactions.Api.Controllers.External
             this.mapper = mapper;
             this.pinPadDevicesService = pinPadDevicesService;
         }
-
+        /// <summary>
+        /// if settings in device are not correct and ec is set to legacy EasyCard
+        /// we need to insert records from legacy (tblTranRecordForMissingDeal) to ECNG
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("v1/tranRecord")]
         public async Task<ActionResult<NayaxUpdateTranRecordResponse>> UpdateTranRecord([FromBody] NayaxUpdateTranRecordRequest model)
@@ -91,12 +96,22 @@ namespace Transactions.Api.Controllers.External
             try
             {
                 Guid tranRecordReceiptNumber = Guid.NewGuid();
-                await nayaxTransactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                var nayaxTransactionParameters = await nayaxTransactionsService.GetNayaxTransactionsParameter(model.Vuid);
+                if (nayaxTransactionParameters != null)
                 {
-                    TranRecord = model.TranRecord,
-                    PinPadTransactionID = model.Vuid,
-                    PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString()
-                });
+                    nayaxTransactionParameters.TranRecord = model.TranRecord;
+                    nayaxTransactionParameters.PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString();
+                    await nayaxTransactionsService.UpdateEntity(nayaxTransactionParameters);
+                }
+                else
+                {
+                    await nayaxTransactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                    {
+                        TranRecord = model.TranRecord,
+                        PinPadTransactionID = model.Vuid,
+                        PinPadTranRecordReceiptNumber = tranRecordReceiptNumber.ToString()
+                    });
+                }
 
                 return new NayaxUpdateTranRecordResponse
                 {
