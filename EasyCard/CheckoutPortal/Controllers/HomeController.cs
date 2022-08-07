@@ -211,7 +211,7 @@ namespace CheckoutPortal.Controllers
             //    return await IndexViewResult(checkoutConfig, request);
             //}
 
-            if (request.PayWithBit && request.TransactionType != TransactionTypeEnum.RegularDeal)
+            if (request.PayWithBit && request.TransactionType.HasValue && request.TransactionType != TransactionTypeEnum.RegularDeal)
             {
                 ModelState.AddModelError(nameof(request.PayWithBit), "Only regular deals are allowed for Bit payments");
                 return IndexViewResult(checkoutConfig, request);

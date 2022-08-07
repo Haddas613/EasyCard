@@ -383,7 +383,7 @@
                     data: payload,
                     type: "POST",
                     success: function (data, status, xhr) {
-                        if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
+                        if (xhr.status != 200 || !xhr.getResponseHeader("content-type").startsWith("application/json")) {
 
                             if (continueInCaseOf3DSecureError) {
                                 $("#ThreeDSServerTransID").val("");
@@ -456,7 +456,7 @@
                 window.switchLoadingSpinner(true);
 
                 return $.post("/Home/Versioning3Ds", payload, function (data, status, xhr) {
-                    if (xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json") {
+                    if (xhr.status != 200 || !xhr.getResponseHeader("content-type").startsWith("application/json")) {
 
                         if (continueInCaseOf3DSecureError)
                             return $("#checkout-form").submit();
@@ -569,7 +569,7 @@
         })
 
         window.onunload = function (e) {
-            if (signalRClient) {
+            if (!(typeof signalRClient === "undefined")) {
                 signalRClient.disposeSignalRConnection();
             }
         };
