@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BasicServices.BlobStorage;
 using EasyInvoice;
 using EasyInvoice.Models;
 using Merchants.Api.Models.Integrations;
@@ -30,6 +32,7 @@ namespace Merchants.Api.Controllers.Integrations
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     public class EasyInvoiceApiController : ApiControllerBase
     {
+        private readonly IBlobStorageService blobStorageService;
         private readonly ECInvoiceInvoicing eCInvoicing;
         private readonly ITerminalsService terminalsService;
         private readonly ITerminalTemplatesService terminalTemplatesService;
@@ -37,12 +40,14 @@ namespace Merchants.Api.Controllers.Integrations
         private readonly IExternalSystemsService externalSystemsService;
 
         public EasyInvoiceApiController(
+             IBlobStorageService blobStorageService,
             ECInvoiceInvoicing eCInvoicing,
             ITerminalsService terminalsService,
             ITerminalTemplatesService terminalTemplatesService,
             IMapper mapper,
             IExternalSystemsService externalSystemsService)
         {
+            this.blobStorageService = blobStorageService;
             this.eCInvoicing = eCInvoicing;
             this.terminalsService = terminalsService;
             this.terminalTemplatesService = terminalTemplatesService;
@@ -375,18 +380,18 @@ namespace Merchants.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("get-document-tax-report")]
-        public async Task<Object> GetDocumentTaxReport(GetDocumentTaxReportRequest request)
+        public async Task<string> GetDocumentTaxReport(GetDocumentTaxReportRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState).ToString();
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getDocumentReportResult = await eCInvoicing.GetTaxReport(
+            var getTaxReportResult = await eCInvoicing.GetTaxReport(
                 new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
                 {
                     Terminal = terminalSettings,
@@ -395,21 +400,11 @@ namespace Merchants.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
 
-            //RestClient clientRestSharop;
-            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
-            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
-            return Ok(getDocumentReportResult);
-            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
 
-            // if (response.Status != StatusEnum.Success)
-            // {
-            //     response.Status = StatusEnum.Error;
-            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
-            //
-            //     return BadRequest(response);
-            // }
-            //
-            // return Ok(response);
+            Stream stream = new MemoryStream(getTaxReportResult.FileContents);
+            var res = await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
+
+            return blobStorageService.GetDownloadUrl(res);
         }
 
         [HttpGet]

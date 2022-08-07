@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -118,6 +119,51 @@ namespace Shared.Helpers
             if (response.IsSuccessStatusCode)
             {
                 return (res);
+            }
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed GET from {url}: {response.StatusCode}");
+                }
+            }
+        }
+
+        public async Task<FileContentResult> GetFile(string enpoint, string actionPath, string fileName, string fileType, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            var res = await response.Content.ReadAsStringAsync();
+            byte[] fileContent = response.Content.ReadAsByteArrayAsync().Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var fileNameFull = string.Format("{0}.{1}",fileName,fileType);
+                var mimeType = string.Format("application/{0}",fileType);
+                return new FileContentResult(fileContent, mimeType)
+                {
+                    FileDownloadName = fileNameFull
+                };
+
+                //return File(response.Content, "application/octet-stream");
             }
             else
             {
