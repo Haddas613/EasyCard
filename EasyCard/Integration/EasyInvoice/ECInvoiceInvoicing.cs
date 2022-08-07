@@ -1,5 +1,6 @@
 ﻿using EasyInvoice.Converters;
 using EasyInvoice.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -348,7 +349,7 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<Object> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<FileContentResult> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -364,7 +365,7 @@ namespace EasyInvoice
                     startDate = request.StartDate,
                 };
 
-                var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
+                var result = await this.apiClient.GetFile(this.configuration.BaseUrl, "/api/v1/tax-report","TaxReport","zip", json, () => Task.FromResult(headers));
                 return result;
                 //    return new OperationResponse
                 //    {
