@@ -183,6 +183,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.External.NayaxApiController.UpdateTranRecord(Nayax.Models.NayaxUpdateTranRecordRequest)">
+            <summary>
+            if settings in device are not correct and ec is set to legacy EasyCard
+            we need to insert records from legacy (tblTranRecordForMissingDeal) to ECNG
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.FutureBillingsController.GetFutureBillingDeals(Transactions.Api.Models.Billing.FutureBillingDealsFilter)">
             <summary>
             Get future billing by filters

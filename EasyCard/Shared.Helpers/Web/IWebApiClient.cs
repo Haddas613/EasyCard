@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -15,7 +16,7 @@ namespace Shared.Helpers
          ProcessRequest onRequest = null, ProcessResponse onResponse = null);
         Task<string> GetObj<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null);
 
-        Task<string> GetFile<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null);
+        Task<FileContentResult> GetFile<T>(string enpoint, string actionPath, string fileName, string fileType, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null);
 
 
         Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null,

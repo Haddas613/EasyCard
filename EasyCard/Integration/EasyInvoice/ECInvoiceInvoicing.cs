@@ -1,5 +1,6 @@
 ﻿using EasyInvoice.Converters;
 using EasyInvoice.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -348,7 +349,7 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<string> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<FileContentResult> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -356,23 +357,14 @@ namespace EasyInvoice
 
             try
             {
-                // headers.Add("Accept-language", "he"); // TODO: get language from options
-
                 var json = new GetDocumentTaxReportModel
                 {
                     endDate = request.EndDate,
                     startDate = request.StartDate,
                 };
 
-                var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
+                var result = await this.apiClient.GetFile<Object>(this.configuration.BaseUrl, "/api/v1/tax-report", "TaxReport", "zip", json, () => Task.FromResult(headers));
                 return result;
-                //    return new OperationResponse
-                //    {
-                //        //EntityID = result
-                //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
-                //        Message = "Get Document Number",
-                //         
-                //    };
             }
             catch (Exception ex)
             {
