@@ -348,7 +348,7 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<Object> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<string> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
