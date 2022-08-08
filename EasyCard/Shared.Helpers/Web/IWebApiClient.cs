@@ -23,7 +23,7 @@ namespace Shared.Helpers
             ProcessRequest onRequest = null, ProcessResponse onResponse = null);
 
         Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
-            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null, int? minutesForTimeout = null
             );
 
         Task<T> PostForm<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
