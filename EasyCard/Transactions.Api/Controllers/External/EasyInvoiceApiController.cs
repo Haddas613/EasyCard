@@ -29,32 +29,26 @@ namespace Transactions.Api.Controllers.Integrations
     [Route("api/integrations/easy-invoice")]
     [Produces("application/json")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.MerchantFrontend)]
     public class EasyInvoiceApiController : ApiControllerBase
     {
         private readonly ECInvoiceInvoicing eCInvoicing;
         private readonly ITerminalsService terminalsService;
-        //private readonly ITerminalTemplatesService terminalTemplatesService;
         private readonly IMapper mapper;
-        //private readonly IExternalSystemsService externalSystemsService;
-       // private readonly IBlobStorageService blobStorageService;
+        private readonly IBlobStorageService blobStorageService;
         private readonly Shared.ApplicationSettings appSettings;
         public EasyInvoiceApiController(
             ECInvoiceInvoicing eCInvoicing,
-           // IBlobStorageService blobStorageService,
+            IBlobStorageService blobStorageService,
             ITerminalsService terminalsService,
-            //ITerminalTemplatesService terminalTemplatesService,
             IMapper mapper,
              IOptions<Shared.ApplicationSettings> appSettings)
-            //IExternalSystemsService externalSystemsService)
         {
-            //this.blobStorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
+            this.blobStorageService = blobStorageService;
             this.eCInvoicing = eCInvoicing;
-           this.terminalsService = terminalsService;
+            this.terminalsService = terminalsService;
             this.appSettings = appSettings.Value;
-            // this.terminalTemplatesService = terminalTemplatesService;
             this.mapper = mapper;
-            //this.externalSystemsService = externalSystemsService;
         }
 
         [HttpGet]
@@ -81,17 +75,6 @@ namespace Transactions.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
             return Ok(getDocumentReportResult);
-            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
-
-            // if (response.Status != StatusEnum.Success)
-            // {
-            //     response.Status = StatusEnum.Error;
-            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
-            //
-            //     return BadRequest(response);
-            // }
-            //
-            // return Ok(response);
         }
 
         [HttpPost]
@@ -116,8 +99,8 @@ namespace Transactions.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
             Stream stream = new MemoryStream(getTaxReportResult.FileContents);
-            var url =  await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
-            return url;
+            var fileName = await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
+            return blobStorageService.GetDownloadUrl(fileName);
         }
 
         [HttpGet]
