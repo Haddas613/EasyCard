@@ -8,10 +8,8 @@ using BasicServices.BlobStorage;
 using EasyInvoice;
 using EasyInvoice.Models;
 using Merchants.Api.Models.Integrations;
-using Merchants.Api.Models.Integrations.EasyInvoice;
-using Merchants.Business.Entities.Terminal;
-using Merchants.Business.Models.Integration;
-using Merchants.Business.Services;
+//using Merchants.Business.Entities.Terminal;
+//using Merchants.Business.Models.Integration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,35 +20,41 @@ using Shared.Api.Models.Enums;
 using Shared.Helpers.Models;
 using Shared.Integration;
 using Transactions.Api;
+using Merchants.Api.Models.Integrations.EasyInvoice;
+using Merchants.Business.Services;
+using Microsoft.Extensions.Options;
 
-namespace Merchants.Api.Controllers.Integrations
+namespace Transactions.Api.Controllers.Integrations
 {
     [Route("api/integrations/easy-invoice")]
     [Produces("application/json")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.MerchantFrontend)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     public class EasyInvoiceApiController : ApiControllerBase
     {
         private readonly ECInvoiceInvoicing eCInvoicing;
         private readonly ITerminalsService terminalsService;
-        private readonly ITerminalTemplatesService terminalTemplatesService;
+        //private readonly ITerminalTemplatesService terminalTemplatesService;
         private readonly IMapper mapper;
-        private readonly IExternalSystemsService externalSystemsService;
-        private readonly IBlobStorageService blobStorageService;
+        //private readonly IExternalSystemsService externalSystemsService;
+       // private readonly IBlobStorageService blobStorageService;
+        private readonly Shared.ApplicationSettings appSettings;
         public EasyInvoiceApiController(
             ECInvoiceInvoicing eCInvoicing,
-            IBlobStorageService blobStorageService,
+           // IBlobStorageService blobStorageService,
             ITerminalsService terminalsService,
-            ITerminalTemplatesService terminalTemplatesService,
+            //ITerminalTemplatesService terminalTemplatesService,
             IMapper mapper,
-            IExternalSystemsService externalSystemsService)
+             IOptions<Shared.ApplicationSettings> appSettings)
+            //IExternalSystemsService externalSystemsService)
         {
-            this.blobStorageService = blobStorageService;
+            //this.blobStorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
             this.eCInvoicing = eCInvoicing;
-            this.terminalsService = terminalsService;
-            this.terminalTemplatesService = terminalTemplatesService;
+           this.terminalsService = terminalsService;
+            this.appSettings = appSettings.Value;
+            // this.terminalTemplatesService = terminalTemplatesService;
             this.mapper = mapper;
-            this.externalSystemsService = externalSystemsService;
+            //this.externalSystemsService = externalSystemsService;
         }
 
         [HttpGet]
@@ -112,7 +116,8 @@ namespace Merchants.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
             Stream stream = new MemoryStream(getTaxReportResult.FileContents);
-            return await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
+            var url =  await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
+            return url;
         }
 
         [HttpGet]

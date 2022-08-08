@@ -87,6 +87,5 @@ namespace Merchants.Api.Controllers.Integrations
             //
             // return Ok(response);
         }
-
     }
 }
