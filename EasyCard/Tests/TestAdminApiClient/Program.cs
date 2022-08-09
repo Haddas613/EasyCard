@@ -1,4 +1,5 @@
 ﻿using DesktopEasyCardConvertorECNG;
+using Shared.Api.Models;
 using System;
 
 namespace TestAdminApiClient
@@ -39,6 +40,20 @@ namespace TestAdminApiClient
                 }
             }
 
+
+            Guid paymentTransactionRequestID = Guid.NewGuid();
+            try
+            {
+                string terminalid = "152fa179-3050-4b62-baf7-aee600d1415e";
+
+
+                OperationResponse res = transactionsService.CreateTransaction(new Transactions.Api.Models.Transactions.CreateTransactionRequest { PaymentRequestID = paymentTransactionRequestID, TransactionAmount=1, TerminalID = Guid.Parse(terminalid), CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails {  CardNumber= "4557430402053720", CardExpiration = new Shared.Helpers.CardExpiration {  Month=6, Year=26}, CardOwnerName="Avinoam", CardOwnerNationalID="122222227", Cvv="393" }  }).Result;
+                transactionsService.CreateTransaction(new Transactions.Api.Models.Transactions.CreateTransactionRequest { PaymentRequestID = paymentTransactionRequestID });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to create transaction : {ex.Message}");
+            }
             //var res = transactionsService.CreateInvoiceForTransaction(Guid.Parse("41F6110E-0ADE-44E0-95B9-ADF700A4D041")).Result;
 
             //Console.WriteLine(res);

@@ -1020,6 +1020,11 @@
               Looks up a localized string similar to Only successful transactions are allowed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestAlreadyPayed">
+            <summary>
+              Looks up a localized string similar to Payment request already payed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.PaymentRequestCanceled">
             <summary>
               Looks up a localized string similar to Payment Request canceled.

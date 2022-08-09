@@ -498,16 +498,6 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            if (model.PaymentIntentID != null)
-            {
-                var paymenttransaction = transactionsService.GetTransaction(t => t.PaymentIntentID == model.PaymentIntentID).Result;
-
-                if (paymenttransaction != null && (int)paymenttransaction.Status >= (int)TransactionStatusEnum.Initial)
-                {
-                    throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
-                }
-            }
-
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)
