@@ -474,11 +474,27 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentRequestID != null)
             {
-                var paymenttransaction = transactionsService.GetTransaction(t => t.PaymentRequestID == model.PaymentRequestID).Result;
+                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionRequestID = model.PaymentRequestID });
 
-                if (paymenttransaction != null && (int)paymenttransaction.Status >= (int)TransactionStatusEnum.Initial)
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
-                    throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+                    if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+                    }
+                }
+            }
+
+            if (model.PaymentIntentID != null)
+            {
+                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionIntentID = model.PaymentIntentID });
+
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                {
+                    if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+                    }
                 }
             }
 

@@ -23,6 +23,8 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid? PaymentTransactionRequestID { get; set; }
 
+        public Guid? PaymentTransactionIntentID { get; set; }
+
         [Range(0, double.PositiveInfinity)]
         public decimal? AmountFrom { get; set; }
 
