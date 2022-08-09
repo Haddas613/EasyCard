@@ -790,6 +790,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment request already payed.
+        /// </summary>
+        public static string PaymentRequestAlreadyPayed {
+            get {
+                return ResourceManager.GetString("PaymentRequestAlreadyPayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request canceled.
         /// </summary>
         public static string PaymentRequestCanceled {

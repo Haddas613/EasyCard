@@ -360,6 +360,9 @@
   <data name="OnlySuccessfulTransactionsAreAllowed" xml:space="preserve">
     <value>Only successful transactions are allowed</value>
   </data>
+  <data name="PaymentRequestAlreadyPayed" xml:space="preserve">
+    <value>Payment request already payed</value>
+  </data>
   <data name="PaymentRequestCanceled" xml:space="preserve">
     <value>Payment Request canceled</value>
   </data>

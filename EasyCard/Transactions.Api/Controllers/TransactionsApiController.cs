@@ -472,6 +472,17 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
 
+            if (model.PaymentRequestID != null)
+            {
+                var paymenttransaction = await GetTransactions(new TransactionsFilter { PaymentTransactionRequestID = model.PaymentRequestID });
+                var paymenttransactionResult = paymenttransaction.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+                var paymenttransactionResultV = paymenttransactionResult.Value as SummariesResponse<TransactionSummary>;
+                if (paymenttransactionResultV != null && paymenttransactionResultV.Data.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).Any())
+                {
+                    throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+                }
+            }
+
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)

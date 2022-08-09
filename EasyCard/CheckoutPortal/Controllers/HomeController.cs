@@ -171,14 +171,6 @@ namespace CheckoutPortal.Controllers
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
             }
 
-            bool isPaymentRequest = checkoutConfig.PaymentRequest != null;
-            if (isPaymentRequest)
-            {
-                var paymenttransaction = await transactionsApiClient.GetTransactions(new TransactionsFilter { PaymentTransactionRequestID = checkoutConfig.PaymentRequest.PaymentRequestID });
-                if(paymenttransaction != null && paymenttransaction.Data != null && paymenttransaction.Data.Where(t=> (int)t.Status >= (int)Transactions.Shared.Enums.TransactionStatusEnum.Initial ).Any())
-                    throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
-            }
-
             if (checkoutConfig.Consumer != null)
             {
                 if (checkoutConfig.Consumer.Tokens?.Count() > 0)

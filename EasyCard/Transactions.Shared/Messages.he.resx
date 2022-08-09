@@ -465,4 +465,7 @@
   <data name="EmailRequiredFeatureSMSNotificationIsNotEnabledForThisTerminal" xml:space="preserve">
     <value>נדרשת כתובת מייל. תכונת התראת sms לא מאופשרת למסוף הזה.</value>
   </data>
+  <data name="PaymentRequestAlreadyPayed" xml:space="preserve">
+    <value>דרישת תשלום כבר שולמה</value>
+  </data>
 </root>
