@@ -61,6 +61,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.Currency == filter.Currency);
             }
 
+            if (filter.PaymentTransactionRequestID != null)
+            {
+                src = src.Where(t => t.PaymentRequestID == filter.PaymentTransactionRequestID);
+            }
+
             src = HandleDateFiltering(src, filter);
 
             // TODO: we can try to transmit transactions which are failed to transmit
