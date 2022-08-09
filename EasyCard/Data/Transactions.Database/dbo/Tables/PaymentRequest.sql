@@ -63,8 +63,11 @@
     [HidePhone]                 BIT              NULL,
     [ShowAuthCode]              BIT              NULL,
     [AllowImmediate]            BIT              NULL,
+    [TransactionType]           SMALLINT         NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 
