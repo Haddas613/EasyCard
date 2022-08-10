@@ -46,9 +46,15 @@ namespace TestAdminApiClient
             {
                 string terminalid = "152fa179-3050-4b62-baf7-aee600d1415e";
 
-
-                OperationResponse res = transactionsService.CreateTransaction(new Transactions.Api.Models.Transactions.CreateTransactionRequest { PaymentRequestID = paymentTransactionRequestID, TransactionAmount=1, TerminalID = Guid.Parse(terminalid), CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails {  CardNumber= "4557430402053720", CardExpiration = new Shared.Helpers.CardExpiration {  Month=6, Year=26}, CardOwnerName="Avinoam", CardOwnerNationalID="122222227", Cvv="393" }  }).Result;
-                transactionsService.CreateTransaction(new Transactions.Api.Models.Transactions.CreateTransactionRequest { PaymentRequestID = paymentTransactionRequestID });
+                var createRequest = new Transactions.Api.Models.Transactions.CreateTransactionRequest {
+                    PaymentRequestID = paymentTransactionRequestID,
+                    TransactionAmount = 1, TerminalID = Guid.Parse(terminalid),
+                    CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails { CardNumber = "4557430402053720", CardExpiration = new Shared.Helpers.CardExpiration { Month = 6, Year = 26 }, CardOwnerName = "Avinoam", CardOwnerNationalID = "122222227", Cvv = "393" } 
+                };
+                OperationResponse res = transactionsService.CreateTransaction(createRequest).Result;
+                OperationResponse res1 = transactionsService.CreateTransaction(createRequest).Result;
+                if (res1.Message == "דרישת תשלום כבר שולמה")
+                    Console.WriteLine(" true");
             }
             catch (Exception ex)
             {

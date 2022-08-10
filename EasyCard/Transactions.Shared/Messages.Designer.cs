@@ -475,6 +475,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate transaction is detected.
+        /// </summary>
+        public static string DuplicateTransactionIsDetected {
+            get {
+                return ResourceManager.GetString("DuplicateTransactionIsDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Either Email or Phone must be specified.
         /// </summary>
         public static string EitherEmailOrPhoneMustBeSpecified {

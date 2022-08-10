@@ -255,6 +255,9 @@
   <data name="DeviceIsProcessingTransaction" xml:space="preserve">
     <value>Device is processing transaction</value>
   </data>
+  <data name="DuplicateTransactionIsDetected" xml:space="preserve">
+    <value>Duplicate transaction is detected</value>
+  </data>
   <data name="EitherEmailOrPhoneMustBeSpecified" xml:space="preserve">
     <value>Either Email or Phone must be specified</value>
   </data>

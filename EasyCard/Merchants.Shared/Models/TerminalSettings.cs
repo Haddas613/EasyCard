@@ -93,5 +93,7 @@ namespace Merchants.Shared.Models
         /// Merchant Category Code for 3DSecure
         /// </summary>
         public string MCC { get; set; }
+
+        public int? MinutesToWaitBetDuplicateTransactions { get; set; }
     }
 }

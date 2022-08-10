@@ -471,11 +471,23 @@ namespace Transactions.Api.Controllers
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
+            var merchant = await merchantsService.GetMerchant(merchantID ?? Guid.Empty);
+
+            if (terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
+            {
+                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { CardNumber = model.CreditCardSecureDetails.CardNumber, AmountFrom = model.TransactionAmount, AmountTo = model.TransactionAmount });
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                {
+                    if (await query.Where(t => t.TransactionDate.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.DuplicateTransactionIsDetected);
+                    }
+                }
+            }
 
             if (model.PaymentRequestID != null)
             {
                 var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionRequestID = model.PaymentRequestID });
-
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
                     if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
@@ -488,7 +500,6 @@ namespace Transactions.Api.Controllers
             if (model.PaymentIntentID != null)
             {
                 var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionIntentID = model.PaymentIntentID });
-
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
                     if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
