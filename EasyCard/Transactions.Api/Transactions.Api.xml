@@ -1303,11 +1303,6 @@
             Required. New invoice consumer email.
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.UpdateInvoiceRequest.InvoiceID">
-            <summary>
-            Primary reference
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.UpdateInvoiceRequest.DealDetails">
             <summary>
             Deal information (optional)
