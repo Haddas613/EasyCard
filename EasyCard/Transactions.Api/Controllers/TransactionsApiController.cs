@@ -471,35 +471,22 @@ namespace Transactions.Api.Controllers
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
-            var merchant = await merchantsService.GetMerchant(merchantID ?? Guid.Empty);
 
             if (terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
             {
-                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { CardNumber = model.CreditCardSecureDetails.CardNumber, AmountFrom = model.TransactionAmount, AmountTo = model.TransactionAmount });
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == model.TransactionAmount && t.CreditCardDetails.CardNumber == string.Format("{0}{1}{2}", model.CreditCardSecureDetails.CardNumber.Substring(0, 6), "****", model.CreditCardSecureDetails.CardNumber.Substring(model.CreditCardSecureDetails.CardNumber.Length - 4, 4)));
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
-                    if (await query.Where(t => t.TransactionDate.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
+                    if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
                     {
                         throw new BusinessException(Messages.DuplicateTransactionIsDetected);
                     }
                 }
             }
 
-            if (model.PaymentRequestID != null)
+            if (model.PaymentRequestID != null || model.PaymentIntentID != null)
             {
-                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionRequestID = model.PaymentRequestID });
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                {
-                    if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
-                    {
-                        throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
-                    }
-                }
-            }
-
-            if (model.PaymentIntentID != null)
-            {
-                var query = transactionsService.GetTransactions().AsNoTracking().Filter(new TransactionsFilter { PaymentTransactionIntentID = model.PaymentIntentID });
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => (model.PaymentIntentID != null && t.PaymentIntentID == model.PaymentIntentID) || (model.PaymentRequestID != null && t.PaymentRequestID == model.PaymentRequestID));
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
                     if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)

@@ -845,6 +845,11 @@
               Looks up a localized string similar to Device is processing transaction.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.DuplicateTransactionIsDetected">
+            <summary>
+              Looks up a localized string similar to Duplicate transaction is detected.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.EitherEmailOrPhoneMustBeSpecified">
             <summary>
               Looks up a localized string similar to Either Email or Phone must be specified.
