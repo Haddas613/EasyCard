@@ -474,7 +474,7 @@ namespace Transactions.Api.Controllers
 
             if (terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
             {
-                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == model.TransactionAmount && t.CreditCardDetails.CardNumber == string.Format("{0}{1}{2}", model.CreditCardSecureDetails.CardNumber.Substring(0, 6), "****", model.CreditCardSecureDetails.CardNumber.Substring(model.CreditCardSecureDetails.CardNumber.Length - 4, 4)));
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == model.TransactionAmount && t.CreditCardDetails.CardNumber == CreditCardHelpers.GetCardDigits(model.CreditCardSecureDetails.CardNumber));
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
                     if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
