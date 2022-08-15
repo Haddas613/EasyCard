@@ -387,7 +387,7 @@ namespace EasyInvoice
                     startDate = request.StartDate,
                 };
 
-                var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
+                var result = await this.apiClient.GetRaw(this.configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
                 return result.ToString();
                 //    return new OperationResponse
                 //    {

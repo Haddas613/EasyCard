@@ -97,9 +97,7 @@ namespace Shared.Helpers
             }
         }
 
-
-
-        public async Task<string> GetObj<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<string> GetRaw(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -117,7 +115,7 @@ namespace Shared.Helpers
             var res = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return (res);
+                return res;
             }
             else
             {
@@ -223,6 +221,7 @@ namespace Shared.Helpers
                 }
             }
         }
+
         public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             )
