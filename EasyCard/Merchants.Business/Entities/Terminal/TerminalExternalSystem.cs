@@ -29,6 +29,8 @@ namespace Merchants.Business.Entities.Terminal
 
         public bool Valid { get; set; }
 
+        public bool IsActive { get; set; }
+
         public long GetID()
         {
             return TerminalExternalSystemID;

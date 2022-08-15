@@ -460,7 +460,6 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            //TODO: change ProcessInvoice signature?
             transaction.IssueInvoice = true;
             var endResponse = await ProcessInvoice(terminal, transaction, null);
 
@@ -852,6 +851,15 @@ namespace Transactions.Api.Controllers
         internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails)
         {
             // TODO: validate InvoiceDetails
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(terminal.TerminalID);
+            var easyInvoiceIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing && t.IsActive));
+
+            //TODO: change ProcessInvoice signature?
+            if (easyInvoiceIntegration == null)
+            {
+                throw new BusinessException(Messages.InvoiceStateIsNotValid);
+            }
+
             if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
             {
                 if (invoiceDetails == null)
