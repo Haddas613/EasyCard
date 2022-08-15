@@ -33,6 +33,8 @@ namespace Transactions.Api.Mapping
                    .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
                    .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
                    .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
+                   .ForMember(d => d.PaymentIntentID, s => s.MapFrom(src => src.PaymentIntentID))
+                    .ForMember(d => d.PaymentRequestID, s => s.MapFrom(src => src.PaymentRequestID))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>();
