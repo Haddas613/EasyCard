@@ -374,7 +374,7 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<Object> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<string> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
@@ -391,7 +391,7 @@ namespace EasyInvoice
                 };
 
                 var result = await this.apiClient.GetObj<Object>(this.configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
-                return result;
+                return result.ToString();
                 //    return new OperationResponse
                 //    {
                 //        //EntityID = result
