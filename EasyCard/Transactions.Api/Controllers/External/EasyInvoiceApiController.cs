@@ -80,7 +80,7 @@ namespace Transactions.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getTaxReportResult = await eCInvoicing.GetTaxReport(
+            var content = await eCInvoicing.GetTaxReport(
                 new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
                 {
                     Terminal = terminalSettings,
@@ -88,6 +88,13 @@ namespace Transactions.Api.Controllers.Integrations
                     EndDate = request.EndAt.ToString("yyyy-MM-dd")
                 },
                 GetCorrelationID());
+            var fileNameFull = string.Format("{0}.{1}", "TaxReport", "zip");
+            var mimeType = string.Format("application/{0}", "zip");
+            FileContentResult getTaxReportResult = new FileContentResult(content, mimeType)
+            {
+                FileDownloadName = fileNameFull
+            };
+
             Stream stream = new MemoryStream(getTaxReportResult.FileContents);
             var fileName = await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
             return blobStorageService.GetDownloadUrl(fileName);

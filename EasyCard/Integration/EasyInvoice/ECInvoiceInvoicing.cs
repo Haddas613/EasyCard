@@ -1,6 +1,5 @@
 ﻿using EasyInvoice.Converters;
 using EasyInvoice.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -349,44 +348,26 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<FileContentResult> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<byte[]> GetTaxReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, "");
+            var json = new GetDocumentTaxReportModel
+            {
+                endDate = request.EndDate,
+                startDate = request.StartDate,
+            };
 
             try
             {
-                var json = new GetDocumentTaxReportModel
-                {
-                    endDate = request.EndDate,
-                    startDate = request.StartDate,
-                };
-
-                byte[] content = null;
-                try
-                {
-                    content = await apiClient.GetByte<Object>(configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"EasyInvoice  tax report request failed ({integrationMessageId}): {ex.Message}");
-
-                    throw new IntegrationException("EasyInvoice  tax report request failed", integrationMessageId);
-                }
-
-                var fileNameFull = string.Format("{0}.{1}", "TaxReport", "zip");
-                var mimeType = string.Format("application/{0}", "zip");
-                return new FileContentResult(content, mimeType)
-                {
-                    FileDownloadName = fileNameFull
-                };
+                return await apiClient.GetByte<Object>(configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"EasyInvoice Get Tax Report request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+                logger.LogError(ex, $"EasyInvoice  tax report request failed ({integrationMessageId}): {ex.Message}");
 
-                throw new IntegrationException("EasyInvoice Get Tax Report request failed", integrationMessageId);
+                throw new IntegrationException("EasyInvoice  tax report request failed", integrationMessageId);
             }
         }
 
