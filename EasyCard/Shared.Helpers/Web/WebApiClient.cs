@@ -136,7 +136,7 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<FileContentResult> GetFile<T>(string enpoint, string actionPath, string fileName, string fileType, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<byte[]> GetByte<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -152,17 +152,10 @@ namespace Shared.Helpers
 
             HttpResponseMessage response = await HttpClient.SendAsync(request);
             var res = await response.Content.ReadAsStringAsync();
-            byte[] fileContent = response.Content.ReadAsByteArrayAsync().Result;
+            byte[] content = response.Content.ReadAsByteArrayAsync().Result;
             if (response.IsSuccessStatusCode)
             {
-                var fileNameFull = string.Format("{0}.{1}", fileName, fileType);
-                var mimeType = string.Format("application/{0}", fileType);
-                return new FileContentResult(fileContent, mimeType)
-                {
-                    FileDownloadName = fileNameFull
-                };
-
-                //return File(response.Content, "application/octet-stream");
+                return content;
             }
             else
             {

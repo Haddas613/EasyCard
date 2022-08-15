@@ -363,8 +363,24 @@ namespace EasyInvoice
                     startDate = request.StartDate,
                 };
 
-                var result = await this.apiClient.GetFile<Object>(this.configuration.BaseUrl, "/api/v1/tax-report", "TaxReport", "zip", json, () => Task.FromResult(headers));
-                return result;
+                byte[] content = null;
+                try
+                {
+                    content = await apiClient.GetByte<Object>(configuration.BaseUrl, "/api/v1/tax-report", json, () => Task.FromResult(headers));
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"EasyInvoice  tax report request failed ({integrationMessageId}): {ex.Message}");
+
+                    throw new IntegrationException("EasyInvoice  tax report request failed", integrationMessageId);
+                }
+
+                var fileNameFull = string.Format("{0}.{1}", "TaxReport", "zip");
+                var mimeType = string.Format("application/{0}", "zip");
+                return new FileContentResult(content, mimeType)
+                {
+                    FileDownloadName = fileNameFull
+                };
             }
             catch (Exception ex)
             {
