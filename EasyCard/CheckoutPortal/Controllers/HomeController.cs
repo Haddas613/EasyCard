@@ -31,6 +31,7 @@ using System.Globalization;
 using CheckoutPortal.Resources;
 using System.IO;
 using System.Text;
+using Transactions.Api.Models.Transactions;
 
 namespace CheckoutPortal.Controllers
 {
@@ -163,6 +164,7 @@ namespace CheckoutPortal.Controllers
         {
             bool isPaymentIntent = request.PaymentIntent != null;
             CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
+
 
             if (checkoutConfig == null)
             {
@@ -881,7 +883,7 @@ namespace CheckoutPortal.Controllers
             }
         }
 
-        
+
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -913,7 +915,7 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError(string message, string returnUrl =  null)
+        public IActionResult PaymentError(string message, string returnUrl = null)
         {
             return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message, ReturnURL = returnUrl });
         }
