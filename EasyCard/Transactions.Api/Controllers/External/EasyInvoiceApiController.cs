@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasicServices.BlobStorage;
 using EasyInvoice;
 using EasyInvoice.Models;
-using Merchants.Api.Models.Integrations;
-//using Merchants.Business.Entities.Terminal;
-//using Merchants.Business.Models.Integration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Shared.Api;
-using Shared.Api.Models;
-using Shared.Api.Models.Enums;
-using Shared.Helpers.Models;
 using Shared.Integration;
-using Transactions.Api;
 using Merchants.Api.Models.Integrations.EasyInvoice;
 using Merchants.Business.Services;
 using Microsoft.Extensions.Options;
@@ -90,7 +80,7 @@ namespace Transactions.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getTaxReportResult = await eCInvoicing.GetTaxReport(
+            var content = await eCInvoicing.GetTaxReport(
                 new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
                 {
                     Terminal = terminalSettings,
@@ -98,6 +88,13 @@ namespace Transactions.Api.Controllers.Integrations
                     EndDate = request.EndAt.ToString("yyyy-MM-dd")
                 },
                 GetCorrelationID());
+            var fileNameFull = string.Format("{0}.{1}", "TaxReport", "zip");
+            var mimeType = string.Format("application/{0}", "zip");
+            FileContentResult getTaxReportResult = new FileContentResult(content, mimeType)
+            {
+                FileDownloadName = fileNameFull
+            };
+
             Stream stream = new MemoryStream(getTaxReportResult.FileContents);
             var fileName = await blobStorageService.Upload("TaxReport.zip", stream, "application/zip");
             return blobStorageService.GetDownloadUrl(fileName);
@@ -105,11 +102,11 @@ namespace Transactions.Api.Controllers.Integrations
 
         [HttpGet]
         [Route("get-document-hash-report")]
-        public async Task<Object> GetDocumentHashReport(GetDocumentTaxReportRequest request)
+        public async Task<string> GetDocumentHashReport(GetDocumentTaxReportRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState).ToString();
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
@@ -125,21 +122,7 @@ namespace Transactions.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
 
-            //RestClient clientRestSharop;
-            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
-            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
-            return Ok(getDocumentReportResult);
-            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
-
-            // if (response.Status != StatusEnum.Success)
-            // {
-            //     response.Status = StatusEnum.Error;
-            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
-            //
-            //     return BadRequest(response);
-            // }
-            //
-            // return Ok(response);
+            return Ok(getDocumentReportResult).ToString();
         }
     }
 }

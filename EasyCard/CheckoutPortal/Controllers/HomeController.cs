@@ -31,6 +31,7 @@ using System.Globalization;
 using CheckoutPortal.Resources;
 using System.IO;
 using System.Text;
+using Transactions.Api.Models.Transactions;
 
 namespace CheckoutPortal.Controllers
 {
@@ -164,6 +165,7 @@ namespace CheckoutPortal.Controllers
             bool isPaymentIntent = request.PaymentIntent != null;
             CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
 
+
             if (checkoutConfig == null)
             {
                 return RedirectToAction("PaymentLinkNoLongerAvailable");
@@ -211,7 +213,7 @@ namespace CheckoutPortal.Controllers
             //    return await IndexViewResult(checkoutConfig, request);
             //}
 
-            if (request.PayWithBit && request.TransactionType != TransactionTypeEnum.RegularDeal)
+            if (request.PayWithBit && request.TransactionType.HasValue && request.TransactionType != TransactionTypeEnum.RegularDeal)
             {
                 ModelState.AddModelError(nameof(request.PayWithBit), "Only regular deals are allowed for Bit payments");
                 return IndexViewResult(checkoutConfig, request);
@@ -305,7 +307,7 @@ namespace CheckoutPortal.Controllers
 
             InstallmentDetails installmentDetails = null;
 
-            if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
+            if (request.TransactionType != null && !checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
 
@@ -424,11 +426,13 @@ namespace CheckoutPortal.Controllers
                     TransactionType = request.TransactionType.GetValueOrDefault()
                 };
 
+                // TODO: remove this block at all
+                mapper.Map(checkoutConfig.Settings, mdel);
+                mapper.Map(checkoutConfig.PaymentRequest, mdel);
+
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
-                mapper.Map(checkoutConfig.Settings, mdel);
-                mapper.Map(checkoutConfig.PaymentRequest, mdel);
 
                 if (checkoutConfig.PaymentIntentID != null)
                 {
@@ -879,7 +883,7 @@ namespace CheckoutPortal.Controllers
             }
         }
 
-        
+
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -911,7 +915,7 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError(string message, string returnUrl =  null)
+        public IActionResult PaymentError(string message, string returnUrl = null)
         {
             return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message, ReturnURL = returnUrl });
         }

@@ -28,7 +28,7 @@ namespace CheckoutPortal.Helpers
                 PaymentRequestAmount = ecwidOrder.Total,
                 VATTotal = ecwidOrder.Tax,
                 NetTotal = ecwidOrder.Total - ecwidOrder.Tax,
-                DiscountTotal = ecwidOrder.SubTotal - ecwidOrder.Total,
+                //DiscountTotal = ecwidOrder.SubTotal - ecwidOrder.Total,
                 VATRate = (ecwidOrder.Total - ecwidOrder.Tax > 0) ? Math.Round(ecwidOrder.Tax/(ecwidOrder.Total - ecwidOrder.Tax), 2, MidpointRounding.AwayFromZero) : 0,
 
                 CardOwnerNationalID = ecwidOrder.CustomerTaxId,
@@ -106,13 +106,13 @@ namespace CheckoutPortal.Helpers
                 ExternalReference = e.Id.ToString(),
                 SKU = e.Sku,
                 EcwidID = e.ProductId.ToString(),
-                Price = e.Price,
+                NetPrice = e.Price,
                 Quantity = e.Quantity.GetValueOrDefault(1),
                 ItemName = e.Name,
                 VAT = e.Tax,
                 Discount = e.CouponAmount,
-                NetAmount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault() - e.Tax.GetValueOrDefault(),
-                Amount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault()
+                NetAmount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault(),
+                Amount = e.Price.GetValueOrDefault() * e.Quantity.GetValueOrDefault(1) - e.CouponAmount.GetValueOrDefault() + e.Tax.GetValueOrDefault()
             });
         }
     }

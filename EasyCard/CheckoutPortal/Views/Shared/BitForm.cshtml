@@ -90,10 +90,6 @@
         <button class="btn btn-outline-danger mb-4" id="bit-cancel-btn">
             @localizer.Get("CancelPayment")
         </button>
-        @*<button class="btn btn-secondary mx-1" type="button" id="paywithbit" data-invokebit="false">
-            <img height="20px" src="~/img/bit-logo-white.svg" />
-            @localizer.Get("PayWithBit")
-        </button>*@
         <img class="cursor-pointer" height="47px" src="~/img/button_desktop.svg" role="button" id="paywithbit"/>
     </div>
 </form>
@@ -163,8 +159,10 @@
 
             let url = $("#bit-form").attr('action');
             $.post(url, payload, function(data,status,xhr){
-                if(xhr.status != 200 && xhr.getResponseHeader("content-type") != "application/json"){ //to display error, re-render the page
-                    return ("#bit-form").submit();
+
+                if(xhr.status != 200 || !xhr.getResponseHeader("content-type").startsWith("application/json")){
+                    toastr["error"]("System error occurred - please contact support");
+                    return;
                 }
 
                 if(data.mobileRedirectUrl){ //mobile devices only
@@ -176,24 +174,12 @@
                 $("#PaymentInitiationId").val(data.paymentInitiationId);
 
                 window.switchLoadingSpinner(false);
-                //$("#bit-payment-area").attr('hidden', false);
-                //$("#bit-form").attr('hidden', true);
-                //$("#payment-type-area").attr('hidden', true);
 
                 window.bitdata = {
                     transactionSerialId: data.transactionSerialId,
                     paymentInitiationId: data.paymentInitiationId,
                 };
                 invokeBit();
-                
-                //BitPayment.Buttons({
-                //    onCreate: function(openBitPaymentPage){
-                //        openBitPaymentPage(transaction);
-                //    },
-                //    onApproved: function(details){
-                //        $("#bit-completed-form").submit();
-                //    }
-                //}).render('#bitcom-button-container');
             });
         };
 

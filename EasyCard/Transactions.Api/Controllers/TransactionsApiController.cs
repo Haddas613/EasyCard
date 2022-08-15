@@ -472,6 +472,30 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
 
+            if (terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
+            {
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == model.TransactionAmount && t.CreditCardDetails.CardNumber == CreditCardHelpers.GetCardDigits(model.CreditCardSecureDetails.CardNumber));
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                {
+                    if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.DuplicateTransactionIsDetected);
+                    }
+                }
+            }
+
+            if (model.PaymentRequestID != null || model.PaymentIntentID != null)
+            {
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => (model.PaymentIntentID != null && t.PaymentIntentID == model.PaymentIntentID) || (model.PaymentRequestID != null && t.PaymentRequestID == model.PaymentRequestID));
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                {
+                    if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+                    }
+                }
+            }
+
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)

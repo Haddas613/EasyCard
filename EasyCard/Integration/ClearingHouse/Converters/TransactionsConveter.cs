@@ -34,7 +34,7 @@ namespace ClearingHouse.Converters
             chRequest.PaymentGatewayID = configuration.PaymentGatewayID;
 
             details.CardOwnerName = createTransactionRequest.CreditCardDetails.CardOwnerName;
-            details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalID;
+            details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalID?.Trim();
             details.CreditCardVendor = createTransactionRequest.CreditCardDetails.CardVendor;
 
             details.ConsumerEmail = createTransactionRequest.DealDetails?.ConsumerEmail;
