@@ -71,83 +71,91 @@ namespace CheckoutPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(EcwidRequestPayload request)
         {
-            EcwidPayload ecwidPayload = null;
-
             try
             {
-                ecwidPayload = await ecwidConvertor.DecryptEcwidPayload(request.Data, GetCorrelationID());
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"{nameof(EcwidController)} index error: Could not decrypt given request: {request.Data}");
-                throw new ApplicationException("Invalid request");
-            }
+                EcwidPayload ecwidPayload = null;
 
-            if (ecwidPayload.MerchantAppSettings == null || string.IsNullOrEmpty(ecwidPayload.MerchantAppSettings?.ApiKey))
-            {
-                logger.LogError($"{nameof(EcwidController)} index error: Could not retrieve merchant settings: {request.Data}");
-                throw new ApplicationException("Invalid request. Merchant settings are not present");
-            }
-
-            var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidPayload.MerchantAppSettings.ApiKey);
-            var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
-
-            var terminalID = (await merchantMetadataApiClient.GetTerminals()).Data.FirstOrDefault();
-            var terminall = await merchantMetadataApiClient.GetTerminal(terminalID.TerminalID);
-            var issueInvoice = terminall.CheckoutSettings.IssueInvoice;
-
-            Guid? consumerID = null;
-
-            var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
-            var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
-
-            paymentRequestPayload.Origin = ecwidPayload.ReturnUrl?.GetHostFromUrl() ?? Request.GetTypedHeaders().Referer?.Host;
-
-            if (customerPayload != null)
-            {
-                // TODO: can we use ecwid ID to find customer ?
-                var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter
+                try
                 {
-                    NationalID = customerPayload.ConsumerNationalID,
-                    Email = customerPayload.ConsumerEmail,
-                    Phone = customerPayload.ConsumerPhone,
-                    Origin = customerPayload.Origin,
-                });
-
-                if (exisingConsumers.NumberOfRecords == 1)
-                {
-                    consumerID = exisingConsumers.Data.First().ConsumerID;
+                    ecwidPayload = await ecwidConvertor.DecryptEcwidPayload(request.Data, GetCorrelationID());
                 }
-                else if (exisingConsumers.NumberOfRecords > 1)
+                catch (Exception ex)
                 {
-                    // TODO: proper handler
-                    throw new ApplicationException("There are several consumers with same Consumer code in ECNG");
+                    logger.LogError(ex, $"{nameof(EcwidController)} index error: Could not decrypt given request: {request.Data}");
+                    throw new ApplicationException("Invalid request");
                 }
 
-                if (consumerID == null)
+                if (ecwidPayload.MerchantAppSettings == null || string.IsNullOrEmpty(ecwidPayload.MerchantAppSettings?.ApiKey))
                 {
-                    var createConsumerResponse = await merchantMetadataApiClient.CreateConsumer(customerPayload);
-                    var existingConsumer = await merchantMetadataApiClient.GetConsumer(createConsumerResponse.EntityUID.GetValueOrDefault());
-                    consumerID = existingConsumer.ConsumerID;
-                    paymentRequestPayload.DealDetails.ConsumerExternalReference = existingConsumer.ExternalReference;
+                    logger.LogError($"{nameof(EcwidController)} index error: Could not retrieve merchant settings: {request.Data}");
+                    throw new ApplicationException("Invalid request. Merchant settings are not present");
                 }
+
+                var tokensService = terminalApiKeyTokenServiceFactory.CreateTokenService(ecwidPayload.MerchantAppSettings.ApiKey);
+                var merchantMetadataApiClient = apiClientsFactory.GetMerchantMetadataApiClient(tokensService);
+
+                var terminalID = (await merchantMetadataApiClient.GetTerminals()).Data.FirstOrDefault();
+                var terminall = await merchantMetadataApiClient.GetTerminal(terminalID.TerminalID);
+                var issueInvoice = terminall.CheckoutSettings.IssueInvoice;
+
+                Guid? consumerID = null;
+
+                var customerPayload = ecwidPayload.Cart.Order.GetConsumerRequest();
+                var paymentRequestPayload = ecwidPayload.GetCreatePaymentRequest();
+
+                paymentRequestPayload.Origin = ecwidPayload.ReturnUrl?.GetHostFromUrl() ?? Request.GetTypedHeaders().Referer?.Host;
+
+                if (customerPayload != null)
+                {
+                    // TODO: can we use ecwid ID to find customer ?
+                    var exisingConsumers = await merchantMetadataApiClient.GetConsumers(new ConsumersFilter
+                    {
+                        NationalID = customerPayload.ConsumerNationalID,
+                        Email = customerPayload.ConsumerEmail,
+                        Phone = customerPayload.ConsumerPhone,
+                        Origin = customerPayload.Origin,
+                    });
+
+                    if (exisingConsumers.NumberOfRecords == 1)
+                    {
+                        consumerID = exisingConsumers.Data.First().ConsumerID;
+                    }
+                    else if (exisingConsumers.NumberOfRecords > 1)
+                    {
+                        // TODO: proper handler
+                        throw new ApplicationException("There are several consumers with same Consumer code in ECNG");
+                    }
+
+                    if (consumerID == null)
+                    {
+                        var createConsumerResponse = await merchantMetadataApiClient.CreateConsumer(customerPayload);
+                        var existingConsumer = await merchantMetadataApiClient.GetConsumer(createConsumerResponse.EntityUID.GetValueOrDefault());
+                        consumerID = existingConsumer.ConsumerID;
+                        paymentRequestPayload.DealDetails.ConsumerExternalReference = existingConsumer.ExternalReference;
+                    }
+                }
+
+                paymentRequestPayload.DealDetails.ConsumerID = consumerID;
+                paymentRequestPayload.IssueInvoice = issueInvoice;
+
+                var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);
+
+                var paymentIntentResponse = await transactionsApiClient.CreatePaymentIntent(paymentRequestPayload);
+
+                if (paymentIntentResponse.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+                {
+                    throw new ApplicationException(paymentIntentResponse.Message);
+                }
+
+                var url = paymentIntentResponse.AdditionalData.Value<string>("url");
+
+                return Redirect(url);
             }
-
-            paymentRequestPayload.DealDetails.ConsumerID = consumerID;
-            paymentRequestPayload.IssueInvoice = issueInvoice;
-
-            var transactionsApiClient = apiClientsFactory.GetTransactionsApiClient(tokensService);
-
-            var paymentIntentResponse = await transactionsApiClient.CreatePaymentIntent(paymentRequestPayload);
-
-            if (paymentIntentResponse.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            catch(Exception ex)
             {
-                throw new ApplicationException(paymentIntentResponse.Message);
+                logger.LogError($"{nameof(EcwidController)} index error: {ex.Message}");
+                throw;
             }
-
-            var url = paymentIntentResponse.AdditionalData.Value<string>("url");
-
-            return Redirect(url);
         }
 
         [Route("settings")]
