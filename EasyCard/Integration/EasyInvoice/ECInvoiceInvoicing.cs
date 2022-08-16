@@ -371,31 +371,19 @@ namespace EasyInvoice
             }
         }
 
-        public async Task<string> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
+        public async Task<byte[]> GetHashReport(ECInvoiceGetDocumentTaxReportRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-
             var headers = await GetAuthorizedHeaders(request.Terminal.UserName, request.Terminal.Password, integrationMessageId, correlationId, "");
+            var json = new GetDocumentTaxReportModel
+            {
+                endDate = request.EndDate,
+                startDate = request.StartDate,
+            };
 
             try
             {
-                // headers.Add("Accept-language", "he"); // TODO: get language from options
-
-                var json = new GetDocumentTaxReportModel
-                {
-                    endDate = request.EndDate,
-                    startDate = request.StartDate,
-                };
-
-                var result = await this.apiClient.GetRaw(this.configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
-                return result.ToString();
-                //    return new OperationResponse
-                //    {
-                //        //EntityID = result
-                //        Status = Shared.Api.Models.Enums.StatusEnum.Success,
-                //        Message = "Get Document Number",
-                //         
-                //    };
+                return await apiClient.GetByte<Object>(configuration.BaseUrl, "/api/v1/hash-report", json, () => Task.FromResult(headers));
             }
             catch (Exception ex)
             {
