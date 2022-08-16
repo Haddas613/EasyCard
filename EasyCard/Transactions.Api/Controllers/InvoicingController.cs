@@ -848,16 +848,15 @@ namespace Transactions.Api.Controllers
             await emailSender.SendEmail(email);
         }
 
-        internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails)
+        internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails, TerminalExternalSystem externalSystem)
         {
             // TODO: validate InvoiceDetails
             var externalSystems = await terminalsService.GetTerminalExternalSystems(terminal.TerminalID);
-            var easyInvoiceIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing && t.IsActive));
-
+            var easyInvoiceIntegration = externalSystems.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing && t.IsActive);
             //TODO: change ProcessInvoice signature?
             if (easyInvoiceIntegration == null)
             {
-                throw new BusinessException(Messages.InvoiceStateIsNotValid);
+                return new OperationResponse($"{Transactions.Shared.Messages.InvoiceStateIsNotValid}", StatusEnum.Warning, transaction.PaymentTransactionID);
             }
 
             if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
