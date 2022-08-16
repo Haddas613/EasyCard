@@ -100,9 +100,9 @@ namespace Transactions.Api.Controllers.Integrations
             return blobStorageService.GetDownloadUrl(fileName);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get-document-hash-report")]
-        public async Task<string> GetDocumentHashReport(GetDocumentTaxReportRequest request)
+        public async Task<string> GetDocumentHashReport([FromBody]GetDocumentTaxReportRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace Transactions.Api.Controllers.Integrations
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getDocumentReportResult = await eCInvoicing.GetHashReport(
+            var content = await eCInvoicing.GetHashReport(
                 new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
                 {
                     Terminal = terminalSettings,
@@ -122,7 +122,16 @@ namespace Transactions.Api.Controllers.Integrations
                 },
                 GetCorrelationID());
 
-            return Ok(getDocumentReportResult).ToString();
+            var fileNameFull = string.Format("{0}.{1}", "HashReport", "zip");
+            var mimeType = string.Format("application/{0}", "zip");
+            FileContentResult getHasReportResult = new FileContentResult(content, mimeType)
+            {
+                FileDownloadName = fileNameFull
+            };
+
+            Stream stream = new MemoryStream(getHasReportResult.FileContents);
+            var fileName = await blobStorageService.Upload("HashReport.zip", stream, "application/zip");
+            return blobStorageService.GetDownloadUrl(fileName);
         }
     }
 }
