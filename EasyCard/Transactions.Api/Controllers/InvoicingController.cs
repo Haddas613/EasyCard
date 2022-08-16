@@ -848,7 +848,7 @@ namespace Transactions.Api.Controllers
             await emailSender.SendEmail(email);
         }
 
-        internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails, TerminalExternalSystem externalSystem)
+        internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails)
         {
             // TODO: validate InvoiceDetails
             var externalSystems = await terminalsService.GetTerminalExternalSystems(terminal.TerminalID);
