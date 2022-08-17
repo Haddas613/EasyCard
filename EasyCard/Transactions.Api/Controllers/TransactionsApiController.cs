@@ -472,17 +472,7 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
 
-            if (terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
-            {
-                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == model.TransactionAmount && t.CreditCardDetails.CardNumber == CreditCardHelpers.GetCardDigits(model.CreditCardSecureDetails.CardNumber));
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                {
-                    if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminal.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
-                    {
-                        throw new BusinessException(Messages.DuplicateTransactionIsDetected);
-                    }
-                }
-            }
+            _ = await CheckDuplicateTransaction(terminal, model.TransactionAmount, model.CreditCardSecureDetails.CardNumber);
 
             if (model.PaymentRequestID != null || model.PaymentIntentID != null)
             {
@@ -574,7 +564,6 @@ namespace Transactions.Api.Controllers
                 isPaymentIntent = true;
             }
 
-            // TODO: get from terminal
             var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
             if (merchantID == null)
             {
@@ -587,7 +576,9 @@ namespace Transactions.Api.Controllers
             mapper.Map(prmodel, model);
 
             var terminal = await GetTerminal(model.TerminalID);
+            _ = await CheckDuplicateTransaction(terminal, prmodel.PaymentRequestAmount ?? 0, prmodel.CreditCardSecureDetails.CardNumber);
 
+            // TODO: get from terminal
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)
@@ -683,6 +674,23 @@ namespace Transactions.Api.Controllers
             }
 
             return createResult;
+        }
+
+        private async Task<Terminal> CheckDuplicateTransaction(Terminal terminalDetails, decimal amount,string cardNumber  )
+        {
+            if (terminalDetails.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
+            {
+                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == amount && t.CreditCardDetails.CardNumber == CreditCardHelpers.GetCardDigits(cardNumber));
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                {
+                    if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminalDetails.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
+                    {
+                        throw new BusinessException(Messages.DuplicateTransactionIsDetected);
+                    }
+                }
+            }
+
+            return terminalDetails;
         }
 
         /// <summary>
