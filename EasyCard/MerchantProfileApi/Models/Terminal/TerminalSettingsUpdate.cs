@@ -52,5 +52,7 @@ namespace MerchantProfileApi.Models.Terminal
         public decimal EuroRate { get; set; }
 
         public decimal DollarRate { get; set; }
+
+        public int? MinutesToWaitBetDuplicateTransactions { get; set; }
     }
 }
