@@ -61,7 +61,7 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Credit note.
+        ///   Looks up a localized string similar to Refund invoice.
         /// </summary>
         public static string CREDIT_NOTE {
             get {
@@ -97,7 +97,7 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Donation.
+        ///   Looks up a localized string similar to Payment Info for donation.
         /// </summary>
         public static string PAYMENT_INFO_DONATION {
             get {
