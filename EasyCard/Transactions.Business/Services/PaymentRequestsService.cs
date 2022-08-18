@@ -6,6 +6,7 @@ using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Security.Claims;
@@ -133,7 +134,7 @@ namespace Transactions.Business.Services
                 var parsedRes = Enum.TryParse(status?.ToString(), true, out operationCode);
             }
 
-            historyMessage = message ?? (Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage);
+            historyMessage = message ?? (Messages.ResourceManager.GetString(operationCode.ToString(), CultureInfo.GetCultureInfo("he")) ?? historyMessage);
 
             if (dbTransaction != null)
             {
