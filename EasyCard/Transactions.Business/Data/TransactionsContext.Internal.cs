@@ -321,5 +321,80 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
         }
+
+        public async Task<bool> CheckDuplicateTransaction(Guid? terminalID, Guid? paymentIntentID, Guid? paymentRequestID, DateTime? threshold, decimal amount, string cardNumber, IDbContextTransaction dbContextTransaction, JDealTypeEnum jDealType)
+        {
+            var builder = new SqlBuilder();
+
+            var query = @"select TOP (1) PaymentTransactionID from dbo.PaymentTransaction /**where**/";
+
+            var selector = builder.AddTemplate(query);
+
+            builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)} and [{nameof(PaymentTransaction.Status)}] >= 0 and {nameof(PaymentTransaction.JDealType)} = @{nameof(jDealType)}", new { terminalID, jDealType });
+
+            bool isOrFilter = (paymentIntentID.HasValue || paymentRequestID.HasValue) && threshold.HasValue && !string.IsNullOrWhiteSpace(cardNumber);
+
+            if (paymentIntentID.HasValue)
+            {
+                var filter = $"{nameof(PaymentTransaction.PaymentIntentID)} = @{nameof(paymentIntentID)}";
+                if (isOrFilter)
+                {
+                    builder.OrWhere(filter, new { paymentIntentID });
+                }
+                else
+                {
+                    builder.Where(filter, new { paymentIntentID });
+                }
+            }
+
+            if (paymentRequestID.HasValue)
+            {
+                var filter = $"{nameof(PaymentTransaction.PaymentRequestID)} = @{nameof(paymentRequestID)}";
+                if (isOrFilter)
+                {
+                    builder.OrWhere(filter, new { paymentRequestID });
+                }
+                else
+                {
+                    builder.Where(filter, new { paymentRequestID });
+                }
+            }
+
+            if (threshold.HasValue && !string.IsNullOrWhiteSpace(cardNumber))
+            {
+                var filter = $"{nameof(PaymentTransaction.TransactionTimestamp)} >= @{nameof(threshold)} and {nameof(PaymentTransaction.TransactionAmount)} = @{nameof(amount)} and {nameof(PaymentTransaction.CreditCardDetails.CardNumber)} = @{nameof(cardNumber)}";
+
+                if (isOrFilter)
+                {
+                    builder.OrWhere(filter, new { threshold, amount, cardNumber });
+                }
+                else
+                {
+                    builder.Where(filter, new { threshold, amount, cardNumber });
+                }
+            }
+
+            var connection = this.Database.GetDbConnection();
+            bool existingConnection = true;
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                    existingConnection = false;
+                }
+
+                var report = await connection.ExecuteScalarAsync<Guid?>(selector.RawSql, selector.Parameters, transaction: dbContextTransaction?.GetDbTransaction());
+
+                return report.HasValue;
+            }
+            finally
+            {
+                if (!existingConnection)
+                {
+                    connection.Close();
+                }
+            }
+        }
     }
 }

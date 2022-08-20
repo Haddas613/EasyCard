@@ -6,6 +6,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api;
@@ -188,7 +189,18 @@ namespace Transactions.Api.Controllers.External
                 transaction.DealDetails.UpdateDealDetails(null, terminal.Settings, transaction, transaction.CreditCardDetails);
                 transaction.Calculate();
 
-                await transactionsService.CreateEntity(transaction);
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                {
+                    var check = await CheckDuplicateTransaction(terminal, model.PaymentIntentID, model.PaymentRequestID, dbTransaction);
+                    if (check != null)
+                    {
+                        await dbTransaction.RollbackAsync();
+                        return BadRequest(check);
+                    }
+
+                    await transactionsService.CreateEntity(transaction, dbTransaction);
+                    await dbTransaction.CommitAsync();
+                }
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
@@ -703,6 +715,25 @@ namespace Transactions.Api.Controllers.External
                     _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, message);
                     return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
+            }
+        }
+
+        private async Task<OperationResponse> CheckDuplicateTransaction(Terminal terminalDetails, Guid? paymentIntentID, Guid? paymentRequestID, IDbContextTransaction dbContextTransaction)
+        {
+            if (!paymentIntentID.HasValue && !paymentRequestID.HasValue)
+            {
+                return null;
+            }
+
+            var res = await transactionsService.CheckDuplicateTransaction(terminalDetails.TerminalID, paymentIntentID, paymentRequestID, null, 0, null, dbContextTransaction, JDealTypeEnum.J4);
+
+            if (res)
+            {
+                return new OperationResponse(Transactions.Shared.Messages.DuplicateTransactionIsDetected, (Guid?)null, GetCorrelationID(), "DoubleTansactions", Transactions.Shared.Messages.DuplicateTransactionIsDetected);
+            }
+            else
+            {
+                return null;
             }
         }
     }

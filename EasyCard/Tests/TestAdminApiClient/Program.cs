@@ -1,6 +1,7 @@
 ﻿using DesktopEasyCardConvertorECNG;
 using Shared.Api.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Client;
 using Transactions.Api.Models.Transactions;
@@ -14,53 +15,20 @@ namespace TestAdminApiClient
             var serviceFactory = new ServiceFactory("yuwsCT8cbJVgw2W6", DesktopEasyCardConvertorECNG.Environment.DEV);
 
 
-            //var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var transactionsService = serviceFactory.GetTransactionsApiClient();
 
-         var trans = transactionsService.GetTransactions(new Transactions.Api.Models.Transactions.TransactionsFilter
-         {
-             DocumentOrigin = Transactions.Shared.Enums.DocumentOriginEnum.Bit,
-             QuickStatusFilter = Transactions.Shared.Enums.QuickStatusFilterTypeEnum.Pending
-         }).Result;
-        
-         foreach (var transaction in trans.Data)
-         {
-             try
-             {
-                 var res = transactionsService.BitTransactionPostProcessing(transaction.PaymentTransactionID).Result;
-        
-                 if (res.Status != Shared.Api.Models.Enums.StatusEnum.Success)
-                 {
-                      Console.WriteLine($"Failed to process Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
-                  }
-                  else
-                  {
-                      Console.WriteLine($"Successfully processed Bit transaction {transaction.PaymentTransactionID}: {res.Message}");
-                  }
-              }
-              catch (Exception ex)
-              {
-                  Console.WriteLine($"Failed to process Bit transaction {transaction.PaymentTransactionID}: {ex.Message}");
-              }
-          }
-         
-         
-            Guid paymentTransactionRequestID = Guid.NewGuid();
+
             try
             {
                 string terminalid = "152fa179-3050-4b62-baf7-aee600d1415e";
 
                 var createRequest = new Transactions.Api.Models.Transactions.CreateTransactionRequest
                 {
-                    PaymentRequestID = paymentTransactionRequestID,
+
                     TransactionAmount = 1,
                     TerminalID = Guid.Parse(terminalid),
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails { CardNumber = "4557430402053720", CardExpiration = new Shared.Helpers.CardExpiration { Month = 6, Year = 26 }, CardOwnerName = "Avinoam", CardOwnerNationalID = "122222227", Cvv = "393" }
                 };
-                OperationResponse res = transactionsService.CreateTransaction(createRequest).Result;
-                OperationResponse res1 = transactionsService.CreateTransaction(createRequest).Result;
-                if (res1.Message == "דרישת תשלום כבר שולמה")
-                    Console.WriteLine(" true");
 
                 bool resTask = RunTasks(createRequest, transactionsService).Result;
                 if(resTask)
@@ -71,13 +39,6 @@ namespace TestAdminApiClient
             {
                 Console.WriteLine($"Failed to create transaction : {ex.Message}");
             }
-            //var res = transactionsService.CreateInvoiceForTransaction(Guid.Parse("41F6110E-0ADE-44E0-95B9-ADF700A4D041")).Result;
-
-            //Console.WriteLine(res);
-
-            //var res2 = transactionsService.GenerateInvoice(Guid.Parse("3f36f55e-bb2a-4a37-90f2-adf700d743f4")).Result;
-
-            //Console.WriteLine(res2);
         }
 
         static async Task<bool> RunTasks(CreateTransactionRequest createRequest, TransactionsApiClient transactionsService)
@@ -85,14 +46,13 @@ namespace TestAdminApiClient
             Task<OperationResponse> t1 = CreateTransactionTask(transactionsService, createRequest);
             Task<OperationResponse> t2 = CreateTransactionTask(transactionsService, createRequest);
 
-            await Task.WhenAll(t1, t2);
-            return t1.Result.Message.Contains("עסקה נוצרה") && t2.Result.Message.Contains("זוהתה עסקה כפולה");
+            var res = await Task.WhenAll(t1, t2);
+            return res.Any(d => d.Status == Shared.Api.Models.Enums.StatusEnum.Success) && res.Any(d => d.Errors?.Any(x => x.Code == "DoubleTansactions") == true && d.Status == Shared.Api.Models.Enums.StatusEnum.Error);
         }
 
        static async Task<OperationResponse> CreateTransactionTask(TransactionsApiClient transactionsService, CreateTransactionRequest createRequest)
         {
-            OperationResponse res = transactionsService.CreateTransaction(createRequest).Result;
-            return res;
+            return await transactionsService.CreateTransaction(createRequest);
         }
     }
 }

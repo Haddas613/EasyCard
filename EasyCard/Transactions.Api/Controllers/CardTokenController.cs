@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -333,7 +334,18 @@ namespace Transactions.Api.Controllers
 
                 transaction.Calculate();
 
-                await transactionsService.CreateEntity(transaction);
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                {
+                    var check = await CheckDuplicateTransaction(terminal, model.CardNumber, dbTransaction);
+                    if (check != null)
+                    {
+                        await dbTransaction.RollbackAsync();
+                        return check;
+                    }
+
+                    await transactionsService.CreateEntity(transaction, dbTransaction);
+                    await dbTransaction.CommitAsync();
+                }
 
                 // create transaction in processor (Shva)
                 try
@@ -408,6 +420,29 @@ namespace Transactions.Api.Controllers
             mapper.Map(systemSettings, terminal);
 
             return terminal;
+        }
+
+        private async Task<OperationResponse> CheckDuplicateTransaction(Terminal terminalDetails, string cardNumber, IDbContextTransaction dbContextTransaction)
+        {
+            bool hasFeature = terminalDetails.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions);
+
+            if (!hasFeature)
+            {
+                return null;
+            }
+
+            DateTime? threshold = hasFeature ? DateTime.UtcNow.AddMinutes(-(terminalDetails.Settings.MinutesToWaitBetDuplicateTransactions ?? 1)) : (DateTime?)null;
+
+            var res = await transactionsService.CheckDuplicateTransaction(terminalDetails.TerminalID, null, null, threshold, 0m, CreditCardHelpers.GetCardDigits(cardNumber), dbContextTransaction, JDealTypeEnum.J5);
+
+            if (res)
+            {
+                return new OperationResponse(Messages.DuplicateTransactionIsDetected, (Guid?)null, GetCorrelationID(), "DoubleTansactions", Messages.DuplicateTransactionIsDetected);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

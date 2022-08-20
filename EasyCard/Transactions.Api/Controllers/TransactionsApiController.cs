@@ -472,18 +472,16 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
 
-            _ = await CheckDuplicateTransaction(terminal, model.TransactionAmount, model.CreditCardSecureDetails.CardNumber);
+            CreditCardTokenKeyVault token = null;
 
-            if (model.PaymentRequestID != null || model.PaymentIntentID != null)
+            if (model.CreditCardToken != null)
             {
-                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => (model.PaymentIntentID != null && t.PaymentIntentID == model.PaymentIntentID) || (model.PaymentRequestID != null && t.PaymentRequestID == model.PaymentRequestID));
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                if (model.CreditCardSecureDetails != null)
                 {
-                    if (await query.Where(t => (int)t.Status >= (int)TransactionStatusEnum.Initial).CountAsync() > 0)
-                    {
-                        throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
-                    }
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
                 }
+
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
             }
 
             if (model.SaveCreditCard == true)
@@ -495,6 +493,7 @@ namespace Transactions.Api.Controllers
 
                 if (model.DealDetails.ConsumerID == null)
                 {
+                    // TODO: prevent double consumer
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
             }
@@ -517,18 +516,14 @@ namespace Transactions.Api.Controllers
                     return tokenResponse;
                 }
 
+                token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
+
                 model.CreditCardToken = tokenResponseOperation.EntityUID;
                 model.CreditCardSecureDetails = null; // TODO
             }
 
             if (model.CreditCardToken != null)
             {
-                if (model.CreditCardSecureDetails != null)
-                {
-                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
-                }
-
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
                 return await ProcessTransaction(terminal, model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
             else
@@ -576,7 +571,18 @@ namespace Transactions.Api.Controllers
             mapper.Map(prmodel, model);
 
             var terminal = await GetTerminal(model.TerminalID);
-            _ = await CheckDuplicateTransaction(terminal, prmodel.PaymentRequestAmount ?? 0, prmodel.CreditCardSecureDetails.CardNumber);
+
+            CreditCardTokenKeyVault token = null;
+
+            if (model.CreditCardToken != null)
+            {
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+            }
 
             // TODO: get from terminal
             if (model.SaveCreditCard == true)
@@ -630,6 +636,8 @@ namespace Transactions.Api.Controllers
                     return tokenResponse;
                 }
 
+                token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
+
                 model.CreditCardToken = tokenResponseOperation.EntityUID;
                 model.CreditCardSecureDetails = null;
             }
@@ -638,13 +646,6 @@ namespace Transactions.Api.Controllers
 
             if (model.CreditCardToken != null)
             {
-                if (model.CreditCardSecureDetails != null)
-                {
-                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
-                }
-
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
-
                 createResult = await ProcessTransaction(terminal, model, token,
                     specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
@@ -674,23 +675,6 @@ namespace Transactions.Api.Controllers
             }
 
             return createResult;
-        }
-
-        private async Task<Terminal> CheckDuplicateTransaction(Terminal terminalDetails, decimal amount,string cardNumber  )
-        {
-            if (terminalDetails.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions))
-            {
-                var query = transactionsService.GetTransactions().AsNoTracking().Where(t => t.TotalAmount == amount && t.CreditCardDetails.CardNumber == CreditCardHelpers.GetCardDigits(cardNumber));
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                {
-                    if (await query.Where(t => t.TransactionTimestamp.Value.AddMinutes(terminalDetails.Settings.MinutesToWaitBetDuplicateTransactions ?? 1) >= DateTime.Now).CountAsync() > 0)
-                    {
-                        throw new BusinessException(Messages.DuplicateTransactionIsDetected);
-                    }
-                }
-            }
-
-            return terminalDetails;
         }
 
         /// <summary>
@@ -1101,5 +1085,7 @@ namespace Transactions.Api.Controllers
 
             return await NextBillingDeal(terminal, billingDeal, token);
         }
+
+
     }
 }
