@@ -206,7 +206,7 @@
         </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.CREDIT_NOTE">
             <summary>
-              Looks up a localized string similar to Credit note.
+              Looks up a localized string similar to Refund invoice.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.INVOICE">
@@ -226,7 +226,7 @@
         </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.PAYMENT_INFO_DONATION">
             <summary>
-              Looks up a localized string similar to Donation.
+              Looks up a localized string similar to Payment Info for donation.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.ECInvoiceDocumentTypeResource.REFUND_INVOICE_WITH_PAYMENT_INFO">
