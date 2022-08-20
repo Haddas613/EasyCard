@@ -826,6 +826,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request Payed.
+        /// </summary>
+        public static string PaymentRequestPayed {
+            get {
+                return ResourceManager.GetString("PaymentRequestPayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment request payment failed.
         /// </summary>
         public static string PaymentRequestPaymentFailed {
@@ -844,6 +853,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request Rejected.
+        /// </summary>
+        public static string PaymentRequestRejected {
+            get {
+                return ResourceManager.GetString("PaymentRequestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Sent.
+        /// </summary>
+        public static string PaymentRequestSent {
+            get {
+                return ResourceManager.GetString("PaymentRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Is Closed.
         /// </summary>
         public static string PaymentRequestStatusIsClosed {
@@ -858,6 +885,15 @@ namespace Transactions.Shared {
         public static string PaymentRequestUpdated {
             get {
                 return ResourceManager.GetString("PaymentRequestUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Viewed.
+        /// </summary>
+        public static string PaymentRequestViewed {
+            get {
+                return ResourceManager.GetString("PaymentRequestViewed", resourceCulture);
             }
         }
         

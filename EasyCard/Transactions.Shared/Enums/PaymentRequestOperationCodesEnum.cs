@@ -10,16 +10,16 @@ namespace Transactions.Shared.Enums
 
         PaymentRequestUpdated,
 
-        Sent,
+        PaymentRequestSent,
 
-        Canceled,
+        PaymentRequestCanceled,
 
-        Viewed,
+        PaymentRequestViewed,
 
-        Rejected,
+        PaymentRequestRejected,
 
-        PaymentFailed,
+        PaymentRequestPaymentFailed,
 
-        Payed,
+        PaymentRequestPayed,
     }
 }

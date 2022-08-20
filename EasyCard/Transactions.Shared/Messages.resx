@@ -372,17 +372,29 @@
   <data name="PaymentRequestCreated" xml:space="preserve">
     <value>Payment Request created</value>
   </data>
+  <data name="PaymentRequestPayed" xml:space="preserve">
+    <value>Payment Request Payed</value>
+  </data>
   <data name="PaymentRequestPaymentFailed" xml:space="preserve">
     <value>Payment request payment failed</value>
   </data>
   <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
     <value>Payment Request payed</value>
   </data>
+  <data name="PaymentRequestRejected" xml:space="preserve">
+    <value>Payment Request Rejected</value>
+  </data>
+  <data name="PaymentRequestSent" xml:space="preserve">
+    <value>Payment Request Sent</value>
+  </data>
   <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
     <value>Payment Request Is Closed</value>
   </data>
   <data name="PaymentRequestUpdated" xml:space="preserve">
     <value>Payment Request Updated</value>
+  </data>
+  <data name="PaymentRequestViewed" xml:space="preserve">
+    <value>Payment Request Viewed</value>
   </data>
   <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
     <value>Payment type can not be changed</value>
