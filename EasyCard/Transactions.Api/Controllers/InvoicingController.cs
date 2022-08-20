@@ -336,7 +336,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromRoute] Guid? invoiceID, [FromBody] UpdateInvoiceRequest model)
         {
            // Guid invoiceid = model == null ? Guid.Parse(invoiceID) : model.InvoiceID;
-            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoice(invoiceID.Value));
 
             if (!dbInvoice.CanEdit)
             {
