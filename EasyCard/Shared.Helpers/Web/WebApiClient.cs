@@ -226,7 +226,7 @@ namespace Shared.Helpers
         }
 
         public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
-            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null, int? minutesForTimeout = null
             )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
@@ -247,6 +247,11 @@ namespace Shared.Helpers
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             onRequest?.Invoke(url, json);
+            if ((minutesForTimeout ?? 0 ) > 0)
+            {
+                HttpClient.Timeout = TimeSpan.FromMinutes(minutesForTimeout ?? 0);
+            }
+
             HttpResponseMessage response = await HttpClient.SendAsync(request);
             var res = await response.Content.ReadAsStringAsync();
             onResponse?.Invoke(res, response.StatusCode, response.Headers);
@@ -270,6 +275,7 @@ namespace Shared.Helpers
                 }
             }
         }
+
 
         public async Task<T> PostForm<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
           ProcessRequest onRequest = null, ProcessResponse onResponse = null, FormUrlEncodedContent values = null
