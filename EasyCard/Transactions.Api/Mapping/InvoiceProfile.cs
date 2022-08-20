@@ -55,6 +55,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<BillingDeal, Invoice>();
 
+            CreateMap<UpdateInvoiceRequest, Invoice>();
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
                 .ForMember(d => d.InvoiceID, o => o.Ignore())

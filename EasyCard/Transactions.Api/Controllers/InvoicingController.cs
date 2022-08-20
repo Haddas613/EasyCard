@@ -332,9 +332,11 @@ namespace Transactions.Api.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
-        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromBody] UpdateInvoiceRequest model)
+        [Route("{invoiceID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromRoute] Guid? invoiceID, [FromBody] UpdateInvoiceRequest model)
         {
-            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == model.InvoiceID));
+           // Guid invoiceid = model == null ? Guid.Parse(invoiceID) : model.InvoiceID;
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
 
             if (!dbInvoice.CanEdit)
             {
