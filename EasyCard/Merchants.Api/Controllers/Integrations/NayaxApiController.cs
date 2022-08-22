@@ -16,6 +16,7 @@ using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Merchants.Api.Controllers.Integrations
@@ -78,25 +79,29 @@ namespace Merchants.Api.Controllers.Integrations
                 nayaxIntegration.Valid = true;
             }
 
-            bool connection = true;
+            StringBuilder results = new StringBuilder();
+
             foreach (var device in settings.devices)
             {
                 AuthRequest req = new AuthRequest(device.TerminalID, request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
 
                 var getDetailsResult = await nayaxProcessor.TestConnection(req);
-                connection = connection && getDetailsResult;
+
+                if (getDetailsResult != null)
+                {
+                    results.AppendLine(getDetailsResult);
+                }
             }
-            
 
             //TODO: save on success?
             //mapper.Map(request, nayaxIntegration);
             //await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
             var response = new OperationResponse(Resources.MessagesResource.ConnectionSuccess, StatusEnum.Success);
 
-            if (!nayaxIntegration.Valid || !connection)
+            if (!nayaxIntegration.Valid || results.Length > 0)
             {
                 response.Status = StatusEnum.Error;
-                response.Message = Resources.MessagesResource.ConnectionFailed;
+                response.Message = results.ToString();
             }
 
             return response;

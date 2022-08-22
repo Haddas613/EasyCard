@@ -19,7 +19,7 @@ namespace Shared.Helpers
     {
         public HttpClient HttpClient { get; private set; }
 
-        public WebApiClient()
+        public WebApiClient(TimeSpan? timeout = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
@@ -28,10 +28,10 @@ namespace Shared.Helpers
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
-            HttpClient.Timeout = TimeSpan.FromMinutes(5);
+            HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
         }
 
-        public WebApiClient(X509Certificate2 certificate)
+        public WebApiClient(X509Certificate2 certificate, TimeSpan? timeout = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
@@ -47,7 +47,7 @@ namespace Shared.Helpers
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
-            HttpClient.Timeout = TimeSpan.FromMinutes(5);
+            HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
         }
 
         public void Dispose()
