@@ -347,7 +347,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
 
-            if (paymentRequestID.HasValue)
+            if (paymentRequestID.HasValue && !paymentIntentID.HasValue)
             {
                 var filter = $"{nameof(PaymentTransaction.PaymentRequestID)} = @{nameof(paymentRequestID)}";
                 if (isOrFilter)

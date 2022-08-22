@@ -97,7 +97,11 @@ namespace Transactions.Api.Mapping
             CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();
             CreateMap<InitalBillingDealRequest, CreateTransactionRequest>();
             CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
+
+            // required for Bit
             CreateMap<PaymentRequest, CreateTransactionRequest>()
+                .ForMember(d => d.PaymentIntentID, o => o.Ignore())
+                .ForMember(d => d.PaymentRequestID, o => o.Ignore())
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
 
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()

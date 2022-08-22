@@ -162,6 +162,17 @@
 
                 if(xhr.status != 200 || !xhr.getResponseHeader("content-type").startsWith("application/json")){
                     toastr["error"]("System error occurred - please contact support");
+                    window.switchLoadingSpinner(false);
+                    return;
+                }
+
+                if (data.status == "error") {
+                    if (data.message) {
+                        toastr["error"](data.message);
+                    } else {
+                        toastr["error"]("System error occurred - please contact support");
+                    }
+                    window.switchLoadingSpinner(false);
                     return;
                 }
 
