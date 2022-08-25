@@ -325,7 +325,7 @@ namespace Merchants.Api
             services.AddSingleton<NayaxProcessor, NayaxProcessor>(serviceProvider =>
             {
                 var nayaxCfg = serviceProvider.GetRequiredService<IOptions<NayaxGlobalSettings>>();
-                var webApiClient = new WebApiClient();
+                var webApiClient = new WebApiClient(TimeSpan.FromMinutes(2));
                 var logger = serviceProvider.GetRequiredService<ILogger<NayaxProcessor>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.NayaxRequestsLogStorageTable, cfg.NayaxRequestsLogStorageTable);

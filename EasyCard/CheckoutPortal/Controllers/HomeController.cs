@@ -31,6 +31,7 @@ using System.Globalization;
 using CheckoutPortal.Resources;
 using System.IO;
 using System.Text;
+using Transactions.Api.Models.Transactions;
 
 namespace CheckoutPortal.Controllers
 {
@@ -163,6 +164,7 @@ namespace CheckoutPortal.Controllers
         {
             bool isPaymentIntent = request.PaymentIntent != null;
             CheckoutData checkoutConfig = await GetCheckoutConfigForCharge(request, isPaymentIntent);
+
 
             if (checkoutConfig == null)
             {
@@ -490,16 +492,24 @@ namespace CheckoutPortal.Controllers
             {
                 logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
 
-                ModelState.AddModelError("Charge", result.Message);
-                if (result.Errors?.Count() > 0)
+                if (request.PayWithBit)
                 {
-                    foreach (var err in result.Errors)
-                    {
-                        ModelState.AddModelError(err.Code, err.Description);
-                    }
+                    return Json(result);
                 }
+                else
+                {
 
-                return IndexViewResult(checkoutConfig, request);
+                    ModelState.AddModelError("Charge", result.Message);
+                    if (result.Errors?.Count() > 0)
+                    {
+                        foreach (var err in result.Errors)
+                        {
+                            ModelState.AddModelError(err.Code, err.Description);
+                        }
+                    }
+
+                    return IndexViewResult(checkoutConfig, request);
+                }
             }
 
             if (request.PayWithBit)
@@ -881,7 +891,7 @@ namespace CheckoutPortal.Controllers
             }
         }
 
-        
+
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -913,7 +923,7 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PaymentError(string message, string returnUrl =  null)
+        public IActionResult PaymentError(string message, string returnUrl = null)
         {
             return View(nameof(PaymentError), new PaymentErrorViewModel { ErrorMessage = message, ReturnURL = returnUrl });
         }

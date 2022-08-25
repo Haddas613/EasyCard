@@ -340,7 +340,7 @@ namespace Nayax
             }
         }
 
-        public async Task<bool> TestConnection(AuthRequest authRequest)
+        public async Task<string> TestConnection(AuthRequest authRequest)
         {
             //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
             //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
@@ -354,11 +354,24 @@ namespace Nayax
             try
             {
                 var responseRes = await  this.apiClient.Post<string>(configuration.BaseUrl, GetDetails, authReq, BuildHeaders);
-                return (!string.IsNullOrEmpty(responseRes) && (responseRes.ToLower().Contains("ashraitready") || responseRes.ToLower().Contains("ashraitreadyonline")));
+                if (!string.IsNullOrEmpty(responseRes) && (responseRes.ToLower().Contains("ashraitready") || responseRes.ToLower().Contains("ashraitreadyonline")))
+                {
+                    return null;
+                }
+                else
+                {
+                    return responseRes;
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                this.logger.LogError(ex, $"Nayax integration request failed: {ex.Message}");
+                return $"Nayax integration request failed: possible device is OFF";
             }
             catch (Exception ex)
             {
-                return false;
+                this.logger.LogError(ex, $"Nayax integration request failed: {ex.Message}");
+                return ex.Message;
             }
         }
 

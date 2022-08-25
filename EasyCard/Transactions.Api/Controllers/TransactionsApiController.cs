@@ -472,6 +472,18 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
             var terminal = await GetTerminal(model.TerminalID);
 
+            CreditCardTokenKeyVault token = null;
+
+            if (model.CreditCardToken != null)
+            {
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+            }
+
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)
@@ -481,6 +493,7 @@ namespace Transactions.Api.Controllers
 
                 if (model.DealDetails.ConsumerID == null)
                 {
+                    // TODO: prevent double consumer
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
             }
@@ -503,18 +516,14 @@ namespace Transactions.Api.Controllers
                     return tokenResponse;
                 }
 
+                token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
+
                 model.CreditCardToken = tokenResponseOperation.EntityUID;
                 model.CreditCardSecureDetails = null; // TODO
             }
 
             if (model.CreditCardToken != null)
             {
-                if (model.CreditCardSecureDetails != null)
-                {
-                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
-                }
-
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
                 return await ProcessTransaction(terminal, model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
             else
@@ -550,7 +559,6 @@ namespace Transactions.Api.Controllers
                 isPaymentIntent = true;
             }
 
-            // TODO: get from terminal
             var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
             if (merchantID == null)
             {
@@ -564,6 +572,19 @@ namespace Transactions.Api.Controllers
 
             var terminal = await GetTerminal(model.TerminalID);
 
+            CreditCardTokenKeyVault token = null;
+
+            if (model.CreditCardToken != null)
+            {
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+            }
+
+            // TODO: get from terminal
             if (model.SaveCreditCard == true)
             {
                 if (model.CreditCardToken != null)
@@ -615,6 +636,8 @@ namespace Transactions.Api.Controllers
                     return tokenResponse;
                 }
 
+                token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
+
                 model.CreditCardToken = tokenResponseOperation.EntityUID;
                 model.CreditCardSecureDetails = null;
             }
@@ -623,13 +646,6 @@ namespace Transactions.Api.Controllers
 
             if (model.CreditCardToken != null)
             {
-                if (model.CreditCardSecureDetails != null)
-                {
-                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
-                }
-
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
-
                 createResult = await ProcessTransaction(terminal, model, token,
                     specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
@@ -1069,5 +1085,7 @@ namespace Transactions.Api.Controllers
 
             return await NextBillingDeal(terminal, billingDeal, token);
         }
+
+
     }
 }

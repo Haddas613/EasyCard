@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CREDIT_NOTE" xml:space="preserve">
-    <value>Credit note</value>
+    <value>Refund invoice</value>
   </data>
   <data name="INVOICE" xml:space="preserve">
     <value>Invoice</value>
@@ -130,7 +130,7 @@
     <value>Payment Info</value>
   </data>
   <data name="PAYMENT_INFO_DONATION" xml:space="preserve">
-    <value>Donation</value>
+    <value>Payment Info for donation</value>
   </data>
   <data name="REFUND_INVOICE_WITH_PAYMENT_INFO" xml:space="preserve">
     <value>Refund Invoice with Payment Info</value>

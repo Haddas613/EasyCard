@@ -22,7 +22,7 @@ namespace Transactions.Api.Models.Invoicing
         /// <summary>
         /// Primary reference
         /// </summary>
-        public Guid InvoiceID { get; set; }
+       // public Guid InvoiceID { get; set; }
 
         /// <summary>
         /// Deal information (optional)

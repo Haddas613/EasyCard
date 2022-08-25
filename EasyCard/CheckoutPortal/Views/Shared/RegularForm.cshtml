@@ -368,11 +368,12 @@
             window.notification3Ds = function (cres) {
                 if (cres.success) {
                     $('#threeDSCReqIframeContainer').slideFadeToggle();
-                    return $("#checkout-form").submit();
+                    return $("#checkout-form").submit(); // from already validated, spinner enabled
                 } else {
                     toastr["error"]('@(localizer.Get("ThreeDSError"))' + cres.error);
                     window.switchLoadingSpinner(false);
                     $('#threeDSCReqIframeContainer').slideFadeToggle();
+                    document.getElementById('submitbtn').disabled = false;
                 }
             };
 
@@ -390,11 +391,12 @@
 
                             if (continueInCaseOf3DSecureError) {
                                 $("#ThreeDSServerTransID").val("");
-                                return $("#checkout-form").submit();
+                                return $("#checkout-form").submit(); // from already validated, spinner enabled, submit button disabled
                             }
                             else {
                                 toastr["error"]('@(localizer.Get("ThreeDSError"))');
                                 window.switchLoadingSpinner(false);
+                                document.getElementById('submitbtn').disabled = false;
                                 return;
                             }
                         }
@@ -407,6 +409,7 @@
                             else {
                                 toastr["error"](data.errorMessage);
                                 window.switchLoadingSpinner(false);
+                                document.getElementById('submitbtn').disabled = false;
                                 return;
                             }
                         }
@@ -421,7 +424,6 @@
                             window.scrollTo(0, 0);
                             $('#threeDSCReqIframeContainer').slideFadeToggle();
                         } else {
-                            window.switchLoadingSpinner(false);
                             return $("#checkout-form").submit();
                         }
                     },
@@ -431,31 +433,39 @@
                         else {
                             toastr["error"]('@(localizer.Get("ThreeDSError"))');
                             window.switchLoadingSpinner(false);
+                            document.getElementById('submitbtn').disabled = false;
                             return;
                         }
                     },
                 })
             }
 
-            $("#submitbtn").on("click", function () {
+            $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
+                e.preventDefault();
+                if (!$("#checkout-form").valid()) {
+                    return;
+                }
+
                 var pinPadDeal = document.getElementById("pin-pad-deal");
                 if (pinPadDeal && pinPadDeal.checked == true) {
                     signalRClient.establishSignalRConnection().then(r => {
-                        $("#checkout-form").submit();
+                        submit();
                     }, e => {
-                        $("#checkout-form").submit();
+                        submit();
                     });
                 }
                 if ($("#CreditCardToken:checked").val()){
-                    return $("#checkout-form").submit();
+                    submit();
                 }
 
                 let cardNumber = document.getElementById("cc-number");
                 if (cardNumber.value.length == 9) {//direct
-                      return $("#checkout-form").submit();
+                      submit();
                 }
 
                 let payload = $('#checkout-form').serialize();
+                document.getElementById('submitbtn').disabled = true;
                 window.switchLoadingSpinner(true);
 
                 return $.post("/Home/Versioning3Ds", payload, function (data, status, xhr) {
@@ -466,6 +476,7 @@
                         else {
                             toastr["error"]('@(localizer.Get("ThreeDSError"))');
                             window.switchLoadingSpinner(false);
+                            document.getElementById('submitbtn').disabled = false;
                             return;
                         }
                     }
@@ -476,6 +487,7 @@
                         else {
                             toastr["error"](data.errorMessage);
                             window.switchLoadingSpinner(false);
+                            document.getElementById('submitbtn').disabled = false;
                             return;
                         }
                     }
@@ -497,63 +509,50 @@
         {
         <text>
             $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
                 e.preventDefault();
                 if (!$("#checkout-form").valid()) {
                     return;
                 }
-                signalRClient.establishSignalRConnection().then(r => {
-                    $("#checkout-form").submit();
-                }, e => {
-                    $("#checkout-form").submit();
-                })
+
+                var pinPadDeal = document.getElementById("pin-pad-deal");
+                if (pinPadDeal && pinPadDeal.checked == true) {
+                    signalRClient.establishSignalRConnection().then(r => {
+                        submit();
+                    }, e => {
+                        submit();
+                    })
+                } else {
+                    submit();
+                }
+
+                
             })
         </text>
         }
         else
         {
         <text>
-            $("#submitbtn").on("click", function () {
-                $("#checkout-form").submit();
+            $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
+                e.preventDefault();
+                if (!$("#checkout-form").valid()) {
+                    return;
+                }
+
+                submit();
             })
         </text>
         }
 
-        //$("#Amount").on("focus", function () {
-        //    if ($("#SaveCreditCard").is(":checked")) {
-        //        setTimeout(() => {
-        //            $("span[data-valmsg-for=Amount]").html("");
-        //            $("#Amount").removeClass("input-validation-error");
-        //        }, 500)
-        //    }
-        //});
+        const submit = function () {
+            
 
-        //$("#Amount").on("input", function (e) {
-        //    if ((!e.target.value || !Number(e.target.value)) && $("#SaveCreditCard").is(":checked")) {
-        //        setTimeout(() => {
-        //            $("span[data-valmsg-for=Amount]").html("");
-        //            $("#Amount").removeClass("input-validation-error");
-        //        }, 500)
-        //    }
-        //});
-
-        //$("#SaveCreditCard").on("click", function (e) {
-        //    if ($(e.target).is(":checked")) {
-        //        $("span[data-valmsg-for=Amount]").html("");
-        //        $("#Amount").removeClass("input-validation-error");
-        //    }
-        //})
+            $("#checkout-form").submit();
+        }
 
         $("#checkout-form").on("submit", function (e) {
 
-            //if (!Number($("#Amount").val()) && $("#SaveCreditCard").is(":checked")) {
-            //    $("#amount-area").hide();
-            //} else {
-            //    $("#amount-area").show();
-            //}
-            if (!$("#checkout-form").valid()) {
-                e.preventDefault();
-                return;
-            }
             let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
                 $("#cc-number").val(ccvaltrim);
             if (document.getElementById("ttype")) {

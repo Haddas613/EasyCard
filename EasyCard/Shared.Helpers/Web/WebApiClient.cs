@@ -19,7 +19,7 @@ namespace Shared.Helpers
     {
         public HttpClient HttpClient { get; private set; }
 
-        public WebApiClient()
+        public WebApiClient(TimeSpan? timeout = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
@@ -28,23 +28,26 @@ namespace Shared.Helpers
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
-            HttpClient.Timeout = TimeSpan.FromMinutes(5);
+            HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
         }
 
-        public WebApiClient(X509Certificate2 certificate)
+        public WebApiClient(X509Certificate2 certificate, TimeSpan? timeout = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
 
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.ClientCertificates.Add(certificate);
+            if (certificate != null)
+            {
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                handler.ClientCertificates.Add(certificate);
+            }
 
             HttpClient = new HttpClient(handler);
 
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
-            HttpClient.Timeout = TimeSpan.FromMinutes(5);
+            HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
         }
 
         public void Dispose()
@@ -97,9 +100,7 @@ namespace Shared.Helpers
             }
         }
 
-
-
-        public async Task<string> GetObj<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<string> GetRaw(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -117,7 +118,45 @@ namespace Shared.Helpers
             var res = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return (res);
+                return res;
+            }
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed GET from {url}: {response.StatusCode}");
+                }
+            }
+        }
+
+        public async Task<byte[]> GetByte<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            var res = await response.Content.ReadAsStringAsync();
+            byte[] content = response.Content.ReadAsByteArrayAsync().Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return content;
             }
             else
             {
@@ -185,6 +224,7 @@ namespace Shared.Helpers
                 }
             }
         }
+
         public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             )

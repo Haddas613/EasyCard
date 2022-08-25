@@ -33,5 +33,7 @@ namespace Transactions.Business.Services
         Task Refresh(PaymentTransaction transaction);
 
         PaymentTransaction Clone(PaymentTransaction transaction);
+
+        Task<bool> CheckDuplicateTransaction(Guid? terminalID, Guid? paymentIntentID, Guid? paymentRequestID, DateTime? threshold, decimal amount, string cardNumber, IDbContextTransaction dbContextTransaction, JDealTypeEnum jDealType);
     }
 }

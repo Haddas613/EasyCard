@@ -19,7 +19,7 @@ namespace Transactions.Shared {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Messages {
@@ -475,6 +475,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate transaction is detected.
+        /// </summary>
+        public static string DuplicateTransactionIsDetected {
+            get {
+                return ResourceManager.GetString("DuplicateTransactionIsDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Either Email or Phone must be specified.
         /// </summary>
         public static string EitherEmailOrPhoneMustBeSpecified {
@@ -790,6 +799,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment request already payed.
+        /// </summary>
+        public static string PaymentRequestAlreadyPayed {
+            get {
+                return ResourceManager.GetString("PaymentRequestAlreadyPayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request canceled.
         /// </summary>
         public static string PaymentRequestCanceled {
@@ -804,6 +822,15 @@ namespace Transactions.Shared {
         public static string PaymentRequestCreated {
             get {
                 return ResourceManager.GetString("PaymentRequestCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Payed.
+        /// </summary>
+        public static string PaymentRequestPayed {
+            get {
+                return ResourceManager.GetString("PaymentRequestPayed", resourceCulture);
             }
         }
         
@@ -826,6 +853,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request Rejected.
+        /// </summary>
+        public static string PaymentRequestRejected {
+            get {
+                return ResourceManager.GetString("PaymentRequestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Sent.
+        /// </summary>
+        public static string PaymentRequestSent {
+            get {
+                return ResourceManager.GetString("PaymentRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Is Closed.
         /// </summary>
         public static string PaymentRequestStatusIsClosed {
@@ -840,6 +885,15 @@ namespace Transactions.Shared {
         public static string PaymentRequestUpdated {
             get {
                 return ResourceManager.GetString("PaymentRequestUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Viewed.
+        /// </summary>
+        public static string PaymentRequestViewed {
+            get {
+                return ResourceManager.GetString("PaymentRequestViewed", resourceCulture);
             }
         }
         

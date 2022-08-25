@@ -272,6 +272,11 @@ namespace Transactions.Business.Services
             return (PaymentTransaction)context.Entry(transaction).CurrentValues.ToObject();
         }
 
+        public async Task<bool> CheckDuplicateTransaction(Guid? terminalID, Guid? paymentIntentID, Guid? paymentRequestID, DateTime? threshold, decimal amount, string cardNumber, IDbContextTransaction dbContextTransaction, JDealTypeEnum jDealType)
+        {
+            return await context.CheckDuplicateTransaction(terminalID, paymentIntentID, paymentRequestID, threshold, amount, cardNumber, dbContextTransaction, jDealType);
+        }
+
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)
         {
             var historyRecord = new TransactionHistory

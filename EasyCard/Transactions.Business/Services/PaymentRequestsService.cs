@@ -6,6 +6,7 @@ using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Security.Claims;
@@ -93,13 +94,13 @@ namespace Transactions.Business.Services
             if (dbTransaction != null)
             {
                 await base.CreateEntity(entity, dbTransaction);
-                await AddHistory(entity.PaymentRequestID, string.Empty, Messages.PaymentRequestCreated, PaymentRequestOperationCodesEnum.PaymentRequestCreated);
+                await AddHistory(entity.PaymentRequestID, string.Empty, PaymentRequestOperationCodesEnum.PaymentRequestCreated);
             }
             else
             {
                 using var transaction = BeginDbTransaction();
                 await base.CreateEntity(entity, transaction);
-                await AddHistory(entity.PaymentRequestID, string.Empty, Messages.PaymentRequestCreated, PaymentRequestOperationCodesEnum.PaymentRequestCreated);
+                await AddHistory(entity.PaymentRequestID, string.Empty, PaymentRequestOperationCodesEnum.PaymentRequestCreated);
                 await transaction.CommitAsync();
             }
         }
@@ -126,25 +127,21 @@ namespace Transactions.Business.Services
             entity.UpdatedDate = DateTime.UtcNow;
 
             PaymentRequestOperationCodesEnum operationCode = PaymentRequestOperationCodesEnum.PaymentRequestUpdated;
-            var historyMessage = Messages.PaymentRequestUpdated;
-
             if (status != null)
             {
-                var parsedRes = Enum.TryParse(status?.ToString(), true, out operationCode);
+                var parsedRes = Enum.TryParse($"PaymentRequest{status}", true, out operationCode);
             }
-
-            historyMessage = message ?? (Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage);
 
             if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
-                await AddHistory(entity.PaymentRequestID, changesStr, historyMessage, operationCode);
+                await AddHistory(entity.PaymentRequestID, changesStr, operationCode);
             }
             else
             {
                 using var transaction = BeginDbTransaction();
                 await base.UpdateEntity(entity, transaction);
-                await AddHistory(entity.PaymentRequestID, changesStr, historyMessage, operationCode);
+                await AddHistory(entity.PaymentRequestID, changesStr, operationCode);
                 await transaction.CommitAsync();
             }
         }
@@ -167,19 +164,21 @@ namespace Transactions.Business.Services
             if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
-                await AddHistory(entity.PaymentRequestID, changesStr, historyMessage, operationCode);
+                await AddHistory(entity.PaymentRequestID, changesStr, operationCode);
             }
             else
             {
                 using var transaction = BeginDbTransaction();
                 await base.UpdateEntity(entity, transaction);
-                await AddHistory(entity.PaymentRequestID, changesStr, historyMessage, operationCode);
+                await AddHistory(entity.PaymentRequestID, changesStr, operationCode);
                 await transaction.CommitAsync();
             }
         }
 
-        private async Task AddHistory(Guid paymentRequestID, string opDescription, string message, PaymentRequestOperationCodesEnum operationCode)
+        private async Task AddHistory(Guid paymentRequestID, string opDescription, PaymentRequestOperationCodesEnum operationCode)
         {
+            var message = Messages.ResourceManager.GetString(operationCode.ToString(), CultureInfo.GetCultureInfo("he")) ?? Messages.ResourceManager.GetString(nameof(Messages.PaymentRequestUpdated), CultureInfo.GetCultureInfo("he"));
+
             var historyRecord = new PaymentRequestHistory
             {
                 PaymentRequestID = paymentRequestID,

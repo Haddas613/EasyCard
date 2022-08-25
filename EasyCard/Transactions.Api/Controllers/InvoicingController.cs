@@ -332,9 +332,11 @@ namespace Transactions.Api.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
-        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromBody] UpdateInvoiceRequest model)
+        [Route("{invoiceID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateInvoiceDetails([FromRoute] Guid? invoiceID, [FromBody] UpdateInvoiceRequest model)
         {
-            var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == model.InvoiceID));
+           // Guid invoiceid = model == null ? Guid.Parse(invoiceID) : model.InvoiceID;
+            var dbInvoice = EnsureExists(await invoiceService.GetInvoice(invoiceID.Value));
 
             if (!dbInvoice.CanEdit)
             {
@@ -460,7 +462,6 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            //TODO: change ProcessInvoice signature?
             transaction.IssueInvoice = true;
             var endResponse = await ProcessInvoice(terminal, transaction, null);
 
@@ -852,6 +853,14 @@ namespace Transactions.Api.Controllers
         internal async Task<OperationResponse> ProcessInvoice(Terminal terminal, PaymentTransaction transaction, InvoiceDetails invoiceDetails)
         {
             // TODO: validate InvoiceDetails
+            var externalSystems = await terminalsService.GetTerminalExternalSystems(terminal.TerminalID);
+            var easyInvoiceIntegration = externalSystems.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing && t.IsActive);
+            //TODO: change ProcessInvoice signature?
+            if (easyInvoiceIntegration == null)
+            {
+                return new OperationResponse($"{Transactions.Shared.Messages.InvoiceStateIsNotValid}", StatusEnum.Warning, transaction.PaymentTransactionID);
+            }
+
             if (transaction.IssueInvoice == true && transaction.Currency == CurrencyEnum.ILS)
             {
                 if (invoiceDetails == null)

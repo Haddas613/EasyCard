@@ -845,6 +845,11 @@
               Looks up a localized string similar to Device is processing transaction.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.DuplicateTransactionIsDetected">
+            <summary>
+              Looks up a localized string similar to Duplicate transaction is detected.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.EitherEmailOrPhoneMustBeSpecified">
             <summary>
               Looks up a localized string similar to Either Email or Phone must be specified.
@@ -1020,6 +1025,11 @@
               Looks up a localized string similar to Only successful transactions are allowed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestAlreadyPayed">
+            <summary>
+              Looks up a localized string similar to Payment request already payed.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.PaymentRequestCanceled">
             <summary>
               Looks up a localized string similar to Payment Request canceled.
@@ -1028,6 +1038,11 @@
         <member name="P:Transactions.Shared.Messages.PaymentRequestCreated">
             <summary>
               Looks up a localized string similar to Payment Request created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestPayed">
+            <summary>
+              Looks up a localized string similar to Payment Request Payed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.PaymentRequestPaymentFailed">
@@ -1040,6 +1055,16 @@
               Looks up a localized string similar to Payment Request payed.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestRejected">
+            <summary>
+              Looks up a localized string similar to Payment Request Rejected.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestSent">
+            <summary>
+              Looks up a localized string similar to Payment Request Sent.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.PaymentRequestStatusIsClosed">
             <summary>
               Looks up a localized string similar to Payment Request Is Closed.
@@ -1048,6 +1073,11 @@
         <member name="P:Transactions.Shared.Messages.PaymentRequestUpdated">
             <summary>
               Looks up a localized string similar to Payment Request Updated.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.PaymentRequestViewed">
+            <summary>
+              Looks up a localized string similar to Payment Request Viewed.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.PaymentTypeCannotBeChanged">

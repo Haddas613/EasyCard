@@ -33,6 +33,8 @@ namespace Transactions.Api.Mapping
                    .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
                    .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
                    .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
+                   .ForMember(d => d.PaymentIntentID, s => s.MapFrom(src => src.PaymentIntentID))
+                    .ForMember(d => d.PaymentRequestID, s => s.MapFrom(src => src.PaymentRequestID))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>();
@@ -95,8 +97,12 @@ namespace Transactions.Api.Mapping
             CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();
             CreateMap<InitalBillingDealRequest, CreateTransactionRequest>();
             CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
+
+            // required for Bit
             CreateMap<PaymentRequest, CreateTransactionRequest>()
-                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
+                .ForMember(d => d.PaymentIntentID, o => o.Ignore())
+                .ForMember(d => d.PaymentRequestID, o => o.Ignore())
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom((src, target) => target.TransactionAmount == 0 ? src.PaymentRequestAmount : target.TransactionAmount));
 
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
                 .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))

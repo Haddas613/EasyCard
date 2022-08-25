@@ -10,6 +10,7 @@ namespace Transactions.Shared
 
         public string PublicStorageConnectionString { get; set; }
 
+        public string PublicBlobStorageTable { get; set; }
         public string ShvaRequestsLogStorageTable { get; set; }
 
         public string NayaxRequestsLogStorageTable { get; set; }

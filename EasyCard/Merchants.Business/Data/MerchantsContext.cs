@@ -297,10 +297,12 @@ namespace Merchants.Business.Data
                 builder.HasKey(b => b.TerminalExternalSystemID);
                 builder.Property(b => b.TerminalExternalSystemID).ValueGeneratedOnAdd();
 
+                builder.Property(b => b.IsActive).HasDefaultValue(true);
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
+
             }
         }
 

@@ -218,18 +218,22 @@ namespace Transactions.Api.Controllers
                 mapper.Map(pinpadProcessorSettings, transaction);
             }
 
-            if (initialTransactionProcess != null)
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
             {
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                var check = await CheckDuplicateTransaction(terminal, model.PaymentIntentID, model.PaymentRequestID, model.TransactionAmount, model.CreditCardSecureDetails?.CardNumber ?? token?.CardNumber, dbTransaction, jDealType);
+                if (check != null)
+                {
+                    await dbTransaction.RollbackAsync();
+                    return check;
+                }
+
+                if (initialTransactionProcess != null)
                 {
                     await initialTransactionProcess(dbTransaction);
-                    await transactionsService.CreateEntity(transaction, dbTransaction);
-                    await dbTransaction.CommitAsync();
                 }
-            }
-            else
-            {
-                await transactionsService.CreateEntity(transaction);
+
+                await transactionsService.CreateEntity(transaction, dbTransaction);
+                await dbTransaction.CommitAsync();
             }
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
@@ -973,6 +977,34 @@ namespace Transactions.Api.Controllers
             await consumersService.CreateEntity(consumer);
 
             return consumer.ConsumerID;
+        }
+
+        private async Task<OperationResponse> CheckDuplicateTransaction(Terminal terminalDetails, Guid? paymentIntentID, Guid? paymentRequestID, decimal amount, string cardNumber, IDbContextTransaction dbContextTransaction, JDealTypeEnum jDealType)
+        {
+            if (jDealType == JDealTypeEnum.J2)
+            {
+                return null;
+            }
+
+            bool hasFeature = terminalDetails.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.PreventDoubleTansactions);
+
+            if (!hasFeature && !paymentIntentID.HasValue && !paymentRequestID.HasValue)
+            {
+                return null;
+            }
+
+            DateTime? threshold = hasFeature ? DateTime.UtcNow.AddMinutes(-(terminalDetails.Settings.MinutesToWaitBetDuplicateTransactions ?? 1)) : (DateTime?)null;
+
+            var res = await transactionsService.CheckDuplicateTransaction(terminalDetails.TerminalID, paymentIntentID, paymentRequestID, threshold, amount, CreditCardHelpers.GetCardDigits(cardNumber), dbContextTransaction, jDealType);
+
+            if (res)
+            {
+                return new OperationResponse(Messages.DuplicateTransactionIsDetected, (Guid?)null, GetCorrelationID(), "DoubleTansactions", Messages.DuplicateTransactionIsDetected);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

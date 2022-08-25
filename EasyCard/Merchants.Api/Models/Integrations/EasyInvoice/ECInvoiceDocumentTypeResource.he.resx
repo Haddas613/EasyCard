@@ -118,18 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CREDIT_NOTE" xml:space="preserve">
-    <value>שבוניות זיקוי</value>
+    <value>חשבונית זיכוי</value>
   </data>
   <data name="INVOICE" xml:space="preserve">
-    <value>חשבוניות מס</value>
+    <value>חשבונית מס</value>
   </data>
   <data name="INVOICE_WITH_PAYMENT_INFO" xml:space="preserve">
-    <value>שבוניות מס קבלה</value>
+    <value>חשבונית מס קבלה</value>
   </data>
   <data name="PAYMENT_INFO" xml:space="preserve">
     <value>קבלה</value>
   </data>
+  <data name="PAYMENT_INFO_DONATION" xml:space="preserve">
+    <value>קבלה תרומה</value>
+  </data>
   <data name="REFUND_INVOICE_WITH_PAYMENT_INFO" xml:space="preserve">
-    <value>שבוניות מס קבלה זיקו'</value>
+    <value>חשבונית מס קבלה זיכוי</value>
   </data>
 </root>

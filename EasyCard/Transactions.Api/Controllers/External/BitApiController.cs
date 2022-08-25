@@ -6,6 +6,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api;
@@ -188,7 +189,18 @@ namespace Transactions.Api.Controllers.External
                 transaction.DealDetails.UpdateDealDetails(null, terminal.Settings, transaction, transaction.CreditCardDetails);
                 transaction.Calculate();
 
-                await transactionsService.CreateEntity(transaction);
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                {
+                    var check = await CheckDuplicateTransaction(terminal, model.PaymentIntentID, model.PaymentRequestID, dbTransaction);
+                    if (check != null)
+                    {
+                        await dbTransaction.RollbackAsync();
+                        return BadRequest(check);
+                    }
+
+                    await transactionsService.CreateEntity(transaction, dbTransaction);
+                    await dbTransaction.CommitAsync();
+                }
 
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
@@ -198,12 +210,27 @@ namespace Transactions.Api.Controllers.External
 
                 //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
-                var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
-                var bitResponse = processorResponse as BitCreateTransactionResponse;
+                BitCreateTransactionResponse bitResponse = null;
 
-                if (bitResponse is null)
+                try
                 {
-                    return BadRequest(new OperationResponse($"Bit error. Response is null ", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
+                    bitResponse = processorResponse as BitCreateTransactionResponse;
+
+                    if (bitResponse is null)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: "Bit response is empty");
+
+                        return BadRequest(new OperationResponse($"Bit error. Response is null ", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to initiate Transaction for Bit. TerminalID: {model.TerminalID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: "Failed to initiate Transaction for Bit");
+
+                    return Ok(new OperationResponse(ex.Message, StatusEnum.Error));
                 }
 
                 transaction.BitTransactionDetails.BitPaymentInitiationId = bitResponse.PaymentInitiationId;
@@ -703,6 +730,25 @@ namespace Transactions.Api.Controllers.External
                     _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionRejected, message);
                     return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID));
                 }
+            }
+        }
+
+        private async Task<OperationResponse> CheckDuplicateTransaction(Terminal terminalDetails, Guid? paymentIntentID, Guid? paymentRequestID, IDbContextTransaction dbContextTransaction)
+        {
+            if (!paymentIntentID.HasValue && !paymentRequestID.HasValue)
+            {
+                return null;
+            }
+
+            var res = await transactionsService.CheckDuplicateTransaction(terminalDetails.TerminalID, paymentIntentID, paymentRequestID, null, 0, null, dbContextTransaction, JDealTypeEnum.J4);
+
+            if (res)
+            {
+                return new OperationResponse(Transactions.Shared.Messages.DuplicateTransactionIsDetected, (Guid?)null, GetCorrelationID(), "DoubleTansactions", Transactions.Shared.Messages.DuplicateTransactionIsDetected);
+            }
+            else
+            {
+                return null;
             }
         }
     }

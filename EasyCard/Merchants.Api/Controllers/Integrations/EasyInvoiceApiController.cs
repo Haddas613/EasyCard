@@ -172,23 +172,23 @@ namespace Merchants.Api.Controllers.Integrations
 
             var updateUserResult = await eCInvoicing.UpdateCustomer(
                 new UpdateUserDetailsRequest()
-            {
-                Terminal = terminalSettings,
-                city = request.city,
-                country = request.country,
-                countryCode = request.countryCode,
-                email = request.email,
-                generalClientCode = request.generalClientCode,
-                hashExportConfiguration = request.hashExportConfiguration,
-                incomeCode = request.incomeCode,
-                name = request.name,
-                password = request.password,
-                phoneNumber = request.phoneNumber,
-                postalCode = request.postalCode,
-                street = request.street,
-                streetNumber = request.streetNumber,
-                taxId = request.taxId
-            }, GetCorrelationID());
+                {
+                    Terminal = terminalSettings,
+                    city = request.city,
+                    country = request.country,
+                    countryCode = request.countryCode,
+                    email = request.email,
+                    generalClientCode = request.generalClientCode,
+                    hashExportConfiguration = request.hashExportConfiguration,
+                    incomeCode = request.incomeCode,
+                    name = request.name,
+                    password = request.password,
+                    phoneNumber = request.phoneNumber,
+                    postalCode = request.postalCode,
+                    street = request.street,
+                    streetNumber = request.streetNumber,
+                    taxId = request.taxId
+                }, GetCorrelationID());
 
             var response = new OperationResponse(EasyInvoiceMessagesResource.CustomerUpdatedSuccessfully, StatusEnum.Success);
 
@@ -205,19 +205,19 @@ namespace Merchants.Api.Controllers.Integrations
             //terminalSettings.Password = request.Password;
             //terminalSettings.UserName = request.UserName;
             //easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
-           // await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
+            // await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
 
             //var generateCertificateResult = await eCInvoicing.GenerateCertificate(
-             //   terminalSettings,
-               // GetCorrelationID());
+            //   terminalSettings,
+            // GetCorrelationID());
 
-           // if (generateCertificateResult.Status != StatusEnum.Success)
-           // {
-           //     response.Status = StatusEnum.Error;
-           //     response.Message = generateCertificateResult.Message;
-           //
-           //     return BadRequest(response);
-           // }
+            // if (generateCertificateResult.Status != StatusEnum.Success)
+            // {
+            //     response.Status = StatusEnum.Error;
+            //     response.Message = generateCertificateResult.Message;
+            //
+            //     return BadRequest(response);
+            // }
 
             //terminalSettings.KeyStorePassword = generateCertificateResult.EntityReference;
 
@@ -359,84 +359,6 @@ namespace Merchants.Api.Controllers.Integrations
                     EndDate = request.EndAt.ToString("yyyy-MM-dd")
                 },
                 GetCorrelationID());
-            return Ok(getDocumentReportResult);
-            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
-
-            // if (response.Status != StatusEnum.Success)
-            // {
-            //     response.Status = StatusEnum.Error;
-            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
-            //
-            //     return BadRequest(response);
-            // }
-            //
-            // return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("get-document-tax-report")]
-        public async Task<Object> GetDocumentTaxReport(GetDocumentTaxReportRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
-
-            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getDocumentReportResult = await eCInvoicing.GetTaxReport(
-                new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
-                {
-                    Terminal = terminalSettings,
-                    StartDate = request.StartAt.ToString("yyyy-MM-dd"),
-                    EndDate = request.EndAt.ToString("yyyy-MM-dd")
-                },
-                GetCorrelationID());
-
-            //RestClient clientRestSharop;
-            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
-            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
-            return Ok(getDocumentReportResult);
-            // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
-
-            // if (response.Status != StatusEnum.Success)
-            // {
-            //     response.Status = StatusEnum.Error;
-            //     response.Message = EasyInvoiceMessagesResource.DocumentNumberGetFailed;
-            //
-            //     return BadRequest(response);
-            // }
-            //
-            // return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("get-document-hash-report")]
-        public async Task<Object> GetDocumentHashReport(GetDocumentTaxReportRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
-            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
-
-            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
-            var getDocumentReportResult = await eCInvoicing.GetHashReport(
-                new EasyInvoice.Models.ECInvoiceGetDocumentTaxReportRequest
-                {
-                    Terminal = terminalSettings,
-                    StartDate = request.StartAt.ToString("yyyy-MM-dd"),
-                    EndDate = request.EndAt.ToString("yyyy-MM-dd")
-                },
-                GetCorrelationID());
-
-            //RestClient clientRestSharop;
-            //var lk = clientRestSharop.DownloadData(getDocumentReportResult);
-            //var file =  File(getDocumentReportResult.ToString(), "application/zip", "taxReport.zip");
             return Ok(getDocumentReportResult);
             // var response = new OperationResponse(EasyInvoiceMessagesResource.DocumentNumberGetSuccessfully, StatusEnum.Success, getDocumentNumberResult.ToString());
 

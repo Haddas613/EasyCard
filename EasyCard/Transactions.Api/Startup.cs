@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AspNetCore.Authentication.ApiKey;
 using AutoMapper;
 using BasicServices;
+using BasicServices.BlobStorage;
 using BasicServices.KeyValueStorage;
 using Bit.Configuration;
 using Bit.Services;
@@ -319,6 +320,8 @@ namespace Transactions.Api
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
             });
 
+            
+
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
@@ -457,6 +460,15 @@ namespace Transactions.Api
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
             services.AddTransient<BillingController, BillingController>();
             services.AddTransient<Controllers.External.BitApiController, Controllers.External.BitApiController>();
+
+            services.AddSingleton<IBlobStorageService, BlobStorageService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, logger);
+
+                return blobStorageService;
+            });
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
