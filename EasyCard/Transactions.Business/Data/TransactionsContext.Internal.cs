@@ -324,6 +324,11 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
         public async Task<bool> CheckDuplicateTransaction(Guid? terminalID, Guid? paymentIntentID, Guid? paymentRequestID, DateTime? threshold, decimal amount, string cardNumber, IDbContextTransaction dbContextTransaction, JDealTypeEnum jDealType)
         {
+            if (!paymentIntentID.HasValue && !paymentRequestID.HasValue && (!threshold.HasValue || string.IsNullOrWhiteSpace(cardNumber)))
+            {
+                return false;
+            }
+
             var builder = new SqlBuilder();
 
             var query = @"select TOP (1) PaymentTransactionID from dbo.PaymentTransaction /**where**/";

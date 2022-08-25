@@ -210,12 +210,27 @@ namespace Transactions.Api.Controllers.External
 
                 //processorRequest.RedirectURL = $"{apiSettings.CheckoutPortalUrl}/bit";
 
-                var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
-                var bitResponse = processorResponse as BitCreateTransactionResponse;
+                BitCreateTransactionResponse bitResponse = null;
 
-                if (bitResponse is null)
+                try
                 {
-                    return BadRequest(new OperationResponse($"Bit error. Response is null ", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    var processorResponse = await bitProcessor.CreateTransaction(processorRequest);
+                    bitResponse = processorResponse as BitCreateTransactionResponse;
+
+                    if (bitResponse is null)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: "Bit response is empty");
+
+                        return BadRequest(new OperationResponse($"Bit error. Response is null ", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to initiate Transaction for Bit. TerminalID: {model.TerminalID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: "Failed to initiate Transaction for Bit");
+
+                    return Ok(new OperationResponse(ex.Message, StatusEnum.Error));
                 }
 
                 transaction.BitTransactionDetails.BitPaymentInitiationId = bitResponse.PaymentInitiationId;
