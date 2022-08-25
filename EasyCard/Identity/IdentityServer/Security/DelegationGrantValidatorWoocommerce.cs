@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace IdentityServer.Security
@@ -59,6 +60,8 @@ namespace IdentityServer.Security
             //    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
             //    return;
             //}
+
+            userToken = Regex.Replace(userToken, @"\p{C}+", string.Empty);
 
             try
             {

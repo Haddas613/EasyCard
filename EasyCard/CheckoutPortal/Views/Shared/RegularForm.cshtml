@@ -424,7 +424,6 @@
                             window.scrollTo(0, 0);
                             $('#threeDSCReqIframeContainer').slideFadeToggle();
                         } else {
-                            window.switchLoadingSpinner(false);
                             return $("#checkout-form").submit();
                         }
                     },
@@ -442,6 +441,7 @@
             }
 
             $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
                 e.preventDefault();
                 if (!$("#checkout-form").valid()) {
                     return;
@@ -476,6 +476,7 @@
                         else {
                             toastr["error"]('@(localizer.Get("ThreeDSError"))');
                             window.switchLoadingSpinner(false);
+                            document.getElementById('submitbtn').disabled = false;
                             return;
                         }
                     }
@@ -486,6 +487,7 @@
                         else {
                             toastr["error"](data.errorMessage);
                             window.switchLoadingSpinner(false);
+                            document.getElementById('submitbtn').disabled = false;
                             return;
                         }
                     }
@@ -507,6 +509,7 @@
         {
         <text>
             $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
                 e.preventDefault();
                 if (!$("#checkout-form").valid()) {
                     return;
@@ -531,6 +534,7 @@
         {
         <text>
             $("#submitbtn").on("click", function (e) {
+                document.getElementById('submitbtn').disabled = true;
                 e.preventDefault();
                 if (!$("#checkout-form").valid()) {
                     return;
@@ -542,7 +546,7 @@
         }
 
         const submit = function () {
-            document.getElementById('submitbtn').disabled = true;
+            
 
             $("#checkout-form").submit();
         }
