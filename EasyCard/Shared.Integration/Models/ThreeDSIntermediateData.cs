@@ -10,6 +10,8 @@ namespace Shared.Integration.Models
     {
         public string AuthenticationValue { get; set; }
 
+        public string DsTransID { get; set; }
+
         public string Eci { get; set; }
 
         public string Xid { get; set; }
@@ -26,11 +28,12 @@ namespace Shared.Integration.Models
         {
         }
 
-        public ThreeDSIntermediateData(string threeDSServerTransID, string authenticationValue, string eci, string xid, Guid? threeDSChallengeID)
+        public ThreeDSIntermediateData(string threeDSServerTransID, string authenticationValue, string eci, string dsTransID, string xid, Guid? threeDSChallengeID)
         {
             this.PartitionKey = partitionKey;
             this.ThreeDSServerTransID = threeDSServerTransID;
             this.AuthenticationValue = authenticationValue;
+            this.DsTransID = dsTransID;
             this.Eci = eci;
             this.Xid = xid;
             this.ThreeDSChallengeID = threeDSChallengeID;

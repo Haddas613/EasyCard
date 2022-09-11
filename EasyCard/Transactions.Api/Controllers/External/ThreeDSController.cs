@@ -209,7 +209,7 @@ namespace Transactions.Api.Controllers.External
 
                         reportEntity.TransStatus = "success";
 
-                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(res.ResponseData.ThreeDSServerTransID, res.ResponseData.AuthenticationResponse.AuthenticationValue, res.ResponseData.AuthenticationResponse.Eci, res.ResponseData.AuthenticationResponse.Xid, reportEntity.ThreeDSChallengeID));
+                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(res.ResponseData.ThreeDSServerTransID, res.ResponseData.AuthenticationResponse.AuthenticationValue, res.ResponseData.AuthenticationResponse.Eci, res.ResponseData.AuthenticationResponse.DsTransID, res.ResponseData.AuthenticationResponse.Xid, reportEntity.ThreeDSChallengeID));
                     }
                     else
                     {
@@ -259,7 +259,7 @@ namespace Transactions.Api.Controllers.External
                             await threeDSChallengeService.UpdateEntity(reportEntity);
                         }
 
-                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid, reportEntity?.ThreeDSChallengeID)
+                        await threeDSIntermediateStorage.StoreIntermediateData(new SharedIntegration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.ThreeDSServerTransID, authRes.Xid, reportEntity?.ThreeDSChallengeID)
                         {
                             TransStatus = authRes.TransStatus,
                             Request = res

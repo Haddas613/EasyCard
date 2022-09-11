@@ -102,7 +102,7 @@ namespace TestWebStore.Controllers
 
                     if (authRes != null)
                     {
-                        await threeDSIntermediateStorage.StoreIntermediateData(new Shared.Integration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.Xid, Guid.NewGuid())
+                        await threeDSIntermediateStorage.StoreIntermediateData(new Shared.Integration.Models.ThreeDSIntermediateData(authRes.ThreeDSServerTransID, authRes.AuthenticationValue, authRes.Eci, authRes.ThreeDSServerTransID, authRes.Xid, Guid.NewGuid())
                         {
                             TransStatus = authRes.TransStatus,
                             Request = res
