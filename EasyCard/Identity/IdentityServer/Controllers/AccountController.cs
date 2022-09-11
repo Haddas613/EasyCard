@@ -215,12 +215,12 @@ namespace IdentityServer.Controllers
 
                     if (context != null)
                     {
-                        if (await clientStore.IsPkceClientAsync(context.Client?.ClientId))
-                        {
-                            // if the client is PKCE then we assume it's native, so this change in how to
-                            // return the response is for better UX for the end user.
-                            return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-                        }
+                        //if (await clientStore.IsPkceClientAsync(context.Client?.ClientId))
+                        //{
+                        //    // if the client is PKCE then we assume it's native, so this change in how to
+                        //    // return the response is for better UX for the end user.
+                        //    return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                        //}
 
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         if (!string.IsNullOrWhiteSpace(model.ReturnUrl))

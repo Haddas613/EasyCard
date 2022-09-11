@@ -271,7 +271,7 @@ namespace Reporting.Api
 
             services.AddSingleton<IAppInsightReaderService, AppInsightReaderService>(serviceProvider =>
             {
-                var webApiClient = new WebApiClient();
+                var webApiClient = new WebApiClient(TimeSpan.FromSeconds(30));
                 return new AppInsightReaderService(appInsightsConfig, webApiClient);
             });
 
