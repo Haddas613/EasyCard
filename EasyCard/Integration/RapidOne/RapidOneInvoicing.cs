@@ -160,12 +160,20 @@ namespace RapidOne
             }
         }
 
-        public async Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings)
+        public async Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings, string language = null)
         {
             var terminal = invoiceingSettings as RapidOneTerminalSettings;
 
             RapidOneCreateDocumentResponse documentResponse = externalSystemData.ToObject<RapidOneCreateDocumentResponse>();
             NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, null, null);
+
+            if (language != null)
+            {
+                foreach(var doc in documentResponse.Documents)
+                {
+                    doc.Lang = language;
+                }
+            }
 
             try
             {

@@ -42,5 +42,7 @@ namespace RapidOne.Models
         public string IssuerDB { get; set; }
 
         public string DocNumber { get; set; }
+
+        public string Lang { get; set; }
     }
 }
