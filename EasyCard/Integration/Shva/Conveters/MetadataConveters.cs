@@ -150,6 +150,9 @@ namespace Shva.Conveters
                 case CardPresenceEnum.CardNotPresent:
                     return ShvaCardPresenceEnum.TelephoneDdeal;
 
+                case CardPresenceEnum.Internet:
+                    return ShvaCardPresenceEnum.InternetDeal;
+
                 default:
                     throw new NotSupportedException($"Given transaction type {cardPresence} is not supported by Shva");
             }

@@ -14,6 +14,7 @@ namespace Shva.Models
         /// <summary>
         /// Card not present
         /// </summary>
-        TelephoneDdeal = 50
+        TelephoneDdeal = 50,
+        InternetDeal = 52
     }
 }

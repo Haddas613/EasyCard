@@ -120,6 +120,7 @@ namespace Shva.Conveters
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
         {
             clsInput inputObj = new clsInput();
+            var cardPresence = req.CardPresence.GetShvaCardPresence();
 
             if (req.ThreeDSecure != null)
             {
@@ -127,12 +128,12 @@ namespace Shva.Conveters
                 inputObj.eci = req.ThreeDSecure.Eci.GetShvaEciBy3dsEci();
                 inputObj.cavvUcaf = req.ThreeDSecure.AuthenticationValue;
                 inputObj.addendum2 = req.ThreeDSecure.Eci.GetShvaAddendum2By3dsEci(req.ThreeDSecure.DsTransID);
+                cardPresence = ShvaCardPresenceEnum.InternetDeal;
             }
 
             InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
             int parameterJValue = (int)req.JDealType.GetParamJ5();
             var transactionType = req.SpecialTransactionType.GetShvaTransactionType();
-            var cardPresence = req.CardPresence.GetShvaCardPresence();
             var shvaExpDate = req.CreditCardToken.CardExpiration?.GetShvaExpDate();
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();

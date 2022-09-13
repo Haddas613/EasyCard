@@ -24,5 +24,6 @@ namespace Shared.Integration.Models
         /// </summary>
         [EnumMember(Value = "regular")]
         Regular = 1,
+        Internet = 2
     }
 }
