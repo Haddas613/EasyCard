@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Transactions.Api.Client;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
 using Z.EntityFramework.Plus;
@@ -20,6 +21,7 @@ namespace Transactions.Business.Services
         private readonly TransactionsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ClaimsPrincipal user;
+        
 
         public MasavFileService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
             : base(context)
@@ -80,6 +82,7 @@ namespace Transactions.Business.Services
         public async Task SetMasavFilePayed(long masavFileID, long masavFileRowID)
         {
             MasavFileRow row = GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
+           
             row.IsPayed = true;
             await UpdateMasavFileRow(row);
         }

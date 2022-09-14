@@ -39,16 +39,19 @@ namespace Transactions.Api.Controllers
         private readonly IMasavFileService masavFileService;
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
+        private readonly ITransactionsService transactionsService;
         private readonly IBlobStorageService masavFileSorageService;
         private readonly Shared.ApplicationSettings appSettings;
 
         public MasavFileController(
+            ITransactionsService transactionsService,
             ILogger<MasavFileController> logger,
             IMasavFileService masavFileService,
             IMapper mapper,
             ITerminalsService terminalsService,
             IOptions<Shared.ApplicationSettings> appSettings)
         {
+            this.transactionsService = transactionsService;
             this.logger = logger;
             this.masavFileService = masavFileService;
             this.mapper = mapper;
@@ -258,6 +261,10 @@ namespace Transactions.Api.Controllers
         {
             await masavFileService.SetMasavFilePayed(masavFileID,masavFileRowID);
 
+            MasavFileRow row = masavFileService.GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
+            var transaction = EnsureExists(
+              await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == (row.PaymentTransactionID));
+            await transactionsService.UpdateEntityWithStatus(transaction, Shared.Enums.TransactionStatusEnum.Completed);
             var response = new OperationResponse() { Message = "Masav file payed" };
 
             return Ok(response);
