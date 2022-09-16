@@ -40,6 +40,9 @@ namespace Transactions.Api.Models.Transactions
 
         public decimal TransactionAmount { get; set; }
 
+        public decimal InitialPaymentAmount { get; set; }
+        public decimal InstallmentPaymentAmount { get; set; }
+
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
