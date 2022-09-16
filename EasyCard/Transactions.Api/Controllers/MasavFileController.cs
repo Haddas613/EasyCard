@@ -255,7 +255,6 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
         }
 
-
         [HttpPost("setPayed/{masavFileID}/{masavFileRowID}")]
         public async Task<ActionResult<OperationResponse>> SetPayedSuccessfully(long masavFileID, long masavFileRowID)
         {
@@ -263,7 +262,7 @@ namespace Transactions.Api.Controllers
 
             MasavFileRow row = masavFileService.GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
             var transaction = EnsureExists(
-              await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == (row.PaymentTransactionID));
+              await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == row.PaymentTransactionID));
             await transactionsService.UpdateEntityWithStatus(transaction, Shared.Enums.TransactionStatusEnum.Completed);
             var response = new OperationResponse() { Message = "Masav file payed" };
 
