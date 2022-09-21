@@ -259,7 +259,7 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initial Payment Amount.
+        ///   Looks up a localized string similar to Amount of first payment.
         /// </summary>
         public static string InitialPaymentAmount {
             get {
