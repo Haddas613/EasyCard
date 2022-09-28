@@ -82,11 +82,10 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = FilterByQuickStatus(src, filter.QuickStatusFilter.Value);
             }
-            else if (filter.Statuses != null && filter.Statuses.Count > 0)
-            {
-                //TODO: use OR builder (invalid cast)
-                src = src.Where(t => filter.Statuses.Contains(t.Status));
-            }
+            //else if (filter.Status != null)
+            //{
+              //  src = src.Where(t => t.Status == filter.Status);
+            //}
 
             if (filter.JDealType != null)
             {

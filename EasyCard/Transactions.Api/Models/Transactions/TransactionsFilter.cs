@@ -39,7 +39,7 @@ namespace Transactions.Api.Models.Transactions
 
         public QuickStatusFilterTypeEnum? QuickStatusFilter { get; set; }
 
-        public List<TransactionStatusEnum> Statuses { get; set; }
+        public TransactionStatusEnum? Status { get; set; }
 
         public TransactionTypeEnum? TransactionType { get; set; }
 
