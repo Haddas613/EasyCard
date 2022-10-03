@@ -82,10 +82,10 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = FilterByQuickStatus(src, filter.QuickStatusFilter.Value);
             }
-            else if (filter.Statuses != null && filter.Statuses.Count > 0)
+            else if (filter.Status != null)
             {
                 //TODO: use OR builder (invalid cast)
-                src = src.Where(t => filter.Statuses.Contains(t.Status));
+                src = src.Where(t => t.Status == filter.Status);
             }
 
             if (filter.JDealType != null)
@@ -106,6 +106,11 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.CardPresence != null)
             {
                 src = src.Where(t => t.CardPresence == filter.CardPresence);
+            }
+
+            if (filter.Solek != null)
+            {
+                src = src.Where(t => t.ShvaTransactionDetails.Solek == filter.Solek);
             }
 
             if (!string.IsNullOrEmpty(filter.ShvaShovarNumber))

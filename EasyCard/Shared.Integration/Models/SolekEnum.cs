@@ -19,8 +19,8 @@ namespace Shared.Integration.Models
         [EnumMember(Value = "AMEX")]
         AMEX = 4,
 
-        [EnumMember(Value = "DISCOVER")]
-        DISCOVER,
+        //[EnumMember(Value = "DISCOVER")]
+        //DISCOVER,
 
         [EnumMember(Value = "JCB")]
         JCB = 5,

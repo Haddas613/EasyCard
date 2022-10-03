@@ -807,6 +807,67 @@
               Looks up a localized string similar to Regular.
             </summary>
         </member>
+        <member name="T:Shared.Integration.Resources.CardSolekResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.AMEX">
+            <summary>
+              Looks up a localized string similar to Amex.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.DINERS_CLUB">
+            <summary>
+              Looks up a localized string similar to Diners Club.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.ISRACARD">
+            <summary>
+              Looks up a localized string similar to Isracard.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.JCB">
+            <summary>
+              Looks up a localized string similar to Jcb.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.LEUMI_CARD">
+            <summary>
+              Looks up a localized string similar to Leumi Card.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.MASTERCARD">
+            <summary>
+              Looks up a localized string similar to Mastercard.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.OTHER">
+            <summary>
+              Looks up a localized string similar to Other.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.UNKNOWN">
+            <summary>
+              Looks up a localized string similar to Unknown.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.CardSolekResource.VISA">
+            <summary>
+              Looks up a localized string similar to Visa.
+            </summary>
+        </member>
         <member name="T:Shared.Integration.Resources.FilterEnumsResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

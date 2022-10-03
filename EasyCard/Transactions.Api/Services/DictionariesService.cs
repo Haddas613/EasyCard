@@ -60,7 +60,7 @@ namespace Transactions.Api.Services
             var filterDateEnumType = typeof(DateFilterTypeEnum);
             var invoiceTypeEnum = typeof(InvoiceTypeEnum);
             var invoiceStatusEnum = typeof(InvoiceStatusEnum);
-
+            var solekEnum = typeof(SolekEnum);
             var repeatPeriodTypeEnumType = typeof(RepeatPeriodTypeEnum);
             var startAtTypeEnumType = typeof(StartAtTypeEnum);
             var endAtTypeEnumType = typeof(EndAtTypeEnum);
@@ -119,6 +119,10 @@ namespace Transactions.Api.Services
             var invoiceStatuses = Enum.GetValues(invoiceStatusEnum).Cast<InvoiceStatusEnum>()
                 .ToDictionary(m => invoiceStatusEnum.GetDataContractAttrForEnum(m.ToString()), m => InvoiceEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var solekEnums = Enum.GetValues(solekEnum).Cast<SolekEnum>()
+               .ToDictionary(m => solekEnum.GetDataContractAttrForEnum(m.ToString()), m => CardSolekResource.ResourceManager.GetString(m.ToString(), culture));
+
+
             var repeatPeriodTypes = Enum.GetValues(repeatPeriodTypeEnumType).Cast<RepeatPeriodTypeEnum>()
                 .ToDictionary(m => repeatPeriodTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
@@ -171,6 +175,7 @@ namespace Transactions.Api.Services
             response.StartAtTypeEnum = startAtTypes;
             response.EndAtTypeEnum = endAtTypes;
             response.InvoiceStatusEnum = invoiceStatuses;
+            response.SolekEnum = solekEnums;
             response.PaymentRequestStatusEnum = prStatusTypes;
             response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
             response.PaymentTypeEnum = paymentTypes;
