@@ -38,6 +38,7 @@ using Merchants.Business.Extensions;
 using System.Web;
 using SharedIntegration = Shared.Integration;
 using Transactions.Api.Validation;
+using Newtonsoft.Json.Linq;
 
 namespace Transactions.Api.Controllers
 {
@@ -213,8 +214,15 @@ namespace Transactions.Api.Controllers
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
 
+            if (!userIsTerminal && model.TerminalID == null)
+            {
+                return BadRequest(new OperationResponse("TerminalID required", StatusEnum.Error, correlationId: httpContextAccessor.TraceIdentifier));
+            }
+
+            var terminalID = model.TerminalID ?? User.GetTerminalID()?.FirstOrDefault();
+
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID.Value));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID.GetValueOrDefault()));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -238,9 +246,13 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID), "Consumer") : null;
 
+            // TODO: this should be changed
             model.UpdatePaymentRequest(terminal);
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
+            // NOTE: this is security assignment
+            newPaymentRequest.TerminalID = terminal.TerminalID;
 
             newPaymentRequest.Calculate();
 
@@ -283,12 +295,13 @@ namespace Transactions.Api.Controllers
 
             await paymentRequestsService.CreateEntity(newPaymentRequest);
 
-            var response = CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
+            var url = GetPaymentRequestSMSUrl(newPaymentRequest, terminal.CheckoutSettings.DefaultLanguage);
 
-            //if (terminal.SharedApiKey == null)
-            //{
-            //    return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
-            //}
+            newPaymentRequest.PaymentRequestUrl = url;
+
+            var respObject = new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID) { AdditionalData = JObject.FromObject(new { url }) };
+
+            var response = CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, respObject);
 
             if (newPaymentRequest.DealDetails.ConsumerEmail != null)
             {
@@ -300,8 +313,6 @@ namespace Transactions.Api.Controllers
             {
                 await SendPaymentRequestSMS(newPaymentRequest, terminal);
             }
-
-            newPaymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(newPaymentRequest, terminal.CheckoutSettings.DefaultLanguage);
 
             await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
 

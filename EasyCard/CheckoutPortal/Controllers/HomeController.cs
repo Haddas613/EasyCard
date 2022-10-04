@@ -504,7 +504,7 @@ namespace CheckoutPortal.Controllers
                     {
                         foreach (var err in result.Errors)
                         {
-                            ModelState.AddModelError(err.Code, err.Description);
+                            ModelState.AddModelError(err.Code, err.Description ?? "Unknown Error");
                         }
                     }
 
