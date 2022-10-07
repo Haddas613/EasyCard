@@ -51,6 +51,7 @@ namespace Transactions.Api.Controllers.Reporting
     [Route("api/reporting/transmission")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class TransmissionReportController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;

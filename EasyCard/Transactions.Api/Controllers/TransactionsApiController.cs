@@ -206,7 +206,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         [Route("{transactionID}")]
         [ProducesResponseType(typeof(TransactionResponse), StatusCodes.Status200OK)]
-        [SwaggerResponseExample(201, typeof(GetTransactionResponseExample))]
+        [SwaggerResponseExample(200, typeof(GetTransactionResponseExample))]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {
             var tr = EnsureExists(

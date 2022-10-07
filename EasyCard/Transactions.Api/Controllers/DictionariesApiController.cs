@@ -17,6 +17,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Route("api/dictionaries")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class DictionariesApiController : ApiControllerBase
     {
         private readonly IMapper mapper;

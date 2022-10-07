@@ -26,6 +26,7 @@ namespace Transactions.Api.Controllers
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class FutureBillingsController : ApiControllerBase
     {
         private readonly IFutureBillingsService futureBillingsService;

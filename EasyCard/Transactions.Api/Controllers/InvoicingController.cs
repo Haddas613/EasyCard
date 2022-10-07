@@ -46,6 +46,7 @@ namespace Transactions.Api.Controllers
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class InvoicingController : ApiControllerBase
     {
         private readonly IInvoiceService invoiceService;

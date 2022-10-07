@@ -378,7 +378,7 @@ namespace Transactions.Api
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
 
                 // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
-                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+                //c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
 
                 // add Security information to each operation for OAuth2
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
@@ -442,6 +442,8 @@ namespace Transactions.Api
                     o.IncludeXmlCommentsFrom(xmlPath2);
                     o.IncludeXmlCommentsFrom(xmlPath3);
                 });
+
+                //c.CustomSchemaIds(i => i.FriendlyId(true));
             });
 
             // DI

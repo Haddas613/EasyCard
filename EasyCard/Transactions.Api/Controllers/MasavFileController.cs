@@ -33,6 +33,7 @@ namespace Transactions.Api.Controllers
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class MasavFileController : ApiControllerBase
     {
         private readonly ILogger logger;

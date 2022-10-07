@@ -1,0 +1,5070 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "EasyCard Transactions API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/billing": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Get billing deals list using filter",
+        "parameters": [
+          {
+            "name": "QuickStatus",
+            "in": "query",
+            "description": "\r\n\r\nAll\r\n\r\nCompleted\r\n\r\nInactive\r\n\r\nFailed\r\n\r\nCardExpired\r\n\r\nTriggeredTomorrow\r\n\r\nPaused\r\n\r\nExpiredNextMonth\r\n\r\nManualTrigger\r\n\r\nInProgress",
+            "schema": {
+              "$ref": "#/components/schemas/BillingsQuickStatusFilterEnum"
+            }
+          },
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "MerchantID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "BillingDealID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyEnum"
+            }
+          },
+          {
+            "name": "QuickDateFilter",
+            "in": "query",
+            "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
+            "schema": {
+              "$ref": "#/components/schemas/QuickDateFilterTypeEnum"
+            }
+          },
+          {
+            "name": "FilterDateByNextScheduledTransaction",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "DateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "DateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "CreditCardTokenID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "CardNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardOwnerNationalID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ConsumerName",
+            "in": "query",
+            "description": "Performs search by both consumer name and card owner name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ConsumerEmail",
+            "in": "query",
+            "description": "End-customer Email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CreditCardVendor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Actual",
+            "in": "query",
+            "description": "Billing deals that can be manually triggered",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Finished",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Paused",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "HasError",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "PaymentType",
+            "in": "query",
+            "description": "\r\n\r\ncard\r\n\r\ncheque\r\n\r\ncash\r\n\r\nbank",
+            "schema": {
+              "$ref": "#/components/schemas/PaymentTypeEnum"
+            }
+          },
+          {
+            "name": "DealReference",
+            "in": "query",
+            "description": "Merchant deal reference",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "InvoiceOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OnlyActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "InProgress",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "CreditCardExpired",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ConsumerExternalReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDealType",
+            "in": "query",
+            "description": "\r\n\r\nCreditCard\r\n\r\nInvoiceOnly\r\n\r\nBank",
+            "schema": {
+              "$ref": "#/components/schemas/BillingDealTypeEnum"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesAmountResponse`1_BillingDealSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Create billing deal",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingDealRequest"
+              },
+              "example": {"currency":"USD","creditCardToken":"b9c51ea8-8ac6-4f18-aef9-47f693978c81","transactionAmount":1200.0,"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T13:32:46.9800363+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"paymentType":"card","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"81f5c6a9-8190-474c-a264-6bb6f27c5818"}}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Billing Deal Created","status":"success","entityUID":"2f14eaf0-dad8-4c5c-bbf0-5ddbef285126"}
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Entity Not Found","status":"error","correlationId":"62d096c8-bfab-4ea5-8980-a50a5d74cbb8","entityType":"Consumer"}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"b8a8e255-475f-4ecf-a0f3-1c27d6f46f30","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/billing/{BillingDealID}": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Get billing deal details",
+        "parameters": [
+          {
+            "name": "billingDealID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingDealResponse"
+                },
+                "example": {"billingDealID":"00000000-0000-0000-0000-000000000000","billingDealTimestamp":null,"initialTransactionID":null,"terminalID":null,"terminalName":null,"merchantID":null,"currency":"USD","transactionAmount":1200.0,"amount":0.0,"totalAmount":0.0,"currentDeal":null,"currentTransactionTimestamp":null,"currentTransactionID":null,"nextScheduledTransaction":null,"creditCardDetails":null,"bankDetails":null,"creditCardToken":"b2313efc-7238-4eb8-878d-ff5ae35540d3","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"566c33fe-a4bd-4332-9d73-1b2a4b453e82"},"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T13:32:46.9982522+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"updatedDate":null,"updateTimestamp":null,"operationDoneBy":null,"operationDoneByID":null,"correlationId":null,"sourceIP":null,"active":false,"cardExpired":null,"tokenNotAvailable":null,"invoiceDetails":null,"issueInvoice":false,"invoiceOnly":false,"vatRate":0.0,"vatTotal":0.0,"netTotal":0.0,"pausedFrom":null,"pausedTo":null,"paused":false,"paymentType":"card","lastError":null,"lastErrorCorrelationID":null,"paymentDetails":null,"failedAttemptsCount":null,"expirationEmailSent":null,"tokenUpdated":null,"tokenCreated":null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Update billing deal",
+        "parameters": [
+          {
+            "name": "billingDealID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingDealUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3f8181c9-0148-4b2a-aa6c-aa7c46ad9072","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/billing/{BillingDealID}/change-token/{tokenID}": {
+      "patch": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Update credit card token for billing deal",
+        "parameters": [
+          {
+            "name": "billingDealID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tokenID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"99cecf7f-b9cd-4688-8f25-2a2703990f9f","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/cardtokens": {
+      "get": {
+        "tags": [
+          "CardToken"
+        ],
+        "summary": "Get tokens by filters",
+        "parameters": [
+          {
+            "name": "CreditCardTokenID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "CardNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardOwnerNationalID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardOwnerName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "MerchantID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConsumerEmail",
+            "in": "query",
+            "description": "End-customer Email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesResponse`1_CreditCardTokenSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/cardtokens/{key}": {
+      "delete": {
+        "tags": [
+          "CardToken"
+        ],
+        "summary": "Delete credit card token",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"231d4392-50f6-422e-a3ae-68d11834a40e","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/paymentIntent/{paymentIntentID}": {
+      "get": {
+        "tags": [
+          "PaymentIntent"
+        ],
+        "summary": "Get payment intent details",
+        "parameters": [
+          {
+            "name": "paymentIntentID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "PaymentIntent"
+        ],
+        "summary": "Delete payment intent",
+        "parameters": [
+          {
+            "name": "paymentIntentID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3deac440-8c72-443b-ad79-1eb068160ff0","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/paymentIntent": {
+      "post": {
+        "tags": [
+          "PaymentIntent"
+        ],
+        "summary": "Create payment link to Checkout Page",
+        "requestBody": {
+          "description": "Payment parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequestCreate"
+              },
+              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"8973f7c7-a661-4f5e-95b8-5193784a11e8"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Payment Request Created","status":"success","entityUID":"0368a926-1e8e-41be-921d-ff2d4df85d6a","additionalData":{"url":"https://checkout.e-c.co.il/i?r=4xgxjJrpKhOgdJa01YhT9fMy7AHdUi1XmWralF9lbbnB0nTGB1vw%3d%3d"}}
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Entity Not Found","status":"error","correlationId":"60ff26b7-4860-4da2-8af6-c823af787a88","entityType":"Consumer"}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"c1e58258-a822-45b3-9a05-b00a2be37c52","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/paymentRequests": {
+      "get": {
+        "tags": [
+          "PaymentRequests"
+        ],
+        "summary": "Get payment requests by filters",
+        "parameters": [
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PaymentRequestID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyEnum"
+            }
+          },
+          {
+            "name": "QuickDateFilter",
+            "in": "query",
+            "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
+            "schema": {
+              "$ref": "#/components/schemas/QuickDateFilterTypeEnum"
+            }
+          },
+          {
+            "name": "DateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "DateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "description": "\r\n\r\ninitial\r\n\r\nsending\r\n\r\nsent\r\n\r\nviewed\r\n\r\npayed\r\n\r\npaymentFailed\r\n\r\nrejected\r\n\r\ncanceled\r\n\r\nsendingFailed",
+            "schema": {
+              "$ref": "#/components/schemas/PaymentRequestStatusEnum"
+            }
+          },
+          {
+            "name": "QuickStatus",
+            "in": "query",
+            "description": "\r\n\r\npending\r\n\r\ncompleted\r\n\r\nfailed\r\n\r\ncanceled\r\n\r\noverdue\r\n\r\nviewed",
+            "schema": {
+              "$ref": "#/components/schemas/PayReqQuickStatusFilterTypeEnum"
+            }
+          },
+          {
+            "name": "PaymentRequestAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConsumerExternalReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesAmountResponse`1_PaymentRequestSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "PaymentRequests"
+        ],
+        "summary": "Create payment request",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequestCreate"
+              },
+              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"d46d55ba-351d-4696-98f8-fee63d91561f"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3f98b26a-6b81-4de3-8e3f-e975ea053ef4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/paymentRequests/{paymentRequestID}": {
+      "get": {
+        "tags": [
+          "PaymentRequests"
+        ],
+        "summary": "Get payment request details by ID",
+        "parameters": [
+          {
+            "name": "paymentRequestID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "PaymentRequests"
+        ],
+        "summary": "Cancel payment request",
+        "parameters": [
+          {
+            "name": "paymentRequestID",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"af5daa1a-6b1f-48c3-aa8b-04413c43e0bf","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/{transactionID}": {
+      "get": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Get payment transaction details",
+        "parameters": [
+          {
+            "name": "transactionID",
+            "in": "path",
+            "description": "Payment transaction UUId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                },
+                "example": {"paymentTransactionID":"80c5a1e0-b9de-4628-8dcf-66620b0c711f","transactionDate":"2022-10-07T00:00:00","transactionTimestamp":"2022-10-07T10:32:47.0958817Z","status":"awaitingForTransmission","paymentTypeEnum":"card","quickStatus":0,"transactionType":"installments","specialTransactionType":"regularDeal","jDealType":"J4","currency":"USD","cardPresence":"cardNotPresent","numberOfPayments":6,"transactionAmount":1200.0,"amount":0.0,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0,"creditCardDetails":{"cardNumber":"123456****1234","cardExpiration":"12/22","cardBrand":"VISA","cardOwnerName":"John Smith","cardOwnerNationalID":"1234567"},"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"7174a078-b751-4c42-b253-af0e5217ef6f"},"shvaTransactionDetails":{"shvaShovarNumber":"123456","shvaDealID":"12345678901234567890"},"vatRate":0.17,"vatTotal":174.36,"netTotal":1025.64,"correlationId":"e12763fe-de30-4f30-bfe1-edc44163be3d","invoiceID":"2d96449f-b281-4a85-8e5d-2eae9c3839eb","issueInvoice":true,"documentOrigin":"checkout","paymentRequestID":"5a0703d1-2844-492c-aa1c-37d272bce3ae","extension":{"customPropertyInMySystem":"MyCustomValue"},"allowTransmission":false,"allowTransmissionCancellation":true,"allowRefund":false,"allowInvoiceCreation":false}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions": {
+      "get": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Get payment transactions list using filter",
+        "parameters": [
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "MerchantID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PaymentTransactionID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PaymentTransactionRequestID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PaymentTransactionIntentID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "AmountFrom",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "AmountTo",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyEnum"
+            }
+          },
+          {
+            "name": "QuickDateFilter",
+            "in": "query",
+            "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
+            "schema": {
+              "$ref": "#/components/schemas/QuickDateFilterTypeEnum"
+            }
+          },
+          {
+            "name": "TransmissionQuickDateFilter",
+            "in": "query",
+            "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
+            "schema": {
+              "$ref": "#/components/schemas/QuickDateFilterTypeEnum"
+            }
+          },
+          {
+            "name": "QuickStatusFilter",
+            "in": "query",
+            "description": "\r\n\r\nPending\r\n\r\nCompleted\r\n\r\nFailed\r\n\r\nCanceled\r\n\r\nAwaitingForTransmission\r\n\r\nChargeback",
+            "schema": {
+              "$ref": "#/components/schemas/QuickStatusFilterTypeEnum"
+            }
+          },
+          {
+            "name": "Statuses",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TransactionStatusEnum"
+              }
+            }
+          },
+          {
+            "name": "TransactionType",
+            "in": "query",
+            "description": "\r\n\r\nregularDeal (Simple deal type)\r\n\r\ninstallments (Deal to pay by parts)\r\n\r\ncredit (Credit deal)\r\n\r\nimmediate (Credit deal)",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionTypeEnum"
+            }
+          },
+          {
+            "name": "JDealType",
+            "in": "query",
+            "description": "\r\n\r\nJ4 (Regular deal)\r\n\r\nJ2 (Check)\r\n\r\nJ5 (Block card)",
+            "schema": {
+              "$ref": "#/components/schemas/JDealTypeEnum"
+            }
+          },
+          {
+            "name": "CardPresence",
+            "in": "query",
+            "description": "\r\n\r\ncardNotPresent\r\n\r\nregular\r\n\r\nInternet",
+            "schema": {
+              "$ref": "#/components/schemas/CardPresenceEnum"
+            }
+          },
+          {
+            "name": "ShvaShovarNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ShvaTransactionID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ClearingHouseTransactionID",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "DateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "DateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "CreditCardTokenID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "CardNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardOwnerNationalID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardOwnerName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ConsumerEmail",
+            "in": "query",
+            "description": "End-customer Email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DealReference",
+            "in": "query",
+            "description": "Merchant deal reference",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DealDescription",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Solek",
+            "in": "query",
+            "description": "\r\n\r\nUNKNOWN\r\n\r\nISRACARD\r\n\r\nVISA\r\n\r\nDINERS_CLUB\r\n\r\nAMEX\r\n\r\nJCB\r\n\r\nDISCOVER\r\n\r\nLEUMI_CARD\r\n\r\nOTHER\r\n\r\nMASTERCARD",
+            "schema": {
+              "$ref": "#/components/schemas/SolekEnum"
+            }
+          },
+          {
+            "name": "CreditCardVendor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDealID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "SpecialTransactionType",
+            "in": "query",
+            "description": "\r\n\r\nregularDeal\r\n\r\ninitialDeal\r\n\r\nrefund",
+            "schema": {
+              "$ref": "#/components/schemas/SpecialTransactionTypeEnum"
+            }
+          },
+          {
+            "name": "NotTransmitted",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "TerminalTemplateID",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "FinalizationStatus",
+            "in": "query",
+            "description": "\r\n\r\ninitial\r\n\r\nfailedToCancelByAggregator\r\n\r\ncanceledByAggregator",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionFinalizationStatusEnum"
+            }
+          },
+          {
+            "name": "DocumentOrigin",
+            "in": "query",
+            "description": "\r\n\r\nUI (Document created manually by merchant user using Merchant's UI)\r\n\r\nAPI (Document created via API)\r\n\r\ncheckout (Document created by consumer using Checkout Page)\r\n\r\nbilling (Document generated based on billing schedule)\r\n\r\ndevice (Transaction created using pinpad device (or other device))\r\n\r\npaymentRequest (Document created by consumer using Checkout Page with a payment link)\r\n\r\nbit (Document created by consumer using Bit)",
+            "schema": {
+              "$ref": "#/components/schemas/DocumentOriginEnum"
+            }
+          },
+          {
+            "name": "HasInvoice",
+            "in": "query",
+            "description": "\r\n\r\nAll\r\n\r\nYes\r\n\r\nNo",
+            "schema": {
+              "$ref": "#/components/schemas/PropertyPresenceEnum"
+            }
+          },
+          {
+            "name": "IsPaymentRequest",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "PaymentType",
+            "in": "query",
+            "description": "\r\n\r\ncard\r\n\r\ncheque\r\n\r\ncash\r\n\r\nbank",
+            "schema": {
+              "$ref": "#/components/schemas/PaymentTypeEnum"
+            }
+          },
+          {
+            "name": "ShvaDealIDLastDigits",
+            "in": "query",
+            "schema": {
+              "maxLength": 5,
+              "minLength": 5,
+              "type": "string"
+            }
+          },
+          {
+            "name": "PaymentTransactionIDShort",
+            "in": "query",
+            "schema": {
+              "maxLength": 8,
+              "minLength": 8,
+              "type": "string"
+            }
+          },
+          {
+            "name": "HasMasavFile",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ConsumerExternalReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "InitialTransactionID",
+            "in": "query",
+            "description": "Reference to initial transaction",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesAmountResponse`1_TransactionSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/create": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Create the charge based on credit card or previously stored credit card token (J4 deal)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionRequest"
+              },
+              "example": {"terminalID":"6294ac06-5a08-43de-b52a-c61ae21e656f","transactionType":"regularDeal","currency":"USD","paymentTypeEnum":"card","cardPresence":"cardNotPresent","creditCardSecureDetails":{"cvv":"123","cardNumber":"2673466233769269","cardExpiration":"08/21","cardOwnerName":"John Smith","cardOwnerNationalID":"5674639482"},"transactionAmount":123.45,"userAmount":false,"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765"}}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"6b31219e-8d0a-447a-965e-947fa97fc1a4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/blocking": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Blocking funds on credit card (J5 deal)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockCreditCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"6ebf55a8-55c6-4472-a4a1-131577b90f54","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/selectJ5/{transactionID}": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Implement J5 deal",
+        "parameters": [
+          {
+            "name": "transactionID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"dcef7ca4-900a-49de-9573-f231602b271c","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/checking": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Check if credit card is valid",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckCreditCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3099cc0e-fdaf-45f4-a908-04626d09f6d2","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/refund": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Refund request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"71502346-9277-4bc6-a66f-1f61ba2caf02","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin",
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/transactions/chargeback": {
+      "post": {
+        "tags": [
+          "TransactionsApi"
+        ],
+        "summary": "Refund or chargeback of and existing transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChargebackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                },
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3b306b2f-91e6-4f3b-9f20-4e82bd3c79ef","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin",
+              "terminal_or_manager_or_admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/webhooks": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get executed webhooks history",
+        "parameters": [
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesResponse`1_ExecutedWebhookSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend_or_admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "house": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "apartment": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BankDetails": {
+        "required": [
+          "bank",
+          "bankAccount",
+          "bankBranch"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "bank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankBranch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankAccount": {
+            "maxLength": 13,
+            "minLength": 5,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "description": "For billing deal only. For invoice and payment transaction use <see cref=\"T:Shared.Integration.Models.PaymentDetails.BankTransferDetails\"></see>"
+      },
+      "BankTransferDetails": {
+        "required": [
+          "bank",
+          "bankAccount",
+          "bankBranch"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "bank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankBranch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankAccount": {
+            "maxLength": 13,
+            "minLength": 5,
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingDealRequest": {
+        "required": [
+          "billingSchedule"
+        ],
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "format": "uuid",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Transaction amount",
+            "format": "currency"
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netTotal": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "billingSchedule": {
+            "$ref": "#/components/schemas/BillingSchedule"
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document",
+            "nullable": true
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingDealResponse": {
+        "type": "object",
+        "properties": {
+          "billingDealID": {
+            "type": "string",
+            "description": "Primary transaction reference",
+            "format": "uuid"
+          },
+          "billingDealTimestamp": {
+            "type": "string",
+            "description": "Date-time when deal created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "initialTransactionID": {
+            "type": "string",
+            "description": "Reference to initial transaction",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "Terminal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalName": {
+            "type": "string",
+            "description": "EasyCard terminal name",
+            "nullable": true
+          },
+          "merchantID": {
+            "type": "string",
+            "description": "Merchant",
+            "format": "uuid",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "transactionAmount": {
+            "type": "number",
+            "description": "This transaction amount",
+            "format": "double"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "TotalAmount = TransactionAmount * NumberOfPayments",
+            "format": "double"
+          },
+          "currentDeal": {
+            "type": "integer",
+            "description": "Current deal (billing)",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentTransactionTimestamp": {
+            "type": "string",
+            "description": "Date-time when last created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "currentTransactionID": {
+            "type": "string",
+            "description": "Reference to last deal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "nextScheduledTransaction": {
+            "type": "string",
+            "description": "Date-time when next transaction should be generated",
+            "format": "date-time",
+            "nullable": true
+          },
+          "creditCardDetails": {
+            "$ref": "#/components/schemas/CreditCardDetails"
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token",
+            "format": "uuid",
+            "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "billingSchedule": {
+            "$ref": "#/components/schemas/BillingSchedule"
+          },
+          "updatedDate": {
+            "type": "string",
+            "description": "Date-time when transaction status updated",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "description": "Concurrency key",
+            "format": "byte",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "operationDoneByID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceIP": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "cardExpired": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "tokenNotAvailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document for transaction"
+          },
+          "invoiceOnly": {
+            "type": "boolean"
+          },
+          "vatRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "netTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "pausedFrom": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "pausedTo": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "lastError": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastErrorCorrelationID": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentDetails"
+            },
+            "nullable": true
+          },
+          "failedAttemptsCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "expirationEmailSent": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tokenUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tokenCreated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingDealSummary": {
+        "type": "object",
+        "properties": {
+          "billingDealID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "terminalName": {
+            "type": "string",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transactionAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "billingDealTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "nextScheduledTransaction": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "currentTransactionTimestamp": {
+            "type": "string",
+            "description": "Date-time when last created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "consumerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingSchedule": {
+            "$ref": "#/components/schemas/BillingSchedule"
+          },
+          "cardNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardExpired": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "currentDeal": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pausedFrom": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "pausedTo": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "invoiceOnly": {
+            "type": "boolean"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token",
+            "format": "uuid",
+            "nullable": true
+          },
+          "consumerExternalReference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingDealTypeEnum": {
+        "enum": [
+          "CreditCard",
+          "InvoiceOnly",
+          "Bank"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nCreditCard\r\n\r\nInvoiceOnly\r\n\r\nBank",
+        "format": "int32",
+        "x-enumNames": [
+          "CreditCard",
+          "InvoiceOnly",
+          "Bank"
+        ]
+      },
+      "BillingDealUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "format": "uuid",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Transaction amount",
+            "format": "currency"
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netTotal": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "billingSchedule": {
+            "$ref": "#/components/schemas/BillingSchedule"
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingSchedule": {
+        "type": "object",
+        "properties": {
+          "repeatPeriodType": {
+            "$ref": "#/components/schemas/RepeatPeriodTypeEnum"
+          },
+          "startAtType": {
+            "$ref": "#/components/schemas/StartAtTypeEnum"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endAtType": {
+            "$ref": "#/components/schemas/EndAtTypeEnum"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endAtNumberOfPayments": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingsQuickStatusFilterEnum": {
+        "enum": [
+          "All",
+          "Completed",
+          "Inactive",
+          "Failed",
+          "CardExpired",
+          "TriggeredTomorrow",
+          "Paused",
+          "ExpiredNextMonth",
+          "ManualTrigger",
+          "InProgress"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nAll\r\n\r\nCompleted\r\n\r\nInactive\r\n\r\nFailed\r\n\r\nCardExpired\r\n\r\nTriggeredTomorrow\r\n\r\nPaused\r\n\r\nExpiredNextMonth\r\n\r\nManualTrigger\r\n\r\nInProgress",
+        "format": "int32",
+        "x-enumNames": [
+          "All",
+          "Completed",
+          "Inactive",
+          "Failed",
+          "CardExpired",
+          "TriggeredTomorrow",
+          "Paused",
+          "ExpiredNextMonth",
+          "ManualTrigger",
+          "InProgress"
+        ]
+      },
+      "BlockCreditCardRequest": {
+        "required": [
+          "terminalID",
+          "transactionAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "creditCardSecureDetails": {
+            "$ref": "#/components/schemas/CreditCardSecureDetails"
+          },
+          "creditCardToken": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Transaction amount",
+            "format": "currency"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Blocking funds on credit card"
+      },
+      "CardExpiration": {
+        "required": [
+          "month",
+          "year"
+        ],
+        "type": "object",
+        "properties": {
+          "year": {
+            "maximum": 90,
+            "minimum": 20,
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "maximum": 12,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "expired": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CardPresenceEnum": {
+        "enum": [
+          "cardNotPresent",
+          "regular",
+          "Internet"
+        ],
+        "type": "integer",
+        "description": "Is the card physically scanned\r\n\r\ncardNotPresent\r\n\r\nregular\r\n\r\nInternet",
+        "format": "int32",
+        "x-enumNames": [
+          "CardNotPresent",
+          "Regular",
+          "Internet"
+        ],
+        "x-enumDescriptions": [
+          "Telephone deal",
+          "Magnetic"
+        ]
+      },
+      "ChargebackRequest": {
+        "required": [
+          "existingPaymentTransactionID",
+          "refundAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "existingPaymentTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "refundAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckCreditCardRequest": {
+        "required": [
+          "terminalID"
+        ],
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid"
+          },
+          "creditCardSecureDetails": {
+            "$ref": "#/components/schemas/CreditCardSecureDetails"
+          },
+          "creditCardToken": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Check if credit card is valid"
+      },
+      "CreateTransactionRequest": {
+        "required": [
+          "terminalID"
+        ],
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid"
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "paymentTypeEnum": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "creditCardSecureDetails": {
+            "$ref": "#/components/schemas/CreditCardSecureDetails"
+          },
+          "bankTransferDetails": {
+            "$ref": "#/components/schemas/BankTransferDetails"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "format": "uuid",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Transaction amount. Must always be specified. In case of Installments must match InstallmentDetails.TotalAmount",
+            "format": "currency"
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netTotal": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netDiscountTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "discountTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "installmentDetails": {
+            "$ref": "#/components/schemas/InstallmentDetails"
+          },
+          "consumerIP": {
+            "maxLength": 32,
+            "minLength": 0,
+            "type": "string",
+            "description": "Original consumer IP",
+            "nullable": true
+          },
+          "saveCreditCard": {
+            "type": "boolean",
+            "description": "Save credit card from request.\r\nRequires Feature CreditCardTokens to be enabled.",
+            "nullable": true
+          },
+          "initialJ5TransactionID": {
+            "type": "string",
+            "description": "Reference to initial transaction",
+            "format": "uuid",
+            "nullable": true
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document",
+            "nullable": true
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "pinPad": {
+            "type": "boolean",
+            "description": "Create Pinpad Transaction",
+            "nullable": true
+          },
+          "pinPadDeviceID": {
+            "type": "string",
+            "description": "Pinpad device in case of terminal with multiple devices",
+            "nullable": true
+          },
+          "paymentRequestID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentIntentID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "okNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerNationalID": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "Only to be used for pin pad transactions when CreditCardSecureDetails is not available",
+            "nullable": true
+          },
+          "cardOwnerName": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string",
+            "description": "Only to be used for pin pad transactions when CreditCardSecureDetails is not available",
+            "nullable": true
+          },
+          "connectionID": {
+            "type": "string",
+            "description": "SignalR connection id",
+            "nullable": true
+          },
+          "extension": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "nullable": true
+          },
+          "threeDSServerTransID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "userAmount": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create the charge based on credit card or previously stored credit card token"
+      },
+      "CreditCardDetails": {
+        "required": [
+          "cardExpiration",
+          "cardNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "cardNumber": {
+            "maxLength": 19,
+            "minLength": 9,
+            "pattern": "^[0-9]*$",
+            "type": "string"
+          },
+          "cardExpiration": {
+            "$ref": "#/components/schemas/CardExpiration"
+          },
+          "cardVendor": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardBrand": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "solek": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerName": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerNationalID": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardReaderInput": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Does not store full card number. Used 123456****1234 pattern"
+      },
+      "CreditCardSecureDetails": {
+        "required": [
+          "cardExpiration",
+          "cardNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "cardNumber": {
+            "maxLength": 19,
+            "minLength": 9,
+            "pattern": "^[0-9]*$",
+            "type": "string"
+          },
+          "cardExpiration": {
+            "$ref": "#/components/schemas/CardExpiration"
+          },
+          "cardVendor": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardBrand": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "solek": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerName": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerNationalID": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cardReaderInput": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvv": {
+            "maxLength": 4,
+            "minLength": 3,
+            "pattern": "^[0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "authNum": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "after code 3 or 4 user can insert this value from credit company",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreditCardTokenSummary": {
+        "type": "object",
+        "properties": {
+          "creditCardTokenID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "merchantID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "cardNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardExpiration": {
+            "$ref": "#/components/schemas/CardExpiration"
+          },
+          "cardVendor": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cardOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerID": {
+            "type": "string",
+            "description": "Consumer ID",
+            "format": "uuid",
+            "nullable": true
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "expired": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CurrencyEnum": {
+        "enum": [
+          "ILS",
+          "USD",
+          "EUR"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+        "format": "int32",
+        "x-enumNames": [
+          "ILS",
+          "USD",
+          "EUR"
+        ]
+      },
+      "DealDetails": {
+        "type": "object",
+        "properties": {
+          "dealReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Deal identifier in merchant's system",
+            "nullable": true
+          },
+          "dealDescription": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "description": "Deal description. In case of generating payment link, these description will be displayed on Checkout Page",
+            "nullable": true
+          },
+          "consumerEmail": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Email",
+            "format": "email",
+            "nullable": true
+          },
+          "consumerName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Name",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer National Id",
+            "nullable": true
+          },
+          "consumerPhone": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerID": {
+            "type": "string",
+            "description": "End-customer record UUId in EasyCard system",
+            "format": "uuid",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "description": "Deal Items\r\nID, Count, Name",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "consumerExternalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External system consumer identifier for example RapidOne customer code",
+            "nullable": true
+          },
+          "consumerWoocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "consumerEcwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "responsiblePerson": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External responsible person",
+            "nullable": true
+          },
+          "externalUserID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External user id",
+            "nullable": true
+          },
+          "branch": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External branch",
+            "nullable": true
+          },
+          "department": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External department",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional deal information. All these data are not required and used only for merchant's business purposes."
+      },
+      "DocumentOriginEnum": {
+        "enum": [
+          "UI",
+          "API",
+          "checkout",
+          "billing",
+          "device",
+          "paymentRequest",
+          "bit"
+        ],
+        "type": "integer",
+        "description": "Document origin (primarely payment transaction origin)\r\n\r\nUI (Document created manually by merchant user using Merchant's UI)\r\n\r\nAPI (Document created via API)\r\n\r\ncheckout (Document created by consumer using Checkout Page)\r\n\r\nbilling (Document generated based on billing schedule)\r\n\r\ndevice (Transaction created using pinpad device (or other device))\r\n\r\npaymentRequest (Document created by consumer using Checkout Page with a payment link)\r\n\r\nbit (Document created by consumer using Bit)",
+        "format": "int32",
+        "x-enumNames": [
+          "UI",
+          "API",
+          "Checkout",
+          "Billing",
+          "Device",
+          "PaymentRequest",
+          "Bit"
+        ],
+        "x-enumDescriptions": [
+          "Document created manually by merchant user using Merchant's UI",
+          "Document created via API",
+          "Document created by consumer using Checkout Page",
+          "Document generated based on billing schedule",
+          "Transaction created using pinpad device (or other device)",
+          "Document created by consumer using Checkout Page with a payment link",
+          "Document created by consumer using Bit"
+        ]
+      },
+      "EndAtTypeEnum": {
+        "enum": [
+          "never",
+          "specifiedDate",
+          "afterNumberOfPayments"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nnever\r\n\r\nspecifiedDate\r\n\r\nafterNumberOfPayments",
+        "format": "int32",
+        "x-enumNames": [
+          "Never",
+          "SpecifiedDate",
+          "AfterNumberOfPayments"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExecutedWebhookSummary": {
+        "type": "object",
+        "properties": {
+          "merchantID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "payload": {
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstallmentDetails": {
+        "required": [
+          "initialPaymentAmount",
+          "installmentPaymentAmount",
+          "numberOfPayments",
+          "totalAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "numberOfPayments": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Number Of Installments",
+            "format": "int32"
+          },
+          "initialPaymentAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Initial installment payment",
+            "format": "currency"
+          },
+          "totalAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount",
+            "format": "currency"
+          },
+          "installmentPaymentAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Amount of each additional payments",
+            "format": "currency"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Installment payments details"
+      },
+      "InvoiceDetails": {
+        "type": "object",
+        "properties": {
+          "invoiceType": {
+            "$ref": "#/components/schemas/InvoiceTypeEnum"
+          },
+          "invoiceSubject": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "sendCCTo": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "donation": {
+            "type": "boolean"
+          },
+          "invoiceLanguage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceTypeEnum": {
+        "enum": [
+          "invoice",
+          "invoiceWithPaymentInfo",
+          "creditNote",
+          "paymentInfo",
+          "refundInvoice"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ninvoice\r\n\r\ninvoiceWithPaymentInfo\r\n\r\ncreditNote\r\n\r\npaymentInfo\r\n\r\nrefundInvoice",
+        "format": "int32",
+        "x-enumNames": [
+          "Invoice",
+          "InvoiceWithPaymentInfo",
+          "CreditNote",
+          "PaymentInfo",
+          "RefundInvoice"
+        ]
+      },
+      "Item": {
+        "required": [
+          "itemName"
+        ],
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "itemName": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string"
+          },
+          "sku": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "netPrice": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "quantity": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "amount": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Row amount",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "description": "VAT Rate",
+            "format": "currency",
+            "nullable": true
+          },
+          "vat": {
+            "minimum": 0,
+            "type": "number",
+            "description": "VAT amount",
+            "format": "currency",
+            "nullable": true
+          },
+          "netAmount": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Net amount (before VAT)",
+            "format": "currency",
+            "nullable": true
+          },
+          "discount": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Discount",
+            "format": "currency",
+            "nullable": true
+          },
+          "netDiscount": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Discount",
+            "format": "currency",
+            "nullable": true
+          },
+          "extension": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "nullable": true
+          },
+          "woocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JDealTypeEnum": {
+        "enum": [
+          "J4",
+          "J2",
+          "J5"
+        ],
+        "type": "integer",
+        "description": "Type of Deal. optional values are; J2 for Check,J4 for Charge, J5 for Block card\r\n\r\nJ4 (Regular deal)\r\n\r\nJ2 (Check)\r\n\r\nJ5 (Block card)",
+        "format": "int32",
+        "x-enumNames": [
+          "J4",
+          "J2",
+          "J5"
+        ],
+        "x-enumDescriptions": [
+          "Regular deal",
+          "Check",
+          "Block card"
+        ]
+      },
+      "JToken": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/JToken"
+        }
+      },
+      "OperationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusEnum"
+          },
+          "entityID": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "entityUID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "entityReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "nullable": true
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "innerResponse": {
+            "$ref": "#/components/schemas/OperationResponse"
+          },
+          "additionalData": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentDetails": {
+        "type": "object",
+        "properties": {
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentRequestCreate": {
+        "type": "object",
+        "properties": {
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard Terminal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "paymentRequestAmount": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Deal amount including VAT. This amount will be displayed on Checkout Page. Consumer can override this amount in case if UserAmount flag specified.",
+            "format": "currency",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Due date of payment link",
+            "format": "date-time",
+            "nullable": true
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "installmentDetails": {
+            "$ref": "#/components/schemas/InstallmentDetails"
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "pinPadDetails": {
+            "$ref": "#/components/schemas/PinPadDetails"
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document - Invoice, Receipt etc. If omitted, default terminal settings will be used",
+            "nullable": true
+          },
+          "allowPinPad": {
+            "type": "boolean",
+            "description": "Enables PinPad button on checkout page",
+            "nullable": true
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "description": "Deal tax rate. Can be omitted if only PaymentRequestAmount specified - in this case VAT rate from terminal settings will be used",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatTotal": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Total deal tax amount. VATTotal = NetTotal * VATRate. Can be omitted if only PaymentRequestAmount specified",
+            "format": "currency",
+            "nullable": true
+          },
+          "netDiscountTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "discountTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netTotal": {
+            "minimum": 0,
+            "type": "number",
+            "description": "Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal. Can be omitted if only PaymentRequestAmount specified",
+            "format": "currency",
+            "nullable": true
+          },
+          "requestSubject": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "description": "You can override default email subject When sending payment link via email",
+            "nullable": true
+          },
+          "fromAddress": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string",
+            "description": "You can override \"from\" address subject When sending payment link via email",
+            "nullable": true
+          },
+          "isRefund": {
+            "type": "boolean",
+            "description": "Generate link to Checkout Page to create refund"
+          },
+          "redirectUrl": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string",
+            "description": "Url to merchant's web site. Base url should be configured in terminal settings. You can add any details to query string.",
+            "nullable": true
+          },
+          "userAmount": {
+            "type": "boolean",
+            "description": "Consumer can override PaymentRequestAmount"
+          },
+          "cardOwnerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "extension": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "description": "Any advanced payload which will be stored in EasyCard and then can be obtained using \"GetTransaction\"",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "description": "Default language to display checkout page",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "allowInstallments": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "allowCredit": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "allowImmediate": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "hidePhone": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "hideEmail": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "hideNationalID": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "showAuthCode": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create a link to Checkout Page"
+      },
+      "PaymentRequestHistorySummary": {
+        "type": "object",
+        "properties": {
+          "paymentRequestHistoryID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "operationCode": {
+            "$ref": "#/components/schemas/PaymentRequestOperationCodesEnum"
+          },
+          "operationMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentRequestOperationCodesEnum": {
+        "enum": [
+          "PaymentRequestCreated",
+          "PaymentRequestUpdated",
+          "PaymentRequestSent",
+          "PaymentRequestCanceled",
+          "PaymentRequestViewed",
+          "PaymentRequestRejected",
+          "PaymentRequestPaymentFailed",
+          "PaymentRequestPayed"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nPaymentRequestCreated\r\n\r\nPaymentRequestUpdated\r\n\r\nPaymentRequestSent\r\n\r\nPaymentRequestCanceled\r\n\r\nPaymentRequestViewed\r\n\r\nPaymentRequestRejected\r\n\r\nPaymentRequestPaymentFailed\r\n\r\nPaymentRequestPayed",
+        "format": "int32",
+        "x-enumNames": [
+          "PaymentRequestCreated",
+          "PaymentRequestUpdated",
+          "PaymentRequestSent",
+          "PaymentRequestCanceled",
+          "PaymentRequestViewed",
+          "PaymentRequestRejected",
+          "PaymentRequestPaymentFailed",
+          "PaymentRequestPayed"
+        ]
+      },
+      "PaymentRequestResponse": {
+        "type": "object",
+        "properties": {
+          "paymentRequestID": {
+            "type": "string",
+            "description": "Primary reference",
+            "format": "uuid"
+          },
+          "paymentRequestTimestamp": {
+            "type": "string",
+            "description": "Date-time when deal created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Due date",
+            "format": "date-time",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentRequestStatusEnum"
+          },
+          "quickStatus": {
+            "$ref": "#/components/schemas/PayReqQuickStatusFilterTypeEnum"
+          },
+          "cardOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardOwnerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "vatRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "netTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "numberOfPayments": {
+            "type": "integer",
+            "description": "Number Of payments (cannot be more than 999)",
+            "format": "int32"
+          },
+          "initialPaymentAmount": {
+            "type": "number",
+            "description": "Initial installment payment",
+            "format": "double"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount",
+            "format": "double"
+          },
+          "installmentPaymentAmount": {
+            "type": "number",
+            "description": "Amount of one instalment payment",
+            "format": "double"
+          },
+          "paymentRequestAmount": {
+            "type": "number",
+            "description": "This amount",
+            "format": "double"
+          },
+          "isRefund": {
+            "type": "boolean"
+          },
+          "userAmount": {
+            "type": "boolean"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "onlyAddCard": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "showAuthCode": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "Terminal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalName": {
+            "type": "string",
+            "description": "EasyCard terminal name",
+            "nullable": true
+          },
+          "consumerID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentTransactionID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentRequestUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRequestHistorySummary"
+            },
+            "nullable": true
+          },
+          "userPaidDetails": {
+            "$ref": "#/components/schemas/PaymentRequestUserPaidDetails"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentRequestStatusEnum": {
+        "enum": [
+          "initial",
+          "sending",
+          "sent",
+          "viewed",
+          "payed",
+          "paymentFailed",
+          "rejected",
+          "canceled",
+          "sendingFailed"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ninitial\r\n\r\nsending\r\n\r\nsent\r\n\r\nviewed\r\n\r\npayed\r\n\r\npaymentFailed\r\n\r\nrejected\r\n\r\ncanceled\r\n\r\nsendingFailed",
+        "format": "int32",
+        "x-enumNames": [
+          "Initial",
+          "Sending",
+          "Sent",
+          "Viewed",
+          "Payed",
+          "PaymentFailed",
+          "Rejected",
+          "Canceled",
+          "SendingFailed"
+        ],
+        "x-enumDescriptions": [
+          "Required because of technical reason - to do not send request twice",
+          "Request sent to user (pending user approval)",
+          "Viewed by consumer",
+          "Rejected by consumer",
+          "Canceled by merchant",
+          "Can be re-sent"
+        ]
+      },
+      "PaymentRequestSummary": {
+        "type": "object",
+        "properties": {
+          "paymentRequestID": {
+            "type": "string",
+            "description": "Primary reference",
+            "format": "uuid"
+          },
+          "paymentRequestTimestamp": {
+            "type": "string",
+            "description": "Date-time when deal created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Due date",
+            "format": "date-time",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "Terminal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentRequestStatusEnum"
+          },
+          "quickStatus": {
+            "$ref": "#/components/schemas/PayReqQuickStatusFilterTypeEnum"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "paymentRequestAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cardOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentTransactionID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isRefund": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentRequestUserPaidDetails": {
+        "type": "object",
+        "properties": {
+          "vatRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "netTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionAmount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Information regarding what user actually paid in payment request (only relevant for UserAmount allowed PRs)"
+      },
+      "PaymentTypeEnum": {
+        "enum": [
+          "card",
+          "cheque",
+          "cash",
+          "bank"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ncard\r\n\r\ncheque\r\n\r\ncash\r\n\r\nbank",
+        "format": "int32",
+        "x-enumNames": [
+          "Card",
+          "Cheque",
+          "Cash",
+          "Bank"
+        ]
+      },
+      "PayReqQuickStatusFilterTypeEnum": {
+        "enum": [
+          "pending",
+          "completed",
+          "failed",
+          "canceled",
+          "overdue",
+          "viewed"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\npending\r\n\r\ncompleted\r\n\r\nfailed\r\n\r\ncanceled\r\n\r\noverdue\r\n\r\nviewed",
+        "format": "int32",
+        "x-enumNames": [
+          "Pending",
+          "Completed",
+          "Failed",
+          "Canceled",
+          "Overdue",
+          "Viewed"
+        ]
+      },
+      "PinPadDetails": {
+        "type": "object",
+        "properties": {
+          "terminalID": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyPresenceEnum": {
+        "enum": [
+          "All",
+          "Yes",
+          "No"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nAll\r\n\r\nYes\r\n\r\nNo",
+        "format": "int32",
+        "x-enumNames": [
+          "All",
+          "Yes",
+          "No"
+        ]
+      },
+      "QuickDateFilterTypeEnum": {
+        "enum": [
+          "today",
+          "yesterday",
+          "thisWeek",
+          "lastWeek",
+          "last30Days",
+          "thisMonth",
+          "lastMonth",
+          "last3Months"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
+        "format": "int32",
+        "x-enumNames": [
+          "Today",
+          "Yesterday",
+          "ThisWeek",
+          "LastWeek",
+          "Last30Days",
+          "ThisMonth",
+          "LastMonth",
+          "Last3Months"
+        ]
+      },
+      "QuickStatusFilterTypeEnum": {
+        "enum": [
+          "Pending",
+          "Completed",
+          "Failed",
+          "Canceled",
+          "AwaitingForTransmission",
+          "Chargeback"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nPending\r\n\r\nCompleted\r\n\r\nFailed\r\n\r\nCanceled\r\n\r\nAwaitingForTransmission\r\n\r\nChargeback",
+        "format": "int32",
+        "x-enumNames": [
+          "Pending",
+          "Completed",
+          "Failed",
+          "Canceled",
+          "AwaitingForTransmission",
+          "Chargeback"
+        ]
+      },
+      "RefundRequest": {
+        "required": [
+          "terminalID",
+          "transactionAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal reference",
+            "format": "uuid"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "creditCardSecureDetails": {
+            "$ref": "#/components/schemas/CreditCardSecureDetails"
+          },
+          "creditCardToken": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Refund amount",
+            "format": "currency"
+          },
+          "vatRate": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "vatTotal": {
+            "minimum": 0,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "netTotal": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document",
+            "nullable": true
+          },
+          "pinPad": {
+            "type": "boolean",
+            "description": "Create Pinpad Transaction",
+            "nullable": true
+          },
+          "pinPadDeviceID": {
+            "type": "string",
+            "description": "Pinpad device in case of terminal with multiple devices",
+            "nullable": true
+          },
+          "invoiceDetails": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "installmentDetails": {
+            "$ref": "#/components/schemas/InstallmentDetails"
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "cardOwnerNationalID": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "Only to be used for pin pad transactions when CredotCardSecureDetails is not available",
+            "nullable": true
+          },
+          "connectionID": {
+            "type": "string",
+            "description": "SignalR connection id",
+            "nullable": true
+          },
+          "okNumber": {
+            "type": "string",
+            "description": "ShvaAuthNum",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Refund request"
+      },
+      "RejectionReasonEnum": {
+        "enum": [
+          "unknown",
+          "creditCardIsMerchantsCard",
+          "nationalIdIsMerchantsId",
+          "singleTransactionAmountExceeded",
+          "dailyAmountExceeded",
+          "creditCardDailyUsageExceeded",
+          "refundNotMatchRegularAmount",
+          "refundExceededCollateral",
+          "cardOwnerNationalIdRequired",
+          "authCodeRequired"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nunknown\r\n\r\ncreditCardIsMerchantsCard\r\n\r\nnationalIdIsMerchantsId\r\n\r\nsingleTransactionAmountExceeded\r\n\r\ndailyAmountExceeded\r\n\r\ncreditCardDailyUsageExceeded\r\n\r\nrefundNotMatchRegularAmount\r\n\r\nrefundExceededCollateral\r\n\r\ncardOwnerNationalIdRequired\r\n\r\nauthCodeRequired",
+        "format": "int32",
+        "x-enumNames": [
+          "Unknown",
+          "CreditCardIsMerchantsCard",
+          "NationalIdIsMerchantsId",
+          "SingleTransactionAmountExceeded",
+          "DailyAmountExceeded",
+          "CreditCardDailyUsageExceeded",
+          "RefundNotMatchRegularAmount",
+          "RefundExceededCollateral",
+          "CardOwnerNationalIdRequired",
+          "AuthorizationCodeRequired"
+        ]
+      },
+      "RepeatPeriodTypeEnum": {
+        "enum": [
+          "oneTime",
+          "monthly",
+          "biMonthly",
+          "quarter",
+          "halfYear",
+          "year"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\noneTime\r\n\r\nmonthly\r\n\r\nbiMonthly\r\n\r\nquarter\r\n\r\nhalfYear\r\n\r\nyear",
+        "format": "int32",
+        "x-enumNames": [
+          "OneTime",
+          "Monthly",
+          "BiMonthly",
+          "Quarter",
+          "HalfYear",
+          "Year"
+        ]
+      },
+      "ShowDeletedEnum": {
+        "enum": [
+          "OnlyActive",
+          "OnlyDeleted",
+          "All"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+        "format": "int32",
+        "x-enumNames": [
+          "OnlyActive",
+          "OnlyDeleted",
+          "All"
+        ]
+      },
+      "SolekEnum": {
+        "enum": [
+          "UNKNOWN",
+          "ISRACARD",
+          "VISA",
+          "DINERS_CLUB",
+          "AMEX",
+          "JCB",
+          "DISCOVER",
+          "LEUMI_CARD",
+          "OTHER",
+          "MASTERCARD"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nUNKNOWN\r\n\r\nISRACARD\r\n\r\nVISA\r\n\r\nDINERS_CLUB\r\n\r\nAMEX\r\n\r\nJCB\r\n\r\nDISCOVER\r\n\r\nLEUMI_CARD\r\n\r\nOTHER\r\n\r\nMASTERCARD",
+        "format": "int32",
+        "x-enumNames": [
+          "UNKNOWN",
+          "ISRACARD",
+          "VISA",
+          "DINERS_CLUB",
+          "AMEX",
+          "JCB",
+          "DISCOVER",
+          "LEUMI_CARD",
+          "OTHER",
+          "MASTERCARD"
+        ]
+      },
+      "SpecialTransactionTypeEnum": {
+        "enum": [
+          "regularDeal",
+          "initialDeal",
+          "refund"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nregularDeal\r\n\r\ninitialDeal\r\n\r\nrefund",
+        "format": "int32",
+        "x-enumNames": [
+          "RegularDeal",
+          "InitialDeal",
+          "Refund"
+        ]
+      },
+      "StartAtTypeEnum": {
+        "enum": [
+          "today",
+          "specifiedDate"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ntoday\r\n\r\nspecifiedDate",
+        "format": "int32",
+        "x-enumNames": [
+          "Today",
+          "SpecifiedDate"
+        ]
+      },
+      "StatusEnum": {
+        "enum": [
+          "success",
+          "warning",
+          "error"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\nsuccess\r\n\r\nwarning\r\n\r\nerror",
+        "format": "int32",
+        "x-enumNames": [
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      },
+      "SummariesAmountResponse`1_BillingDealSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingDealSummary"
+            },
+            "nullable": true
+          },
+          "totalAmountILS": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountUSD": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountEUR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesAmountResponse`1_PaymentRequestSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRequestSummary"
+            },
+            "nullable": true
+          },
+          "totalAmountILS": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountUSD": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountEUR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesAmountResponse`1_TransactionSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionSummary"
+            },
+            "nullable": true
+          },
+          "totalAmountILS": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountUSD": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountEUR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesResponse`1_CreditCardTokenSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreditCardTokenSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesResponse`1_ExecutedWebhookSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutedWebhookSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionFinalizationStatusEnum": {
+        "enum": [
+          "initial",
+          "failedToCancelByAggregator",
+          "canceledByAggregator"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ninitial\r\n\r\nfailedToCancelByAggregator\r\n\r\ncanceledByAggregator",
+        "format": "int32",
+        "x-enumNames": [
+          "Initial",
+          "FailedToCancelByAggregator",
+          "CanceledByAggregator"
+        ],
+        "x-enumDescriptions": [
+          "Failed to cancel transaction by Clearing House",
+          "Transaction cancellation is done to Clearing House"
+        ]
+      },
+      "TransactionResponse": {
+        "type": "object",
+        "properties": {
+          "paymentTransactionID": {
+            "type": "string",
+            "description": "Primary transaction reference (UUId)",
+            "format": "uuid"
+          },
+          "transactionDate": {
+            "type": "string",
+            "description": "Legal transaction day",
+            "format": "date-time",
+            "nullable": true
+          },
+          "transactionTimestamp": {
+            "type": "string",
+            "description": "Date-time when transaction created initially in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "initialTransactionID": {
+            "type": "string",
+            "description": "Reference to initial billing deal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "currentDeal": {
+            "type": "integer",
+            "description": "Current deal number (billing)",
+            "format": "int32",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "description": "EasyCard terminal UUId",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalName": {
+            "type": "string",
+            "description": "EasyCard terminal name",
+            "nullable": true
+          },
+          "merchantID": {
+            "type": "string",
+            "description": "Merchant",
+            "format": "uuid",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransactionStatusEnum"
+          },
+          "paymentTypeEnum": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "quickStatus": {
+            "$ref": "#/components/schemas/QuickStatusFilterTypeEnum"
+          },
+          "finalizationStatus": {
+            "$ref": "#/components/schemas/TransactionFinalizationStatusEnum"
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "specialTransactionType": {
+            "$ref": "#/components/schemas/SpecialTransactionTypeEnum"
+          },
+          "jDealType": {
+            "$ref": "#/components/schemas/JDealTypeEnum"
+          },
+          "transactionJ5ExpiredDate": {
+            "type": "string",
+            "description": "Transaction J5 expired date (in gengeral after 1 day)",
+            "format": "date-time",
+            "nullable": true
+          },
+          "rejectionReason": {
+            "$ref": "#/components/schemas/RejectionReasonEnum"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "numberOfPayments": {
+            "type": "integer",
+            "description": "Number Of Installments",
+            "format": "int32"
+          },
+          "transactionAmount": {
+            "type": "number",
+            "description": "This transaction amount",
+            "format": "double"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "initialPaymentAmount": {
+            "type": "number",
+            "description": "Initial installment payment",
+            "format": "double"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount",
+            "format": "double"
+          },
+          "installmentPaymentAmount": {
+            "type": "number",
+            "description": "Amount of one instalment payment",
+            "format": "double"
+          },
+          "creditCardDetails": {
+            "$ref": "#/components/schemas/CreditCardDetails"
+          },
+          "bankTransferDetails": {
+            "$ref": "#/components/schemas/BankTransferDetails"
+          },
+          "creditCardToken": {
+            "type": "string",
+            "description": "Stored credit card details token reference",
+            "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
+          },
+          "shvaTransactionDetails": {
+            "description": "Shva details",
+            "nullable": true
+          },
+          "clearingHouseTransactionDetails": {
+            "description": "PayDay details",
+            "nullable": true
+          },
+          "upayTransactionDetails": {
+            "nullable": true
+          },
+          "updatedDate": {
+            "type": "string",
+            "description": "Date-time when transaction status updated",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "description": "Concurrency key",
+            "format": "byte",
+            "nullable": true
+          },
+          "billingDealID": {
+            "type": "string",
+            "description": "Reference to billing schedule which produced this transaction",
+            "format": "uuid",
+            "nullable": true
+          },
+          "rejectionMessage": {
+            "type": "string",
+            "description": "Rejection Reason Message (in case of rejected transaction)",
+            "nullable": true
+          },
+          "vatRate": {
+            "type": "number",
+            "description": "Deal tax rate",
+            "format": "double"
+          },
+          "vatTotal": {
+            "type": "number",
+            "description": "Total deal tax amount. VATTotal = NetTotal * VATRate",
+            "format": "double"
+          },
+          "netTotal": {
+            "type": "number",
+            "description": "Deal amount before tax. PaymentRequestAmount = NetTotal + VATTotal",
+            "format": "double"
+          },
+          "consumerIP": {
+            "type": "string",
+            "description": "We can know it from checkout page activity",
+            "nullable": true
+          },
+          "merchantIP": {
+            "type": "string",
+            "description": "Merchant's IP",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Request ID",
+            "nullable": true
+          },
+          "invoiceID": {
+            "type": "string",
+            "description": "Generated invoice ID",
+            "format": "uuid",
+            "nullable": true
+          },
+          "issueInvoice": {
+            "type": "boolean",
+            "description": "Create document for transaction"
+          },
+          "documentOrigin": {
+            "$ref": "#/components/schemas/DocumentOriginEnum"
+          },
+          "paymentRequestID": {
+            "type": "string",
+            "description": "Reference to initial payment link creation request",
+            "format": "uuid",
+            "nullable": true
+          },
+          "processorResultCode": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "extension": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "description": "Any advanced payload which will be stored in EasyCard and then can be obtained using \"GetTransaction\"",
+            "nullable": true
+          },
+          "bitTransactionDetails": {
+            "nullable": true
+          },
+          "totalRefund": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "description": "Origin site url or label",
+            "nullable": true
+          },
+          "allowTransmission": {
+            "type": "boolean",
+            "description": "Transaction can be transmitted manually"
+          },
+          "allowTransmissionCancellation": {
+            "type": "boolean",
+            "description": "Transaction transmission cannot be canceled manually"
+          },
+          "allowRefund": {
+            "type": "boolean"
+          },
+          "allowInvoiceCreation": {
+            "type": "boolean",
+            "description": "Invoice can be created for this transaction"
+          },
+          "merchantName": {
+            "type": "string",
+            "description": "Merchant name",
+            "nullable": true
+          },
+          "paymentIntentID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payment transaction details"
+      },
+      "TransactionStatusEnum": {
+        "enum": [
+          "initial",
+          "confirmedByAggregator",
+          "confirmedByPinpadPreProcessor",
+          "confirmedByProcessor",
+          "awaitingForTransmission",
+          "transmissionInProgress",
+          "transmissionCancelingInProgress",
+          "completed",
+          "awaitingToSelectJ5",
+          "chargeback",
+          "chargebackFailed",
+          "transmissionToProcessorFailed",
+          "failedToCommitByAggregator",
+          "failedToConfirmByProcesor",
+          "failedToConfirmByAggregator",
+          "cancelledByMerchant",
+          "rejectedByProcessor",
+          "rejectedByAggregator",
+          "rejectedBy3Dsecure"
+        ],
+        "type": "integer",
+        "description": "\r\n\r\ninitial\r\n\r\nconfirmedByAggregator\r\n\r\nconfirmedByPinpadPreProcessor\r\n\r\nconfirmedByProcessor\r\n\r\nawaitingForTransmission\r\n\r\ntransmissionInProgress\r\n\r\ntransmissionCancelingInProgress\r\n\r\ncompleted\r\n\r\nawaitingToSelectJ5\r\n\r\nchargeback\r\n\r\nchargebackFailed\r\n\r\ntransmissionToProcessorFailed\r\n\r\nfailedToCommitByAggregator\r\n\r\nfailedToConfirmByProcesor\r\n\r\nfailedToConfirmByAggregator\r\n\r\ncancelledByMerchant\r\n\r\nrejectedByProcessor\r\n\r\nrejectedByAggregator\r\n\r\nrejectedBy3Dsecure",
+        "format": "int32",
+        "x-enumNames": [
+          "Initial",
+          "ConfirmedByAggregator",
+          "ConfirmedByPinpadPreProcessor",
+          "ConfirmedByProcessor",
+          "AwaitingForTransmission",
+          "TransmissionInProgress",
+          "TransmissionCancelingInProgress",
+          "Completed",
+          "AwaitingForSelectJ5",
+          "Chargeback",
+          "ChargebackFailed",
+          "TransmissionToProcessorFailed",
+          "FailedToCommitByAggregator",
+          "FailedToConfirmByProcesor",
+          "FailedToConfirmByAggregator",
+          "CancelledByMerchant",
+          "RejectedByProcessor",
+          "RejectedByAggregator",
+          "RejectedBy3Dsecure"
+        ],
+        "x-enumDescriptions": [
+          "Clearing House confirmed transaction",
+          "Pinpad preprocessing succesfull",
+          "Shva confirmed transaction",
+          "Transaction commited to Clearing House",
+          "Shva transmision in progress",
+          "Canceling transmision in progress",
+          "Shva transmision is done",
+          "Shva transmision is done",
+          "Refund is done for this transaction",
+          "Refund attempt failed",
+          "Shva transmission failed",
+          "Failed to commit by Clearing House",
+          "Not possible to confirm by Shva",
+          "Not possible to confirm by Clearing House",
+          "Merchant cancelled transaction before transmitting to Shva",
+          "Transaction is rejected by Shva",
+          "Transaction is rejeced by Clearing House",
+          "Transaction is rejeced by 3Dsecure"
+        ]
+      },
+      "TransactionSummary": {
+        "type": "object",
+        "properties": {
+          "paymentTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "terminalName": {
+            "type": "string",
+            "nullable": true
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentOrigin": {
+            "$ref": "#/components/schemas/DocumentOriginEnum"
+          },
+          "cardNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "rejectionMessage": {
+            "type": "string",
+            "description": "Rejection Reason Message (in case of rejected transaction)",
+            "nullable": true
+          },
+          "processorResultCode": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "transactionAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "initialPaymentAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "installmentPaymentAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionTypeEnum"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "transactionTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransactionStatusEnum"
+          },
+          "paymentTypeEnum": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "quickStatus": {
+            "$ref": "#/components/schemas/QuickStatusFilterTypeEnum"
+          },
+          "specialTransactionType": {
+            "$ref": "#/components/schemas/SpecialTransactionTypeEnum"
+          },
+          "jDealType": {
+            "$ref": "#/components/schemas/JDealTypeEnum"
+          },
+          "rejectionReason": {
+            "$ref": "#/components/schemas/RejectionReasonEnum"
+          },
+          "cardPresence": {
+            "$ref": "#/components/schemas/CardPresenceEnum"
+          },
+          "cardOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerExternalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "shvaDealID": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "dealDescription": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionTypeEnum": {
+        "enum": [
+          "regularDeal",
+          "installments",
+          "credit",
+          "immediate"
+        ],
+        "type": "integer",
+        "description": "Generic transaction type\r\n\r\nregularDeal (Simple deal type)\r\n\r\ninstallments (Deal to pay by parts)\r\n\r\ncredit (Credit deal)\r\n\r\nimmediate (Credit deal)",
+        "format": "int32",
+        "x-enumNames": [
+          "RegularDeal",
+          "Installments",
+          "Credit",
+          "Immediate"
+        ],
+        "x-enumDescriptions": [
+          "Simple deal type",
+          "Deal to pay by parts",
+          "Credit deal",
+          "Credit deal"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": [ ]
+    }
+  ]
+}
