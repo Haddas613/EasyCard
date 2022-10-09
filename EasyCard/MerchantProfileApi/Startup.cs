@@ -44,6 +44,8 @@ using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Client;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Options;
 using Westwind.AspNetCore.Markdown;
 using SharedApi = Shared.Api;
 
@@ -225,7 +227,7 @@ namespace ProfileApi
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "MerchantProfile API",
+                    Title = "EasyCard Metadata API",
                 });
 
                 c.ExampleFilters();
@@ -238,21 +240,77 @@ namespace ProfileApi
                 var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
+                c.CustomSchemaIds(type =>
+                {
+                    if (type.IsGenericType)
+                    {
+                        return $"{type.Name.Replace("`1", string.Empty)}_{type.GetGenericArguments().FirstOrDefault().Name}";
+                    }
+                    else
+                    {
+                        return type.Name;
+                    }
+                });
+
                 // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
-                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+                //c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
 
                 // add Security information to each operation for OAuth2
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
 
                 // if you're using the SecurityRequirementsOperationFilter, you also need to tell Swashbuckle you're using OAuth2
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                        },
+                        new string[] { }
+                    }
+                });
+
+                c.AddEnumsWithValuesFixFilters(services, o =>
+                {
+                    // add schema filter to fix enums (add 'x-enumNames' for NSwag or its alias from XEnumNamesAlias) in schema
+                    //o.ApplySchemaFilter = true;
+
+                    // alias for replacing 'x-enumNames' in swagger document
+                    //o.XEnumNamesAlias = "x-enum-varnames";
+
+                    // alias for replacing 'x-enumDescriptions' in swagger document
+                    //o.XEnumDescriptionsAlias = "x-enum-descriptions";
+
+                    // add parameter filter to fix enums (add 'x-enumNames' for NSwag or its alias from XEnumNamesAlias) in schema parameters
+                    //o.ApplyParameterFilter = true;
+
+                    // add document filter to fix enums displaying in swagger document
+                    // o.ApplyDocumentFilter = true;
+
+                    // add descriptions from DescriptionAttribute or xml-comments to fix enums (add 'x-enumDescriptions' or its alias from XEnumDescriptionsAlias for schema extensions) for applied filters
+                    o.IncludeDescriptions = true;
+
+                    // add remarks for descriptions from xml-comments
+                    o.IncludeXEnumRemarks = true;
+
+                    // get descriptions from DescriptionAttribute then from xml-comments
+                    o.DescriptionSource = DescriptionSources.DescriptionAttributesThenXmlComments;
+
+                    // get descriptions from xml-file comments on the specified path
+                    // should use "options.IncludeXmlComments(xmlFilePath);" before
+                    o.IncludeXmlCommentsFrom(xmlPath);
+                    //o.IncludeXmlCommentsFrom(xmlPath2);
+                    //o.IncludeXmlCommentsFrom(xmlPath3);
                 });
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));

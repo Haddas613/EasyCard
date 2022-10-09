@@ -366,7 +366,7 @@ namespace Transactions.Api
                 {
                     if (type.IsGenericType)
                     {
-                        return $"{type.Name}_{type.GetGenericArguments().FirstOrDefault().Name}";
+                        return $"{type.Name.Replace("`1", string.Empty)}_{type.GetGenericArguments().FirstOrDefault().Name}";
                     }
                     else
                     {
@@ -442,9 +442,8 @@ namespace Transactions.Api
                     o.IncludeXmlCommentsFrom(xmlPath2);
                     o.IncludeXmlCommentsFrom(xmlPath3);
                 });
-
-                //c.CustomSchemaIds(i => i.FriendlyId(true));
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
             // DI
             services.AddDbContext<Merchants.Business.Data.MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));

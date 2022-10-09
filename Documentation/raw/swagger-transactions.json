@@ -278,7 +278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummariesAmountResponse`1_BillingDealSummary"
+                  "$ref": "#/components/schemas/SummariesAmountResponse_BillingDealSummary"
                 }
               }
             }
@@ -310,19 +310,19 @@
               "schema": {
                 "$ref": "#/components/schemas/BillingDealRequest"
               },
-              "example": {"currency":"USD","creditCardToken":"b9c51ea8-8ac6-4f18-aef9-47f693978c81","transactionAmount":1200.0,"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T13:32:46.9800363+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"paymentType":"card","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"81f5c6a9-8190-474c-a264-6bb6f27c5818"}}
+              "example": {"currency":"USD","creditCardToken":"8a8af761-375a-4f68-b4fc-91d5f07c2022","transactionAmount":1200.0,"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T18:08:18.5852924+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"paymentType":"card","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"22045bf2-88fc-49c5-896b-ad02e090990b"}}
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Billing Deal Created","status":"success","entityUID":"2f14eaf0-dad8-4c5c-bbf0-5ddbef285126"}
+                "example": {"message":"Billing Deal Created","status":"success","entityUID":"253d8de2-b5ed-4f9a-9a23-63b0aa1c30c6"}
               }
             }
           },
@@ -333,7 +333,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Entity Not Found","status":"error","correlationId":"62d096c8-bfab-4ea5-8980-a50a5d74cbb8","entityType":"Consumer"}
+                "example": {"message":"Entity Not Found","status":"error","correlationId":"29639763-b16a-4547-bff0-05e6b2f199b2","entityType":"Consumer"}
               }
             }
           },
@@ -344,7 +344,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"b8a8e255-475f-4ecf-a0f3-1c27d6f46f30","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"0607b859-87d0-4fc8-bf4d-cc364c2f5d15","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -390,7 +390,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/BillingDealResponse"
                 },
-                "example": {"billingDealID":"00000000-0000-0000-0000-000000000000","billingDealTimestamp":null,"initialTransactionID":null,"terminalID":null,"terminalName":null,"merchantID":null,"currency":"USD","transactionAmount":1200.0,"amount":0.0,"totalAmount":0.0,"currentDeal":null,"currentTransactionTimestamp":null,"currentTransactionID":null,"nextScheduledTransaction":null,"creditCardDetails":null,"bankDetails":null,"creditCardToken":"b2313efc-7238-4eb8-878d-ff5ae35540d3","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"566c33fe-a4bd-4332-9d73-1b2a4b453e82"},"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T13:32:46.9982522+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"updatedDate":null,"updateTimestamp":null,"operationDoneBy":null,"operationDoneByID":null,"correlationId":null,"sourceIP":null,"active":false,"cardExpired":null,"tokenNotAvailable":null,"invoiceDetails":null,"issueInvoice":false,"invoiceOnly":false,"vatRate":0.0,"vatTotal":0.0,"netTotal":0.0,"pausedFrom":null,"pausedTo":null,"paused":false,"paymentType":"card","lastError":null,"lastErrorCorrelationID":null,"paymentDetails":null,"failedAttemptsCount":null,"expirationEmailSent":null,"tokenUpdated":null,"tokenCreated":null}
+                "example": {"billingDealID":"00000000-0000-0000-0000-000000000000","billingDealTimestamp":null,"initialTransactionID":null,"terminalID":null,"terminalName":null,"merchantID":null,"currency":"USD","transactionAmount":1200.0,"amount":0.0,"totalAmount":0.0,"currentDeal":null,"currentTransactionTimestamp":null,"currentTransactionID":null,"nextScheduledTransaction":null,"creditCardDetails":null,"bankDetails":null,"creditCardToken":"14fbfce9-fb88-4c03-8ecf-d9366c9984f6","dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"e68bdf0c-a6b3-40fa-a63c-42c0d6eddc0f"},"billingSchedule":{"repeatPeriodType":"monthly","startAtType":"specifiedDate","startAt":"2022-10-07T18:08:18.6121795+03:00","endAtType":"afterNumberOfPayments","endAt":null,"endAtNumberOfPayments":10},"updatedDate":null,"updateTimestamp":null,"operationDoneBy":null,"operationDoneByID":null,"correlationId":null,"sourceIP":null,"active":false,"cardExpired":null,"tokenNotAvailable":null,"invoiceDetails":null,"issueInvoice":false,"invoiceOnly":false,"vatRate":0.0,"vatTotal":0.0,"netTotal":0.0,"pausedFrom":null,"pausedTo":null,"paused":false,"paymentType":"card","lastError":null,"lastErrorCorrelationID":null,"paymentDetails":null,"failedAttemptsCount":null,"expirationEmailSent":null,"tokenUpdated":null,"tokenCreated":null}
               }
             }
           },
@@ -444,7 +444,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"3f8181c9-0148-4b2a-aa6c-aa7c46ad9072","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"b4e0bd21-4e21-498c-ae95-9932ed12aec4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -500,7 +500,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"99cecf7f-b9cd-4688-8f25-2a2703990f9f","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"bd23b59b-3bb2-40dd-afbe-b157a300db64","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -635,7 +635,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummariesResponse`1_CreditCardTokenSummary"
+                  "$ref": "#/components/schemas/SummariesResponse_CreditCardTokenSummary"
                 }
               }
             }
@@ -681,7 +681,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"231d4392-50f6-422e-a3ae-68d11834a40e","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"1898bf3a-70b3-4a9b-b7b2-432af48a53de","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -770,7 +770,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"3deac440-8c72-443b-ad79-1eb068160ff0","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"542411b2-831f-42a3-b32d-3e135d6b8591","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -803,19 +803,19 @@
               "schema": {
                 "$ref": "#/components/schemas/PaymentRequestCreate"
               },
-              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"8973f7c7-a661-4f5e-95b8-5193784a11e8"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
+              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"aaf89a1e-dd12-46db-838a-9ec7a371d214"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Payment Request Created","status":"success","entityUID":"0368a926-1e8e-41be-921d-ff2d4df85d6a","additionalData":{"url":"https://checkout.e-c.co.il/i?r=4xgxjJrpKhOgdJa01YhT9fMy7AHdUi1XmWralF9lbbnB0nTGB1vw%3d%3d"}}
+                "example": {"message":"Payment Request Created","status":"success","entityUID":"f298ae2f-32e1-4e2b-8913-fdfcc269f83a","additionalData":{"url":"https://checkout.e-c.co.il/i?r=4xgxjJrpKhOgdJa01YhT9fMy7AHdUi1XmWralF9lbbnB0nTGB1vw%3d%3d"}}
               }
             }
           },
@@ -826,7 +826,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Entity Not Found","status":"error","correlationId":"60ff26b7-4860-4da2-8af6-c823af787a88","entityType":"Consumer"}
+                "example": {"message":"Entity Not Found","status":"error","correlationId":"5a088983-c333-40f8-bf31-3f39ad2f30ed","entityType":"Consumer"}
               }
             }
           },
@@ -837,7 +837,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"c1e58258-a822-45b3-9a05-b00a2be37c52","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"78a81b48-8be6-4258-8251-ffbe552f80ba","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -998,7 +998,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummariesAmountResponse`1_PaymentRequestSummary"
+                  "$ref": "#/components/schemas/SummariesAmountResponse_PaymentRequestSummary"
                 }
               }
             }
@@ -1030,19 +1030,19 @@
               "schema": {
                 "$ref": "#/components/schemas/PaymentRequestCreate"
               },
-              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"d46d55ba-351d-4696-98f8-fee63d91561f"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
+              "example": {"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"755956a8-4ea5-4e5a-8959-343d21171b31"},"currency":"USD","paymentRequestAmount":1200.0,"dueDate":"2021-12-31T00:00:00","installmentDetails":{"numberOfPayments":6,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0},"isRefund":false,"redirectUrl":"https://ecng-testwebstore.azurewebsites.net/PaymentResult?MyOrderID=123456&MySecurityCode=45678912345","userAmount":true,"extension":{"customPropertyInMySystem":"MyCustomValue"}}
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"3f98b26a-6b81-4de3-8e3f-e975ea053ef4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"c4442a45-38d7-4578-8f87-249becbe26b4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1131,7 +1131,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"af5daa1a-6b1f-48c3-aa8b-04413c43e0bf","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"42cf05c3-c2d8-4029-8b30-2ada6e339403","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1177,7 +1177,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/TransactionResponse"
                 },
-                "example": {"paymentTransactionID":"80c5a1e0-b9de-4628-8dcf-66620b0c711f","transactionDate":"2022-10-07T00:00:00","transactionTimestamp":"2022-10-07T10:32:47.0958817Z","status":"awaitingForTransmission","paymentTypeEnum":"card","quickStatus":0,"transactionType":"installments","specialTransactionType":"regularDeal","jDealType":"J4","currency":"USD","cardPresence":"cardNotPresent","numberOfPayments":6,"transactionAmount":1200.0,"amount":0.0,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0,"creditCardDetails":{"cardNumber":"123456****1234","cardExpiration":"12/22","cardBrand":"VISA","cardOwnerName":"John Smith","cardOwnerNationalID":"1234567"},"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"7174a078-b751-4c42-b253-af0e5217ef6f"},"shvaTransactionDetails":{"shvaShovarNumber":"123456","shvaDealID":"12345678901234567890"},"vatRate":0.17,"vatTotal":174.36,"netTotal":1025.64,"correlationId":"e12763fe-de30-4f30-bfe1-edc44163be3d","invoiceID":"2d96449f-b281-4a85-8e5d-2eae9c3839eb","issueInvoice":true,"documentOrigin":"checkout","paymentRequestID":"5a0703d1-2844-492c-aa1c-37d272bce3ae","extension":{"customPropertyInMySystem":"MyCustomValue"},"allowTransmission":false,"allowTransmissionCancellation":true,"allowRefund":false,"allowInvoiceCreation":false}
+                "example": {"paymentTransactionID":"bf54f8bc-b997-4345-b37b-8eb3328651d0","transactionDate":"2022-10-07T00:00:00","transactionTimestamp":"2022-10-07T15:08:18.7523005Z","status":"awaitingForTransmission","paymentTypeEnum":"card","quickStatus":0,"transactionType":"installments","specialTransactionType":"regularDeal","jDealType":"J4","currency":"USD","cardPresence":"cardNotPresent","numberOfPayments":6,"transactionAmount":1200.0,"amount":0.0,"initialPaymentAmount":200.0,"totalAmount":1200.0,"installmentPaymentAmount":200.0,"creditCardDetails":{"cardNumber":"123456****1234","cardExpiration":"12/22","cardBrand":"VISA","cardOwnerName":"John Smith","cardOwnerNationalID":"1234567"},"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765","consumerID":"fc5056e5-6b9b-429c-988d-74072e12189d"},"shvaTransactionDetails":{"shvaShovarNumber":"123456","shvaDealID":"12345678901234567890"},"vatRate":0.17,"vatTotal":174.36,"netTotal":1025.64,"correlationId":"5347f8d2-4357-4623-a92d-11fb848832c4","invoiceID":"7508f660-1341-45a8-92aa-e836c36f722b","issueInvoice":true,"documentOrigin":"checkout","paymentRequestID":"98f7eba5-9ab0-4023-81f1-cbecb45a3d4f","extension":{"customPropertyInMySystem":"MyCustomValue"},"allowTransmission":false,"allowTransmissionCancellation":true,"allowRefund":false,"allowInvoiceCreation":false}
               }
             }
           },
@@ -1599,7 +1599,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummariesAmountResponse`1_TransactionSummary"
+                  "$ref": "#/components/schemas/SummariesAmountResponse_TransactionSummary"
                 }
               }
             }
@@ -1632,19 +1632,19 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateTransactionRequest"
               },
-              "example": {"terminalID":"6294ac06-5a08-43de-b52a-c61ae21e656f","transactionType":"regularDeal","currency":"USD","paymentTypeEnum":"card","cardPresence":"cardNotPresent","creditCardSecureDetails":{"cvv":"123","cardNumber":"2673466233769269","cardExpiration":"08/21","cardOwnerName":"John Smith","cardOwnerNationalID":"5674639482"},"transactionAmount":123.45,"userAmount":false,"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765"}}
+              "example": {"terminalID":"007246de-27dd-4aa9-98d0-2587b062e3de","transactionType":"regularDeal","currency":"USD","paymentTypeEnum":"card","cardPresence":"cardNotPresent","creditCardSecureDetails":{"cvv":"123","cardNumber":"2673466233769269","cardExpiration":"08/21","cardOwnerName":"John Smith","cardOwnerNationalID":"5674639482"},"transactionAmount":123.45,"userAmount":false,"dealDetails":{"dealReference":"123456","dealDescription":"some product pack: 3kg.","consumerEmail":"email@example.com","consumerPhone":"555-765"}}
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"6b31219e-8d0a-447a-965e-947fa97fc1a4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"d9f18253-22c5-4edf-a753-fd1b35ea40c0","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1681,13 +1681,13 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"6ebf55a8-55c6-4472-a4a1-131577b90f54","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"ff74f559-b73a-4178-a40d-28b1591c0e07","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1726,13 +1726,13 @@
         ],
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"dcef7ca4-900a-49de-9573-f231602b271c","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"64908061-eac8-4ed0-aed6-cd6af268ae47","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1769,13 +1769,13 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"3099cc0e-fdaf-45f4-a908-04626d09f6d2","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"40c18f46-4727-42c4-a18c-50639fa2ca8e","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1812,13 +1812,13 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"71502346-9277-4bc6-a66f-1f61ba2caf02","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"3bf5b990-bccc-4654-bc74-32f185c597c4","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1832,8 +1832,8 @@
         "security": [
           {
             "oauth2": [
-              "terminal_or_merchant_frontend_or_admin",
-              "terminal_or_manager_or_admin"
+              "terminal_or_manager_or_admin",
+              "terminal_or_merchant_frontend_or_admin"
             ]
           }
         ]
@@ -1856,13 +1856,13 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
                 },
-                "example": {"message":"Validation Errors","status":"error","correlationId":"3b306b2f-91e6-4f3b-9f20-4e82bd3c79ef","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
+                "example": {"message":"Validation Errors","status":"error","correlationId":"30d75be8-3073-4942-bd2d-587f6ca45aa0","errors":[{"code":"paymentRequestAmount","description":"Could not convert string to decimal: 1200$. Path 'paymentRequestAmount', line 10, position 33."}]}
               }
             }
           },
@@ -1876,8 +1876,8 @@
         "security": [
           {
             "oauth2": [
-              "terminal_or_merchant_frontend_or_admin",
-              "terminal_or_manager_or_admin"
+              "terminal_or_manager_or_admin",
+              "terminal_or_merchant_frontend_or_admin"
             ]
           }
         ]
@@ -1945,7 +1945,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummariesResponse`1_ExecutedWebhookSummary"
+                  "$ref": "#/components/schemas/SummariesResponse_ExecutedWebhookSummary"
                 }
               }
             }
@@ -2019,13 +2019,6 @@
         ],
         "type": "object",
         "properties": {
-          "paymentType": {
-            "$ref": "#/components/schemas/PaymentTypeEnum"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
           "bank": {
             "type": "integer",
             "format": "int32"
@@ -2038,6 +2031,13 @@
             "maxLength": 13,
             "minLength": 5,
             "type": "string"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false,
@@ -2051,12 +2051,14 @@
         ],
         "type": "object",
         "properties": {
-          "paymentType": {
-            "$ref": "#/components/schemas/PaymentTypeEnum"
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
-          "amount": {
-            "type": "number",
-            "format": "double"
+          "reference": {
+            "type": "string",
+            "nullable": true
           },
           "bank": {
             "type": "integer",
@@ -2071,14 +2073,12 @@
             "minLength": 5,
             "type": "string"
           },
-          "dueDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
           },
-          "reference": {
-            "type": "string",
-            "nullable": true
+          "amount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -2089,9 +2089,6 @@
         ],
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "terminalID": {
             "type": "string",
             "description": "EasyCard terminal reference",
@@ -2154,6 +2151,9 @@
             "minLength": 0,
             "type": "string",
             "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false
@@ -2476,9 +2476,8 @@
           "InvoiceOnly",
           "Bank"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nCreditCard\r\n\r\nInvoiceOnly\r\n\r\nBank",
-        "format": "int32",
         "x-enumNames": [
           "CreditCard",
           "InvoiceOnly",
@@ -2488,9 +2487,6 @@
       "BillingDealUpdateRequest": {
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "terminalID": {
             "type": "string",
             "description": "EasyCard terminal reference",
@@ -2546,6 +2542,9 @@
           },
           "bankDetails": {
             "$ref": "#/components/schemas/BankDetails"
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false
@@ -2593,9 +2592,8 @@
           "ManualTrigger",
           "InProgress"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nAll\r\n\r\nCompleted\r\n\r\nInactive\r\n\r\nFailed\r\n\r\nCardExpired\r\n\r\nTriggeredTomorrow\r\n\r\nPaused\r\n\r\nExpiredNextMonth\r\n\r\nManualTrigger\r\n\r\nInProgress",
-        "format": "int32",
         "x-enumNames": [
           "All",
           "Completed",
@@ -2616,9 +2614,6 @@
         ],
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "terminalID": {
             "type": "string",
             "description": "EasyCard terminal reference",
@@ -2645,6 +2640,9 @@
             "type": "number",
             "description": "Transaction amount",
             "format": "currency"
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false,
@@ -2681,9 +2679,8 @@
           "regular",
           "Internet"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "Is the card physically scanned\r\n\r\ncardNotPresent\r\n\r\nregular\r\n\r\nInternet",
-        "format": "int32",
         "x-enumNames": [
           "CardNotPresent",
           "Regular",
@@ -2719,9 +2716,6 @@
         ],
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "currency": {
             "$ref": "#/components/schemas/CurrencyEnum"
           },
@@ -2742,6 +2736,9 @@
             "type": "string",
             "description": "Stored credit card details token (should be omitted in case if full credit card details used)",
             "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false,
@@ -2753,9 +2750,6 @@
         ],
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "terminalID": {
             "type": "string",
             "description": "EasyCard terminal reference",
@@ -2895,10 +2889,6 @@
             "nullable": true
           },
           "extension": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/JToken"
-            },
             "nullable": true
           },
           "threeDSServerTransID": {
@@ -2915,6 +2905,9 @@
           },
           "userAmount": {
             "type": "boolean"
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false,
@@ -2981,6 +2974,20 @@
         ],
         "type": "object",
         "properties": {
+          "cvv": {
+            "maxLength": 4,
+            "minLength": 3,
+            "pattern": "^[0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "authNum": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "after code 3 or 4 user can insert this value from credit company",
+            "nullable": true
+          },
           "cardNumber": {
             "maxLength": 19,
             "minLength": 9,
@@ -3022,20 +3029,6 @@
           },
           "cardReaderInput": {
             "type": "string",
-            "nullable": true
-          },
-          "cvv": {
-            "maxLength": 4,
-            "minLength": 3,
-            "pattern": "^[0-9]*$",
-            "type": "string",
-            "nullable": true
-          },
-          "authNum": {
-            "maxLength": 10,
-            "minLength": 0,
-            "type": "string",
-            "description": "after code 3 or 4 user can insert this value from credit company",
             "nullable": true
           }
         },
@@ -3102,9 +3095,8 @@
           "USD",
           "EUR"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
-        "format": "int32",
         "x-enumNames": [
           "ILS",
           "USD",
@@ -3235,9 +3227,8 @@
           "paymentRequest",
           "bit"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "Document origin (primarely payment transaction origin)\r\n\r\nUI (Document created manually by merchant user using Merchant's UI)\r\n\r\nAPI (Document created via API)\r\n\r\ncheckout (Document created by consumer using Checkout Page)\r\n\r\nbilling (Document generated based on billing schedule)\r\n\r\ndevice (Transaction created using pinpad device (or other device))\r\n\r\npaymentRequest (Document created by consumer using Checkout Page with a payment link)\r\n\r\nbit (Document created by consumer using Bit)",
-        "format": "int32",
         "x-enumNames": [
           "UI",
           "API",
@@ -3263,9 +3254,8 @@
           "specifiedDate",
           "afterNumberOfPayments"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nnever\r\n\r\nspecifiedDate\r\n\r\nafterNumberOfPayments",
-        "format": "int32",
         "x-enumNames": [
           "Never",
           "SpecifiedDate",
@@ -3393,9 +3383,8 @@
           "paymentInfo",
           "refundInvoice"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ninvoice\r\n\r\ninvoiceWithPaymentInfo\r\n\r\ncreditNote\r\n\r\npaymentInfo\r\n\r\nrefundInvoice",
-        "format": "int32",
         "x-enumNames": [
           "Invoice",
           "InvoiceWithPaymentInfo",
@@ -3494,10 +3483,6 @@
             "nullable": true
           },
           "extension": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/JToken"
-            },
             "nullable": true
           },
           "woocommerceID": {
@@ -3523,9 +3508,8 @@
           "J2",
           "J5"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "Type of Deal. optional values are; J2 for Check,J4 for Charge, J5 for Block card\r\n\r\nJ4 (Regular deal)\r\n\r\nJ2 (Check)\r\n\r\nJ5 (Block card)",
-        "format": "int32",
         "x-enumNames": [
           "J4",
           "J2",
@@ -3536,12 +3520,6 @@
           "Check",
           "Block card"
         ]
-      },
-      "JToken": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/JToken"
-        }
       },
       "OperationResponse": {
         "type": "object",
@@ -3590,14 +3568,30 @@
             "$ref": "#/components/schemas/OperationResponse"
           },
           "additionalData": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/JToken"
-            },
             "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "PayReqQuickStatusFilterTypeEnum": {
+        "enum": [
+          "pending",
+          "completed",
+          "failed",
+          "canceled",
+          "overdue",
+          "viewed"
+        ],
+        "type": "string",
+        "description": "\r\n\r\npending\r\n\r\ncompleted\r\n\r\nfailed\r\n\r\ncanceled\r\n\r\noverdue\r\n\r\nviewed",
+        "x-enumNames": [
+          "Pending",
+          "Completed",
+          "Failed",
+          "Canceled",
+          "Overdue",
+          "Viewed"
+        ]
       },
       "PaymentDetails": {
         "type": "object",
@@ -3730,10 +3724,6 @@
             "nullable": true
           },
           "extension": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/JToken"
-            },
             "description": "Any advanced payload which will be stored in EasyCard and then can be obtained using \"GetTransaction\"",
             "nullable": true
           },
@@ -3817,9 +3807,8 @@
           "PaymentRequestPaymentFailed",
           "PaymentRequestPayed"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nPaymentRequestCreated\r\n\r\nPaymentRequestUpdated\r\n\r\nPaymentRequestSent\r\n\r\nPaymentRequestCanceled\r\n\r\nPaymentRequestViewed\r\n\r\nPaymentRequestRejected\r\n\r\nPaymentRequestPaymentFailed\r\n\r\nPaymentRequestPayed",
-        "format": "int32",
         "x-enumNames": [
           "PaymentRequestCreated",
           "PaymentRequestUpdated",
@@ -3834,6 +3823,51 @@
       "PaymentRequestResponse": {
         "type": "object",
         "properties": {
+          "terminalID": {
+            "type": "string",
+            "description": "Terminal",
+            "format": "uuid",
+            "nullable": true
+          },
+          "terminalName": {
+            "type": "string",
+            "description": "EasyCard terminal name",
+            "nullable": true
+          },
+          "consumerID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentTransactionID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "paymentRequestUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRequestHistorySummary"
+            },
+            "nullable": true
+          },
+          "userPaidDetails": {
+            "$ref": "#/components/schemas/PaymentRequestUserPaidDetails"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
           "paymentRequestID": {
             "type": "string",
             "description": "Primary reference",
@@ -3928,51 +3962,6 @@
           },
           "transactionType": {
             "$ref": "#/components/schemas/TransactionTypeEnum"
-          },
-          "terminalID": {
-            "type": "string",
-            "description": "Terminal",
-            "format": "uuid",
-            "nullable": true
-          },
-          "terminalName": {
-            "type": "string",
-            "description": "EasyCard terminal name",
-            "nullable": true
-          },
-          "consumerID": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "paymentTransactionID": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "paymentRequestUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "history": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PaymentRequestHistorySummary"
-            },
-            "nullable": true
-          },
-          "userPaidDetails": {
-            "$ref": "#/components/schemas/PaymentRequestUserPaidDetails"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "origin": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3989,9 +3978,8 @@
           "canceled",
           "sendingFailed"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ninitial\r\n\r\nsending\r\n\r\nsent\r\n\r\nviewed\r\n\r\npayed\r\n\r\npaymentFailed\r\n\r\nrejected\r\n\r\ncanceled\r\n\r\nsendingFailed",
-        "format": "int32",
         "x-enumNames": [
           "Initial",
           "Sending",
@@ -4106,35 +4094,13 @@
           "cash",
           "bank"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ncard\r\n\r\ncheque\r\n\r\ncash\r\n\r\nbank",
-        "format": "int32",
         "x-enumNames": [
           "Card",
           "Cheque",
           "Cash",
           "Bank"
-        ]
-      },
-      "PayReqQuickStatusFilterTypeEnum": {
-        "enum": [
-          "pending",
-          "completed",
-          "failed",
-          "canceled",
-          "overdue",
-          "viewed"
-        ],
-        "type": "integer",
-        "description": "\r\n\r\npending\r\n\r\ncompleted\r\n\r\nfailed\r\n\r\ncanceled\r\n\r\noverdue\r\n\r\nviewed",
-        "format": "int32",
-        "x-enumNames": [
-          "Pending",
-          "Completed",
-          "Failed",
-          "Canceled",
-          "Overdue",
-          "Viewed"
         ]
       },
       "PinPadDetails": {
@@ -4155,9 +4121,8 @@
           "Yes",
           "No"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nAll\r\n\r\nYes\r\n\r\nNo",
-        "format": "int32",
         "x-enumNames": [
           "All",
           "Yes",
@@ -4175,9 +4140,8 @@
           "lastMonth",
           "last3Months"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ntoday\r\n\r\nyesterday\r\n\r\nthisWeek\r\n\r\nlastWeek\r\n\r\nlast30Days\r\n\r\nthisMonth\r\n\r\nlastMonth\r\n\r\nlast3Months",
-        "format": "int32",
         "x-enumNames": [
           "Today",
           "Yesterday",
@@ -4198,9 +4162,8 @@
           "AwaitingForTransmission",
           "Chargeback"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nPending\r\n\r\nCompleted\r\n\r\nFailed\r\n\r\nCanceled\r\n\r\nAwaitingForTransmission\r\n\r\nChargeback",
-        "format": "int32",
         "x-enumNames": [
           "Pending",
           "Completed",
@@ -4217,9 +4180,6 @@
         ],
         "type": "object",
         "properties": {
-          "dealDetails": {
-            "$ref": "#/components/schemas/DealDetails"
-          },
           "terminalID": {
             "type": "string",
             "description": "EasyCard terminal reference",
@@ -4306,6 +4266,9 @@
             "type": "string",
             "description": "ShvaAuthNum",
             "nullable": true
+          },
+          "dealDetails": {
+            "$ref": "#/components/schemas/DealDetails"
           }
         },
         "additionalProperties": false,
@@ -4324,9 +4287,8 @@
           "cardOwnerNationalIdRequired",
           "authCodeRequired"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nunknown\r\n\r\ncreditCardIsMerchantsCard\r\n\r\nnationalIdIsMerchantsId\r\n\r\nsingleTransactionAmountExceeded\r\n\r\ndailyAmountExceeded\r\n\r\ncreditCardDailyUsageExceeded\r\n\r\nrefundNotMatchRegularAmount\r\n\r\nrefundExceededCollateral\r\n\r\ncardOwnerNationalIdRequired\r\n\r\nauthCodeRequired",
-        "format": "int32",
         "x-enumNames": [
           "Unknown",
           "CreditCardIsMerchantsCard",
@@ -4349,9 +4311,8 @@
           "halfYear",
           "year"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\noneTime\r\n\r\nmonthly\r\n\r\nbiMonthly\r\n\r\nquarter\r\n\r\nhalfYear\r\n\r\nyear",
-        "format": "int32",
         "x-enumNames": [
           "OneTime",
           "Monthly",
@@ -4367,9 +4328,8 @@
           "OnlyDeleted",
           "All"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
-        "format": "int32",
         "x-enumNames": [
           "OnlyActive",
           "OnlyDeleted",
@@ -4389,9 +4349,8 @@
           "OTHER",
           "MASTERCARD"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nUNKNOWN\r\n\r\nISRACARD\r\n\r\nVISA\r\n\r\nDINERS_CLUB\r\n\r\nAMEX\r\n\r\nJCB\r\n\r\nDISCOVER\r\n\r\nLEUMI_CARD\r\n\r\nOTHER\r\n\r\nMASTERCARD",
-        "format": "int32",
         "x-enumNames": [
           "UNKNOWN",
           "ISRACARD",
@@ -4411,9 +4370,8 @@
           "initialDeal",
           "refund"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nregularDeal\r\n\r\ninitialDeal\r\n\r\nrefund",
-        "format": "int32",
         "x-enumNames": [
           "RegularDeal",
           "InitialDeal",
@@ -4425,9 +4383,8 @@
           "today",
           "specifiedDate"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ntoday\r\n\r\nspecifiedDate",
-        "format": "int32",
         "x-enumNames": [
           "Today",
           "SpecifiedDate"
@@ -4439,18 +4396,32 @@
           "warning",
           "error"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\nsuccess\r\n\r\nwarning\r\n\r\nerror",
-        "format": "int32",
         "x-enumNames": [
           "Success",
           "Warning",
           "Error"
         ]
       },
-      "SummariesAmountResponse`1_BillingDealSummary": {
+      "SummariesAmountResponse_BillingDealSummary": {
         "type": "object",
         "properties": {
+          "totalAmountILS": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountUSD": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmountEUR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "numberOfRecords": {
             "type": "integer",
             "format": "int32"
@@ -4461,7 +4432,13 @@
               "$ref": "#/components/schemas/BillingDealSummary"
             },
             "nullable": true
-          },
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesAmountResponse_PaymentRequestSummary": {
+        "type": "object",
+        "properties": {
           "totalAmountILS": {
             "type": "number",
             "format": "double",
@@ -4476,13 +4453,7 @@
             "type": "number",
             "format": "double",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SummariesAmountResponse`1_PaymentRequestSummary": {
-        "type": "object",
-        "properties": {
+          },
           "numberOfRecords": {
             "type": "integer",
             "format": "int32"
@@ -4493,7 +4464,13 @@
               "$ref": "#/components/schemas/PaymentRequestSummary"
             },
             "nullable": true
-          },
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesAmountResponse_TransactionSummary": {
+        "type": "object",
+        "properties": {
           "totalAmountILS": {
             "type": "number",
             "format": "double",
@@ -4508,13 +4485,7 @@
             "type": "number",
             "format": "double",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SummariesAmountResponse`1_TransactionSummary": {
-        "type": "object",
-        "properties": {
+          },
           "numberOfRecords": {
             "type": "integer",
             "format": "int32"
@@ -4525,26 +4496,11 @@
               "$ref": "#/components/schemas/TransactionSummary"
             },
             "nullable": true
-          },
-          "totalAmountILS": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "totalAmountUSD": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "totalAmountEUR": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "SummariesResponse`1_CreditCardTokenSummary": {
+      "SummariesResponse_CreditCardTokenSummary": {
         "type": "object",
         "properties": {
           "numberOfRecords": {
@@ -4561,7 +4517,7 @@
         },
         "additionalProperties": false
       },
-      "SummariesResponse`1_ExecutedWebhookSummary": {
+      "SummariesResponse_ExecutedWebhookSummary": {
         "type": "object",
         "properties": {
           "numberOfRecords": {
@@ -4584,9 +4540,8 @@
           "failedToCancelByAggregator",
           "canceledByAggregator"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ninitial\r\n\r\nfailedToCancelByAggregator\r\n\r\ncanceledByAggregator",
-        "format": "int32",
         "x-enumNames": [
           "Initial",
           "FailedToCancelByAggregator",
@@ -4814,10 +4769,6 @@
             "nullable": true
           },
           "extension": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/JToken"
-            },
             "description": "Any advanced payload which will be stored in EasyCard and then can be obtained using \"GetTransaction\"",
             "nullable": true
           },
@@ -4885,9 +4836,8 @@
           "rejectedByAggregator",
           "rejectedBy3Dsecure"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "\r\n\r\ninitial\r\n\r\nconfirmedByAggregator\r\n\r\nconfirmedByPinpadPreProcessor\r\n\r\nconfirmedByProcessor\r\n\r\nawaitingForTransmission\r\n\r\ntransmissionInProgress\r\n\r\ntransmissionCancelingInProgress\r\n\r\ncompleted\r\n\r\nawaitingToSelectJ5\r\n\r\nchargeback\r\n\r\nchargebackFailed\r\n\r\ntransmissionToProcessorFailed\r\n\r\nfailedToCommitByAggregator\r\n\r\nfailedToConfirmByProcesor\r\n\r\nfailedToConfirmByAggregator\r\n\r\ncancelledByMerchant\r\n\r\nrejectedByProcessor\r\n\r\nrejectedByAggregator\r\n\r\nrejectedBy3Dsecure",
-        "format": "int32",
         "x-enumNames": [
           "Initial",
           "ConfirmedByAggregator",
@@ -5037,9 +4987,8 @@
           "credit",
           "immediate"
         ],
-        "type": "integer",
+        "type": "string",
         "description": "Generic transaction type\r\n\r\nregularDeal (Simple deal type)\r\n\r\ninstallments (Deal to pay by parts)\r\n\r\ncredit (Credit deal)\r\n\r\nimmediate (Credit deal)",
-        "format": "int32",
         "x-enumNames": [
           "RegularDeal",
           "Installments",

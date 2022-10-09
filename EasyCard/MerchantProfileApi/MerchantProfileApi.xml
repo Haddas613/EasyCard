@@ -11,60 +11,96 @@
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.GetConsumers(MerchantProfileApi.Models.Billing.ConsumersFilter)">
             <summary>
-            End-customers list
+            Get Consumers list
             </summary>
-            <param name="filter"></param>
-            <returns></returns>
+            <param name="filter">Search filters</param>
+            <returns>Consumers list</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.GetConsumer(System.Guid)">
             <summary>
-            End-customer details
+            Get Consumer details
             </summary>
-            <param name="consumerID"></param>
-            <returns></returns>
+            <param name="consumerID">Consumer ID</param>
+            <returns>Consumer details</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.CreateConsumer(MerchantProfileApi.Models.Billing.ConsumerRequest)">
             <summary>
-            Create end-customer record
+            Create Consumer record
             </summary>
-            <param name="model"></param>
-            <returns></returns>
+            <param name="model">New Consumer details</param>
+            <returns>Operation result</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.UpdateConsumer(System.Guid,MerchantProfileApi.Models.Billing.UpdateConsumerRequest)">
             <summary>
-            Update end-customer details
+            Update Consumer details
             </summary>
-            <param name="consumerID"></param>
-            <param name="model"></param>
-            <returns></returns>
+            <param name="consumerID">Consumer ID</param>
+            <param name="model">Consumer details</param>
+            <returns>Operation result</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.RestoreConsumer(System.Guid)">
             <summary>
-            Restore customer
+            Restore (un-delete) customer
             </summary>
-            <param name="consumerID"></param>
-            <returns></returns>
+            <param name="consumerID">Consumer ID</param>
+            <returns>Operation result</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.DeleteConsumer(System.Guid)">
             <summary>
             Delete end-customer record and all related data like card tokens, billings, etc.
             </summary>
-            <param name="consumerID"></param>
-            <returns></returns>
+            <param name="consumerID">Consumer ID</param>
+            <returns>Operation result</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.BulkDeleteConsumers(System.Collections.Generic.List{System.Guid})">
             <summary>
-            Delete customers
+            Delete Consumer record
             </summary>
-            <param name="ids"></param>
-            <returns></returns>
+            <param name="ids">IDs of Consumers to delete</param>
+            <returns>Operation result</returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.GetItems(MerchantProfileApi.Models.Billing.ItemsFilter)">
+            <summary>
+            Get custom selling Items
+            </summary>
+            <param name="filter">Search filters</param>
+            <returns>Items list</returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.GetItem(System.Guid)">
+            <summary>
+            Get Item by ID
+            </summary>
+            <param name="itemID">Item ID</param>
+            <returns>Item details</returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.CreateItem(MerchantProfileApi.Models.Billing.ItemRequest)">
+            <summary>
+            Create new custom Item
+            </summary>
+            <param name="model">New Item details</param>
+            <returns>Operation result</returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.UpdateItem(System.Guid,MerchantProfileApi.Models.Billing.UpdateItemRequest)">
+            <summary>
+            Update Item
+            </summary>
+            <param name="itemID">Item ID</param>
+            <param name="model">Update exusting Item details</param>
+            <returns>Operation result</returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.DeleteItem(System.Guid)">
+            <summary>
+            Delete Item
+            </summary>
+            <param name="itemID">Item ID</param>
+            <returns>Operation result</returns>
         </member>
         <member name="M:MerchantProfileApi.Controllers.ItemsApiController.BulkDeleteItems(System.Collections.Generic.List{System.Guid})">
             <summary>
-            Delete items
+            Delete sevaral items
             </summary>
-            <param name="ids"></param>
-            <returns></returns>
+            <param name="ids">IDs of Itms to delete</param>
+            <returns>Operation result</returns>
         </member>
         <member name="T:MerchantProfileApi.Extensions.QueryJwtBearerOptions">
             <summary>

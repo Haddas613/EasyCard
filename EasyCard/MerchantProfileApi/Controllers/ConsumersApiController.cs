@@ -74,10 +74,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// End-customers list
+        /// Get Consumers list
         /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
+        /// <param name="filter">Search filters</param>
+        /// <returns>Consumers list</returns>
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<ConsumerSummary>>> GetConsumers([FromQuery] ConsumersFilter filter)
         {
@@ -96,10 +96,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// End-customer details
+        /// Get Consumer details
         /// </summary>
-        /// <param name="consumerID"></param>
-        /// <returns></returns>
+        /// <param name="consumerID">Consumer ID</param>
+        /// <returns>Consumer details</returns>
         [HttpGet]
         [Route("{consumerID}")]
         public async Task<ActionResult<ConsumerResponse>> GetConsumer([FromRoute] Guid consumerID)
@@ -115,10 +115,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Create end-customer record
+        /// Create Consumer record
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <param name="model">New Consumer details</param>
+        /// <returns>Operation result</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateConsumer([FromBody] ConsumerRequest model)
@@ -169,11 +169,11 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Update end-customer details
+        /// Update Consumer details
         /// </summary>
-        /// <param name="consumerID"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <param name="consumerID">Consumer ID</param>
+        /// <param name="model">Consumer details</param>
+        /// <returns>Operation result</returns>
         [HttpPut]
         [Route("{consumerID}")]
         public async Task<ActionResult<OperationResponse>> UpdateConsumer([FromRoute] Guid consumerID, [FromBody] UpdateConsumerRequest model)
@@ -190,10 +190,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Restore customer
+        /// Restore (un-delete) customer
         /// </summary>
-        /// <param name="consumerID"></param>
-        /// <returns></returns>
+        /// <param name="consumerID">Consumer ID</param>
+        /// <returns>Operation result</returns>
         [HttpPut]
         [Route("restore/{consumerID}")]
         public async Task<ActionResult<OperationResponse>> RestoreConsumer([FromRoute] Guid consumerID)
@@ -212,8 +212,8 @@ namespace MerchantProfileApi.Controllers
         /// <summary>
         /// Delete end-customer record and all related data like card tokens, billings, etc.
         /// </summary>
-        /// <param name="consumerID"></param>
-        /// <returns></returns>
+        /// <param name="consumerID">Consumer ID</param>
+        /// <returns>Operation result</returns>
         [HttpDelete]
         [Route("{consumerID}")]
         public async Task<ActionResult<OperationResponse>> DeleteConsumer([FromRoute] Guid consumerID)
@@ -237,10 +237,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Delete customers
+        /// Delete Consumer record
         /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
+        /// <param name="ids">IDs of Consumers to delete</param>
+        /// <returns>Operation result</returns>
         [HttpPost]
         [Route("bulkdelete")]
         public async Task<ActionResult<OperationResponse>> BulkDeleteConsumers([FromBody] List<Guid> ids)

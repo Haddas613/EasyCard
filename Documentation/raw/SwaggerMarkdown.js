@@ -1,7 +1,7 @@
 const myArgs = process.argv.slice(2);
 console.log(myArgs);
 
-const widdershins = require('widdershins');
+const widdershins = require('./widdershins');
 let options = {}; // defaults shown
 options.codeSamples = false;
 options.httpsnippet = false;
