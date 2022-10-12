@@ -48,8 +48,8 @@ namespace Merchants.Api.Controllers.Integrations
         }
 
         [HttpPost]
-        [Route("test-connection")]
-        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request, string deviceTerminalID)
+        [Route("test-connection/{deviceTerminalID:long}")]
+        public async Task<ActionResult<OperationResponse>> TestConnection([FromBody]ExternalSystemRequest request, [FromRoute]long deviceTerminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
@@ -81,7 +81,7 @@ namespace Merchants.Api.Controllers.Integrations
 
             StringBuilder results = new StringBuilder();
 
-            AuthRequest req = new AuthRequest(deviceTerminalID, request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
+            AuthRequest req = new AuthRequest(deviceTerminalID.ToString(), request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
 
             var getDetailsResult = await nayaxProcessor.TestConnection(req);
 
