@@ -112,6 +112,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
             var terminal = await GetTerminal(model.TerminalID);

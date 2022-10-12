@@ -14,6 +14,7 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Api.Models.Billing
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class BillingDealRequest : TransactionRequestBase
     {
         /// <summary>

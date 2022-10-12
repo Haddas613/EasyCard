@@ -366,7 +366,7 @@ namespace Transactions.Api
                 {
                     if (type.IsGenericType)
                     {
-                        return $"{type.Name}_{type.GetGenericArguments().FirstOrDefault().Name}";
+                        return $"{type.Name.Replace("`1", string.Empty)}_{type.GetGenericArguments().FirstOrDefault().Name}";
                     }
                     else
                     {
@@ -378,7 +378,7 @@ namespace Transactions.Api
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
 
                 // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
-                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+                //c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
 
                 // add Security information to each operation for OAuth2
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
@@ -443,6 +443,7 @@ namespace Transactions.Api
                     o.IncludeXmlCommentsFrom(xmlPath3);
                 });
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
             // DI
             services.AddDbContext<Merchants.Business.Data.MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));

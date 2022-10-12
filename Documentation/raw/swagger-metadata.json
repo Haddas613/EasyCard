@@ -1,0 +1,1622 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "EasyCard Metadata API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/consumers": {
+      "get": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Get Consumers list",
+        "parameters": [
+          {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ConsumerID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConsumersID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "NationalID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Phone",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExternalReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDesktopRefNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "WoocommerceID",
+            "in": "query",
+            "description": "External ID inside https://woocommerce.com system",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "EcwidID",
+            "in": "query",
+            "description": "External ID inside https://www.ecwid.com system",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesResponse_ConsumerSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Create Consumer record",
+        "requestBody": {
+          "description": "New Consumer details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/consumers/{consumerID}": {
+      "get": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Get Consumer details",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "Consumer ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Update Consumer details",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "Consumer ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Consumer details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConsumerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Delete end-customer record and all related data like card tokens, billings, etc.",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "Consumer ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/consumers/restore/{consumerID}": {
+      "put": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Restore (un-delete) customer",
+        "parameters": [
+          {
+            "name": "consumerID",
+            "in": "path",
+            "description": "Consumer ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/consumers/bulkdelete": {
+      "post": {
+        "tags": [
+          "ConsumersApi"
+        ],
+        "summary": "Delete Consumer record",
+        "requestBody": {
+          "description": "IDs of Consumers to delete",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/items": {
+      "get": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Get custom selling Items",
+        "parameters": [
+          {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyEnum"
+            }
+          },
+          {
+            "name": "TerminalID",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ExternalReference",
+            "in": "query",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "BillingDesktopRefNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "WoocommerceID",
+            "in": "query",
+            "description": "External ID inside https://woocommerce.com system",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "EcwidID",
+            "in": "query",
+            "description": "External ID inside https://www.ecwid.com system",
+            "schema": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "schema": {
+              "minimum": -1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ShowDeleted",
+            "in": "query",
+            "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+            "schema": {
+              "$ref": "#/components/schemas/ShowDeletedEnum"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummariesResponse_ItemSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Create new custom Item",
+        "requestBody": {
+          "description": "New Item details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/items/{itemID}": {
+      "get": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Get Item by ID",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "description": "Item ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Update Item",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "description": "Item ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update exusting Item details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Delete Item",
+        "parameters": [
+          {
+            "name": "itemID",
+            "in": "path",
+            "description": "Item ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/items/bulkdelete": {
+      "post": {
+        "tags": [
+          "ItemsApi"
+        ],
+        "summary": "Delete sevaral items",
+        "requestBody": {
+          "description": "IDs of Itms to delete",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "terminal_or_merchant_frontend"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "house": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "apartment": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BankDetails": {
+        "required": [
+          "bank",
+          "bankAccount",
+          "bankBranch"
+        ],
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankBranch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bankAccount": {
+            "maxLength": 13,
+            "minLength": 5,
+            "type": "string"
+          },
+          "paymentType": {
+            "$ref": "#/components/schemas/PaymentTypeEnum"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsumerRequest": {
+        "required": [
+          "consumerName"
+        ],
+        "type": "object",
+        "properties": {
+          "consumerEmail": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string",
+            "description": "End-customer name"
+          },
+          "consumerPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer National ID",
+            "nullable": true
+          },
+          "note": {
+            "maxLength": 256,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer note details",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in external system",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in BillingDesktop system",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Origin of customer",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "consumerSecondPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          },
+          "woocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create consumer"
+      },
+      "ConsumerResponse": {
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerPhone": {
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "consumerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerSecondPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          },
+          "woocommerceID": {
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsumerSummary": {
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "terminalID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "nullable": true
+          },
+          "consumerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "woocommerceID": {
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "hasBankAccount": {
+            "type": "boolean"
+          },
+          "hasCreditCard": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CurrencyEnum": {
+        "enum": [
+          "ILS",
+          "USD",
+          "EUR"
+        ],
+        "type": "string",
+        "description": "\r\n\r\nILS\r\n\r\nUSD\r\n\r\nEUR",
+        "x-enumNames": [
+          "ILS",
+          "USD",
+          "EUR"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemRequest": {
+        "required": [
+          "itemName"
+        ],
+        "type": "object",
+        "properties": {
+          "itemName": {
+            "maxLength": 128,
+            "minLength": 3,
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "woocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemResponse": {
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operationDoneBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "woocommerceID": {
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemSummary": {
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "woocommerceID": {
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OperationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusEnum"
+          },
+          "entityID": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "entityUID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "entityReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "nullable": true
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "innerResponse": {
+            "$ref": "#/components/schemas/OperationResponse"
+          },
+          "additionalData": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentTypeEnum": {
+        "enum": [
+          "card",
+          "cheque",
+          "cash",
+          "bank"
+        ],
+        "type": "string",
+        "description": "\r\n\r\ncard\r\n\r\ncheque\r\n\r\ncash\r\n\r\nbank",
+        "x-enumNames": [
+          "Card",
+          "Cheque",
+          "Cash",
+          "Bank"
+        ]
+      },
+      "ShowDeletedEnum": {
+        "enum": [
+          "OnlyActive",
+          "OnlyDeleted",
+          "All"
+        ],
+        "type": "string",
+        "description": "\r\n\r\nOnlyActive\r\n\r\nOnlyDeleted\r\n\r\nAll",
+        "x-enumNames": [
+          "OnlyActive",
+          "OnlyDeleted",
+          "All"
+        ]
+      },
+      "StatusEnum": {
+        "enum": [
+          "success",
+          "warning",
+          "error"
+        ],
+        "type": "string",
+        "description": "\r\n\r\nsuccess\r\n\r\nwarning\r\n\r\nerror",
+        "x-enumNames": [
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      },
+      "SummariesResponse_ConsumerSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConsumerSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummariesResponse_ItemSummary": {
+        "type": "object",
+        "properties": {
+          "numberOfRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemSummary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateConsumerRequest": {
+        "required": [
+          "consumerID",
+          "consumerName",
+          "updateTimestamp"
+        ],
+        "type": "object",
+        "properties": {
+          "consumerID": {
+            "type": "string",
+            "description": "Target record ID",
+            "format": "uuid"
+          },
+          "consumerEmail": {
+            "type": "string",
+            "description": "End-customer Email",
+            "format": "email",
+            "nullable": true
+          },
+          "consumerName": {
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string",
+            "description": "End-customer name"
+          },
+          "consumerPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "consumerNationalID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer National ID",
+            "nullable": true
+          },
+          "consumerAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in external system",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Origin of customer",
+            "nullable": true
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "description": "Concurrency check",
+            "format": "byte"
+          },
+          "consumerSecondPhone": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "End-customer Phone",
+            "nullable": true
+          },
+          "billingDesktopRefNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ID in BillingDesktop system",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "bankDetails": {
+            "$ref": "#/components/schemas/BankDetails"
+          },
+          "woocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Update end-customer info"
+      },
+      "UpdateItemRequest": {
+        "required": [
+          "itemName"
+        ],
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemName": {
+            "maxLength": 128,
+            "minLength": 3,
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyEnum"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "woocommerceID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://woocommerce.com system",
+            "nullable": true
+          },
+          "ecwidID": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "External ID inside https://www.ecwid.com system",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": [ ]
+    }
+  ]
+}

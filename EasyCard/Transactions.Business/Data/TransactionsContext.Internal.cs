@@ -254,7 +254,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 var query = "[dbo].[PR_GenerateMasavFile]";
 
-                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = institueName, InstituteNumber = instituteNumber, SendingInstitute = sendingInstitute, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.Completed });
+                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = institueName, InstituteNumber = instituteNumber, SendingInstitute = sendingInstitute, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.AwaitingForTransmission });
 
                 args.Add("@Error", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
                 args.Add("@MasavFileID", dbType: DbType.Int64, direction: ParameterDirection.Output, size: -1);

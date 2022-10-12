@@ -46,6 +46,7 @@ namespace Transactions.Api.Controllers
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class InvoicingController : ApiControllerBase
     {
         private readonly IInvoiceService invoiceService;
@@ -238,13 +239,14 @@ namespace Transactions.Api.Controllers
 
                     var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
                     var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                    var lang = Request.GetTypedHeaders().AcceptLanguage?.FirstOrDefault()?.Value.Value;
 
                     try
                     {
                         var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
                         invoicingRequest.InvoiceingSettings = invoicingSettings;
 
-                        var invoicingResponse = await invoicing.GetDownloadUrls(dbInvoice.ExternalSystemData, invoicingSettings);
+                        var invoicingResponse = await invoicing.GetDownloadUrls(dbInvoice.ExternalSystemData, invoicingSettings, lang);
 
                         return new DownloadInvoiceResponse(invoicingResponse) { Status = StatusEnum.Success, EntityUID = invoiceID };
                     }

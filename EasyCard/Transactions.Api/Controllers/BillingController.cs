@@ -34,12 +34,14 @@ using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Extensions;
 using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
+using Transactions.Api.Swagger;
 using Transactions.Api.Validation;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
@@ -133,7 +135,7 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
-        /// Get billing deals details using filter
+        /// Get billing deals list using filter
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
@@ -147,9 +149,9 @@ namespace Transactions.Api.Controllers
             //TODO: temporary, should be TotalAmount not TransactionAmount * CurrentDeal
             var totalAmount = new
             {
-                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
-                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
-                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TransactionAmount * e.CurrentDeal.GetValueOrDefault(1)).FutureValue(),
+                ILS = query.Where(e => e.Currency == CurrencyEnum.ILS).DeferredSum(e => e.TransactionAmount).FutureValue(),
+                USD = query.Where(e => e.Currency == CurrencyEnum.USD).DeferredSum(e => e.TransactionAmount).FutureValue(),
+                EUR = query.Where(e => e.Currency == CurrencyEnum.EUR).DeferredSum(e => e.TransactionAmount).FutureValue(),
             };
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
@@ -323,6 +325,8 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{BillingDealID}")]
+        [SwaggerResponseExample(201, typeof(GetBillingDealResponseExample))]
+        [ProducesResponseType(typeof(BillingDealResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<BillingDealResponse>> GetBillingDeal([FromRoute] Guid billingDealID)
         {
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
@@ -346,7 +350,14 @@ namespace Transactions.Api.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OperationResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(OperationResponse), StatusCodes.Status400BadRequest)]
+        [SwaggerRequestExample(typeof(BillingDealRequest), typeof(CreateBillingDealExample))]
+        [SwaggerResponseExample(201, typeof(CreateBillingOperationResponseExample))]
+        [SwaggerResponseExample(404, typeof(EntityNotFoundOperationResponseExample))]
+        [SwaggerResponseExample(400, typeof(ValidationErrorsOperationResponseExample))]
         public async Task<ActionResult<OperationResponse>> CreateBillingDeal([FromBody] BillingDealRequest model)
         {
             // TODO: caching
@@ -488,6 +499,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [Route("/api/invoiceonlybilling")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceOnlyRequest model)
         {
             // TODO: caching
@@ -523,13 +535,14 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
-        /// Update invoice only billing deal details. 
+        /// Update invoice only billing deal details.
         /// </summary>
         /// <param name="billingDealID"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("/api/invoiceonlybilling/{BillingDealID}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceOnlyUpdateRequest model)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeal(billingDealID));
@@ -651,6 +664,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("disable-billing-deals")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> DisableBillingDeals([FromBody] DisableBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
@@ -675,6 +689,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("activate-billing-deals")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> ActivateBillingDeals([FromBody] ActivateBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
@@ -741,6 +756,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("trigger-by-terminal/{terminalID:guid}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> TriggerBillingDealsByTerminal(Guid terminalID)
             => await ProcessSendDueBillingDealsToQueue(terminalID);
 
@@ -751,6 +767,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("trigger-billing-deals")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
@@ -842,6 +859,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{billingDealID}/pause")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> PauseBilling([FromRoute]Guid billingDealID, [FromBody] PauseBillingDealRequest request)
         {
             if (!ModelState.IsValid)
@@ -870,7 +888,6 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { Status = StatusEnum.Success, Message = Messages.BillingDealPaused, EntityUID = billingDealID });
         }
 
-
         /// <summary>
         /// Unpause billing deal
         /// </summary>
@@ -878,6 +895,7 @@ namespace Transactions.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{billingDealID}/unpause")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<OperationResponse>> UnpauseBilling([FromRoute]Guid billingDealID)
         {
             if (!ModelState.IsValid)

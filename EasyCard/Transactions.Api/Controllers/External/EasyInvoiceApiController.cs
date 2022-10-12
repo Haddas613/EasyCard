@@ -20,6 +20,7 @@ namespace Transactions.Api.Controllers.Integrations
     [Produces("application/json")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.MerchantFrontend)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class EasyInvoiceApiController : ApiControllerBase
     {
         private readonly ECInvoiceInvoicing eCInvoicing;
@@ -27,12 +28,13 @@ namespace Transactions.Api.Controllers.Integrations
         private readonly IMapper mapper;
         private readonly IBlobStorageService blobStorageService;
         private readonly Shared.ApplicationSettings appSettings;
+
         public EasyInvoiceApiController(
             ECInvoiceInvoicing eCInvoicing,
             IBlobStorageService blobStorageService,
             ITerminalsService terminalsService,
             IMapper mapper,
-             IOptions<Shared.ApplicationSettings> appSettings)
+            IOptions<Shared.ApplicationSettings> appSettings)
         {
             this.blobStorageService = blobStorageService;
             this.eCInvoicing = eCInvoicing;

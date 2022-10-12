@@ -77,9 +77,11 @@ namespace Transactions.Business.Services
             return await context.GenerateMasavFile(merchantID, terminalID, institueName, sendingInstitute, instituteNumber, masavFileDate);
         }
 
-        public Task SetMasavFilePayed(long masavFileID, DateTime payedDate)
+        public async Task SetMasavFilePayed(long masavFileID, long masavFileRowID)
         {
-            throw new NotImplementedException();
+            MasavFileRow row = GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
+            row.IsPayed = true;
+            await UpdateMasavFileRow(row);
         }
 
         private IQueryable<MasavFileRow> GetRowsInternal()

@@ -465,7 +465,7 @@ namespace EasyInvoice
             }
         }
 
-        public Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings)
+        public Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings, string language = null)
         {
             throw new NotImplementedException();
         }

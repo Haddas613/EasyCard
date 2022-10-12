@@ -73,6 +73,11 @@ namespace MerchantProfileApi.Controllers
             };
         }
 
+        /// <summary>
+        /// Get custom selling Items
+        /// </summary>
+        /// <param name="filter">Search filters</param>
+        /// <returns>Items list</returns>
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItems([FromQuery] ItemsFilter filter)
         {
@@ -117,6 +122,11 @@ namespace MerchantProfileApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Item by ID
+        /// </summary>
+        /// <param name="itemID">Item ID</param>
+        /// <returns>Item details</returns>
         [HttpGet]
         [Route("{itemID}")]
         public async Task<ActionResult<ItemResponse>> GetItem([FromRoute] Guid itemID)
@@ -131,6 +141,11 @@ namespace MerchantProfileApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Create new custom Item
+        /// </summary>
+        /// <param name="model">New Item details</param>
+        /// <returns>Operation result</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateItem([FromBody] ItemRequest model)
@@ -146,6 +161,12 @@ namespace MerchantProfileApi.Controllers
             return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID));
         }
 
+        /// <summary>
+        /// Update Item
+        /// </summary>
+        /// <param name="itemID">Item ID</param>
+        /// <param name="model">Update exusting Item details</param>
+        /// <returns>Operation result</returns>
         [HttpPut]
         [Route("{itemID}")]
         public async Task<ActionResult<OperationResponse>> UpdateItem([FromRoute] Guid itemID, [FromBody] UpdateItemRequest model)
@@ -161,6 +182,11 @@ namespace MerchantProfileApi.Controllers
             return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID));
         }
 
+        /// <summary>
+        /// Delete Item
+        /// </summary>
+        /// <param name="itemID">Item ID</param>
+        /// <returns>Operation result</returns>
         [HttpDelete]
         [Route("{itemID}")]
         public async Task<ActionResult<OperationResponse>> DeleteItem([FromRoute] Guid itemID)
@@ -177,10 +203,10 @@ namespace MerchantProfileApi.Controllers
         }
 
         /// <summary>
-        /// Delete items
+        /// Delete sevaral items
         /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
+        /// <param name="ids">IDs of Itms to delete</param>
+        /// <returns>Operation result</returns>
         [HttpPost]
         [Route("bulkdelete")]
         public async Task<ActionResult<OperationResponse>> BulkDeleteItems([FromBody] List<Guid> ids)
@@ -205,6 +231,7 @@ namespace MerchantProfileApi.Controllers
 
         [HttpGet]
         [Route("$excel")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItemsExcel([FromQuery] ItemsFilter filter)
         {
             var query = itemsService.GetItems().Filter(filter);

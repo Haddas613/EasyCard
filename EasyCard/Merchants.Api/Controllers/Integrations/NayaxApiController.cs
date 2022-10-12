@@ -48,12 +48,12 @@ namespace Merchants.Api.Controllers.Integrations
         }
 
         [HttpPost]
-        [Route("test-connection")]
-        public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
+        [Route("test-connection/{deviceTerminalID:long}")]
+        public async Task<ActionResult<OperationResponse>> TestConnection([FromBody]ExternalSystemRequest request, [FromRoute]long deviceTerminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var externalSystems = await terminalsService.GetTerminalExternalSystems(request.TerminalID);
-           // NayaxTerminalSettings
+            // NayaxTerminalSettings
             var nayaxIntegration = EnsureExists(externalSystems.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
 
             if (nayaxIntegration == null)
@@ -81,16 +81,13 @@ namespace Merchants.Api.Controllers.Integrations
 
             StringBuilder results = new StringBuilder();
 
-            foreach (var device in settings.devices)
+            AuthRequest req = new AuthRequest(deviceTerminalID.ToString(), request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
+
+            var getDetailsResult = await nayaxProcessor.TestConnection(req);
+
+            if (getDetailsResult != null)
             {
-                AuthRequest req = new AuthRequest(device.TerminalID, request.TerminalID);//settings.. //request.Settings.externalSystemSettings.);
-
-                var getDetailsResult = await nayaxProcessor.TestConnection(req);
-
-                if (getDetailsResult != null)
-                {
-                    results.AppendLine(getDetailsResult);
-                }
+                results.AppendLine(getDetailsResult);
             }
 
             //TODO: save on success?
@@ -205,7 +202,7 @@ namespace Merchants.Api.Controllers.Integrations
         }
 
 
-       
+
 
         [HttpGet]
         [Route("request-logs/{entityID}")]

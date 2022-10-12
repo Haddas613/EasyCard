@@ -17,7 +17,7 @@
         </member>
         <member name="M:Transactions.Api.Controllers.BillingController.GetBillingDeals(Transactions.Api.Models.Billing.BillingDealsFilter)">
             <summary>
-            Get billing deals details using filter
+            Get billing deals list using filter
             </summary>
             <param name="filter"></param>
             <returns></returns>
@@ -60,7 +60,7 @@
         </member>
         <member name="M:Transactions.Api.Controllers.BillingController.UpdateBillingDealInvoice(System.Guid,Transactions.Api.Models.Billing.BillingDealInvoiceOnlyUpdateRequest)">
             <summary>
-            Update invoice only billing deal details. 
+            Update invoice only billing deal details.
             </summary>
             <param name="billingDealID"></param>
             <param name="model"></param>
