@@ -299,5 +299,9 @@ namespace Transactions.Api.Models.Transactions
         public string MerchantName { get; set; }
 
         public Guid? PaymentIntentID { get; set; }
+
+        [EnumDataType(typeof(SolekEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SolekEnum Solek { get; set; }
     }
 }

@@ -40,6 +40,8 @@ namespace Transactions.Api.Models.Transactions
 
         public decimal TransactionAmount { get; set; }
 
+        public int NumberOfPayments { get; set; }
+
         public decimal InitialPaymentAmount { get; set; }
         public decimal InstallmentPaymentAmount { get; set; }
 

@@ -223,7 +223,7 @@
     <value>Add card</value>
   </data>
   <data name="InitialPaymentAmount" xml:space="preserve">
-    <value>Initial Payment Amount</value>
+    <value>Amount of first payment</value>
   </data>
   <data name="AuthorizationCode" xml:space="preserve">
     <value>Authorization Code</value>

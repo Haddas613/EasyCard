@@ -33,6 +33,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CardPresenceResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\CardSolekResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CardSolekResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\FilterEnumsResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -69,6 +74,10 @@
     <EmbeddedResource Update="Resources\CardPresenceResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CardPresenceResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CardSolekResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CardSolekResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilterEnumsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
