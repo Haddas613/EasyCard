@@ -55,11 +55,11 @@ namespace RapidOne.Models
 
     public class FinDocItemDto
     {
-        public int? LineNum { get; set; }
-        public string LineStatus { get; set; }
-        public string DocStatus { get; set; }
+        //public int? LineNum { get; set; }
+        //public string LineStatus { get; set; }
+        //public string DocStatus { get; set; }
         public string Code { get; set; }
-        public string TaxCode { get; set; }
+        //public string TaxCode { get; set; }
         public string Description { get; set; }
         public decimal Quantity { get; set; }
         public FinDocUnitPriceDto UnitPrice { get; set; }
@@ -70,28 +70,28 @@ namespace RapidOne.Models
         public decimal ToPay { get; set; }
         public decimal Paid { get; set; }
         public decimal VatPercent { get; set; }
-        public string VatGroup { get; set; }
+        //public string VatGroup { get; set; }
         public decimal Rate { get; set; }
-        public string Notes { get; set; }
+        //public string Notes { get; set; }
 
-        public bool IsDraft { get; set; }
-        public bool IsIssuer { get; set; }
-        public int PriceListId { get; set; }
+        //public bool IsDraft { get; set; }
+        //public bool IsIssuer { get; set; }
+        //public int PriceListId { get; set; }
         public bool? Charge { get; set; }
-        public int? ApptSrvId { get; set; }
-        public string SalesStaff { get; set; }
+        //public int? ApptSrvId { get; set; }
+        //public string SalesStaff { get; set; }
 
-        public bool? IsVoucherItem { get; set; }
+        //public bool? IsVoucherItem { get; set; }
 
-        public DateTime? VoucherExpiration { get; set; }
-        public int? VoucherMonetary { get; set; }
-        public int? VoucherType { get; set; }
+        //public DateTime? VoucherExpiration { get; set; }
+        //public int? VoucherMonetary { get; set; }
+        //public int? VoucherType { get; set; }
 
-        public bool? IsVoucherFullfill { get; set; }
-        public string VoucherNumber { get; set; }
+        ///public bool? IsVoucherFullfill { get; set; }
+        //public string VoucherNumber { get; set; }
 
         // there is no null-check in R1 so this empty array required
-        public string[] Users { get; set; }
+        //public string[] Users { get; set; }
 
         [JsonExtensionData]
         public Newtonsoft.Json.Linq.JObject Extension { get; set; }
