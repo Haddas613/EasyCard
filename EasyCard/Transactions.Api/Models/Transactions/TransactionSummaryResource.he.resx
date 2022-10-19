@@ -138,6 +138,12 @@
   <data name="DocumentOrigin" xml:space="preserve">
     <value>מקור</value>
   </data>
+  <data name="InitialPaymentAmount" xml:space="preserve">
+    <value>סכום בתשלום ראשון</value>
+  </data>
+  <data name="InstallmentPaymentAmount" xml:space="preserve">
+    <value>סכום בשאר התשלומים</value>
+  </data>
   <data name="JDealType" xml:space="preserve">
     <value>סוג J</value>
   </data>
@@ -146,6 +152,9 @@
   </data>
   <data name="MerchantName" xml:space="preserve">
     <value>בית עסק</value>
+  </data>
+  <data name="NumberOfPayments" xml:space="preserve">
+    <value>מספר תשלומים</value>
   </data>
   <data name="PaymentTransactionID" xml:space="preserve">
     <value>מזהה</value>
@@ -167,6 +176,9 @@
   </data>
   <data name="ShvaDealID" xml:space="preserve">
     <value>מזהה עסקת שב"א</value>
+  </data>
+  <data name="Solek" xml:space="preserve">
+    <value>סולק</value>
   </data>
   <data name="SpecialTransactionType" xml:space="preserve">
     <value>סוג מיוחד</value>

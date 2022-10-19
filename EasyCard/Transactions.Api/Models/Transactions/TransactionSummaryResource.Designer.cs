@@ -19,7 +19,7 @@ namespace Transactions.Api.Models.Transactions {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class TransactionSummaryResource {
@@ -133,6 +133,24 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial Payment Amount.
+        /// </summary>
+        internal static string InitialPaymentAmount {
+            get {
+                return ResourceManager.GetString("InitialPaymentAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installment Payment Amount.
+        /// </summary>
+        internal static string InstallmentPaymentAmount {
+            get {
+                return ResourceManager.GetString("InstallmentPaymentAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JDeal type.
         /// </summary>
         internal static string JDealType {
@@ -156,6 +174,15 @@ namespace Transactions.Api.Models.Transactions {
         internal static string MerchantName {
             get {
                 return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number Of Payments.
+        /// </summary>
+        internal static string NumberOfPayments {
+            get {
+                return ResourceManager.GetString("NumberOfPayments", resourceCulture);
             }
         }
         
@@ -219,6 +246,15 @@ namespace Transactions.Api.Models.Transactions {
         internal static string ShvaDealID {
             get {
                 return ResourceManager.GetString("ShvaDealID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solek.
+        /// </summary>
+        internal static string Solek {
+            get {
+                return ResourceManager.GetString("Solek", resourceCulture);
             }
         }
         
