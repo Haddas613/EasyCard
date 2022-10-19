@@ -111,7 +111,7 @@ DECLARE @OutputTransactionIDs table(
 UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
 OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
 FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
-WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus";
+WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus and ISNULL(t.ShvaTranRecord, n.ShvaTranRecord) is not null";
 
             // security check
             // TODO: replace to query builder
