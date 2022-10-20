@@ -22,5 +22,14 @@ namespace Merchants.Api.Models.Terminal
         public byte[] UpdateTimestamp { get; set; }
 
         public DateTime? Created { get; set; }
+
+        public NayaxTerminalInfo DeviceTerminal { get; set; }
+    }
+
+    public class NayaxTerminalInfo
+    {
+         public string PosName { get; set; }
+
+        public long? TerminalID { get; set; }
     }
 }
