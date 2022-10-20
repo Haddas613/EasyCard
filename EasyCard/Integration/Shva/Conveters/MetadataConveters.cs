@@ -226,7 +226,7 @@ namespace Shva.Conveters
 
         public static string GetShvaAddendum2By3dsEci(this string eci, string dsTransID)
         {
-            return $"A002{eci}D2012D3{dsTransID.Length.ToString("00")}{dsTransID}";
+            return $"A002{eci}D2012D3{(dsTransID?.Length).GetValueOrDefault().ToString("00")}{dsTransID}";
         }
     }
 }
