@@ -1,4 +1,5 @@
-﻿using RapidOne.Models;
+﻿using Newtonsoft.Json.Linq;
+using RapidOne.Models;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
@@ -68,6 +69,18 @@ namespace RapidOne.Converters
 
             foreach (var item in message.DealDetails.Items)
             {
+                if (item.Extension == null)
+                {
+                    item.Extension = new JObject();
+                }
+
+                // there is no null-check in R1 so this empty array required
+                var extUsersPresent = item.Extension.TryGetValue("users", StringComparison.InvariantCultureIgnoreCase, out var extUsers);
+                if (extUsersPresent != true)
+                {
+                    item.Extension.Add("users", new JArray());
+                }
+
                 var productInvoice = new FinDocItemDto
                 {
                     Code = item.ExternalReference ?? "ROVAT",
@@ -76,7 +89,7 @@ namespace RapidOne.Converters
                     UnitPrice = new FinDocUnitPriceDto()
                     {
                         Value = Math.Round(item.NetAmount.GetValueOrDefault() / item.Quantity.GetValueOrDefault(1), 2, MidpointRounding.AwayFromZero), // TODO: coins
-                        Currency = "₪"
+                        Currency = "₪" // TODO: currency
                     },
                     Subtotal = item.NetAmount.GetValueOrDefault(),
                     VatPercent = (item.VATRate.GetValueOrDefault()) * 100m,
@@ -85,10 +98,24 @@ namespace RapidOne.Converters
                     ToPay = item.Amount.GetValueOrDefault(),
                     Discount = item.Discount.GetValueOrDefault(),
                     Rate = 1,
-                    Users = new string[] { }, // there is no null-check in R1 so this empty array required
                     Charge = terminalSettings.Charge,
                     Extension = item.Extension
                 };
+
+                if (item.Extension.TryGetValue("charge", StringComparison.InvariantCultureIgnoreCase, out var extCharge))
+                {
+                    productInvoice.Charge = extCharge.ToObject<bool?>();
+                }
+
+                if (item.Extension.TryGetValue("rate", StringComparison.InvariantCultureIgnoreCase, out var extRate))
+                {
+                    productInvoice.Rate = extRate.ToObject<decimal>();
+                }
+
+                if (item.Extension.TryGetValue("toPay", StringComparison.InvariantCultureIgnoreCase, out var extToPay))
+                {
+                    productInvoice.ToPay = extToPay.ToObject<decimal>();
+                }
 
                 listProducts.Add(productInvoice);
             }
