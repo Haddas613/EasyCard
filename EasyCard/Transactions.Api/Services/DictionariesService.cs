@@ -110,6 +110,10 @@ namespace Transactions.Api.Services
             var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
                 .ToDictionary(m => filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
+            var solekEnums = Enum.GetValues(solekEnum).Cast<SolekEnum>()
+              .ToDictionary(m => solekEnum.GetDataContractAttrForEnum(m.ToString()), m => CardSolekResource.ResourceManager.GetString(m.ToString(), culture));
+
+
             var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
                 .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -119,9 +123,7 @@ namespace Transactions.Api.Services
             var invoiceStatuses = Enum.GetValues(invoiceStatusEnum).Cast<InvoiceStatusEnum>()
                 .ToDictionary(m => invoiceStatusEnum.GetDataContractAttrForEnum(m.ToString()), m => InvoiceEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
-            var solekEnums = Enum.GetValues(solekEnum).Cast<SolekEnum>()
-               .ToDictionary(m => solekEnum.GetDataContractAttrForEnum(m.ToString()), m => CardSolekResource.ResourceManager.GetString(m.ToString(), culture));
-
+           
 
             var repeatPeriodTypes = Enum.GetValues(repeatPeriodTypeEnumType).Cast<RepeatPeriodTypeEnum>()
                 .ToDictionary(m => repeatPeriodTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
@@ -169,13 +171,14 @@ namespace Transactions.Api.Services
             response.QuickTimeFilterTypeEnum = filterQuickTimeTypes;
             response.QuickDateFilterTypeEnum = filterQuickDateTypes;
             response.QuickStatusFilterTypeEnum = filterQuickStatusTypes;
+            response.SolekEnum = solekEnums;
             response.DateFilterTypeEnum = filterDateTypes;
             response.InvoiceTypeEnum = invoiceTypes;
             response.RepeatPeriodTypeEnum = repeatPeriodTypes;
             response.StartAtTypeEnum = startAtTypes;
             response.EndAtTypeEnum = endAtTypes;
             response.InvoiceStatusEnum = invoiceStatuses;
-            response.SolekEnum = solekEnums;
+            
             response.PaymentRequestStatusEnum = prStatusTypes;
             response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
             response.PaymentTypeEnum = paymentTypes;
