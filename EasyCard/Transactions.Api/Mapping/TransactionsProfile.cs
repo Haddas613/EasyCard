@@ -64,6 +64,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
                 .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(src => src.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.DealDescription, o => o.MapFrom(src => src.DealDetails.DealDescription))
+                .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<PaymentTransaction, TransactionSummaryAdmin>()
@@ -71,6 +72,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
                 .ForMember(d => d.ConsumerExternalReference, o => o.MapFrom(src => src.DealDetails.ConsumerExternalReference))
                 .ForMember(d => d.DealDescription, o => o.MapFrom(src => src.DealDetails.DealDescription))
+                .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
             CreateMap<TransactionSummaryDb, TransactionSummary>()

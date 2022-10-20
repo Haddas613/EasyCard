@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;

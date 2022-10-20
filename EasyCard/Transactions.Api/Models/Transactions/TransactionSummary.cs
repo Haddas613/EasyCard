@@ -29,6 +29,10 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
+        [EnumDataType(typeof(SolekEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SolekEnum Solek { get; set; }
+
         public string CardNumber { get; set; }
 
         /// <summary>

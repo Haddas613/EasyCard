@@ -141,6 +141,12 @@
   <data name="DocumentOrigin" xml:space="preserve">
     <value>Origin</value>
   </data>
+  <data name="InitialPaymentAmount" xml:space="preserve">
+    <value>Initial Payment Amount</value>
+  </data>
+  <data name="InstallmentPaymentAmount" xml:space="preserve">
+    <value>Installment Payment Amount</value>
+  </data>
   <data name="JDealType" xml:space="preserve">
     <value>JDeal type</value>
   </data>
@@ -149,6 +155,9 @@
   </data>
   <data name="MerchantName" xml:space="preserve">
     <value>Merchant</value>
+  </data>
+  <data name="NumberOfPayments" xml:space="preserve">
+    <value>Number Of Payments</value>
   </data>
   <data name="PaymentTransactionID" xml:space="preserve">
     <value>ID</value>
@@ -170,6 +179,9 @@
   </data>
   <data name="ShvaDealID" xml:space="preserve">
     <value>Shva Deal ID</value>
+  </data>
+  <data name="Solek" xml:space="preserve">
+    <value>Solek</value>
   </data>
   <data name="SpecialTransactionType" xml:space="preserve">
     <value>Spec. type</value>
