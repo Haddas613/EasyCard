@@ -100,6 +100,7 @@ namespace Transactions.Api.Controllers
         private readonly External.BitApiController bitController;
         private readonly IThreeDSIntermediateStorage threeDSIntermediateStorage;
         private readonly TransmissionController transmissionController;
+        private readonly IItemsService itemsService;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,

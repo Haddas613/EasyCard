@@ -153,6 +153,12 @@ namespace Transactions.Api.Controllers
 
             transaction.DealDetails.CheckConsumerDetails(consumer, dbToken);
 
+            if (httpContextAccessor.GetUser().IsWooCommerce() &&
+                transaction.DealDetails?.Items?.Any(d => !string.IsNullOrWhiteSpace(d.WoocommerceID)) == true)
+            {
+                await ConvertWooCommerceItems(transaction.DealDetails?.Items);
+            }
+
             transaction.Calculate();
 
             // Update details if needed
@@ -305,6 +311,29 @@ namespace Transactions.Api.Controllers
             _ = events.RaiseTransactionEvent(transaction, CustomEvent.TransactionCreated);
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
+        }
+
+        private async Task ConvertWooCommerceItems(IEnumerable<Item> items)
+        {
+            try
+            {
+                foreach (var item in items)
+                {
+                    if (item.ItemID == null && !string.IsNullOrWhiteSpace(item.WoocommerceID))
+                    {
+                        var existingItem = await itemsService.GetItems().FirstOrDefaultAsync(d => d.WoocommerceID == item.WoocommerceID);
+                        if (existingItem != null)
+                        {
+                            item.ItemID = existingItem.ItemID;
+                            item.ExternalReference = existingItem.ExternalReference;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Unable to convert WooCommerce items: {ex.Message}");
+            }
         }
 
         private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest, Terminal terminal)

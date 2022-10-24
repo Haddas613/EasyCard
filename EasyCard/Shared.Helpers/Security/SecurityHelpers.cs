@@ -76,6 +76,14 @@ namespace Shared.Helpers.Security
             return user?.FindFirst("client_id")?.Value == "terminal" && user?.FindFirst(Claims.TerminalIDClaim)?.Value != null;
         }
 
+        /// <summary>
+        /// Non-interactive api access from WooCommerce
+        /// </summary>
+        public static bool IsWooCommerce(this ClaimsPrincipal user)
+        {
+            return user?.FindFirst("client_id")?.Value == "terminal" && user?.FindFirst(Claims.TerminalIDClaim)?.Value != null && user?.FindFirst("grant_type")?.Value == "woocommerce";
+        }
+
         public static void CheckTerminalPermission(this ClaimsPrincipal user, Guid terminalID)
         {
             if (user.IsAdmin())
