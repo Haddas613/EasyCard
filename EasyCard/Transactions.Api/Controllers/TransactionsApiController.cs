@@ -59,7 +59,6 @@ using Shared.Helpers.IO;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Transactions.Api.Controllers
 {
