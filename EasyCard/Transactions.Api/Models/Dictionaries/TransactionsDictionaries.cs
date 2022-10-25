@@ -42,6 +42,9 @@ namespace Transactions.Api.Models.Dictionaries
 
 
         public Dictionary<string, string> SolekEnum { get; set; }
+
+        public Dictionary<string, string> CardVendorEnum { get; set; }
+
         public Dictionary<string, string> PaymentRequestStatusEnum { get; set; }
 
         public Dictionary<string, string> PayReqQuickStatusFilterTypeEnum { get; set; }
