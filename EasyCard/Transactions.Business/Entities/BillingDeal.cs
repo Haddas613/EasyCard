@@ -264,8 +264,16 @@ namespace Transactions.Business.Entities
 
             BillingSchedule = billingSchedule;
             BillingSchedule.Validate(existingTransactionTimestamp);
+            var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
 
-            NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
+            if (existingTransactionTimestamp.HasValue)
+            {
+                NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(lastTransactionDate, CurrentDeal.Value);
+            }
+            else
+            {
+                NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
+            }
 
             var legalDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 

@@ -87,10 +87,10 @@ namespace Transactions.Shared.Models
         {
             var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
-            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && EndAt < today)
-            {
-                throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {today}");
-            }
+            //if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && EndAt < today)
+            //{
+            //    throw new BusinessException($"{nameof(EndAt)} must be bigger than (or equal) {today}");
+            //}
 
             if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue == true && StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue == true && EndAt < StartAt)
             {
@@ -111,29 +111,29 @@ namespace Transactions.Shared.Models
                 EndAtNumberOfPayments = null;
             }
 
-            if (existingTransactionTimestamp.HasValue)
-            {
-                var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
+            //if (existingTransactionTimestamp.HasValue)
+            //{
+            //    var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
 
-                if (StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue == true)
-                {
-                    if (lastTransactionDate.Month == StartAt.Value.Month && lastTransactionDate.Year == StartAt.Value.Year)
-                    {
-                        throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
-                    }
-                    else if (StartAt.Value < today)
-                    {
-                        throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {today}");
-                    }
-                }
-                else
-                {
-                    if (lastTransactionDate.Month == today.Month && lastTransactionDate.Year == today.Year)
-                    {
-                        throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
-                    }
-                }
-            }
+            //    if (StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue == true)
+            //    {
+            //        if (lastTransactionDate.Month == StartAt.Value.Month && lastTransactionDate.Year == StartAt.Value.Year)
+            //        {
+            //            throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
+            //        }
+            //        else if (StartAt.Value < today)
+            //        {
+            //            throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {today}");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (lastTransactionDate.Month == today.Month && lastTransactionDate.Year == today.Year)
+            //        {
+            //            throw new BusinessException($"{nameof(StartAt)} must be bigger than (or equal) {new DateTime(lastTransactionDate.Year, lastTransactionDate.Month, 1).AddMonths(1)}");
+            //        }
+            //    }
+            //}
         }
 
         public override bool Equals(object obj)
