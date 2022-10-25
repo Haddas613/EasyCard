@@ -38,5 +38,24 @@ namespace BasicServices.Services
                 return blobStorageService.GetDownloadUrl(res);
             }
         }
+        public async Task<string> GenerateFileWithSummaryRow<T, TSummary>(string fileName, string worksheetName, List<T> rows, Dictionary<string, string> header, TimeSpan? downloadUrlExpiration = null, string dateFormat = "yyyy-mm-dd", List<TSummary> summary = null)
+        {
+            using (var excel = new ExcelFileBuilder())
+            {
+                excel.AddWorksheetWithSummary(worksheetName, rows, header, dateFormat, null, summary);
+
+                excel.Save();
+
+                var file = excel.GetDocumentStream();
+
+                file.Seek(0, SeekOrigin.Begin);
+
+                var res = await blobStorageService.Upload(fileName, file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                return blobStorageService.GetDownloadUrl(res);
+            }
+
+        }
+
     }
 }

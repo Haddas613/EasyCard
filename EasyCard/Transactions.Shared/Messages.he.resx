@@ -483,4 +483,7 @@
   <data name="PaymentRequestViewed" xml:space="preserve">
     <value>בקשת תשלום נצפה</value>
   </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>סה"כ סכום</value>
+  </data>
 </root>
