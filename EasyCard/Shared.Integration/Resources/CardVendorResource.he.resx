@@ -126,6 +126,9 @@
   <data name="ISRACARD" xml:space="preserve">
     <value>ישראכרט</value>
   </data>
+  <data name="JCB" xml:space="preserve">
+    <value>Jcb</value>
+  </data>
   <data name="LEUMI_CARD" xml:space="preserve">
     <value>לאומיקארד</value>
   </data>

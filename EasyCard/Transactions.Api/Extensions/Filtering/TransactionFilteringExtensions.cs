@@ -113,6 +113,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.ShvaTransactionDetails.Solek == filter.Solek);
             }
 
+            if (filter.CreditCardVendor != null)
+            {
+                src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
+            }
+
             if (!string.IsNullOrEmpty(filter.ShvaShovarNumber))
             {
                 src = src.Where(t => t.ShvaTransactionDetails.ShvaShovarNumber == filter.ShvaShovarNumber);

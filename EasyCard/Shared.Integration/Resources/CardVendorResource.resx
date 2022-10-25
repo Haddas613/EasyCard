@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AMEX" xml:space="preserve">
-    <value>אמקס</value>
+    <value>Amex</value>
   </data>
   <data name="DINERS_CLUB" xml:space="preserve">
-    <value>דיינרס</value>
+    <value>Diners Club</value>
   </data>
   <data name="ISRACARD" xml:space="preserve">
-    <value>ישראכרט</value>
+    <value>Isracard</value>
   </data>
   <data name="JCB" xml:space="preserve">
     <value>Jcb</value>
   </data>
   <data name="LEUMI_CARD" xml:space="preserve">
-    <value>לאומיקארד</value>
+    <value>Leumi Card</value>
   </data>
   <data name="MASTERCARD" xml:space="preserve">
-    <value>מאסטרקארד</value>
+    <value>Mastercard</value>
   </data>
   <data name="OTHER" xml:space="preserve">
-    <value>אחר</value>
+    <value>Other</value>
   </data>
   <data name="UNKNOWN" xml:space="preserve">
-    <value>לא ידוע</value>
+    <value>Unknown</value>
   </data>
   <data name="VISA" xml:space="preserve">
-    <value>ויזה</value>
+    <value>Visa</value>
   </data>
 </root>
