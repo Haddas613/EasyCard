@@ -14,7 +14,7 @@ using Transactions.Shared.Enums;
 namespace Transactions.Api.Models.Transactions
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class TransactionSummary
+    public class TransactionSummary : TransactionSummaryDetails
     {
         [MetadataOptions(Order = 1001)]
         public Guid PaymentTransactionID { get; set; }
@@ -42,12 +42,7 @@ namespace Transactions.Api.Models.Transactions
 
         public int? ProcessorResultCode { get; set; }
 
-        public decimal TransactionAmount { get; set; }
-
         public int NumberOfPayments { get; set; }
-
-        public decimal InitialPaymentAmount { get; set; }
-        public decimal InstallmentPaymentAmount { get; set; }
 
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -121,7 +116,5 @@ namespace Transactions.Api.Models.Transactions
         [ExcelIgnore]
         [MetadataOptions(Hidden = true)]
         public Guid? InvoiceID { get; set; }
-
-        public string DealDescription { get; set; }
     }
 }

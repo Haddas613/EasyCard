@@ -82,6 +82,134 @@ namespace BasicServices.Services
                 }
             }
 
+            // auto-fit columns width
+            coln = 1;
+            foreach (var kvp in header)
+            {
+                worksheet.Column(coln).AutoFit(10, 100);
+
+                coln++;
+            }
+
+            if (freeze != null)
+            {
+                worksheet.View.FreezePanes(freeze.Item1, freeze.Item2);
+            }
+
+        }
+
+        public void AddWorksheetWithSummary<T, TSummary>(string worksheetName, IEnumerable<T> rows, Dictionary<string, string> header, string dateFormat = "yyyy-mm-dd", Tuple<int, int> freeze = null, IEnumerable<TSummary> rowsSummary = null)
+        {
+            ExcelWorksheet worksheet = this.package.Workbook.Worksheets.Add(worksheetName);
+
+            Dictionary<string, PropertyInfo> propInfos = null;
+
+            var rown = 1;
+
+            var coln = 1;
+
+            foreach (var kvp in header)
+            {
+                worksheet.Cells[rown, coln].Value = kvp.Value;
+                worksheet.Cells[rown, coln].Style.Font.Bold = true;
+
+                coln++;
+            }
+
+            rown++;
+
+            if (rows != null)
+            {
+                foreach (var row in rows)
+                {
+                    if (propInfos == null)
+                        propInfos = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).ToDictionary(p => p.Name);
+
+                    coln = 1;
+
+                    foreach (var kvp in header)
+                    {
+                        propInfos.TryGetValue(kvp.Key, out var propInfo);
+
+                        if (propInfo != null)
+                        {
+                            var value = propInfo.GetGetMethod().Invoke(row, new object[] { });
+
+                            if (value is DateTime || value is DateTime?)
+                            {
+                                var formatAttribute = propInfo.GetCustomAttribute(typeof(ExcelFormatAttribute), false) as ExcelFormatAttribute;
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = formatAttribute?.Format ?? dateFormat; // TODO: date format
+                            }
+                            else if (value is decimal || value is decimal?)
+                            {
+                                var formatAttribute = propInfo.GetCustomAttribute(typeof(ExcelFormatAttribute), false) as ExcelFormatAttribute;
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = formatAttribute?.Format ?? "#,##0.00";
+                            }
+                            else
+                            {
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = "@";
+                            }
+
+                            worksheet.Cells[rown, coln].Value = value;
+                        }
+
+                        coln++;
+                    }
+
+                    rown++;
+                }
+            }
+
+            if (rowsSummary != null)
+            {
+                foreach (var row in rowsSummary)
+                {
+                    if (propInfos == null)
+                        propInfos = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).ToDictionary(p => p.Name);
+
+                    coln = 1;
+
+                    foreach (var kvp in header)
+                    {
+                        propInfos.TryGetValue(kvp.Key, out var propInfo);
+
+                        if (propInfo != null)
+                        {
+                            Object value = null;
+                            try
+                            {
+                                value = propInfo.GetGetMethod().Invoke(row, new object[] { });
+                            }
+                            catch(Exception ex)
+                            {
+                                value = string.Empty;
+                            }
+
+                            if (value is DateTime || value is DateTime?)
+                            {
+                                var formatAttribute = propInfo.GetCustomAttribute(typeof(ExcelFormatAttribute), false) as ExcelFormatAttribute;
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = formatAttribute?.Format ?? dateFormat; // TODO: date format
+                            }
+                            else if (value is decimal || value is decimal?)
+                            {
+                                var formatAttribute = propInfo.GetCustomAttribute(typeof(ExcelFormatAttribute), false) as ExcelFormatAttribute;
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = formatAttribute?.Format ?? "#,##0.00";
+                            }
+                            else
+                            {
+                                worksheet.Cells[rown, coln].Style.Numberformat.Format = "@";
+                            }
+
+                            worksheet.Cells[rown, coln].Value = value;
+                        }
+
+                        coln++;
+                    }
+
+                    rown++;
+                }
+            }
+
 
             // auto-fit columns width
             coln = 1;
