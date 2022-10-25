@@ -33,6 +33,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CardPresenceResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\CardVendorResource.Designer.cs">
+      <DependentUpon>CardVendorResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\CardSolekResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -74,6 +79,11 @@
     <EmbeddedResource Update="Resources\CardPresenceResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CardPresenceResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CardVendorResource.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>CardVendorResource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\CardSolekResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

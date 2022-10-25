@@ -117,91 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CardNumber" xml:space="preserve">
-    <value>מספר כרטיס</value>
+  <data name="AMEX" xml:space="preserve">
+    <value>Amex</value>
   </data>
-  <data name="CardOwnerName" xml:space="preserve">
-    <value>בעל הכרטיס</value>
+  <data name="DINERS_CLUB" xml:space="preserve">
+    <value>Diners Club</value>
   </data>
-  <data name="CardPresence" xml:space="preserve">
-    <value>כרטיס נוכח</value>
+  <data name="ISRACARD" xml:space="preserve">
+    <value>Isracard</value>
   </data>
-  <data name="CardVendor" xml:space="preserve">
-    <value>חברה מנפיקה</value>
+  <data name="JCB" xml:space="preserve">
+    <value>Jcb</value>
   </data>
-  <data name="Created" xml:space="preserve">
-    <value>נוצר</value>
+  <data name="LEUMI_CARD" xml:space="preserve">
+    <value>Leumi Card</value>
   </data>
-  <data name="Currency" xml:space="preserve">
-    <value>מטבע</value>
+  <data name="MASTERCARD" xml:space="preserve">
+    <value>Mastercard</value>
   </data>
-  <data name="DealDescription" xml:space="preserve">
-    <value>הערות</value>
+  <data name="OTHER" xml:space="preserve">
+    <value>Other</value>
   </data>
-  <data name="DocumentOrigin" xml:space="preserve">
-    <value>מקור</value>
+  <data name="UNKNOWN" xml:space="preserve">
+    <value>Unknown</value>
   </data>
-  <data name="InitialPaymentAmount" xml:space="preserve">
-    <value>סכום בתשלום ראשון</value>
-  </data>
-  <data name="InstallmentPaymentAmount" xml:space="preserve">
-    <value>סכום בשאר התשלומים</value>
-  </data>
-  <data name="JDealType" xml:space="preserve">
-    <value>סוג J</value>
-  </data>
-  <data name="MerchantID" xml:space="preserve">
-    <value>מזהה בית עסק</value>
-  </data>
-  <data name="MerchantName" xml:space="preserve">
-    <value>בית עסק</value>
-  </data>
-  <data name="NumberOfPayments" xml:space="preserve">
-    <value>מספר תשלומים</value>
-  </data>
-  <data name="PaymentTransactionID" xml:space="preserve">
-    <value>מזהה</value>
-  </data>
-  <data name="PaymentTypeEnum" xml:space="preserve">
-    <value>סוג תשלום</value>
-  </data>
-  <data name="ProcessorResultCode" xml:space="preserve">
-    <value>קוד שב"א</value>
-  </data>
-  <data name="QuickStatus" xml:space="preserve">
-    <value>סטטוס</value>
-  </data>
-  <data name="RejectionMessage" xml:space="preserve">
-    <value>הודעת שגיאה</value>
-  </data>
-  <data name="RejectionReason" xml:space="preserve">
-    <value>סיבת דחיה</value>
-  </data>
-  <data name="ShvaDealID" xml:space="preserve">
-    <value>מזהה עסקת שב"א</value>
-  </data>
-  <data name="Solek" xml:space="preserve">
-    <value>סולק</value>
-  </data>
-  <data name="SpecialTransactionType" xml:space="preserve">
-    <value>סוג מיוחד</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>סטטוס</value>
-  </data>
-  <data name="TerminalID" xml:space="preserve">
-    <value>מזהה מסוף</value>
-  </data>
-  <data name="TerminalName" xml:space="preserve">
-    <value>מסוף</value>
-  </data>
-  <data name="TransactionAmount" xml:space="preserve">
-    <value>סכום</value>
-  </data>
-  <data name="TransactionTimestamp" xml:space="preserve">
-    <value>תאריך</value>
-  </data>
-  <data name="TransactionType" xml:space="preserve">
-    <value>סוג עסקה</value>
+  <data name="VISA" xml:space="preserve">
+    <value>Visa</value>
   </data>
 </root>

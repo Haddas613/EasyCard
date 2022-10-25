@@ -786,16 +786,19 @@ namespace Transactions.Api.Controllers
 
                 var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
                 var solekTypeKey = typeof(SolekEnum).GetDataContractAttrForEnum(transaction.ShvaTransactionDetails.Solek.ToString());
+                var cardVendorTypeKey = typeof(CardVendorEnum).GetDataContractAttrForEnum(transaction.CreditCardDetails.CardVendor);
                 var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
                 var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(transaction.DocumentOrigin.ToString());
 
                 var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
                 var solekTypeStr = dictionaries.SolekEnum[solekTypeKey];
+                var cardVendorStr = dictionaries.CardVendorEnum[cardVendorTypeKey];
                 var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
                 var originStr = dictionaries.DocumentOriginEnum[originKey];
 
                 substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
                 substitutions.Add(new TextSubstitution(nameof(transaction.ShvaTransactionDetails.Solek), solekTypeStr));
+                substitutions.Add(new TextSubstitution(nameof(transaction.CreditCardDetails.CardVendor), cardVendorStr));
                 substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
                 substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
 

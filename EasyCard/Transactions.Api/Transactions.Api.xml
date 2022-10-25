@@ -2669,6 +2669,11 @@
               Looks up a localized string similar to Card Present.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardVendor">
+            <summary>
+              Looks up a localized string similar to Card Vendor.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ConsumerExternalReference">
             <summary>
               Looks up a localized string similar to Consumer Ref.
