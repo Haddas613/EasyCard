@@ -43,6 +43,7 @@
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionsFilter.cs" Link="Models\TransactionsFilter.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummary.cs" Link="Models\TransactionSummary.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummaryAdmin.cs" Link="Models\TransactionSummaryAdmin.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransactionSummaryDetails.cs" Link="Models\TransactionSummaryDetails.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransmitTransactionResponse.cs" Link="Models\TransmitTransactionResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsRequest.cs" Link="Models\CreateTransactionFromBillingDealsRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsResponse.cs" Link="Models\CreateTransactionFromBillingDealsResponse.cs" />
