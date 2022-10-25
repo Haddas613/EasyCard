@@ -59,6 +59,7 @@ using Shared.Helpers.IO;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Transactions.Api.Controllers
 {
@@ -414,7 +415,14 @@ namespace Transactions.Api.Controllers
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions_{Guid.NewGuid()}{terminalLabel}.xlsx");
-                    var res = await excelService.GenerateFile($"Admin/{filename}", "Transactions", summary, mapping);
+                    var transactionAmountTotal = summary.Sum(s => s.TransactionAmount);
+                    var initialPaymentTotal = summary.Sum(s => s.InitialPaymentAmount);
+                    var installmentPaymentAmountTotal = summary.Sum(s => s.InstallmentPaymentAmount);
+
+                    TransactionSummaryDetails totalsRow = new TransactionSummaryDetails { TransactionAmount = transactionAmountTotal, InitialPaymentAmount = initialPaymentTotal, InstallmentPaymentAmount = installmentPaymentAmountTotal, DealDescription = Messages.TotalAmount };
+                    List<TransactionSummaryDetails> summaryRows = new List<TransactionSummaryDetails>();
+                    summaryRows.Add(totalsRow);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Admin/{filename}", "Transactions", summary, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
@@ -451,7 +459,14 @@ namespace Transactions.Api.Controllers
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Transactions{terminalLabel}.xlsx");
-                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping);
+                    var transactionAmountTotal = data.Sum(s => s.TransactionAmount);
+                    var initialPaymentTotal = data.Sum(s => s.InitialPaymentAmount);
+                    var installmentPaymentAmountTotal = data.Sum(s => s.InstallmentPaymentAmount);
+
+                    TransactionSummaryDetails totalsRow = new TransactionSummaryDetails { TransactionAmount = transactionAmountTotal, InitialPaymentAmount = initialPaymentTotal, InstallmentPaymentAmount = installmentPaymentAmountTotal, DealDescription = Messages.TotalAmount };
+                    List<TransactionSummaryDetails> summaryRows = new List<TransactionSummaryDetails>();
+                    summaryRows.Add(totalsRow);
+                    var res = await excelService.GenerateFileWithSummaryRow($"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping,null,"yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }

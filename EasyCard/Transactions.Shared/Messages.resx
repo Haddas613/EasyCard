@@ -453,6 +453,9 @@
   <data name="TokenDeleted" xml:space="preserve">
     <value>Credit Card Token Deleted</value>
   </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Total Amount</value>
+  </data>
   <data name="TotalAmountIsInvalid" xml:space="preserve">
     <value>TotalAmount of installment payments is invalid</value>
   </data>
