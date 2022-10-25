@@ -126,6 +126,9 @@
   <data name="CardPresence" xml:space="preserve">
     <value>כרטיס נוכח</value>
   </data>
+  <data name="CardVendor" xml:space="preserve">
+    <value>חברה מנפיקה</value>
+  </data>
   <data name="Created" xml:space="preserve">
     <value>נוצר</value>
   </data>

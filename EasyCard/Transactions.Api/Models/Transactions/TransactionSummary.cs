@@ -32,6 +32,7 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(SolekEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public SolekEnum Solek { get; set; }
+        public string CardVendor { get; set; }
 
         public string CardNumber { get; set; }
 
@@ -41,8 +42,6 @@ namespace Transactions.Api.Models.Transactions
         public string RejectionMessage { get; set; }
 
         public int? ProcessorResultCode { get; set; }
-
-        public int NumberOfPayments { get; set; }
 
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -116,5 +115,7 @@ namespace Transactions.Api.Models.Transactions
         [ExcelIgnore]
         [MetadataOptions(Hidden = true)]
         public Guid? InvoiceID { get; set; }
+
+        public int NumberOfPayments { get; set; }
     }
 }

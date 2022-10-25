@@ -126,6 +126,9 @@
   <data name="CardPresence" xml:space="preserve">
     <value>Card Present</value>
   </data>
+  <data name="CardVendor" xml:space="preserve">
+    <value>Card Vendor</value>
+  </data>
   <data name="ConsumerExternalReference" xml:space="preserve">
     <value>Consumer Ref</value>
   </data>
