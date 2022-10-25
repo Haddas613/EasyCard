@@ -130,7 +130,8 @@ namespace Transactions.Api.Controllers
             IEcwidApiClient ecwidApiClient,
             External.BitApiController bitController,
             IThreeDSIntermediateStorage threeDSIntermediateStorage,
-            TransmissionController transmissionController)
+            TransmissionController transmissionController,
+            IItemsService itemsService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -160,6 +161,7 @@ namespace Transactions.Api.Controllers
             this.bitController = bitController;
             this.threeDSIntermediateStorage = threeDSIntermediateStorage;
             this.transmissionController = transmissionController;
+            this.itemsService = itemsService;
         }
 
         [HttpGet]

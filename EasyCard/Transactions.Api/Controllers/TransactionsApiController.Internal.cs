@@ -153,8 +153,7 @@ namespace Transactions.Api.Controllers
 
             transaction.DealDetails.CheckConsumerDetails(consumer, dbToken);
 
-            if (httpContextAccessor.GetUser().IsWooCommerce() &&
-                transaction.DealDetails?.Items?.Any(d => !string.IsNullOrWhiteSpace(d.WoocommerceID)) == true)
+            if (transaction.DealDetails?.Items?.Any(d => !string.IsNullOrWhiteSpace(d.WoocommerceID)) == true)
             {
                 await ConvertWooCommerceItems(transaction.DealDetails?.Items);
             }
@@ -326,6 +325,10 @@ namespace Transactions.Api.Controllers
                         {
                             item.ItemID = existingItem.ItemID;
                             item.ExternalReference = existingItem.ExternalReference;
+                        }
+                        else
+                        {
+                            item.ExternalReference = null;
                         }
                     }
                 }
