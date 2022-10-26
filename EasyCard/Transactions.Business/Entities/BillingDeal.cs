@@ -264,10 +264,10 @@ namespace Transactions.Business.Entities
 
             BillingSchedule = billingSchedule;
             BillingSchedule.Validate(existingTransactionTimestamp);
-            var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
 
             if (existingTransactionTimestamp.HasValue)
             {
+                var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
                 NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(lastTransactionDate, CurrentDeal.Value);
             }
             else
