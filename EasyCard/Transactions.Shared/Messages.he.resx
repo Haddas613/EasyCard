@@ -486,4 +486,10 @@
   <data name="TotalAmount" xml:space="preserve">
     <value>סה"כ סכום</value>
   </data>
+  <data name="RowsForMarkAsPayedRequired" xml:space="preserve">
+    <value>נדרשת רשימת שורות לסימון כשולמו</value>
+  </data>
+  <data name="MasavFilePayedSuccessfully" xml:space="preserve">
+    <value>רשומת מסב שולמה בהצלחה</value>
+  </data>
 </root>

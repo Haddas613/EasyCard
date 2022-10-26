@@ -1465,6 +1465,11 @@
               Looks up a localized string similar to Terminal.
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Masav.SetRowsPayedRequest">
+            <summary>
+            SetRowsPayed Request
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate">
             <summary>
             Create a link to Checkout Page
