@@ -894,6 +894,11 @@
               Looks up a localized string similar to Diners Club.
             </summary>
         </member>
+        <member name="P:Shared.Integration.Resources.CardVendorResource.DISCOVER">
+            <summary>
+              Looks up a localized string similar to Discover.
+            </summary>
+        </member>
         <member name="P:Shared.Integration.Resources.CardVendorResource.ISRACARD">
             <summary>
               Looks up a localized string similar to Isracard.

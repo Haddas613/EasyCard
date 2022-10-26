@@ -123,6 +123,9 @@
   <data name="DINERS_CLUB" xml:space="preserve">
     <value>Diners Club</value>
   </data>
+  <data name="DISCOVER" xml:space="preserve">
+    <value>Discover</value>
+  </data>
   <data name="ISRACARD" xml:space="preserve">
     <value>Isracard</value>
   </data>

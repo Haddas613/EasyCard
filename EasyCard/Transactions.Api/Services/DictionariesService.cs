@@ -115,7 +115,7 @@ namespace Transactions.Api.Services
               .ToDictionary(m => solekEnum.GetDataContractAttrForEnum(m.ToString()), m => CardSolekResource.ResourceManager.GetString(m.ToString(), culture));
 
             var cardVendorEnums = Enum.GetValues(cardVendorEnum).Cast<CardVendorEnum>()
-            .ToDictionary(m => cardVendorEnum.GetDataContractAttrForEnum(m.ToString()), m => CardSolekResource.ResourceManager.GetString(m.ToString(), culture));
+                .ToDictionary(m => cardVendorEnum.GetDataContractAttrForEnum(m.ToString()), m => CardVendorResource.ResourceManager.GetString(m.ToString(), culture));
 
             var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
                 .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -180,7 +180,6 @@ namespace Transactions.Api.Services
             response.StartAtTypeEnum = startAtTypes;
             response.EndAtTypeEnum = endAtTypes;
             response.InvoiceStatusEnum = invoiceStatuses;
-            
             response.PaymentRequestStatusEnum = prStatusTypes;
             response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
             response.PaymentTypeEnum = paymentTypes;

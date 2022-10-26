@@ -83,7 +83,7 @@
     <EmbeddedResource Update="Resources\CardVendorResource.resx">
       <SubType>Designer</SubType>
       <LastGenOutput>CardVendorResource.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\CardSolekResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

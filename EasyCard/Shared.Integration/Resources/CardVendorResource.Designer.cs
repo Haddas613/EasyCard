@@ -22,7 +22,7 @@ namespace Shared.Integration.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CardVendorResource {
+    public class CardVendorResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Shared.Integration.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shared.Integration.Resources.CardVendorResource", typeof(CardVendorResource).Assembly);
@@ -51,7 +51,7 @@ namespace Shared.Integration.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Amex.
         /// </summary>
-        internal static string AMEX {
+        public static string AMEX {
             get {
                 return ResourceManager.GetString("AMEX", resourceCulture);
             }
@@ -72,16 +72,25 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Diners Club.
         /// </summary>
-        internal static string DINERS_CLUB {
+        public static string DINERS_CLUB {
             get {
                 return ResourceManager.GetString("DINERS_CLUB", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discover.
+        /// </summary>
+        public static string DISCOVER {
+            get {
+                return ResourceManager.GetString("DISCOVER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Isracard.
         /// </summary>
-        internal static string ISRACARD {
+        public static string ISRACARD {
             get {
                 return ResourceManager.GetString("ISRACARD", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Jcb.
         /// </summary>
-        internal static string JCB {
+        public static string JCB {
             get {
                 return ResourceManager.GetString("JCB", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Leumi Card.
         /// </summary>
-        internal static string LEUMI_CARD {
+        public static string LEUMI_CARD {
             get {
                 return ResourceManager.GetString("LEUMI_CARD", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Mastercard.
         /// </summary>
-        internal static string MASTERCARD {
+        public static string MASTERCARD {
             get {
                 return ResourceManager.GetString("MASTERCARD", resourceCulture);
             }
@@ -117,7 +126,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Other.
         /// </summary>
-        internal static string OTHER {
+        public static string OTHER {
             get {
                 return ResourceManager.GetString("OTHER", resourceCulture);
             }
@@ -126,7 +135,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
-        internal static string UNKNOWN {
+        public static string UNKNOWN {
             get {
                 return ResourceManager.GetString("UNKNOWN", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Visa.
         /// </summary>
-        internal static string VISA {
+        public static string VISA {
             get {
                 return ResourceManager.GetString("VISA", resourceCulture);
             }

@@ -20,7 +20,7 @@ namespace Shared.Integration.Models
         AMEX = 4,
 
         [EnumMember(Value = "DISCOVER")]
-        DISCOVER,
+        DISCOVER = -1,
 
         [EnumMember(Value = "JCB")]
         JCB = 5,
