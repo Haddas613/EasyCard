@@ -1069,6 +1069,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit card token expiration extended.
+        /// </summary>
+        public static string TokenExtended {
+            get {
+                return ResourceManager.GetString("TokenExtended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total Amount.
         /// </summary>
         public static string TotalAmount {

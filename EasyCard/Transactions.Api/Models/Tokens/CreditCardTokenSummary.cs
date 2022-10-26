@@ -43,5 +43,11 @@ namespace Transactions.Api.Models.Tokens
         public string ConsumerEmail { get; set; }
 
         public bool Expired { get; set; }
+
+        [JsonConverter(typeof(CardExpirationConverter))]
+        [MetadataOptions(Hidden = true)]
+        public CardExpiration CardExpirationBeforeExtended { get; set; }
+
+        public DateTime? Extended { get; set; }
     }
 }

@@ -453,6 +453,9 @@
   <data name="TokenDeleted" xml:space="preserve">
     <value>Credit Card Token Deleted</value>
   </data>
+  <data name="TokenExtended" xml:space="preserve">
+    <value>Credit card token expiration extended</value>
+  </data>
   <data name="TotalAmount" xml:space="preserve">
     <value>Total Amount</value>
   </data>

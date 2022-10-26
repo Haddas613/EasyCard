@@ -245,6 +245,11 @@ namespace Transactions.Business.Entities
             CreditCardToken = null;
         }
 
+        public void ExtendToken(CardExpiration cardExpiration)
+        {
+            CreditCardDetails.CardExpiration = cardExpiration;
+        }
+
         public void Activate()
         {
             Active = true;

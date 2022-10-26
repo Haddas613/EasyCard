@@ -361,6 +361,10 @@ namespace Transactions.Business.Data
 
                 builder.HasIndex(d => new { d.Active, d.MerchantID, d.ConsumerID }); // UI usage. TODO: add TerminalID to query and to index
                 builder.HasIndex(d => new { d.Active, d.TerminalID, d.ConsumerID }); // checkout usage
+
+                builder.Property(p => p.CardExpirationBeforeExtendedDate).HasColumnName("CardExpirationBeforeExtendedDate").HasColumnType("date").IsRequired(false);
+
+                builder.Ignore(b => b.CardExpirationBeforeExtended);
             }
         }
 

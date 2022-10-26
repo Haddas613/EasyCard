@@ -132,6 +132,78 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
+        /// Extend card expiration
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("extendExpiration")]
+        [HttpPost]
+        [ValidateModelState]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> ExtendExpiration([FromBody] ExtendTokenRequest model)
+        {
+            var query = creditCardTokenService.GetTokens();
+
+            if (User.IsTerminal())
+            {
+                var terminal = EnsureExists(await terminalsService.GetTerminal((User.GetTerminalID()?.FirstOrDefault()).GetValueOrDefault()));
+
+                if (terminal.Settings.SharedCreditCardTokens == true)
+                {
+                    query = creditCardTokenService.GetTokensShared(terminal.TerminalID);
+                }
+            }
+
+            var token = EnsureExists(await query.FirstOrDefaultAsync(t => t.CreditCardTokenID == model.CreditCardTokenID));
+            token.CardExpirationBeforeExtended = token.CardExpiration;
+            token.CardExpiration = model.CardExpiration;
+            token.Extended = DateTime.UtcNow;
+
+            try
+            {
+                var kvtoken = EnsureExists(await keyValueStorage.Get(model.CreditCardTokenID.ToString()), "CreditCardToken");
+                kvtoken.CardExpiration = model.CardExpiration;
+
+                await keyValueStorage.Save(model.CreditCardTokenID.ToString(), JsonConvert.SerializeObject(kvtoken));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(DeleteToken)}: Error while extending token from keyvalue storage. Message: {e.Message}");
+
+                return BadRequest(new OperationResponse($"Error while extending token from keyvalue storage", StatusEnum.Error));
+            }
+
+            using (var dbTransaction = creditCardTokenService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    await creditCardTokenService.UpdateEntity(token, dbTransaction);
+
+                    // TODO: move to event handler
+                    foreach (var billing in await billingDealService.GetBillingDeals().Filter(new Models.Billing.BillingDealsFilter { CreditCardTokenID = token.CreditCardTokenID }).ToListAsync())
+                    {
+                        // TODO
+                        billing.ExtendToken(model.CardExpiration);
+
+                        await billingDealService.UpdateEntityWithHistory(billing, Messages.TokenExtended, BillingDealOperationCodesEnum.CreditCardTokenExtended, dbTransaction);
+                    }
+
+                    dbTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(DeleteToken)}: Error while extending token and updating related data: {ex.Message}");
+                    dbTransaction.Rollback();
+
+                    return BadRequest(new OperationResponse($"Error while extending token and updating related data", StatusEnum.Error));
+                }
+            }
+
+            return Ok(new OperationResponse(Messages.TokenExtended, StatusEnum.Success, model.CreditCardTokenID));
+        }
+
+        /// <summary>
         /// Get tokens by filters
         /// </summary>
         /// <param name="filter"></param>

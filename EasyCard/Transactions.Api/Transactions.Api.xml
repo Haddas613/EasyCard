@@ -151,6 +151,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.CardTokenController.ExtendExpiration(Transactions.Api.Models.Tokens.ExtendTokenRequest)">
+            <summary>
+            Extend card expiration
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.CardTokenController.GetTokens(Transactions.Api.Models.Tokens.CreditCardTokenFilter)">
             <summary>
             Get tokens by filters

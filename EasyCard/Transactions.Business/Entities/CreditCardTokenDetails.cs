@@ -70,5 +70,15 @@ namespace Transactions.Business.Entities
         /// For tokens report, must be set to previous token ID when updating/renewing other token
         /// </summary>
         public Guid? ReplacementOfTokenID { get; set; }
+
+        public CardExpiration CardExpirationBeforeExtended
+        {
+            get { return CreditCardHelpers.ParseCardExpiration(CardExpirationBeforeExtendedDate); }
+            set { CardExpirationBeforeExtendedDate = value?.ToDate(); }
+        }
+
+        public DateTime? CardExpirationBeforeExtendedDate { get; set; }
+
+        public DateTime? Extended { get; set; }
     }
 }
