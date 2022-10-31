@@ -995,6 +995,11 @@
               Looks up a localized string similar to Masav File generated successfully.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.MasavFilePayedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Masav file row payed successfully.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.MasavFileWasNotGenerated">
             <summary>
               Looks up a localized string similar to Masav File was not generated.
@@ -1128,6 +1133,11 @@
         <member name="P:Transactions.Shared.Messages.Required">
             <summary>
               Looks up a localized string similar to Required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.RowsForMarkAsPayedRequired">
+            <summary>
+              Looks up a localized string similar to Rows for mark as payed are required.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TerminalForUpdateParametersRequired">
