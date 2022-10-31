@@ -12,6 +12,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Shared.Business.Security;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,10 @@ using Transactions.Api.Models.Masav;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Z.EntityFramework.Plus;
+using Transactions.Shared;
 using SharedApi = Shared.Api;
 using SharedHelpers = Shared.Helpers;
+using Microsoft.Extensions.Azure;
 
 namespace Transactions.Api.Controllers
 {
@@ -42,6 +45,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly ITransactionsService transactionsService;
         private readonly IBlobStorageService masavFileSorageService;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly Shared.ApplicationSettings appSettings;
 
         public MasavFileController(
@@ -50,7 +54,8 @@ namespace Transactions.Api.Controllers
             IMasavFileService masavFileService,
             IMapper mapper,
             ITerminalsService terminalsService,
-            IOptions<Shared.ApplicationSettings> appSettings)
+            IOptions<Shared.ApplicationSettings> appSettings,
+            IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.transactionsService = transactionsService;
             this.logger = logger;
@@ -59,7 +64,7 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
 
             this.appSettings = appSettings.Value;
-
+            this.httpContextAccessor = httpContextAccessor;
             // TODO: remove, make singleton
             this.masavFileSorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
         }
@@ -255,6 +260,33 @@ namespace Transactions.Api.Controllers
 
             return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
         }
+
+        [HttpPost("setPayed")]
+        public async Task<ActionResult<SummariesResponse<OperationResponse>>> SetRowsPayedSuccessfully(SetRowsPayedRequest setRowsPayedRequest)
+        {
+            if (setRowsPayedRequest.MasavFileRowIDs == null || setRowsPayedRequest.MasavFileRowIDs.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.RowsForMarkAsPayedRequired, null, httpContextAccessor.TraceIdentifier, nameof(setRowsPayedRequest.MasavFileRowIDs), Messages.RowsForMarkAsPayedRequired));
+            }
+
+            var response = new SummariesResponse<OperationResponse>();
+            List<OperationResponse> rowsResponse = new List<OperationResponse>();
+            foreach (var rowID in setRowsPayedRequest.MasavFileRowIDs)
+            {
+                await masavFileService.SetMasavFilePayed(setRowsPayedRequest.MasavFileID, rowID);
+                MasavFileRow row = masavFileService.GetMasavFileRows().Where(r => r.MasavFileRowID == rowID).FirstOrDefault();
+                var transaction = EnsureExists(
+                  await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == row.PaymentTransactionID));
+                await transactionsService.UpdateEntityWithStatus(transaction, Shared.Enums.TransactionStatusEnum.Completed);
+                rowsResponse.Add(new OperationResponse() { Message = Messages.MasavFilePayedSuccessfully });
+            }
+
+            response.NumberOfRecords = rowsResponse.Count;
+            response.Data = rowsResponse;
+
+            return Ok(response);
+        }
+
 
         [HttpPost("setPayed/{masavFileID}/{masavFileRowID}")]
         public async Task<ActionResult<OperationResponse>> SetPayedSuccessfully(long masavFileID, long masavFileRowID)
