@@ -41,6 +41,8 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Merchants.Business.Entities.Billing.Consumer, ConsumerInfo>();
+
+            CreateMap<Transactions.Business.Entities.DealDetails, ConsumerInfo>();
         }
     }
 }

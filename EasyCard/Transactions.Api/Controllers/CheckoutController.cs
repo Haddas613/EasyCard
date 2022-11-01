@@ -189,6 +189,16 @@ namespace Transactions.Api.Controllers
                         response.Consumer.Tokens = tokens;
                     }
                 }
+                else
+                {
+                    response.Consumer = new ConsumerInfo();
+                    mapper.Map(paymentRequest.DealDetails, response.Consumer);
+                }
+            }
+            else
+            {
+                response.Consumer = new ConsumerInfo();
+                mapper.Map(paymentRequest.DealDetails, response.Consumer);
             }
 
             response.Settings.AllowBit =
