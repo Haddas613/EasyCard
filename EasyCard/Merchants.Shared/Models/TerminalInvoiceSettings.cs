@@ -35,5 +35,7 @@ namespace Merchants.Shared.Models
 
         [StringLength(50)]
         public string DefaultInvoiceLanguage { get; set; }
+
+        public bool SendReminderEmail { get; set; }
     }
 }

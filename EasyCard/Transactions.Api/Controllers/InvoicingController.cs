@@ -1104,7 +1104,7 @@ namespace Transactions.Api.Controllers
                     }
 
                     //Send to customer as well
-                    if (dbInvoice.DealDetails.ConsumerEmail != null)
+                    if (dbInvoice.DealDetails.ConsumerEmail != null && terminal.InvoiceSettings?.SendReminderEmail == true)
                     {
                         await SendInvoiceEmail(dbInvoice.DealDetails.ConsumerEmail, dbInvoice, terminal);
                     }
