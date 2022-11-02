@@ -58,6 +58,11 @@ namespace Transactions.Api.Extensions
                 dealDetails.ConsumerWoocommerceID = consumer?.WoocommerceID;
             }
 
+            if (string.IsNullOrWhiteSpace(dealDetails.DealDescription) && dealDetails.Items?.Count() > 0)
+            {
+                dealDetails.DealDescription = string.Join(" , ", dealDetails.Items.Select(d => d.ItemName));
+            }
+
             if (!(dealDetails.Items?.Count() > 0) && createDefaultItem)
             {
                 dealDetails.Items = new List<SharedIntegration.Models.Item>
