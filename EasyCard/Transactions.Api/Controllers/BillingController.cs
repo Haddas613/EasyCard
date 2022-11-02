@@ -409,6 +409,25 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
+        [HttpGet]
+        [Route("{ConsumerID}/update")]
+        public async Task<ActionResult<OperationResponse>> UpdateConsumerDetails([FromRoute] Guid consumerID)
+        {
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
+            var billingDeals = billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID).ToList();
+            if (billingDeals != null)
+            {
+                foreach (var billingDeal in billingDeals)//todo, implement update for more than one billing deal 
+                {
+                    BillingDealUpdateRequest updateRequest = new BillingDealUpdateRequest();
+                    mapper.Map(billingDeal, updateRequest);
+                    mapper.Map(consumer, updateRequest);
+                    var consumerBillingDataUpdateResponse = await UpdateBillingDeal(billingDeal.BillingDealID, updateRequest);
+                }
+            }
+
+            return Ok(new OperationResponse(Messages.ConsumerDetailsUpdated, StatusEnum.Success, consumerID));
+        }
         /// <summary>
         /// Update billing deal
         /// </summary>
@@ -860,7 +879,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [Route("{billingDealID}/pause")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<OperationResponse>> PauseBilling([FromRoute]Guid billingDealID, [FromBody] PauseBillingDealRequest request)
+        public async Task<ActionResult<OperationResponse>> PauseBilling([FromRoute] Guid billingDealID, [FromBody] PauseBillingDealRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -896,7 +915,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [Route("{billingDealID}/unpause")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<OperationResponse>> UnpauseBilling([FromRoute]Guid billingDealID)
+        public async Task<ActionResult<OperationResponse>> UnpauseBilling([FromRoute] Guid billingDealID)
         {
             if (!ModelState.IsValid)
             {

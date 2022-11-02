@@ -492,4 +492,7 @@
   <data name="MasavFilePayedSuccessfully" xml:space="preserve">
     <value>רשומת מסב שולמה בהצלחה</value>
   </data>
+  <data name="ConsumerDetailsUpdated" xml:space="preserve">
+    <value>פרטי לקוח בעסקאות בילינג עודכנו בהצלחה</value>
+  </data>
 </root>

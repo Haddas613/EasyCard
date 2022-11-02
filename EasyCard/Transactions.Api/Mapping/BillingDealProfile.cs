@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Business.Entities.Billing;
 using Shared.Helpers;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -32,17 +33,29 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.BillingSchedule, o => o.Ignore())
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
 
+            CreateMap<BillingDeal, BillingDealUpdateRequest>()
+               .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails));
+
+            CreateMap<Consumer, BillingDealUpdateRequest>()
+                            .ForPath(d => d.DealDetails.ConsumerName, src => src.MapFrom(c => c.ConsumerName))
+                            .ForPath(d => d.DealDetails.ConsumerEmail, src => src.MapFrom(c => c.ConsumerEmail))
+                             .ForPath(d => d.DealDetails.ConsumerAddress, src => src.MapFrom(c => c.ConsumerAddress))
+                             .ForPath(d => d.DealDetails.ConsumerNationalID, src => src.MapFrom(c => c.ConsumerNationalID))
+                             .ForPath(d => d.DealDetails.ConsumerPhone, src => src.MapFrom(c => c.ConsumerPhone))
+                            ;
+
+
             CreateMap<BillingDealUpdateRequest, BillingDeal>()
-                .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
-                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.TransactionAmount))
-                .ForMember(d => d.VATRate, o => o.MapFrom(d => d.VATRate))
-                .ForMember(d => d.VATTotal, o => o.MapFrom(d => d.VATTotal))
-                .ForMember(d => d.NetTotal, o => o.MapFrom(d => d.NetTotal))
-                .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails))
-                .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
-                .ForMember(d => d.InvoiceDetails, o => o.MapFrom(d => d.InvoiceDetails))
-                .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => d.IssueInvoice))
-                .ForAllOtherMembers(o => o.Ignore());
+    .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
+    .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.TransactionAmount))
+    .ForMember(d => d.VATRate, o => o.MapFrom(d => d.VATRate))
+    .ForMember(d => d.VATTotal, o => o.MapFrom(d => d.VATTotal))
+    .ForMember(d => d.NetTotal, o => o.MapFrom(d => d.NetTotal))
+    .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails))
+    .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
+    .ForMember(d => d.InvoiceDetails, o => o.MapFrom(d => d.InvoiceDetails))
+    .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => d.IssueInvoice))
+    .ForAllOtherMembers(o => o.Ignore());
 
             CreateMap<BillingDealInvoiceOnlyUpdateRequest, BillingDeal>()
                 .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))

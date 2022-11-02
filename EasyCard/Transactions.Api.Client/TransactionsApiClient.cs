@@ -280,6 +280,12 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        public async Task<OperationResponse> UpdateBillingConsumer(Guid consumerID)
+        {
+            var res = await webApiClient.Get<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{consumerID}/update", null, BuildHeaders);
+            return res;
+        }
+
         public async Task<OperationResponse> UpdateBillingDeal(Guid billingDealID, BillingDealUpdateRequest model)
         {
             var res = await webApiClient.Put<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}", model, BuildHeaders);
