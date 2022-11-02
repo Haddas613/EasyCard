@@ -504,6 +504,11 @@
               Looks up a localized string similar to Registration request received.
             </summary>
         </member>
+        <member name="P:IdentityServer.Resources.CommonResources.RegistrationRequiredBeforeSetNewPassword">
+            <summary>
+              Looks up a localized string similar to Please use the link from invitation email to complete registration.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Resources.CommonResources.RegistrationSuccessMessage">
             <summary>
               Looks up a localized string similar to We will contact you shortly about how you can join Easy Card..

@@ -718,11 +718,10 @@ namespace IdentityServer.Controllers
                     return RedirectToAction(nameof(ForgotPasswordConfirmation));
                 }
 
+                // User is not registered yet
                 if (string.IsNullOrWhiteSpace(user.PasswordHash))
                 {
-                    var code2 = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
-
-                    return RedirectToAction(nameof(ConfirmEmail), new { code = code2 });
+                    return RedirectToAction(nameof(ForgotPasswordRegistrationRequired));
                 }
 
                 //Validate user bank account
@@ -763,6 +762,13 @@ namespace IdentityServer.Controllers
             // If we got this far, something failed, redisplay form
             model.CheckBankAccount = configuration.ForgotPasswordCheckBankAccountNumber;
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPasswordRegistrationRequired()
+        {
+            return View();
         }
 
         [HttpGet]

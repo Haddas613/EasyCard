@@ -583,6 +583,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please use the link from invitation email to complete registration.
+        /// </summary>
+        public static string RegistrationRequiredBeforeSetNewPassword {
+            get {
+                return ResourceManager.GetString("RegistrationRequiredBeforeSetNewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We will contact you shortly about how you can join Easy Card..
         /// </summary>
         public static string RegistrationSuccessMessage {

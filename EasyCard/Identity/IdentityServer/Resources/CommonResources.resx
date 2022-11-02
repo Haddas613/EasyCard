@@ -363,4 +363,7 @@
   <data name="RegistrationSuccessMessage" xml:space="preserve">
     <value>We will contact you shortly about how you can join Easy Card.</value>
   </data>
+  <data name="RegistrationRequiredBeforeSetNewPassword" xml:space="preserve">
+    <value>Please use the link from invitation email to complete registration</value>
+  </data>
 </root>
