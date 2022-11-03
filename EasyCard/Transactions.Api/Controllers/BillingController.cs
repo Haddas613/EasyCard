@@ -409,12 +409,13 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
-        [HttpGet]
-        [Route("{ConsumerID}/update")]
+        [HttpPost]
+        [Route("{ConsumerID}")]
+        [Authorize(Policy = Policy.AnyAdmin)]
         public async Task<ActionResult<OperationResponse>> UpdateConsumerDetails([FromRoute] Guid consumerID)
         {
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
-            var billingDeals = billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID).ToList();
+            var billingDeals = await billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID).ToListAsync();
             if (billingDeals != null)
             {
                 foreach (var billingDeal in billingDeals)//todo, implement update for more than one billing deal 

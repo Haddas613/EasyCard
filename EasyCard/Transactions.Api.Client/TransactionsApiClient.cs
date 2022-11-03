@@ -282,7 +282,7 @@ namespace Transactions.Api.Client
 
         public async Task<OperationResponse> UpdateBillingConsumer(Guid consumerID)
         {
-            var res = await webApiClient.Get<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{consumerID}/update", null, BuildHeaders);
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{consumerID}", null, BuildHeaders);
             return res;
         }
 
