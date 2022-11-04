@@ -185,7 +185,7 @@ namespace MerchantProfileApi.Controllers
             consumer.ApplyAuditInfo(httpContextAccessor);
 
             await consumersService.UpdateEntity(consumer);
-
+            await transactionsApiClient.UpdateBillingConsumer(consumerID);
             return Ok(new OperationResponse(Messages.ConsumerUpdated, StatusEnum.Success, consumerID));
         }
 

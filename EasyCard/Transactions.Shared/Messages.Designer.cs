@@ -367,6 +367,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer Details Updated Successfully.
+        /// </summary>
+        public static string ConsumerDetailsUpdated {
+            get {
+                return ResourceManager.GetString("ConsumerDetailsUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer Name and Consumer Email are required.
         /// </summary>
         public static string ConsumerNameAndConsumerEmailRequired {
