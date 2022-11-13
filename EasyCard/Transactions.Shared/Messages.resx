@@ -348,8 +348,8 @@
   <data name="MasavFileGeneratedSuccessfully" xml:space="preserve">
     <value>Masav File generated successfully</value>
   </data>
-  <data name="MasavFilePayedSuccessfully" xml:space="preserve">
-    <value>Masav file row payed successfully</value>
+  <data name="MasavFileProcessedSuccessfully" xml:space="preserve">
+    <value>Masav processed successfully</value>
   </data>
   <data name="MasavFileWasNotGenerated" xml:space="preserve">
     <value>Masav File was not generated</value>
@@ -432,8 +432,8 @@
   <data name="Required" xml:space="preserve">
     <value>Required</value>
   </data>
-  <data name="RowsForMarkAsPayedRequired" xml:space="preserve">
-    <value>Rows for mark as payed are required</value>
+  <data name="RowsRequired" xml:space="preserve">
+    <value>Rows are required</value>
   </data>
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>

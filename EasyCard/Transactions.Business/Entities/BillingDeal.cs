@@ -335,5 +335,15 @@ namespace Transactions.Business.Entities
                 NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
             }
         }
+
+        public void RevertLastTransactionForBankBillings(string errorMessage)
+        {
+            CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value - 1 : 0;
+            InProgress = BillingProcessingStatusEnum.Pending;
+            HasError = true;
+            LastError = errorMessage;
+            FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
+            NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+        }
     }
 }

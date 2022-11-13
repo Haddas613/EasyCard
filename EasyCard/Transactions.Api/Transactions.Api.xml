@@ -1472,7 +1472,7 @@
               Looks up a localized string similar to Terminal.
             </summary>
         </member>
-        <member name="T:Transactions.Api.Models.Masav.SetRowsPayedRequest">
+        <member name="T:Transactions.Api.Models.Masav.MasavFileRowsSetRequest">
             <summary>
             SetRowsPayed Request
             </summary>

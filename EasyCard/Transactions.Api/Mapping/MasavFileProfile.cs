@@ -23,7 +23,7 @@ namespace Transactions.Api.Mapping
             CreateMap<MasavFile, MasavDataWithdraw>()
                 .ForMember(d => d.Footer, o => o.MapFrom(d => d))
                 .ForMember(d => d.Header, o => o.MapFrom(d => d))
-                .ForMember(d => d.Transactions, o => o.MapFrom(d => d.Rows));
+                .ForMember(d => d.Transactions, o => o.MapFrom(d => d.Rows.Where(d => d.IsPayed == true))); // TODO: move IsPayed filter
 
             CreateMap<MasavFile, Header>()
                 .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.InstituteNumber))

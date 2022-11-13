@@ -754,11 +754,11 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Masav file row payed successfully.
+        ///   Looks up a localized string similar to Masav processed successfully.
         /// </summary>
-        public static string MasavFilePayedSuccessfully {
+        public static string MasavFileProcessedSuccessfully {
             get {
-                return ResourceManager.GetString("MasavFilePayedSuccessfully", resourceCulture);
+                return ResourceManager.GetString("MasavFileProcessedSuccessfully", resourceCulture);
             }
         }
         
@@ -1006,11 +1006,11 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rows for mark as payed are required.
+        ///   Looks up a localized string similar to Rows are required.
         /// </summary>
-        public static string RowsForMarkAsPayedRequired {
+        public static string RowsRequired {
             get {
-                return ResourceManager.GetString("RowsForMarkAsPayedRequired", resourceCulture);
+                return ResourceManager.GetString("RowsRequired", resourceCulture);
             }
         }
         

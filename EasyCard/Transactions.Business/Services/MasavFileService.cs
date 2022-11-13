@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
@@ -47,15 +48,6 @@ namespace Transactions.Business.Services
             return (await masavFile.ToListAsync()).FirstOrDefault();
         }
 
-        public async Task UpdateMasavFileRow(MasavFileRow data)
-        {
-            MasavFileRow exist = context.MasavFileRows.Find(data.GetID());
-
-            context.Entry(exist).CurrentValues.SetValues(data);
-
-            await context.SaveChangesAsync();
-        }
-
         public async Task CreateMasavFileRow(MasavFileRow data)
         {
             context.MasavFileRows.Add(data);
@@ -67,21 +59,14 @@ namespace Transactions.Business.Services
             return CreateEntity(data);
         }
 
-        public Task UpdateMasavFile(MasavFile data)
+        public Task UpdateMasavFile(MasavFile data, IDbContextTransaction dbTransaction = null)
         {
-            return UpdateEntity(data);
+            return UpdateEntity(data, dbTransaction);
         }
 
         public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, string institueName, int? sendingInstitute, string instituteNumber, DateTime? masavFileDate)
         {
             return await context.GenerateMasavFile(merchantID, terminalID, institueName, sendingInstitute, instituteNumber, masavFileDate);
-        }
-
-        public async Task SetMasavFilePayed(long masavFileID, long masavFileRowID)
-        {
-            MasavFileRow row = GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
-            row.IsPayed = true;
-            await UpdateMasavFileRow(row);
         }
 
         private IQueryable<MasavFileRow> GetRowsInternal()

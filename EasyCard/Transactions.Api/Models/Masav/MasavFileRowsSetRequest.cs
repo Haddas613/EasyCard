@@ -7,7 +7,7 @@ namespace Transactions.Api.Models.Masav
     /// <summary>
     /// SetRowsPayed Request
     /// </summary>
-    public class SetRowsPayedRequest
+    public class MasavFileRowsSetRequest
     {
         [Required]
         public long MasavFileID { get; set; }
