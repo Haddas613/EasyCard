@@ -82,8 +82,10 @@ INSERT INTO [dbo].[MasavFileRow]
            ,[Amount]
            ,[ConsumerName]
 		   ,[SmsSent]
-		   ,[InstituteNumber])
-select @MasavFileID,[PaymentTransactionID],[ConsumerID],[Bankcode],[BranchNumber],[AccountNumber],[NationalID],[Amount],[ConsumerName],0,@InstituteNumber from @MasavFileRows as prows order by [PaymentTransactionID]
+		   ,[InstituteNumber]
+		   ,[IsPayed])
+select @MasavFileID,[PaymentTransactionID],[ConsumerID],[Bankcode],[BranchNumber],[AccountNumber],[NationalID],[Amount],[ConsumerName],0,@InstituteNumber,1
+ from @MasavFileRows as prows order by [PaymentTransactionID]
 
 update [dbo].[PaymentTransaction] set [dbo].[PaymentTransaction].[MasavFileID] = @MasavFileID, [dbo].[PaymentTransaction].[Status] = @TransactionStatusNew
 from [dbo].[PaymentTransaction] INNER JOIN  [dbo].[MasavFileRow] on [dbo].[PaymentTransaction].[PaymentTransactionID] = [dbo].[MasavFileRow].[PaymentTransactionID] and [dbo].[MasavFileRow].[MasavFileID] = @MasavFileID
