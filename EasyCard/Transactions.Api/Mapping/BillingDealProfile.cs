@@ -34,7 +34,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
 
             CreateMap<BillingDeal, BillingDealUpdateRequest>()
-               .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails));
+               .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
+               .ForMember(d => d.BankDetails, o => o.Ignore())
+               .ForAllOtherMembers(o => o.Ignore());
 
             CreateMap<Consumer, BillingDealUpdateRequest>()
                             .ForPath(d => d.DealDetails.ConsumerName, src => src.MapFrom(c => c.ConsumerName))
@@ -43,7 +45,6 @@ namespace Transactions.Api.Mapping
                              .ForPath(d => d.DealDetails.ConsumerNationalID, src => src.MapFrom(c => c.ConsumerNationalID))
                              .ForPath(d => d.DealDetails.ConsumerPhone, src => src.MapFrom(c => c.ConsumerPhone))
                             ;
-
 
             CreateMap<BillingDealUpdateRequest, BillingDeal>()
     .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
