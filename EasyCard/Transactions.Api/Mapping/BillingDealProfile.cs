@@ -33,18 +33,20 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.BillingSchedule, o => o.Ignore())
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
 
-            CreateMap<BillingDeal, BillingDealUpdateRequest>()
-               .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
-               .ForMember(d => d.BankDetails, o => o.Ignore())
-               .ForAllOtherMembers(o => o.Ignore());
+            CreateMap<Consumer, Transactions.Business.Entities.DealDetails>();
 
-            CreateMap<Consumer, BillingDealUpdateRequest>()
-                            .ForPath(d => d.DealDetails.ConsumerName, src => src.MapFrom(c => c.ConsumerName))
-                            .ForPath(d => d.DealDetails.ConsumerEmail, src => src.MapFrom(c => c.ConsumerEmail))
-                             .ForPath(d => d.DealDetails.ConsumerAddress, src => src.MapFrom(c => c.ConsumerAddress))
-                             .ForPath(d => d.DealDetails.ConsumerNationalID, src => src.MapFrom(c => c.ConsumerNationalID))
-                             .ForPath(d => d.DealDetails.ConsumerPhone, src => src.MapFrom(c => c.ConsumerPhone))
-                            ;
+            //CreateMap<BillingDeal, BillingDealUpdateRequest>()
+            //   .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
+            //   .ForMember(d => d.BankDetails, o => o.Ignore())
+            //   .ForAllOtherMembers(o => o.Ignore());
+
+            //CreateMap<Consumer, BillingDealUpdateRequest>()
+            //                .ForPath(d => d.DealDetails.ConsumerName, src => src.MapFrom(c => c.ConsumerName))
+            //                .ForPath(d => d.DealDetails.ConsumerEmail, src => src.MapFrom(c => c.ConsumerEmail))
+            //                 .ForPath(d => d.DealDetails.ConsumerAddress, src => src.MapFrom(c => c.ConsumerAddress))
+            //                 .ForPath(d => d.DealDetails.ConsumerNationalID, src => src.MapFrom(c => c.ConsumerNationalID))
+            //                 .ForPath(d => d.DealDetails.ConsumerPhone, src => src.MapFrom(c => c.ConsumerPhone))
+            //                ;
 
             CreateMap<BillingDealUpdateRequest, BillingDeal>()
     .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))

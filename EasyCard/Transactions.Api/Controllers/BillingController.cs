@@ -416,19 +416,24 @@ namespace Transactions.Api.Controllers
         {
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
             var billingDeals = await billingDealService.GetBillingDeals().Where(b => b.DealDetails.ConsumerID == consumerID).ToListAsync();
-            if (billingDeals != null)
+            if (billingDeals?.Count > 0)
             {
                 foreach (var billingDeal in billingDeals)//todo, implement update for more than one billing deal 
                 {
-                    BillingDealUpdateRequest updateRequest = new BillingDealUpdateRequest();
-                    mapper.Map(billingDeal, updateRequest);
-                    mapper.Map(consumer, updateRequest);
-                    var consumerBillingDataUpdateResponse = await UpdateBillingDeal(billingDeal.BillingDealID, updateRequest);
+                    //BillingDealUpdateRequest updateRequest = new BillingDealUpdateRequest();
+                    //mapper.Map(billingDeal, updateRequest);
+                    //mapper.Map(consumer, updateRequest);
+                    //var consumerBillingDataUpdateResponse = await UpdateBillingDeal(billingDeal.BillingDealID, updateRequest);
+
+                    mapper.Map(consumer, billingDeal.DealDetails);
+                    billingDeal.ApplyAuditInfo(httpContextAccessor);
+                    await billingDealService.UpdateEntity(billingDeal);
                 }
             }
 
             return Ok(new OperationResponse(Messages.ConsumerDetailsUpdated, StatusEnum.Success, consumerID));
         }
+
         /// <summary>
         /// Update billing deal
         /// </summary>
