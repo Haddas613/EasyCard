@@ -1,5 +1,6 @@
 ﻿using Shared.Business.Messages;
 using Shared.Helpers;
+using Shared.Helpers.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,13 @@ namespace Transactions.Api.Validation
             else if (model.PaymentDetails?.Any() == true)
             {
                 errors.Add(new Error(nameof(model.InvoiceDetails.InvoiceType), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
+            }
+
+            if(model.PaymentDetails.Any( p => p.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card))
+            {
+                if(!CardExpirationValidator.IsValid(model.CreditCardDetails.CardExpiration))
+                    errors.Add(new Error(nameof(model.CreditCardDetails.CardExpiratione), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
+
             }
 
             //If all fields are present validate the totals
