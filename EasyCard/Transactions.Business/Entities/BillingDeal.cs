@@ -270,12 +270,18 @@ namespace Transactions.Business.Entities
             BillingSchedule = billingSchedule;
             BillingSchedule.Validate(existingTransactionTimestamp);
 
-            //if (existingTransactionTimestamp.HasValue)
-            //{
-            //    var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
-            //    NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(lastTransactionDate, CurrentDeal.Value);
-            //}
-            //else
+            if (existingTransactionTimestamp.HasValue)
+            {
+                var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
+                DateTime fromDate = lastTransactionDate;
+                if (billingSchedule.StartAt.HasValue)
+                {
+                    fromDate = billingSchedule.StartAt.Value > lastTransactionDate ? billingSchedule.StartAt.Value : lastTransactionDate;
+                }
+
+                NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(fromDate, CurrentDeal.Value);
+            }
+            else
             {
                 NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
             }
