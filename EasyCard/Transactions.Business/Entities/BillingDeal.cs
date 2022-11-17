@@ -274,12 +274,14 @@ namespace Transactions.Business.Entities
             {
                 var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
                 DateTime fromDate = lastTransactionDate;
-                if (billingSchedule.StartAt.HasValue)
+                if (billingSchedule.StartAt.HasValue && billingSchedule.StartAt.Value > lastTransactionDate)
                 {
-                    fromDate = billingSchedule.StartAt.Value > lastTransactionDate ? billingSchedule.StartAt.Value : lastTransactionDate;
+                    NextScheduledTransaction = billingSchedule.StartAt.Value;
                 }
-
-                NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(fromDate, CurrentDeal.Value);
+                else
+                {
+                    NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(fromDate, CurrentDeal.Value);
+                }
             }
             else
             {
