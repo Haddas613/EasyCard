@@ -267,16 +267,16 @@ namespace Transactions.Business.Entities
                 return;
             }
 
+            billingSchedule.Validate(existingTransactionTimestamp, BillingSchedule?.StartAt != billingSchedule.StartAt);
             BillingSchedule = billingSchedule;
-            BillingSchedule.Validate(existingTransactionTimestamp);
 
             if (existingTransactionTimestamp.HasValue)
             {
                 var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
                 DateTime fromDate = lastTransactionDate;
-                if (billingSchedule.StartAt.HasValue && billingSchedule.StartAt.Value > lastTransactionDate)
+                if (BillingSchedule.StartAt.HasValue && BillingSchedule.StartAt.Value > lastTransactionDate)
                 {
-                    NextScheduledTransaction = billingSchedule.StartAt.Value;
+                    NextScheduledTransaction = BillingSchedule.StartAt.Value;
                 }
                 else
                 {
@@ -293,7 +293,7 @@ namespace Transactions.Business.Entities
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments &&
                 BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
                 (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue &&
-                (BillingSchedule.EndAt <= legalDate || BillingSchedule.EndAt <= NextScheduledTransaction)))
+                (BillingSchedule.EndAt < legalDate || BillingSchedule.EndAt < NextScheduledTransaction)))
             {
                 NextScheduledTransaction = null;
             }
