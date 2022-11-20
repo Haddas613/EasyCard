@@ -130,7 +130,7 @@
     <value>בקשת התשלום כבר שולמה</value>
   </data>
   <data name="PaymentRequestClosed" xml:space="preserve">
-    <value>בקשת תשלום סגורה</value>
+    <value>בקשת תשלום מבוטלת</value>
   </data>
   <data name="TotalAmountIsInvalid" xml:space="preserve">
     <value>סה"כ סכום תשלומים לא תקין</value>

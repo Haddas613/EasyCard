@@ -785,6 +785,11 @@
               Looks up a localized string similar to Confirmed By Processor.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.ConsumerDetailsUpdated">
+            <summary>
+              Looks up a localized string similar to Consumer Details Updated Successfully.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired">
             <summary>
               Looks up a localized string similar to Consumer Name and Consumer Email are required.
@@ -995,6 +1000,11 @@
               Looks up a localized string similar to Masav File generated successfully.
             </summary>
         </member>
+        <member name="P:Transactions.Shared.Messages.MasavFileProcessedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Masav processed successfully.
+            </summary>
+        </member>
         <member name="P:Transactions.Shared.Messages.MasavFileWasNotGenerated">
             <summary>
               Looks up a localized string similar to Masav File was not generated.
@@ -1128,6 +1138,11 @@
         <member name="P:Transactions.Shared.Messages.Required">
             <summary>
               Looks up a localized string similar to Required.
+            </summary>
+        </member>
+        <member name="P:Transactions.Shared.Messages.RowsRequired">
+            <summary>
+              Looks up a localized string similar to Rows are required.
             </summary>
         </member>
         <member name="P:Transactions.Shared.Messages.TerminalForUpdateParametersRequired">

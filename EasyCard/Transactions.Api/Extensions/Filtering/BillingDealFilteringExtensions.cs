@@ -28,18 +28,18 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
-            if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyDeleted || filter.Finished == true)
+            if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyDeleted)
             {
                 src = src.Where(t => t.Active == false);
             }
-            else
+            else if (filter.ShowDeleted == SharedHelpers.Models.ShowDeletedEnum.OnlyActive)
             {
                 src = src.Where(t => t.Active == true);
             }
 
             if (filter.Finished == true)
             {
-                src = src.Where(t => t.NextScheduledTransaction == null);
+                src = src.Where(t => t.NextScheduledTransaction == null && t.Active == false);
             }
 
             if (filter.Actual)

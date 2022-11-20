@@ -367,6 +367,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer Details Updated Successfully.
+        /// </summary>
+        public static string ConsumerDetailsUpdated {
+            get {
+                return ResourceManager.GetString("ConsumerDetailsUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer Name and Consumer Email are required.
         /// </summary>
         public static string ConsumerNameAndConsumerEmailRequired {
@@ -745,6 +754,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Masav processed successfully.
+        /// </summary>
+        public static string MasavFileProcessedSuccessfully {
+            get {
+                return ResourceManager.GetString("MasavFileProcessedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Masav File was not generated.
         /// </summary>
         public static string MasavFileWasNotGenerated {
@@ -984,6 +1002,15 @@ namespace Transactions.Shared {
         public static string Required {
             get {
                 return ResourceManager.GetString("Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rows are required.
+        /// </summary>
+        public static string RowsRequired {
+            get {
+                return ResourceManager.GetString("RowsRequired", resourceCulture);
             }
         }
         

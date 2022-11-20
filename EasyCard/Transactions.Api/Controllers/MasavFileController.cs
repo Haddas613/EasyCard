@@ -12,6 +12,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Shared.Business.Security;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,10 @@ using Transactions.Api.Models.Masav;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Z.EntityFramework.Plus;
+using Transactions.Shared;
 using SharedApi = Shared.Api;
 using SharedHelpers = Shared.Helpers;
+using Microsoft.Extensions.Azure;
 
 namespace Transactions.Api.Controllers
 {
@@ -42,7 +45,9 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly ITransactionsService transactionsService;
         private readonly IBlobStorageService masavFileSorageService;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly Shared.ApplicationSettings appSettings;
+        private readonly IBillingDealService billingDealService;
 
         public MasavFileController(
             ITransactionsService transactionsService,
@@ -50,7 +55,9 @@ namespace Transactions.Api.Controllers
             IMasavFileService masavFileService,
             IMapper mapper,
             ITerminalsService terminalsService,
-            IOptions<Shared.ApplicationSettings> appSettings)
+            IOptions<Shared.ApplicationSettings> appSettings,
+            IHttpContextAccessorWrapper httpContextAccessor,
+            IBillingDealService billingDealService)
         {
             this.transactionsService = transactionsService;
             this.logger = logger;
@@ -59,9 +66,12 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
 
             this.appSettings = appSettings.Value;
+            this.httpContextAccessor = httpContextAccessor;
 
             // TODO: remove, make singleton
             this.masavFileSorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
+
+            this.billingDealService = billingDealService;
         }
 
         [HttpGet]
@@ -256,16 +266,56 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
         }
 
-        [HttpPost("setPayed/{masavFileID}/{masavFileRowID}")]
-        public async Task<ActionResult<OperationResponse>> SetPayedSuccessfully(long masavFileID, long masavFileRowID)
+        [HttpPost("removeRows")]
+        public async Task<ActionResult<OperationResponse>> RemoveMasavFileRows(MasavFileRowsSetRequest request)
         {
-            await masavFileService.SetMasavFilePayed(masavFileID,masavFileRowID);
+            if (request.MasavFileRowIDs == null || request.MasavFileRowIDs.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.RowsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.MasavFileRowIDs), Messages.RowsRequired));
+            }
 
-            MasavFileRow row = masavFileService.GetMasavFileRows().Where(r => r.MasavFileRowID == masavFileRowID).FirstOrDefault();
-            var transaction = EnsureExists(
-              await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == row.PaymentTransactionID));
-            await transactionsService.UpdateEntityWithStatus(transaction, Shared.Enums.TransactionStatusEnum.Completed);
-            var response = new OperationResponse() { Message = "Masav file payed" };
+            var masavFile = EnsureExists(await masavFileService.GetMasavFile(request.MasavFileID));
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    foreach (var rowID in request.MasavFileRowIDs)
+                    {
+                        var existingRow = masavFile.Rows.Where(d => d.MasavFileRowID == rowID).FirstOrDefault();
+                        if (existingRow == null)
+                        {
+                            await dbTransaction.RollbackAsync();
+                            return NotFound("Specified row does not exist");
+                        }
+
+                        existingRow.IsPayed = false;
+
+                        var transaction = EnsureExists(
+                          await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PaymentTransactionID == existingRow.PaymentTransactionID));
+                        await transactionsService.UpdateEntityWithStatus(transaction, Shared.Enums.TransactionStatusEnum.CancelledByMerchant, dbTransaction: dbTransaction);
+
+                        if (transaction.BillingDealID != null)
+                        {
+                            var billing = EnsureExists(await billingDealService.GetBillingDeal(transaction.BillingDealID.Value));
+                            billing.RevertLastTransactionForBankBillings(Messages.TransactionCanceled);
+                            await billingDealService.UpdateEntityWithHistory(billing, Messages.TransactionCanceled, Shared.Enums.BillingDealOperationCodesEnum.TriggerTransactionFailed, dbTransaction);
+                        }
+                    }
+
+                    masavFile.StorageReference = null;
+                    await masavFileService.UpdateMasavFile(masavFile, dbTransaction);
+
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await dbTransaction.RollbackAsync();
+                    throw;
+                }
+            }
+
+            var response = new OperationResponse(Messages.MasavFileProcessedSuccessfully, SharedApi.Models.Enums.StatusEnum.Success);
 
             return Ok(response);
         }

@@ -219,6 +219,9 @@
   <data name="ConfirmedByProcessor" xml:space="preserve">
     <value>Confirmed By Processor</value>
   </data>
+  <data name="ConsumerDetailsUpdated" xml:space="preserve">
+    <value>Consumer Details Updated Successfully</value>
+  </data>
   <data name="ConsumerNameAndConsumerEmailRequired" xml:space="preserve">
     <value>Consumer Name and Consumer Email are required</value>
   </data>
@@ -345,6 +348,9 @@
   <data name="MasavFileGeneratedSuccessfully" xml:space="preserve">
     <value>Masav File generated successfully</value>
   </data>
+  <data name="MasavFileProcessedSuccessfully" xml:space="preserve">
+    <value>Masav processed successfully</value>
+  </data>
   <data name="MasavFileWasNotGenerated" xml:space="preserve">
     <value>Masav File was not generated</value>
   </data>
@@ -425,6 +431,9 @@
   </data>
   <data name="Required" xml:space="preserve">
     <value>Required</value>
+  </data>
+  <data name="RowsRequired" xml:space="preserve">
+    <value>Rows are required</value>
   </data>
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>

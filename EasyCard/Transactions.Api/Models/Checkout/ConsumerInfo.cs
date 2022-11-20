@@ -7,7 +7,7 @@ namespace Transactions.Api.Models.Checkout
 {
     public class ConsumerInfo
     {
-        public Guid ConsumerID { get; set; }
+        public Guid? ConsumerID { get; set; }
 
         /// <summary>
         /// End-customer Email

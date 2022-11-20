@@ -70,5 +70,7 @@ namespace Transactions.Api.Client
         Task<Authenticate3DsResponse> Authenticate3Ds(Authenticate3DsRequest request);
 
         Task<OperationResponse> CardTokensRetentionCleanup();
+
+        Task<OperationResponse> UpdateBillingConsumer(Guid consumerID);
     }
 }

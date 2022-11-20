@@ -461,6 +461,7 @@ namespace Transactions.Api.Controllers
                 consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
                 consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
                 consumer.MerchantID = merchantID;
+                consumer.Active = true;
                 consumer.ApplyAuditInfo(httpContextAccessor);
 
                 if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))

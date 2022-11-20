@@ -190,6 +190,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_PinPadTransactionID]
     ON [dbo].[PaymentTransaction]([PinPadTransactionID] ASC);
@@ -208,4 +210,9 @@ CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_MerchantID_TerminalID]
 GO
 CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_DoubleTransactions]
     ON [dbo].[PaymentTransaction]([TerminalID] ASC, [PaymentIntentID] DESC, [PaymentRequestID] DESC, [JDealType] ASC, [CardNumber] ASC, [TransactionAmount] ASC, [Status] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_ShvaTerminalID_ManuallyTransmitted]
+    ON [dbo].[PaymentTransaction]([ShvaTerminalID] ASC, [ManuallyTransmitted] ASC);
 

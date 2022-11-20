@@ -267,15 +267,23 @@ namespace Transactions.Business.Entities
                 return;
             }
 
+            billingSchedule.Validate(existingTransactionTimestamp, BillingSchedule?.StartAt != billingSchedule.StartAt);
             BillingSchedule = billingSchedule;
-            BillingSchedule.Validate(existingTransactionTimestamp);
 
-            //if (existingTransactionTimestamp.HasValue)
-            //{
-            //    var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
-            //    NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(lastTransactionDate, CurrentDeal.Value);
-            //}
-            //else
+            if (existingTransactionTimestamp.HasValue)
+            {
+                var lastTransactionDate = TimeZoneInfo.ConvertTimeFromUtc(existingTransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
+                DateTime fromDate = lastTransactionDate;
+                if (BillingSchedule.StartAt.HasValue && BillingSchedule.StartAt.Value > lastTransactionDate)
+                {
+                    NextScheduledTransaction = BillingSchedule.StartAt.Value;
+                }
+                else
+                {
+                    NextScheduledTransaction = BillingSchedule.GetNextScheduledDate(fromDate, CurrentDeal.Value);
+                }
+            }
+            else
             {
                 NextScheduledTransaction = BillingSchedule.GetInitialScheduleDate();
             }
@@ -285,7 +293,7 @@ namespace Transactions.Business.Entities
             if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments &&
                 BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
                 (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue &&
-                (BillingSchedule.EndAt <= legalDate || BillingSchedule.EndAt <= NextScheduledTransaction)))
+                (BillingSchedule.EndAt < legalDate || BillingSchedule.EndAt < NextScheduledTransaction)))
             {
                 NextScheduledTransaction = null;
             }
@@ -334,6 +342,16 @@ namespace Transactions.Business.Entities
             {
                 NextScheduledTransaction = new DateTime(NextScheduledTransaction.Value.Year, NextScheduledTransaction.Value.Month, 1).AddMonths(1);
             }
+        }
+
+        public void RevertLastTransactionForBankBillings(string errorMessage)
+        {
+            CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value - 1 : 0;
+            InProgress = BillingProcessingStatusEnum.Pending;
+            HasError = true;
+            LastError = errorMessage;
+            FailedAttemptsCount = FailedAttemptsCount.GetValueOrDefault() + 1;
+            NextScheduledTransaction = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
         }
     }
 }

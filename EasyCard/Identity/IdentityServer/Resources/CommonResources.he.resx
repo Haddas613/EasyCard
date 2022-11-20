@@ -363,4 +363,7 @@
   <data name="RegistrationSuccessMessage" xml:space="preserve">
     <value>אנו ניצור קשר בהקדם אפשרי לגבי אופן הצטרפותך לאיזי קארד</value>
   </data>
+  <data name="RegistrationRequiredBeforeSetNewPassword" xml:space="preserve">
+    <value>אנא השתמש בקישור מהמייל ההזמנה להשלמת ההרשמה</value>
+  </data>
 </root>

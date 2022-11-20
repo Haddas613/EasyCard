@@ -27,7 +27,6 @@ namespace Transactions.Api.Models.Masav
 
         public decimal? Amount { get; set; }
 
-        [MetadataOptions(Hidden = true)]
         public bool? IsPayed { get; set; }
 
         public bool SmsSent { get; set; }
