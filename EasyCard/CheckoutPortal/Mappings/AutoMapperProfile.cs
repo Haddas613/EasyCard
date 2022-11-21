@@ -79,7 +79,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.HideEmail, o => o.MapFrom(src => src.HideEmail))
                 .ForMember(d => d.HideNationalID, o => o.MapFrom(src => src.HideNationalID))
                 .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(src => src.AllowSaveCreditCard))
-
+                .ForMember(d => d.ConsumerDataReadonly, o => o.MapFrom(src => src.ConsumerDataReadonly))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
@@ -89,6 +89,16 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.ConsumerName))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
+            CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
+                .ForMember(d => d.CardOwnerName, o => { o.MapFrom(d => d.ConsumerName); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForMember(d => d.CardOwnerNationalID, o => { o.MapFrom(d => d.ConsumerNationalID); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap< Transactions.Api.Models.Checkout.ConsumerInfo, Shared.Integration.Models.CreditCardSecureDetails>()
+                .ForMember(d => d.CardOwnerName, o => { o.MapFrom(d => d.ConsumerName); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForMember(d => d.CardOwnerNationalID, o => { o.MapFrom(d => d.ConsumerNationalID); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
                    .ForMember(d => d.PinPad, o => o.MapFrom(d => d.PinPad))

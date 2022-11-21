@@ -53,5 +53,7 @@ namespace Merchants.Shared.Models
         public bool? HideNationalID { get => hideNationalID.GetValueOrDefault(false); set => hideNationalID = value; }
 
         public bool? AllowSaveCreditCard { get; set; }
+
+        public bool? ConsumerDataReadonly { get; set; }
     }
 }

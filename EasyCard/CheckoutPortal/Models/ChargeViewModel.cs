@@ -211,5 +211,8 @@ namespace CheckoutPortal.Models
         public bool? ShowAuthCode { get; set; }
 
         public string QueryLang { get; set; }
+
+        [BindNever]
+        public bool? ConsumerDataReadonly { get; set; }
     }
 }

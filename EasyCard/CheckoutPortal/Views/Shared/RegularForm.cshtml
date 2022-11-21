@@ -168,10 +168,17 @@
             <div class="form-group__line">
                 <div class="form-group">
                     <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
-                    <div>
-                        <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
-                        <span asp-validation-for="Name"></span>
-                    </div>
+                    @if (Model.ConsumerDataReadonly == true)
+                    {
+                        <div>@Model.Name</div>
+                    }
+                    else
+                    {
+                        <div>
+                            <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
+                            <span asp-validation-for="Name"></span>
+                        </div>
+                    }
                 </div>
 
                 <div class="form-group">
@@ -207,41 +214,69 @@
         @if (Model.AllowPinPad ?? false)
         {
             <div class="form-group" id="pin-pad-devices-name">
-                    <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
-                <div>
-                    <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
-                    <span asp-validation-for="Name"></span>
-                </div>
+                <label asp-for="Name">@localizer.Get("CardOwnerName")</label>
+                @if (Model.ConsumerDataReadonly == true)
+                {
+                    <div>@Model.Name</div>
+                }
+                else
+                {
+                    <div>
+                        <input class="form-control form-control-sm" placeholder="@localizer.Get("CardOwnerName")" asp-for="Name" autocomplete="off">
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                }
             </div>
         }
         @if (Model.HideEmail != true)
         {
             <div class="form-group">
                 <label asp-for="Email">@localizer.Get("Email")</label>
-                <div>
-                    <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" autocomplete="off">
-                    <span asp-validation-for="Email"></span>
-                </div>
+                @if (Model.ConsumerDataReadonly == true)
+                {
+                    <div>@Model.Email</div>
+                }
+                else
+                {
+                    <div>
+                        <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" autocomplete="off">
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                }
             </div>
         }
         @if (Model.HideNationalID != true)
         {
             <div class="form-group">
                 <label asp-for="NationalID">@localizer.Get("NationalID")</label>
-                <div>
-                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" autocomplete="off">
-                    <span asp-validation-for="NationalID"></span>
-                </div>
+                @if (Model.ConsumerDataReadonly == true)
+                {
+                    <div>@Model.NationalID</div>
+                }
+                else
+                {
+                    <div>
+                        <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" autocomplete="off">
+                        <span asp-validation-for="NationalID"></span>
+                    </div>
+                }
             </div>
         }
         @if (Model.HidePhone != true)
         {
             <div class="form-group">
                 <label asp-for="Phone">@localizer.Get("Phone")</label>
-                <div>
-                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" autocomplete="off">
-                    <span asp-validation-for="Phone"></span>
-                </div>
+                @if (Model.ConsumerDataReadonly == true)
+                {
+                    <div>@Model.Phone</div>
+                }
+                else
+                {
+                    <div>
+                        <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" autocomplete="off">
+                        <span asp-validation-for="Phone"></span>
+                    </div>
+                }
             </div>
         }
         @if (Model.ShowAuthCode == true)

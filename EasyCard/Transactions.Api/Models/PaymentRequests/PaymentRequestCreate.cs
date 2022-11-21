@@ -172,5 +172,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public bool? HideNationalID { get; set; }
 
         public bool? ShowAuthCode { get; set; }
+
+        public bool? ConsumerDataReadonly { get; set; }
     }
 }

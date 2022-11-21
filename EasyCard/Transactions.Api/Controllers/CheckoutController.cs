@@ -228,6 +228,11 @@ namespace Transactions.Api.Controllers
                 {
                     response.Settings.HideNationalID = paymentRequest.HideNationalID;
                 }
+
+                if (paymentRequest.ConsumerDataReadonly.HasValue)
+                {
+                    response.Settings.ConsumerDataReadonly = paymentRequest.ConsumerDataReadonly;
+                }
             }
 
             var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal };

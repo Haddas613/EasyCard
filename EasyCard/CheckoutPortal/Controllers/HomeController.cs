@@ -295,13 +295,24 @@ namespace CheckoutPortal.Controllers
                     ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
                 }
 
-                if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
+                if (checkoutConfig.Settings.ConsumerDataReadonly == true)
                 {
-                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                    if (ModelState[nameof(request.Name)] != null)
+                    {
+                        ModelState[nameof(request.Name)]?.Errors?.Clear();
+                        ModelState[nameof(request.Name)].ValidationState = ModelValidationState.Skipped;
+                    }
                 }
-                else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+                else
                 {
-                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                    if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
+                    {
+                        ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                    }
+                    else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+                    {
+                        ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                    }
                 }
             }
 
@@ -432,7 +443,9 @@ namespace CheckoutPortal.Controllers
 
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
-                mapper.Map(request, mdel.CreditCardSecureDetails);
+                mapper.Map(request, mdel.CreditCardSecureDetails); 
+                mapper.Map(checkoutConfig.Consumer, mdel);
+                mapper.Map(checkoutConfig.Consumer, mdel.CreditCardSecureDetails);
 
                 if (checkoutConfig.PaymentIntentID != null)
                 {

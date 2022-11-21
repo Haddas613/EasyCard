@@ -215,5 +215,7 @@ namespace Transactions.Business.Entities
         /// Transaction Type
         /// </summary>
         public TransactionTypeEnum? TransactionType { get; set; }
+
+        public bool? ConsumerDataReadonly { get; set; }
     }
 }
