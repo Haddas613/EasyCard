@@ -49,39 +49,67 @@
     <fieldset class="rounded p-2 m-2">
         <div class="form-group row">
             <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("PayersName")</label>
-            <div>
-                <input class="form-control form-control-sm" placeholder="@localizer.Get("PayersName")" asp-for="Name" id="Bit_Name" autocomplete="off">
-                <span asp-validation-for="Name"></span>
-            </div>
+            @if (Model.ConsumerDataReadonly == true)
+            {
+                <div>@Model.Name</div>
+            }
+            else
+            {
+                <div>
+                    <input class="form-control form-control-sm" placeholder="@localizer.Get("PayersName")" asp-for="Name" id="Bit_Name" autocomplete="off">
+                    <span asp-validation-for="Name"></span>
+                </div>
+            }
         </div>
         @if (Model.HideEmail != true)
         {
         <div class="form-group row">
             <label asp-for="Email" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Email")</label>
-            <div>
-                <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" id="Bit_Email" autocomplete="off">
-                <span asp-validation-for="Email"></span>
-            </div>
+            @if (Model.ConsumerDataReadonly == true)
+            {
+                <div>@Model.Email</div>
+            }
+            else
+            {
+                <div>
+                    <input type="email" class="form-control form-control-sm" placeholder="@localizer.Get("Email")" asp-for="Email" id="Bit_Email" autocomplete="off">
+                    <span asp-validation-for="Email"></span>
+                </div>
+            }
         </div>
         }
         @if (Model.HideNationalID != true)
         {
         <div class="form-group row">
             <label asp-for="NationalID" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("NationalID")</label>
-            <div>
-                <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" id="Bit_NationalID" autocomplete="off">
-                <span asp-validation-for="NationalID"></span>
-            </div>
+            @if (Model.ConsumerDataReadonly == true)
+            {
+                <div>@Model.NationalID</div>
+            }
+            else
+            {
+                <div>
+                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("NationalID")" asp-for="NationalID" id="Bit_NationalID" autocomplete="off">
+                    <span asp-validation-for="NationalID"></span>
+                </div>
+            }
         </div>
         }
         @if (Model.HidePhone != true)
         {
         <div class="form-group row">
             <label asp-for="Phone" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Phone")</label>
-            <div>
-                <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" id="Bit_Phone" autocomplete="off">
-                <span asp-validation-for="Phone"></span>
-            </div>
+            @if (Model.ConsumerDataReadonly == true)
+            {
+                <div>@Model.Phone</div>
+            }
+            else
+            {
+                <div>
+                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Phone")" asp-for="Phone" id="Bit_Phone" autocomplete="off">
+                    <span asp-validation-for="Phone"></span>
+                </div>
+            }
         </div>
         }
     </fieldset>

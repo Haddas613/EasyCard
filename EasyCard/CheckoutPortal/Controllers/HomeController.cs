@@ -226,6 +226,15 @@ namespace CheckoutPortal.Controllers
                 return IndexViewResult(checkoutConfig, request);
             }
 
+            if (checkoutConfig.Settings.ConsumerDataReadonly == true)
+            {
+                if (ModelState[nameof(request.Name)] != null)
+                {
+                    ModelState[nameof(request.Name)]?.Errors?.Clear();
+                    ModelState[nameof(request.Name)].ValidationState = ModelValidationState.Skipped;
+                }
+            }
+
             if (request.PayWithBit)
             {
                 request.PinPad = false;
@@ -295,15 +304,7 @@ namespace CheckoutPortal.Controllers
                     ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
                 }
 
-                if (checkoutConfig.Settings.ConsumerDataReadonly == true)
-                {
-                    if (ModelState[nameof(request.Name)] != null)
-                    {
-                        ModelState[nameof(request.Name)]?.Errors?.Clear();
-                        ModelState[nameof(request.Name)].ValidationState = ModelValidationState.Skipped;
-                    }
-                }
-                else
+                if (checkoutConfig.Settings.ConsumerDataReadonly != true)
                 {
                     if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
                     {
@@ -411,6 +412,8 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.DealDetails);
                 mapper.Map(checkoutConfig.Settings, mdel);
+                mapper.Map(checkoutConfig.Consumer, mdel);
+                mapper.Map(checkoutConfig.Consumer, mdel.CreditCardSecureDetails);
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
