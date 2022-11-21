@@ -174,14 +174,14 @@ namespace Transactions.Api.Controllers
         [HttpGet("rows")]
         public async Task<ActionResult<SummariesResponse<MasavFileRowSummary>>> GetMasavFileRows([FromQuery] MasavFileRowFilter filter)
         {
-            var query = masavFileService.GetMasavFileRows().Filter(filter);
-            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
-
-            var masavFile = EnsureExists(await masavFileService.GetMasavFiles().FirstOrDefaultAsync(f => f.MasavFileID == filter.MasavFileID));
+            var masavFile = EnsureExists(await masavFileService.GetMasavFile(filter.MasavFileID));
 
             var response = new SummariesResponse<MasavFileRowSummary>();
 
-            response.Data = await mapper.ProjectTo<MasavFileRowSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+            var query = masavFile.Rows.AsQueryable().Filter(filter);
+            var numberOfRecordsFuture = query.Count();
+
+            response.Data = mapper.ProjectTo<MasavFileRowSummary>(query.ApplyPagination(filter)).ToList();
 
             //TODO: add to entity?
             foreach (var row in response.Data)
@@ -189,7 +189,7 @@ namespace Transactions.Api.Controllers
                 row.Currency = masavFile.Currency;
             }
 
-            response.NumberOfRecords = numberOfRecordsFuture.Value;
+            response.NumberOfRecords = numberOfRecordsFuture;
 
             return Ok(response);
         }

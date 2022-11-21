@@ -13,8 +13,6 @@ namespace Transactions.Business.Services
     {
         IQueryable<MasavFile> GetMasavFiles();
 
-        IQueryable<MasavFileRow> GetMasavFileRows();
-
         Task<MasavFile> GetMasavFile(long masavFileID);
 
         Task CreateMasavFileRow(MasavFileRow data);

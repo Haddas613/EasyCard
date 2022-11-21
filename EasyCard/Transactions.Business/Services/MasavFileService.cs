@@ -30,11 +30,6 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<MasavFileRow> GetMasavFileRows()
-        {
-            return GetRowsInternal().AsNoTracking();
-        }
-
         public IQueryable<MasavFile> GetMasavFiles()
         {
             return GetFilesInternal().AsNoTracking();
@@ -43,7 +38,7 @@ namespace Transactions.Business.Services
         public async Task<MasavFile> GetMasavFile(long masavFileID)
         {
             var masavFile = GetFilesInternal().Where(d => d.MasavFileID == masavFileID).Future();
-            var masavFileRows = GetRowsInternal().Where(d => d.MasavFileID == masavFileID).Future();
+            var masavFileRows = context.MasavFileRows.Where(d => d.MasavFileID == masavFileID).Future();
 
             return (await masavFile.ToListAsync()).FirstOrDefault();
         }
@@ -67,30 +62,6 @@ namespace Transactions.Business.Services
         public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, string institueName, int? sendingInstitute, string instituteNumber, DateTime? masavFileDate)
         {
             return await context.GenerateMasavFile(merchantID, terminalID, institueName, sendingInstitute, instituteNumber, masavFileDate);
-        }
-
-        private IQueryable<MasavFileRow> GetRowsInternal()
-        {
-            if (user.IsAdmin())
-            {
-                return context.MasavFileRows;
-            }
-            else if (user.IsTerminal())
-            {
-                var terminalID = user.GetTerminalID()?.FirstOrDefault();
-                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == terminalID);
-            }
-            else
-            {
-                var response = context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
-                var terminals = user.GetTerminalID();
-                if (terminals?.Count() > 0)
-                {
-                    response = response.Where(d => terminals.Contains(d.MasavFile.TerminalID.GetValueOrDefault()));
-                }
-
-                return response;
-            }
         }
 
         private IQueryable<MasavFile> GetFilesInternal()
