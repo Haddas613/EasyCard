@@ -19,7 +19,8 @@ namespace MerchantProfileApi.Mapping
 
         private void RegisterConsumerMappings()
         {
-            CreateMap<Consumer, ConsumerSummary>();
+            CreateMap<Consumer, ConsumerSummary>()
+                .ForMember(s => s.HasBankAccount, src => src.MapFrom(c => c.BankDetails != null));
 
             CreateMap<Consumer, ConsumerResponse>();
 
