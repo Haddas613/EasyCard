@@ -401,5 +401,61 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
         }
+
+        public async Task<bool> CheckDuplicateBillingDeal(BillingDealCompare billingDealCompare, DateTime? threshold, PaymentTypeEnum paymentType, IDbContextTransaction dbContextTransaction)
+        {
+            if (!threshold.HasValue)
+            {
+                return false;
+            }
+
+            var builder = new SqlBuilder();
+
+            var query = @"select TOP (1) BillingDealID from dbo.BillingDeal /**where**/";
+
+            var selector = builder.AddTemplate(query);
+
+            _ = builder.Where(
+                $"{nameof(BillingDeal.TerminalID)} = @{nameof(billingDealCompare.TerminalID)} and " +
+                $"{nameof(BillingDeal.MerchantID)}  = @{nameof(billingDealCompare.MerchantID)}  and " +
+                $"{nameof(BillingDeal.PaymentType)} = @{nameof(paymentType)}",
+
+                new { billingDealCompare.TerminalID, billingDealCompare.MerchantID, paymentType });
+
+            if (threshold.HasValue)
+            {
+                var filter = $"{nameof(BillingDeal.BillingDealTimestamp)} >= @{nameof(threshold)}";
+
+                builder.Where(filter, new { threshold });
+            }
+            if (billingDealCompare.OperationDoneByID.HasValue)
+            {
+                var filter = $"{nameof(BillingDeal.OperationDoneByID)} = @{nameof(billingDealCompare.OperationDoneByID)}";
+
+                builder.Where(filter, new { billingDealCompare.OperationDoneByID });
+            }
+
+            var connection = this.Database.GetDbConnection();
+            bool existingConnection = true;
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                    existingConnection = false;
+                }
+
+                var report = await connection.ExecuteScalarAsync<Guid?>(selector.RawSql, selector.Parameters, transaction: dbContextTransaction?.GetDbTransaction());
+
+                return report.HasValue;
+            }
+            finally
+            {
+                if (!existingConnection)
+                {
+                    connection.Close();
+                }
+            }
+        }
     }
 }

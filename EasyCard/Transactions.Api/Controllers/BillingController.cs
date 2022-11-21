@@ -47,6 +47,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 using Z.EntityFramework.Plus;
 using SharedApi = Shared.Api;
 using SharedBusiness = Shared.Business;
@@ -59,7 +60,7 @@ namespace Transactions.Api.Controllers
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
     [ApiController]
-    public class BillingController : ApiControllerBase
+    public partial class BillingController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
         private readonly ICreditCardTokenService creditCardTokenService;
@@ -402,7 +403,26 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.WebHooksConfiguration = terminal.WebHooksConfiguration;
 
-            await billingDealService.CreateEntity(newBillingDeal);
+            BillingDealCompare billingDealCompare = new BillingDealCompare()
+            {
+                TerminalID = newBillingDeal.TerminalID,
+                MerchantID = newBillingDeal.MerchantID,
+                TransactionAmount = newBillingDeal.TransactionAmount,
+                OperationDoneByID = newBillingDeal.OperationDoneByID.GetValueOrDefault(),
+            };
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                var check = await CheckDuplicateBillingDeal(terminal, billingDealCompare, model.PaymentType, dbTransaction);
+                if (check != null)
+                {
+                    await dbTransaction.RollbackAsync();
+                    return check;
+                }
+
+                await billingDealService.CreateEntity(newBillingDeal, dbTransaction);
+
+                await dbTransaction.CommitAsync();
+            }
 
             _ = events.RaiseBillingEvent(newBillingDeal, CustomEvent.BillingDealCreated);
 

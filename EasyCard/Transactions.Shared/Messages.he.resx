@@ -471,6 +471,9 @@
   <data name="DuplicateTransactionIsDetected" xml:space="preserve">
     <value>זוהתה עסקה כפולה</value>
   </data>
+  <data name="DuplicateBillingDealIsDetected" xml:space="preserve">
+    <value>Duplicate billing deal is detected</value>
+  </data>
   <data name="PaymentRequestPayed" xml:space="preserve">
     <value>בקשת התשלום שולמה</value>
   </data>
