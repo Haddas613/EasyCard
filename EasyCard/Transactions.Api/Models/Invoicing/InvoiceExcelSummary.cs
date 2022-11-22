@@ -5,12 +5,15 @@ using Shared.Helpers.Models.Attributes;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
+using Shared.Integration.Resources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Enums.Resources;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -31,13 +34,11 @@ namespace Transactions.Api.Models.Invoicing
 
         public string InvoiceType { get; set; }
 
-        [EnumDataType(typeof(PaymentTypeEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PaymentTypeEnum? PaymentType
+        public string PaymentType
         {
             get
             {
-                return PaymentDetails?.Select(x => x.PaymentType).FirstOrDefault();
+                return PaymentTypeResource.ResourceManager.GetString(PaymentDetails?.Select(x => x.PaymentType).FirstOrDefault().ToString(), new CultureInfo("he"));
             }
         }
 
