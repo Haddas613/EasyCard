@@ -35,9 +35,7 @@ namespace Transactions.Api.Models.Invoicing
         /// </summary>
         public Guid? TerminalID { get; set; }
 
-        [EnumDataType(typeof(InvoiceTypeEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public InvoiceTypeEnum InvoiceType { get; set; }
+        public string InvoiceType { get; set; }
 
         /// <summary>
         /// Processing status

@@ -24,8 +24,10 @@ using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Helpers.Templating;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Resources;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Extensions;
@@ -759,6 +761,11 @@ namespace Transactions.Api.Controllers
 
                     var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
 
+                    foreach (var item in summary)
+                    {
+                        item.InvoiceType = InvoiceEnumsResource.ResourceManager.GetString(item.InvoiceType.ToString(), new CultureInfo("he"));
+                    }
+
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
 
                     var terminals = await terminalsService.GetTerminals()
@@ -798,7 +805,7 @@ namespace Transactions.Api.Controllers
                     InvoiceSummaryAmounts totalsRow = new InvoiceSummaryAmounts { InvoiceAmount = invoiceAmount };
                     List<InvoiceSummaryAmounts> summaryRows = new List<InvoiceSummaryAmounts>();
                     summaryRows.Add(totalsRow);
-                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"Admin/{filename}", "Invoices", summary, mapping,null,"yyyy-mm-dd", summaryRows);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"Admin/{filename}", "Invoices", summary, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }

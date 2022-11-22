@@ -29,9 +29,7 @@ namespace Transactions.Api.Models.Invoicing
         /// </summary>
         public DateTime? InvoiceDate { get; set; }
 
-        [EnumDataType(typeof(InvoiceTypeEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public InvoiceTypeEnum InvoiceType { get; set; }
+        public string InvoiceType { get; set; }
 
         [EnumDataType(typeof(PaymentTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
