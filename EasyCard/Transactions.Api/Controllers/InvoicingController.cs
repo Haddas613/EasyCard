@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
@@ -792,7 +793,12 @@ namespace Transactions.Api.Controllers
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Admin/Invoices_{Guid.NewGuid()}{terminalLabel}.xlsx");
-                    var res = await excelService.GenerateFile($"Invoices Report {businessName}", $"Admin/{filename}", "Invoices", summary, mapping);
+                    var invoiceAmount = summary.Sum(s => s.InvoiceAmount);
+
+                    InvoiceSummaryAmounts totalsRow = new InvoiceSummaryAmounts { InvoiceAmount = invoiceAmount };
+                    List<InvoiceSummaryAmounts> summaryRows = new List<InvoiceSummaryAmounts>();
+                    summaryRows.Add(totalsRow);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"Admin/{filename}", "Invoices", summary, mapping,null,"yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }
@@ -817,7 +823,15 @@ namespace Transactions.Api.Controllers
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Invoices{terminalLabel}.xlsx");
-                    var res = await excelService.GenerateFile($"Invoices Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping);
+
+                    var amountWithVat = data.Sum(s => s.AmountWithVat);
+                    var amountWithoutVat = data.Sum(s => s.AmountWithoutVat);
+
+                    InvoiceExcelSummaryDetails totalsRow = new InvoiceExcelSummaryDetails {  AmountWithoutVat = amountWithoutVat,  AmountWithVat = amountWithVat };
+                    List<InvoiceExcelSummaryDetails> summaryRows = new List<InvoiceExcelSummaryDetails>();
+                    summaryRows.Add(totalsRow);
+
+                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping,null,"yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }

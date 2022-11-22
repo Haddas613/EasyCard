@@ -14,7 +14,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
-    public class InvoiceExcelSummary
+    public class InvoiceExcelSummary : InvoiceExcelSummaryDetails
     {
 
         public string InvoiceNumber { get; set; }
@@ -59,10 +59,6 @@ namespace Transactions.Api.Models.Invoicing
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
-
-        public decimal? AmountWithVat { get; set; }
-
-        public decimal? AmountWithoutVat { get; set; }
 
         public string CardOwnerName { get; set; }
 
