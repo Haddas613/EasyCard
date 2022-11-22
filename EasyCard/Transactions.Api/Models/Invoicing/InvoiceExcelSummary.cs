@@ -61,5 +61,7 @@ namespace Transactions.Api.Models.Invoicing
 
         [ExcelIgnore]
         public Guid? TerminalID { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

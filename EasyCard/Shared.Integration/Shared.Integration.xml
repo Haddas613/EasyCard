@@ -1171,6 +1171,52 @@
               Looks up a localized string similar to Transaction Invoice.
             </summary>
         </member>
+        <member name="T:Shared.Integration.Resources.InvoiceStatusResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.Canceled">
+            <summary>
+              Looks up a localized string similar to Canceled.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.CancellationFailed">
+            <summary>
+              Looks up a localized string similar to Cancellation Failed.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.Initial">
+            <summary>
+              Looks up a localized string similar to Initial.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.Sending">
+            <summary>
+              Looks up a localized string similar to Sending.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.SendingFailed">
+            <summary>
+              Looks up a localized string similar to Sending Failed.
+            </summary>
+        </member>
+        <member name="P:Shared.Integration.Resources.InvoiceStatusResource.Sent">
+            <summary>
+              Looks up a localized string similar to Sent.
+            </summary>
+        </member>
         <member name="T:Shared.Integration.Resources.JDealTypeResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
