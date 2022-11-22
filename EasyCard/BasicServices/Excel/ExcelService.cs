@@ -21,11 +21,11 @@ namespace BasicServices.Services
             this.blobStorageService = blobStorageService;
         }
 
-        public async Task<string> GenerateFile<T>(string fileName, string worksheetName, List<T> rows, Dictionary<string, string> header, TimeSpan? downloadUrlExpiration = null, string dateFormat = "yyyy-mm-dd")
+        public async Task<string> GenerateFile<T>(string title,string fileName, string worksheetName, List<T> rows, Dictionary<string, string> header, TimeSpan? downloadUrlExpiration = null, string dateFormat = "yyyy-mm-dd")
         {
             using (var excel = new ExcelFileBuilder())
             {
-                excel.AddWorksheet(worksheetName, rows, header, dateFormat);
+                excel.AddWorksheet(title,worksheetName, rows, header, dateFormat);
 
                 excel.Save();
 
@@ -38,11 +38,11 @@ namespace BasicServices.Services
                 return blobStorageService.GetDownloadUrl(res);
             }
         }
-        public async Task<string> GenerateFileWithSummaryRow<T, TSummary>(string fileName, string worksheetName, List<T> rows, Dictionary<string, string> header, TimeSpan? downloadUrlExpiration = null, string dateFormat = "yyyy-mm-dd", List<TSummary> summary = null)
+        public async Task<string> GenerateFileWithSummaryRow<T, TSummary>(string title, string fileName, string worksheetName, List<T> rows, Dictionary<string, string> header, TimeSpan? downloadUrlExpiration = null, string dateFormat = "yyyy-mm-dd", List<TSummary> summary = null)
         {
             using (var excel = new ExcelFileBuilder())
             {
-                excel.AddWorksheetWithSummary(worksheetName, rows, header, dateFormat, null, summary);
+                excel.AddWorksheetWithSummary(title, worksheetName, rows, header, dateFormat, null, summary);
 
                 excel.Save();
 

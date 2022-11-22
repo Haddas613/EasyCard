@@ -405,13 +405,14 @@ namespace Transactions.Api.Controllers
                     var mapping = TransactionSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummaryAdmin>();
 
                     var terminalLabel = string.Empty;
+                    var businessName = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
                         var tlabel = terminals
                            .Where(t => t.Key == filter.TerminalID)
                            .Select(t => t.Value)
                            .FirstOrDefault();
-
+                        businessName = tlabel.BusinessName;
                         terminalLabel = $"-{tlabel}";
                     }
 
@@ -423,7 +424,7 @@ namespace Transactions.Api.Controllers
                     TransactionSummaryDetails totalsRow = new TransactionSummaryDetails { TransactionAmount = transactionAmountTotal, InitialPaymentAmount = initialPaymentTotal, InstallmentPaymentAmount = installmentPaymentAmountTotal, DealDescription = Messages.TotalAmount };
                     List<TransactionSummaryDetails> summaryRows = new List<TransactionSummaryDetails>();
                     summaryRows.Add(totalsRow);
-                    var res = await excelService.GenerateFileWithSummaryRow($"Admin/{filename}", "Transactions", summary, mapping, null, "yyyy-mm-dd", summaryRows);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Transactions Report {businessName}", $"Admin/{filename}", "Transactions", summary, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
@@ -433,7 +434,6 @@ namespace Transactions.Api.Controllers
                     var mapping = TransactionSummaryResource.ResourceManager.GetExcelColumnNames<TransactionSummary>();
 
                     var terminalsId = data.Select(t => t.TerminalID).Distinct();
-
                     var terminals = await terminalsService.GetTerminals()
                         .Include(t => t.Merchant)
                         .Where(t => terminalsId.Contains(t.TerminalID))
@@ -449,13 +449,14 @@ namespace Transactions.Api.Controllers
                     });
 
                     var terminalLabel = string.Empty;
+                    var businessName = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
                         var tlabel = terminals
                            .Where(t => t.Key == filter.TerminalID)
                            .Select(t => t.Value)
                            .FirstOrDefault();
-
+                        businessName = tlabel.BusinessName;
                         terminalLabel = $"-{tlabel}";
                     }
 
@@ -467,7 +468,7 @@ namespace Transactions.Api.Controllers
                     TransactionSummaryDetails totalsRow = new TransactionSummaryDetails { TransactionAmount = transactionAmountTotal, InitialPaymentAmount = initialPaymentTotal, InstallmentPaymentAmount = installmentPaymentAmountTotal, DealDescription = Messages.TotalAmount };
                     List<TransactionSummaryDetails> summaryRows = new List<TransactionSummaryDetails>();
                     summaryRows.Add(totalsRow);
-                    var res = await excelService.GenerateFileWithSummaryRow($"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping,null,"yyyy-mm-dd", summaryRows);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Transactions Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Transactions", data, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
