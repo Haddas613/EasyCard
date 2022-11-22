@@ -761,11 +761,6 @@ namespace Transactions.Api.Controllers
 
                     var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
 
-                    foreach (var item in summary)
-                    {
-                        item.InvoiceType = InvoiceEnumsResource.ResourceManager.GetString(item.InvoiceType.ToString(), new CultureInfo("he"));
-                    }
-
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
 
                     var terminals = await terminalsService.GetTerminals()

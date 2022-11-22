@@ -48,9 +48,7 @@ namespace Transactions.Api.Models.Invoicing
         /// <summary>
         /// Processing status
         /// </summary>
-        [EnumDataType(typeof(InvoiceStatusEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public InvoiceStatusEnum Status { get; set; }
+        public string Status { get; set; }
 
         /// <summary>
         /// Currency
