@@ -428,7 +428,7 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model, processorRequest.CreditCardToken);
 
                     processorRequest.ProcessorSettings = processorSettings;
-
+                    processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
                     var processorResponse = await processor.CreateTransaction(processorRequest);
                     mapper.Map(processorResponse, transaction);
                     mapper.Map(processorResponse, dbData);
