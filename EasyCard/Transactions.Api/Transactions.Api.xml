@@ -3084,7 +3084,7 @@
         </member>
         <member name="P:Transactions.Api.Resources.ValidationMessages.ConsumerNationalIDInvalid">
             <summary>
-              Looks up a localized string similar to Card owner nationalID invalid.
+              Looks up a localized string similar to Consumer nationalID invalid.
             </summary>
         </member>
     </members>
