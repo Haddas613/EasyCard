@@ -10,6 +10,12 @@ namespace Shared.Helpers
     {
         public static bool Valid(string nationalID)
         {
+            if (string.IsNullOrEmpty(nationalID))
+            {
+                return false;
+            }
+
+            nationalID = nationalID.Trim();
             if (string.IsNullOrWhiteSpace(nationalID) || nationalID.Length < 5 || nationalID.Length > 9 || !int.TryParse(nationalID, out var _))
             {
                 return false;

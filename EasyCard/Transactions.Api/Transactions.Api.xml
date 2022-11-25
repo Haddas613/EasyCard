@@ -3082,5 +3082,10 @@
               Looks up a localized string similar to If transaction type is Regular you should omit Installment Details.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Resources.ValidationMessages.ConsumerNationalIDInvalid">
+            <summary>
+              Looks up a localized string similar to Card owner nationalID invalid.
+            </summary>
+        </member>
     </members>
 </doc>

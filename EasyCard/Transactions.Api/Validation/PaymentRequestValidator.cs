@@ -41,6 +41,11 @@ namespace Transactions.Api.Validation
                 errors.Add(new Error(nameof(model.InstallmentDetails.NumberOfPayments), ValidationMessages.NumberOfPaymentsError));
             }
 
+            if (!IsraelNationalIdHelpers.Valid(model.DealDetails.ConsumerNationalID))
+            {
+                errors.Add(new Error(nameof(model.DealDetails.ConsumerNationalID), ValidationMessages.ConsumerNationalIDInvalid));
+            }
+
             if (errors.Count == 1)
             {
                 throw new BusinessException(errors.First().Description, errors);
