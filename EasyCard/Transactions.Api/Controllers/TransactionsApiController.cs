@@ -664,12 +664,12 @@ namespace Transactions.Api.Controllers
             if (model.CreditCardToken != null)
             {
                 createResult = await ProcessTransaction(terminal, model, token,
-                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
+                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID, jDealType: dbPaymentRequest.JDealType);
             }
             else
             {
                 createResult = await ProcessTransaction(terminal, model, null,
-                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
+                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID, jDealType: dbPaymentRequest.JDealType);
             }
 
             var opResult = createResult.GetOperationResponse();

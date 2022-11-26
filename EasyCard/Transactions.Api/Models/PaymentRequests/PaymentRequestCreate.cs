@@ -174,5 +174,10 @@ namespace Transactions.Api.Models.PaymentRequests
         public bool? ShowAuthCode { get; set; }
 
         public bool? ConsumerDataReadonly { get; set; }
+
+        /// <summary>
+        /// J3, J4, J5
+        /// </summary>
+        public JDealTypeEnum JDealType { get; set; }
     }
 }

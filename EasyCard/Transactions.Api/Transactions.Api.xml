@@ -1587,6 +1587,11 @@
             Default language to display checkout page
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.JDealType">
+            <summary>
+            J3, J4, J5
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
             <summary>
             Primary reference
