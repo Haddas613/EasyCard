@@ -53,6 +53,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>InvoiceEnumsResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\InvoiceStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InvoiceStatusResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\RejectionReasonResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -96,6 +101,10 @@
     <EmbeddedResource Update="Resources\InvoiceEnumsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InvoiceEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\InvoiceStatusResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InvoiceStatusResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\JDealTypeResource.he-IL.resx">
       <LastGenOutput>JDealTypeResource.Designer.cs</LastGenOutput>

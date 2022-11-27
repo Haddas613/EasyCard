@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -32,5 +33,7 @@ namespace Transactions.Api.Models.Invoicing
 
         [MetadataOptions(Hidden = true)]
         public new DateTime? InvoiceTimestamp { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

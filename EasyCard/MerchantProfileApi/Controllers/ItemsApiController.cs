@@ -241,6 +241,13 @@ namespace MerchantProfileApi.Controllers
             {
                 List<ItemSummary> items = null;
 
+                var businessName = string.Empty;
+                if (filter.TerminalID.HasValue)
+                {
+                    var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID.Value));
+                    businessName = terminal.Merchant.BusinessName;
+                }
+
                 if (filter.Currency == null)
                 {
                     items = await mapper.ProjectTo<ItemSummary>(query.OrderByDescending(i => i.Created).ApplyPagination(filter)).Future().ToListAsync();
@@ -249,7 +256,6 @@ namespace MerchantProfileApi.Controllers
                 {
                     var rates = await currencyRateService.GetLatestRates(); // TODO: caching
                     var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
-
                     if (filter.TerminalID.HasValue)
                     {
                         var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID.Value));
@@ -273,7 +279,7 @@ namespace MerchantProfileApi.Controllers
                 var mapping = ItemResource.ResourceManager.GetExcelColumnNames<ItemSummary>();
 
                 var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"Items-{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}.xlsx");
-                var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "Invoices", items, mapping);
+                var res = await excelService.GenerateFile($"Items Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Items", items, mapping);
 
                 return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
             }

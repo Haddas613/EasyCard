@@ -20,7 +20,7 @@ namespace BasicServices.Services
             this.package = new ExcelPackage(this.file);
         }
 
-        public void AddWorksheet<T>(string worksheetName, IEnumerable<T> rows, Dictionary<string, string> header, string dateFormat = "yyyy-mm-dd", Tuple<int, int> freeze = null)
+        public void AddWorksheet<T>(string title,string worksheetName, IEnumerable<T> rows, Dictionary<string, string> header, string dateFormat = "yyyy-mm-dd", Tuple<int, int> freeze = null)
         {
             ExcelWorksheet worksheet = this.package.Workbook.Worksheets.Add(worksheetName);
 
@@ -29,6 +29,10 @@ namespace BasicServices.Services
             var rown = 1;
 
             var coln = 1;
+
+            worksheet.Cells[rown, coln].Value = title;
+            worksheet.Cells[rown, coln].Style.Font.Bold = true;
+            rown += 2;
 
             foreach (var kvp in header)
             {
@@ -98,7 +102,7 @@ namespace BasicServices.Services
 
         }
 
-        public void AddWorksheetWithSummary<T, TSummary>(string worksheetName, IEnumerable<T> rows, Dictionary<string, string> header, string dateFormat = "yyyy-mm-dd", Tuple<int, int> freeze = null, IEnumerable<TSummary> rowsSummary = null)
+        public void AddWorksheetWithSummary<T, TSummary>(string title, string worksheetName, IEnumerable<T> rows, Dictionary<string, string> header, string dateFormat = "yyyy-mm-dd", Tuple<int, int> freeze = null, IEnumerable<TSummary> rowsSummary = null)
         {
             ExcelWorksheet worksheet = this.package.Workbook.Worksheets.Add(worksheetName);
 
@@ -107,6 +111,10 @@ namespace BasicServices.Services
             var rown = 1;
 
             var coln = 1;
+
+            worksheet.Cells[rown, coln].Value = title;
+            worksheet.Cells[rown, coln].Style.Font.Bold = true;
+            rown += 2;
 
             foreach (var kvp in header)
             {

@@ -263,6 +263,7 @@ namespace Transactions.Api.Controllers
                     var mapping = BillingDealSummaryResource.ResourceManager.GetExcelColumnNames<BillingDealSummaryAdmin>();
 
                     var terminalLabel = string.Empty;
+                    var businessName = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
                         var tlabel = terminals
@@ -271,10 +272,11 @@ namespace Transactions.Api.Controllers
                            .FirstOrDefault();
 
                         terminalLabel = $"-{tlabel}";
+                        businessName = tlabel.BusinessName;
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"BillingDeals_{Guid.NewGuid()}{terminalLabel}.xlsx");
-                    var res = await excelService.GenerateFile($"Admin/{filename}", "BillingDeals", summary, mapping);
+                    var res = await excelService.GenerateFile($"Billing Deals Report {businessName}", $"Admin/{filename}", "BillingDeals", summary, mapping);
 
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
@@ -300,6 +302,7 @@ namespace Transactions.Api.Controllers
                     });
 
                     var terminalLabel = string.Empty;
+                    var businessName = string.Empty;
                     if (filter.TerminalID.HasValue)
                     {
                         var tlabel = terminals
@@ -308,11 +311,12 @@ namespace Transactions.Api.Controllers
                          .FirstOrDefault();
 
                         terminalLabel = $"-{tlabel}";
+                        businessName = tlabel.BusinessName;
                     }
 
                     var filename = FileNameHelpers.RemoveIllegalFilenameCharacters($"BillingDeals{terminalLabel}.xlsx");
 
-                    var res = await excelService.GenerateFile($"{User.GetMerchantID()}/{filename}", "BillingDeals", data, mapping);
+                    var res = await excelService.GenerateFile($"Billing Deals Report {businessName}", $"{User.GetMerchantID()}/{filename}", "BillingDeals", data, mapping);
                     return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
                 }
             }
