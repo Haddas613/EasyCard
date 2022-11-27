@@ -100,6 +100,11 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.CardOwnerNationalID, o => { o.MapFrom(d => d.ConsumerNationalID); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, Transactions.Api.Models.Transactions.CreateTransactionRequest>()
+                .ForMember(d => d.CardOwnerName, o => { o.MapFrom(d => d.ConsumerName); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForMember(d => d.CardOwnerNationalID, o => { o.MapFrom(d => d.ConsumerNationalID); o.Condition((src, dest, srcMember, destMember) => destMember == null); })
+                .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
                    .ForMember(d => d.PinPad, o => o.MapFrom(d => d.PinPad))
                    .ForMember(d => d.PinPadDeviceID, o => o.MapFrom(d => d.PinPadDeviceID))
