@@ -284,7 +284,7 @@ namespace Transactions.Api.Controllers
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
-                newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID.Trim();
             }
             else
             {

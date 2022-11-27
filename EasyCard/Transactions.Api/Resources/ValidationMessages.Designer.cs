@@ -86,5 +86,14 @@ namespace Transactions.Api.Resources {
                 return ResourceManager.GetString("NumberOfPaymentsError", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Consumer nationalID invalid.
+        /// </summary>
+        public static string ConsumerNationalIDInvalid {
+            get {
+                return ResourceManager.GetString("ConsumerNationalIDInvalid", resourceCulture);
+            }
+        }  
     }
 }
