@@ -231,10 +231,19 @@ namespace Transactions.Api.Controllers.External
                     }
                 }
 
-                string sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
+                string sysTranceNumber;
+                try
+                {
+                    sysTranceNumber = GetSysTranceNumber(terminalMakingTransaction);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionMessage: "Failed to validate Transaction for PAX deal");
+                    return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
+                }
+
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
-
-
             }
             catch (Exception ex)
             {
