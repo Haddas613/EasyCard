@@ -193,6 +193,7 @@ namespace EasyInvoice.Converters
                     res.ChequeAccount = bankTransfer.BankAccount;
                     res.ChequeBank = bankTransfer.Bank?.ToString();
                     res.ChequeBranch = bankTransfer.BankBranch?.ToString();
+                    res.ChequeDate = bankTransfer.DueDate?.ToString("yyyy-MM-ddThh:mm");
                 }
 
                 result.Add(res);
