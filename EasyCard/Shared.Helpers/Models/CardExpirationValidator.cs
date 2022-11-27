@@ -17,7 +17,7 @@ namespace Shared.Helpers.Models
                 return new ValidationResult(Messages.CreditCardExpirationRequired);
             }
 
-            if (expiration.ToDate().Value.AddMonths(1) < DateTime.UtcNow)
+            if (expiration.ToDate().Value < DateTime.UtcNow)
             {
                 return new ValidationResult(Messages.CreditCardExpired);
             }
