@@ -64,8 +64,12 @@
     [ShowAuthCode]              BIT              NULL,
     [AllowImmediate]            BIT              NULL,
     [TransactionType]           SMALLINT         NULL,
+    [ConsumerDataReadonly]      BIT              NULL,
+    [JDealType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 
