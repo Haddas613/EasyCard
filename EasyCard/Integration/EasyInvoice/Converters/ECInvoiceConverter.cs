@@ -219,7 +219,7 @@ namespace EasyInvoice.Converters
         {
             description = message.DealDetails?.DealDescription;
             var documentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault());
-            string donationDescription = EasyInvoiceMessages.ResourceManager.GetString("DonationDescription", CultureInfo.GetCultureInfo(message.InvoiceDetails.InvoiceLanguage));
+            string donationDescription = EasyInvoiceMessages.ResourceManager.GetString("DonationDescription", CultureInfo.GetCultureInfo(message.InvoiceDetails.InvoiceLanguage ?? "he"));
 
             if ((documentType == ECInvoiceDocumentType.PAYMENT_INFO || documentType == ECInvoiceDocumentType.PAYMENT_INFO_DONATION) && message.InvoiceDetails.Donation)
             {
