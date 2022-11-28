@@ -235,29 +235,36 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal };
+            var transactionTypes = new List<TransactionTypeEnum>();
 
             if (paymentRequest != null)
             {
-                if (response.Settings.AllowImmediate == true && paymentRequest.AllowImmediate.GetValueOrDefault(true))
+                if ((response.Settings.AllowImmediate == true && paymentRequest.AllowImmediate == null) || paymentRequest.AllowImmediate == true)
                 {
                     transactionTypes.Add(TransactionTypeEnum.Immediate);
                 }
 
-                if (response.Settings.MaxInstallments > 1 && response.Settings.AllowInstallments == true && paymentRequest.AllowInstallments.GetValueOrDefault(true))
+                if ((response.Settings.MaxInstallments > 1 && response.Settings.AllowInstallments == true && paymentRequest.AllowInstallments == null) || paymentRequest.AllowInstallments == true)
                 {
                     transactionTypes.Add(TransactionTypeEnum.Installments);
                 }
 
-                if (response.Settings.MaxCreditInstallments > 1 && response.Settings.AllowCredit == true && paymentRequest.AllowCredit.GetValueOrDefault(true))
+                if ((response.Settings.MaxCreditInstallments > 1 && response.Settings.AllowCredit == true && paymentRequest.AllowCredit == null) || paymentRequest.AllowCredit == true)
                 {
                     transactionTypes.Add(TransactionTypeEnum.Credit);
+                }
+
+                if (!(transactionTypes.Count > 0) || paymentRequest.AllowRegular != false)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.RegularDeal);
                 }
             }
             else
             {
+                transactionTypes.Add(TransactionTypeEnum.RegularDeal);
                 transactionTypes.Add(TransactionTypeEnum.Installments);
                 transactionTypes.Add(TransactionTypeEnum.Credit);
+                transactionTypes.Add(TransactionTypeEnum.Immediate);
             }
 
             response.Settings.TransactionTypes = transactionTypes;

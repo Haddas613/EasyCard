@@ -192,11 +192,16 @@ namespace CheckoutPortal.Models
         [StringLength(2)]
         public string L { get; set; }
 
+        public bool? AllowRegular { get; set; }
+
         [BindNever]
         public bool? AllowInstallments { get; set; }
 
         [BindNever]
         public bool? AllowCredit { get; set; }
+
+        [BindNever]
+        public bool? AllowImmediate { get; set; }
 
         [BindNever]
         public bool? HidePhone { get; set; }

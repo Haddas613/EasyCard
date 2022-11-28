@@ -72,8 +72,9 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.EnableThreeDS, o => o.MapFrom(src => src.EnableThreeDS))
                 .ForMember(d => d.ContinueInCaseOf3DSecureError, o => o.MapFrom(src => src.ContinueInCaseOf3DSecureError))
                 .ForMember(d => d.AllowBit, o => o.MapFrom(src => src.AllowBit.GetValueOrDefault(false)))
-
+                .ForMember(d => d.AllowRegular, o => o.MapFrom(src => src.AllowRegular))
                 .ForMember(d => d.AllowInstallments, o => o.MapFrom(src => src.AllowInstallments))
+                .ForMember(d => d.AllowImmediate, o => o.MapFrom(src => src.AllowImmediate))
                 .ForMember(d => d.AllowCredit, o => o.MapFrom(src => src.AllowCredit))
                 .ForMember(d => d.HidePhone, o => o.MapFrom(src => src.HidePhone))
                 .ForMember(d => d.HideEmail, o => o.MapFrom(src => src.HideEmail))

@@ -159,6 +159,8 @@ namespace Transactions.Api.Models.PaymentRequests
         [StringLength(50)]
         public string Origin { get; set; }
 
+        public bool? AllowRegular { get; set; }
+
         public bool? AllowInstallments { get; set; }
 
         public bool? AllowCredit { get; set; }

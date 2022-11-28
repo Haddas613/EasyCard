@@ -64,6 +64,8 @@ namespace Transactions.Api.Models.Checkout
 
         public string Language { get; set; }
 
+        public bool? AllowRegular { get; set; }
+
         public bool? AllowInstallments { get; set; }
 
         public bool? AllowImmediate { get; set; }
