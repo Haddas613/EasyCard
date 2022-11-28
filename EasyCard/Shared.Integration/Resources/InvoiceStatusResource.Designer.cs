@@ -51,7 +51,7 @@ namespace Shared.Integration.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Canceled.
         /// </summary>
-        internal static string Canceled {
+        public static string Canceled {
             get {
                 return ResourceManager.GetString("Canceled", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Cancellation Failed.
         /// </summary>
-        internal static string CancellationFailed {
+        public static string CancellationFailed {
             get {
                 return ResourceManager.GetString("CancellationFailed", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Initial.
         /// </summary>
-        internal static string Initial {
+        public static string Initial {
             get {
                 return ResourceManager.GetString("Initial", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sending.
         /// </summary>
-        internal static string Sending {
+        public static string Sending {
             get {
                 return ResourceManager.GetString("Sending", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sending Failed.
         /// </summary>
-        internal static string SendingFailed {
+        public static string SendingFailed {
             get {
                 return ResourceManager.GetString("SendingFailed", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Shared.Integration.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sent.
         /// </summary>
-        internal static string Sent {
+        public static string Sent {
             get {
                 return ResourceManager.GetString("Sent", resourceCulture);
             }
