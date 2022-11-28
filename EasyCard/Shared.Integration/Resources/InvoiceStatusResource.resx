@@ -117,34 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CardExpirationNotValid" xml:space="preserve">
-    <value>Card expiration is not valid</value>
+  <data name="Canceled" xml:space="preserve">
+    <value>Canceled</value>
   </data>
-  <data name="Conflict" xml:space="preserve">
-    <value>Conflict</value>
+  <data name="CancellationFailed" xml:space="preserve">
+    <value>Cancellation Failed</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>Entity not found</value>
+  <data name="Initial" xml:space="preserve">
+    <value>Initial</value>
   </data>
-  <data name="PaymentDetailsMustSpecifyAtLeastOne" xml:space="preserve">
-    <value>Must specify at least one payment details</value>
+  <data name="Sending" xml:space="preserve">
+    <value>Sending</value>
   </data>
-  <data name="PaymentDetailsNotAllowedForThisTypeOfInvoice" xml:space="preserve">
-    <value>Payment details not allowed for this type of invoice</value>
+  <data name="SendingFailed" xml:space="preserve">
+    <value>Sending Failed</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>Record changed since last read</value>
-  </data>
-  <data name="Required" xml:space="preserve">
-    <value>Required</value>
-  </data>
-  <data name="ShouldNotBeEmpty" xml:space="preserve">
-    <value>The field should not be empty</value>
-  </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>Validation errors</value>
-  </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>You have no access to requested data</value>
+  <data name="Sent" xml:space="preserve">
+    <value>Sent</value>
   </data>
 </root>

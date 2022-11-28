@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Shared.Business.Messages {
+namespace Shared.Integration.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Shared.Business.Messages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ApiMessages {
+    public class InvoiceStatusResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ApiMessages() {
+        internal InvoiceStatusResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Shared.Business.Messages {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shared.Business.Messages.ApiMessages", typeof(ApiMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shared.Integration.Resources.InvoiceStatusResource", typeof(InvoiceStatusResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Shared.Business.Messages {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,92 +61,56 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Card expiration is not valid.
+        ///   Looks up a localized string similar to Canceled.
         /// </summary>
-        public static string CardExpirationNotValid {
+        internal static string Canceled {
             get {
-                return ResourceManager.GetString("CardExpirationNotValid", resourceCulture);
+                return ResourceManager.GetString("Canceled", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Conflict.
+        ///   Looks up a localized string similar to Cancellation Failed.
         /// </summary>
-        public static string Conflict {
+        internal static string CancellationFailed {
             get {
-                return ResourceManager.GetString("Conflict", resourceCulture);
+                return ResourceManager.GetString("CancellationFailed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entity not found.
+        ///   Looks up a localized string similar to Initial.
         /// </summary>
-        public static string EntityNotFound {
+        internal static string Initial {
             get {
-                return ResourceManager.GetString("EntityNotFound", resourceCulture);
+                return ResourceManager.GetString("Initial", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must specify at least one payment details.
+        ///   Looks up a localized string similar to Sending.
         /// </summary>
-        public static string PaymentDetailsMustSpecifyAtLeastOne {
+        internal static string Sending {
             get {
-                return ResourceManager.GetString("PaymentDetailsMustSpecifyAtLeastOne", resourceCulture);
+                return ResourceManager.GetString("Sending", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment details not allowed for this type of invoice.
+        ///   Looks up a localized string similar to Sending Failed.
         /// </summary>
-        public static string PaymentDetailsNotAllowedForThisTypeOfInvoice {
+        internal static string SendingFailed {
             get {
-                return ResourceManager.GetString("PaymentDetailsNotAllowedForThisTypeOfInvoice", resourceCulture);
+                return ResourceManager.GetString("SendingFailed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Record changed since last read.
+        ///   Looks up a localized string similar to Sent.
         /// </summary>
-        public static string RecordChangedSinceLastRead {
+        internal static string Sent {
             get {
-                return ResourceManager.GetString("RecordChangedSinceLastRead", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required.
-        /// </summary>
-        public static string Required {
-            get {
-                return ResourceManager.GetString("Required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The field should not be empty.
-        /// </summary>
-        public static string ShouldNotBeEmpty {
-            get {
-                return ResourceManager.GetString("ShouldNotBeEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Validation errors.
-        /// </summary>
-        public static string ValidationErrors {
-            get {
-                return ResourceManager.GetString("ValidationErrors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You have no access to requested data.
-        /// </summary>
-        public static string YouHaveNoAccess {
-            get {
-                return ResourceManager.GetString("YouHaveNoAccess", resourceCulture);
+                return ResourceManager.GetString("Sent", resourceCulture);
             }
         }
     }

@@ -126,4 +126,7 @@
   <data name="NumberOfPaymentsError" xml:space="preserve">
     <value>If transaction type is Regular you should omit Installment Details</value>
   </data>
+  <data name="ConsumerNationalIDInvalid" xml:space="preserve">
+    <value>Consumer National ID is invalid</value>
+  </data>  
 </root>

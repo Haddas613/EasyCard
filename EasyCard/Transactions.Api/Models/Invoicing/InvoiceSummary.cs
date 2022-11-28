@@ -11,7 +11,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
-    public class InvoiceSummary
+    public class InvoiceSummary : InvoiceSummaryAmounts
     {
         /// <summary>
         /// Primary reference
@@ -35,16 +35,12 @@ namespace Transactions.Api.Models.Invoicing
         /// </summary>
         public Guid? TerminalID { get; set; }
 
-        [EnumDataType(typeof(InvoiceTypeEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public InvoiceTypeEnum InvoiceType { get; set; }
+        public string InvoiceType { get; set; }
 
         /// <summary>
         /// Processing status
         /// </summary>
-        [EnumDataType(typeof(InvoiceStatusEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public InvoiceStatusEnum Status { get; set; }
+        public string Status { get; set; }
 
         /// <summary>
         /// Currency
@@ -52,8 +48,6 @@ namespace Transactions.Api.Models.Invoicing
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
-
-        public decimal? InvoiceAmount { get; set; }
 
         public string CardOwnerName { get; set; }
 
