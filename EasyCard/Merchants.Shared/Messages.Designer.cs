@@ -356,5 +356,11 @@ namespace Merchants.Shared {
                 return ResourceManager.GetString("UserUpdated", resourceCulture);
             }
         }
+
+        public static string SpecialCharactersNotAllowed {
+            get {
+                return ResourceManager.GetString("SpecialCharactersNotAllowed", resourceCulture);
+            }
+        }        
     }
 }

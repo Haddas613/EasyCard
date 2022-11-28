@@ -216,4 +216,7 @@
   <data name="UserUpdated" xml:space="preserve">
     <value>משתמש עודכן</value>
   </data>
+  <data name="SpecialCharactersNotAllowed" xml:space="preserve">
+    <value>תווים מיוחדים לא מורשים</value>
+  </data>    
 </root>
