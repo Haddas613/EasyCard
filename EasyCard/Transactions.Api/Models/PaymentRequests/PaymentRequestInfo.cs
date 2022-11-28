@@ -95,7 +95,7 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public bool OnlyAddCard
         {
-            get { return TotalAmount == 0 && !UserAmount }
+            get { return TotalAmount == 0 && !UserAmount; }
         }
 
         public string Origin { get; set; }
