@@ -500,6 +500,28 @@ namespace Transactions.Api.Controllers
                 }
 
                 token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    CreditCardTokenDetails dbToken = null;
+                    if (terminal.Settings.SharedCreditCardTokens == true)
+                    {
+                        if (User.IsAdmin())
+                        {
+                            dbToken = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                        }
+                        else
+                        {
+                            dbToken = await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                        }
+                    }
+                    else
+                    {
+                        dbToken = await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                    }
+
+                    model.DealDetails.ConsumerID = dbToken?.ConsumerID;
+                }
             }
 
             if (model.SaveCreditCard == true)

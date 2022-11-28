@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
+using Merchants.Business.Entities.Billing;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -356,7 +357,16 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID);
+                Consumer consumer = null;
+                if (!string.IsNullOrWhiteSpace(model.CardOwnerNationalID))
+                {
+                    consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID);
+                }
+                else if (!string.IsNullOrWhiteSpace(model.ConsumerEmail))
+                {
+                    consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerEmail == model.ConsumerEmail);
+                }
+
                 if (consumer != null)
                 {
                     model.ConsumerID = consumer.ConsumerID;

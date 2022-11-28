@@ -175,8 +175,15 @@ namespace Transactions.Api.Controllers
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null, false);
             if (consumer != null)
             {
-                newPaymentRequest.CardOwnerName = consumer.ConsumerName;
-                newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                if (string.IsNullOrWhiteSpace(newPaymentRequest.CardOwnerName))
+                {
+                    newPaymentRequest.CardOwnerName = consumer.ConsumerName;
+                }
+
+                if (string.IsNullOrWhiteSpace(newPaymentRequest.CardOwnerNationalID))
+                {
+                    newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                }
             }
             else
             {
@@ -237,12 +244,12 @@ namespace Transactions.Api.Controllers
                 mapper.Map(transaction.DealDetails, consumer);
                 consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
                 consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
-                consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
+                consumer.ConsumerNationalID = transaction.DealDetails.ConsumerNationalID ?? transaction.CardOwnerNationalID;
                 consumer.MerchantID = merchantID;
                 consumer.Active = true;
                 consumer.ApplyAuditInfo(httpContextAccessor);
 
-                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && (!string.IsNullOrWhiteSpace(consumer.ConsumerEmail) || !string.IsNullOrWhiteSpace(consumer.ConsumerNationalID))))
                 {
                     return null;
                 }

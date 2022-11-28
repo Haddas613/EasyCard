@@ -465,12 +465,12 @@ namespace Transactions.Api.Controllers
                 mapper.Map(transaction.DealDetails, consumer);
                 consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
                 consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
-                consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
+                consumer.ConsumerNationalID = transaction.DealDetails.ConsumerNationalID ?? transaction.CardOwnerNationalID;
                 consumer.MerchantID = merchantID;
                 consumer.Active = true;
                 consumer.ApplyAuditInfo(httpContextAccessor);
 
-                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && (!string.IsNullOrWhiteSpace(consumer.ConsumerEmail) || !string.IsNullOrWhiteSpace(consumer.ConsumerNationalID))))
                 {
                     return null;
                 }
