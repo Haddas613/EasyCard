@@ -47,6 +47,8 @@ namespace Shared.Integration.Models
         /// End-customer National Id
         /// </summary>
         [StringLength(20)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Helpers.Models.IsraelNationalIDValidator]
         public string ConsumerNationalID { get; set; }
 
         /// <summary>
