@@ -1,4 +1,5 @@
 ﻿@using Shared.Helpers
+@using Shared.Integration.Models
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
 
@@ -19,7 +20,7 @@
     {
         <input type="hidden" asp-for="ConnectionID" />
     }
-    @if (Model.TransactionTypes.Count() > 1 && !Model.OnlyAddCard)
+    @if ((Model.TransactionTypes.Count() > 1 || Model.TransactionTypes.First() == TransactionTypeEnum.Installments || Model.TransactionTypes.First() == TransactionTypeEnum.Credit) && !Model.OnlyAddCard)
     {
         <div class="form-group">
             <label for="number-of-payments">@localizer.Get("TransactionType")</label>

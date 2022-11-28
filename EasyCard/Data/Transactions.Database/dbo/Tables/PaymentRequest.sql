@@ -66,8 +66,11 @@
     [TransactionType]           SMALLINT         NULL,
     [ConsumerDataReadonly]      BIT              NULL,
     [JDealType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [AllowRegular]              BIT              NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 
