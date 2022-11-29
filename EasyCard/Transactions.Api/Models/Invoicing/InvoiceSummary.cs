@@ -35,12 +35,16 @@ namespace Transactions.Api.Models.Invoicing
         /// </summary>
         public Guid? TerminalID { get; set; }
 
-        public string InvoiceType { get; set; }
+        [EnumDataType(typeof(InvoiceTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceTypeEnum InvoiceType { get; set; }
 
         /// <summary>
         /// Processing status
         /// </summary>
-        public string Status { get; set; }
+        [EnumDataType(typeof(InvoiceStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceStatusEnum Status { get; set; }
 
         /// <summary>
         /// Currency
