@@ -28,14 +28,7 @@ namespace Shared.Api.Models.Binding.Tests
             
             BitCreateRequest model = new BitCreateRequest()
             {
-                RequestAmount = 100,
-                CurrencyTypeCode = 1,
-                DebitMethodCode = 2,
-                ExternalSystemReference = null,
                 RequestSubjectDescription = testValue,
-                FranchisingId = 0,
-                ProviderNbr = 0,
-                UrlReturnAddress = null
             }; 
 
             var expectedResult = JsonConvert.SerializeObject(model.RequestSubjectDescription, Formatting.None, new JsonSerializerSettings
