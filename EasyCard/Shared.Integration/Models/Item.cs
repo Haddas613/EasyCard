@@ -18,6 +18,7 @@ namespace Shared.Integration.Models
 
         [Required(AllowEmptyStrings = false)]
         [StringLength(250)]
+        [JsonConverter(typeof(RemovingHtmlTagsConverter))]
         public string ItemName { get; set; }
 
         [StringLength(50)]
