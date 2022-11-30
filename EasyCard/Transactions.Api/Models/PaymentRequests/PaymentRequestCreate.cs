@@ -181,5 +181,7 @@ namespace Transactions.Api.Models.PaymentRequests
         /// J3, J4, J5
         /// </summary>
         public JDealTypeEnum JDealType { get; set; }
+
+        public bool? SaveCreditCardByDefault { get; set; }
     }
 }

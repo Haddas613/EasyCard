@@ -219,5 +219,12 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool? ConsumerDataReadonly { get; set; }
+
+        /// <summary>
+        /// Save credit card by default flag. If true - save credit card by default.
+        /// </summary>
+        /// <value></value>
+        [BindNever]
+        public bool? SaveCreditCardByDefault { get; set; }        
     }
 }

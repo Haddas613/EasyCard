@@ -204,7 +204,15 @@
                 else if (Model.ConsumerID.HasValue)
                 {
                     <div class="form-group checkbox-group">
-                        <input type="checkbox" asp-for="SaveCreditCard">
+                        @if (Model.SaveCreditCardByDefault == true)
+                        {
+                            <input type="checkbox" asp-for="SaveCreditCard" checked>
+                        }
+                        else
+                        {
+                            <input type="checkbox" asp-for="SaveCreditCard">
+                        
+                        }
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
                     </div>
                 }

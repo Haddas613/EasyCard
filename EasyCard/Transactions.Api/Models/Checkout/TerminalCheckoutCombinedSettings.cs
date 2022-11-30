@@ -81,5 +81,7 @@ namespace Transactions.Api.Models.Checkout
         public bool? AllowSaveCreditCard { get; set; }
 
         public bool? ConsumerDataReadonly { get; set; }
+
+        public bool? SaveCreditCardByDefault { get; set; }
     }
 }

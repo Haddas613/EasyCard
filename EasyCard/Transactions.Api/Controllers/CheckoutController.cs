@@ -233,6 +233,11 @@ namespace Transactions.Api.Controllers
                 {
                     response.Settings.ConsumerDataReadonly = paymentRequest.ConsumerDataReadonly;
                 }
+
+                if (paymentRequest.SaveCreditCardByDefault.HasValue)
+                {
+                    response.Settings.SaveCreditCardByDefault = paymentRequest.SaveCreditCardByDefault;
+                }
             }
 
             var transactionTypes = new List<TransactionTypeEnum>();
