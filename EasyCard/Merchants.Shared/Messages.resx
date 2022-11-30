@@ -216,4 +216,7 @@
   <data name="UserUpdated" xml:space="preserve">
     <value>User Updated</value>
   </data>
+  <data name="SpecialCharactersNotAllowed" xml:space="preserve">
+    <value>Special characters not allowed</value>
+  </data>  
 </root>
