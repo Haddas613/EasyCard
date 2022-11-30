@@ -23,7 +23,6 @@
     <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\..\Integration\Bit\Bit.csproj" />
     <ProjectReference Include="..\..\Transactions.Business\Transactions.Business.csproj" />
-    
   </ItemGroup>
 
 </Project>
