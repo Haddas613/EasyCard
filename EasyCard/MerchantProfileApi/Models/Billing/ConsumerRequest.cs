@@ -42,7 +42,8 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer National ID
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [StringLength(50)]
+        [Required(AllowEmptyStrings = false)]
+        [Shared.Helpers.Models.IsraelNationalIDValidator]
         public string ConsumerNationalID { get; set; }
 
         /// <summary>
