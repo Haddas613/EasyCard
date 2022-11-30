@@ -132,6 +132,9 @@
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
+  <data name="DocumentOrigin" xml:space="preserve">
+    <value>מקור המסמך</value>
+  </data>
   <data name="InvoiceAmount" xml:space="preserve">
     <value>סכום חשבונית</value>
   </data>

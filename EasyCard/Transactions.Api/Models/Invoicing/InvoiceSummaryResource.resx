@@ -126,6 +126,9 @@
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
+  <data name="DocumentOrigin" xml:space="preserve">
+    <value>Document Origin</value>
+  </data>
   <data name="InvoiceAmount" xml:space="preserve">
     <value>Invoice Amount</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="PaymentTransactionID" xml:space="preserve">
     <value>Transaction ID</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>Payment Type</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>

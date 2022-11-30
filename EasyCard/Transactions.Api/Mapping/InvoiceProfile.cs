@@ -47,6 +47,12 @@ namespace Transactions.Api.Mapping
                   .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
+            CreateMap<Invoice, InvoiceExcelSummaryAdmin>()
+                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
+                 .ForMember(d => d.InvoiceType, o => o.MapFrom(d => InvoiceEnumsResource.ResourceManager.GetString(d.InvoiceDetails.InvoiceType.ToString(), new CultureInfo("he"))))
+                 .ForMember(d => d.Status, o => o.MapFrom(d => InvoiceStatusResource.ResourceManager.GetString(d.Status.ToString(), new CultureInfo("he"))))
+                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
+
             CreateMap<Invoice, InvoiceResponse>();
             CreateMap<InvoiceHistory, InvoiceHistoryResponse>();
 

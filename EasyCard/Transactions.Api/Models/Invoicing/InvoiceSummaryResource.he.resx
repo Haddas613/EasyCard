@@ -126,6 +126,9 @@
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
+  <data name="DocumentOrigin" xml:space="preserve">
+    <value>מקור המסמך</value>
+  </data>
   <data name="InvoiceAmount" xml:space="preserve">
     <value>סכום חשבונית</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="PaymentTransactionID" xml:space="preserve">
     <value>מזהה עסקת תשלום</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>סוג תשלום</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>סטטוס</value>

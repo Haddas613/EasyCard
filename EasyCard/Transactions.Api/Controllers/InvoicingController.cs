@@ -757,9 +757,9 @@ namespace Transactions.Api.Controllers
             {
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
-                    var response = new SummariesResponse<InvoiceSummaryAdmin>();
+                    var response = new SummariesResponse<InvoiceExcelSummaryAdmin>();
 
-                    var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
+                    var summary = await mapper.ProjectTo<InvoiceExcelSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceTimestamp), filter.SortDesc)).ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
 
@@ -779,7 +779,7 @@ namespace Transactions.Api.Controllers
                         }
                     });
 
-                    var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceSummaryAdmin>();
+                    var mapping = InvoiceSummaryResource.ResourceManager.GetExcelColumnNames<InvoiceExcelSummaryAdmin>();
 
                     var terminalLabel = string.Empty;
                     string businessName = string.Empty;
