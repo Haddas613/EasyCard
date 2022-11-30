@@ -24,9 +24,9 @@ namespace Shared.Api.Models.Binding
             reader.Read();
             if (reader.GetType() == typeof(JTokenReader))
            {
-                var res = ((string)reader.Value)?.Trim() == string.Empty ? "ok" : ((string)reader.Value)?.Trim();
+                var res = ((string)reader.Value)?.Trim() == string.Empty ? null : ((string)reader.Value)?.Trim();
 
-                return res == null ? "ok" : JsonConvert.SerializeObject(
+                return res == null ? null : JsonConvert.SerializeObject(
                                             res,
                                             Formatting.None,
                                             new JsonSerializerSettings
