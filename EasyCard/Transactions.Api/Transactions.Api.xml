@@ -1235,6 +1235,11 @@
               Looks up a localized string similar to Currency.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.DocumentOrigin">
+            <summary>
+              Looks up a localized string similar to Document Origin.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceAmount">
             <summary>
               Looks up a localized string similar to Invoice Amount.
@@ -1273,6 +1278,11 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.PaymentTransactionID">
             <summary>
               Looks up a localized string similar to Transaction ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.PaymentType">
+            <summary>
+              Looks up a localized string similar to Payment Type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.Status">

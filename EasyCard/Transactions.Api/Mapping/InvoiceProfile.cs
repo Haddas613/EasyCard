@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Shared.Helpers;
 using Shared.Integration.Models.PaymentDetails;
+using Shared.Integration.Resources;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Mapping.ValueResolvers;
