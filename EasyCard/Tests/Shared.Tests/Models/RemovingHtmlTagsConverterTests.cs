@@ -24,8 +24,8 @@ namespace Shared.Api.Models.Binding.Tests
         [Fact()]
         public void ReadJsonTest_Ok()
         {
-            string testValue = "Some      <strong> Description</strong> with <p>html</p> tags <img src=\"https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png\" alt=\"Google\" width=\"272\" height=\"92\"> test <script>script code</script> <style>style code</style> <xml>xml code</xml>";
-            string expectedResult = "Some Description with html tags test";
+            string testValue = "Some <strong>Description</strong> with <p>html</p> tags <img src=\"https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png\" alt=\"Google\" width=\"272\" height=\"92\"> test";
+            string expectedResult = "Some Description with html tags  test";
             
             DealDetails model = new DealDetails()
             {
