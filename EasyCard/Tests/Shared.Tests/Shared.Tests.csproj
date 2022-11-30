@@ -18,9 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CheckoutPortal\CheckoutPortal.csproj" />
     <ProjectReference Include="..\..\Shared.Business\Shared.Business.csproj" />
     <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
+    <ProjectReference Include="..\..\Integration\Bit\Bit.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -20,16 +21,17 @@ namespace Shared.Api.Models.Binding
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (reader.TokenType == JsonToken.String)
-            {
-                var res = ((string)reader.Value)?.Trim() == string.Empty ? null : ((string)reader.Value)?.Trim();
+            reader.Read();
+            if (reader.GetType() == typeof(JTokenReader))
+           {
+                var res = ((string)reader.Value)?.Trim() == string.Empty ? "ok" : ((string)reader.Value)?.Trim();
 
-                return res == null ? null : JsonConvert.SerializeObject(
+                return res == null ? "ok" : JsonConvert.SerializeObject(
                                             res,
                                             Formatting.None,
                                             new JsonSerializerSettings
                                             { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
-            }
+           }
 
             return reader.Value;
         }
