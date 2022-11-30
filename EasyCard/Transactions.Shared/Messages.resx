@@ -261,6 +261,9 @@
   <data name="DuplicateTransactionIsDetected" xml:space="preserve">
     <value>Duplicate transaction is detected</value>
   </data>
+  <data name="DuplicateBillingDealIsDetected" xml:space="preserve">
+    <value>Duplicate billing deal is detected</value>
+  </data>  
   <data name="EitherEmailOrPhoneMustBeSpecified" xml:space="preserve">
     <value>Either Email or Phone must be specified</value>
   </data>

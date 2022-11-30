@@ -491,6 +491,15 @@ namespace Transactions.Shared {
                 return ResourceManager.GetString("DuplicateTransactionIsDetected", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate billing deal is detected.
+        /// </summary>
+        public static string DuplicateBillingDealIsDetected {
+            get {
+                return ResourceManager.GetString("DuplicateBillingDealIsDetected", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Either Email or Phone must be specified.
