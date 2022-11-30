@@ -7,7 +7,7 @@ namespace Merchants.Shared.Models.Attributes
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
     public class NoSpecialCharsAttribute : ValidationAttribute
     {
-        private static readonly Regex SpecChars = new Regex(@"\`|\~|\@|\#|\$|\%|\^|\(|\)|\=|\[|\{|\]|\}|\|\'|\<|\>|\/|\;");
+        private static readonly Regex SpecChars = new Regex(@"\`|\~|\@|\#|\$|\%|\^|\?|\=|\[|\{|\]|\}|\|\<|\>|\/|\;");
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
