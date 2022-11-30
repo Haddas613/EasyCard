@@ -238,6 +238,21 @@ namespace Transactions.Api.Controllers
                 {
                     response.Settings.SaveCreditCardByDefault = paymentRequest.SaveCreditCardByDefault;
                 }
+
+                if (paymentRequest.EmailRequired.HasValue)
+                {
+                    response.Settings.EmailRequired = paymentRequest.EmailRequired;
+                }
+
+                if (paymentRequest.PhoneRequired.HasValue)
+                {
+                    response.Settings.PhoneRequired = paymentRequest.EmailRequired;
+                }
+
+                if (paymentRequest.NationalIDRequired == true)
+                {
+                    response.Settings.NationalIDRequired = true;
+                }
             }
 
             var transactionTypes = new List<TransactionTypeEnum>();

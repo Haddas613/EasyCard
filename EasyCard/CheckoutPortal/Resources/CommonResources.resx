@@ -294,4 +294,10 @@
   <data name="HowToSetUp" xml:space="preserve">
     <value>How to set up</value>
   </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email Required</value>
+  </data>
+  <data name="PhoneRequired" xml:space="preserve">
+    <value>Phone Required</value>
+  </data>
 </root>

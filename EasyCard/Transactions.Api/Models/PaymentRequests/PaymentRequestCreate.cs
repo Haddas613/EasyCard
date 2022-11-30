@@ -169,9 +169,15 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public bool? HidePhone { get; set; }
 
+        public bool? PhoneRequired { get; set; }
+
         public bool? HideEmail { get; set; }
 
+        public bool? EmailRequired { get; set; }
+
         public bool? HideNationalID { get; set; }
+
+        public bool? NationalIDRequired { get; set; }
 
         public bool? ShowAuthCode { get; set; }
 

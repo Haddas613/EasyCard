@@ -314,6 +314,16 @@ namespace CheckoutPortal.Controllers
                     {
                         ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
                     }
+
+                    if (string.IsNullOrWhiteSpace(request.Email) && checkoutConfig.Settings.EmailRequired == true)
+                    {
+                        ModelState.AddModelError(nameof(request.Email), Resources.CommonResources.EmailRequired);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(request.Phone) && checkoutConfig.Settings.PhoneRequired == true)
+                    {
+                        ModelState.AddModelError(nameof(request.Phone), Resources.CommonResources.PhoneRequired);
+                    }
                 }
             }
 

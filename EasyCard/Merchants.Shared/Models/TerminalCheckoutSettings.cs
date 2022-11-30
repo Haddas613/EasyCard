@@ -57,5 +57,9 @@ namespace Merchants.Shared.Models
         public bool? ConsumerDataReadonly { get; set; }
 
         public bool? SaveCreditCardByDefault { get; set; }
+
+        public bool? PhoneRequired { get; set; }
+
+        public bool? EmailRequired { get; set; }
     }
 }
