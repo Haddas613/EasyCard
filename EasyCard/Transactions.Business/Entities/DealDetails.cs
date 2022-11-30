@@ -22,6 +22,7 @@ namespace Transactions.Business.Entities
         /// Deal description
         /// </summary>
         [StringLength(500)]
+        [JsonConverter(typeof(RemovingHtmlTagsConverter))]
         public string DealDescription { get; set; }
 
         /// <summary>
