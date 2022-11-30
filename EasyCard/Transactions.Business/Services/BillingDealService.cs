@@ -5,6 +5,7 @@ using Shared.Business;
 using Shared.Business.AutoHistory;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ using Transactions.Business.Data;
 using Transactions.Business.Entities;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 using Z.EntityFramework.Plus;
 using SharedApi = Shared.Api;
 
@@ -133,6 +135,11 @@ namespace Transactions.Business.Services
         public async Task<IEnumerable<FutureBilling>> GetFutureBillings(Guid? terminalID, Guid? consumerID, Guid? billingDealID, DateTime? startDate, DateTime? endDate)
         {
             return await context.GetFutureBillings(user.GetMerchantID(), terminalID, consumerID, billingDealID, startDate, endDate);
+        }
+
+        public async Task<bool> CheckDuplicateBillingDeal(BillingDealCompare billingDealCompare, DateTime? threshold, PaymentTypeEnum paymentType, IDbContextTransaction dbContextTransaction)
+        {
+            return await context.CheckDuplicateBillingDeal(billingDealCompare, threshold, paymentType, dbContextTransaction);
         }
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)

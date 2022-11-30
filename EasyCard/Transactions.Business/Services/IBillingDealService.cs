@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Api.Models;
 using Shared.Business;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 
 namespace Transactions.Business.Services
 {
@@ -20,5 +22,7 @@ namespace Transactions.Business.Services
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
 
         Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
+
+        Task<bool> CheckDuplicateBillingDeal(BillingDealCompare billingDealCompare, DateTime? threshold, PaymentTypeEnum paymentType, IDbContextTransaction dbContextTransaction);
     }
 }
