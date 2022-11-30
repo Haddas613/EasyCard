@@ -291,4 +291,7 @@
   <data name="HowToSetUp" xml:space="preserve">
     <value>איך להגדיר?</value>
   </data>
+  <data name="OnlyAddCard" xml:space="preserve">
+    <value>הוסף כרטיס</value>
+  </data>
 </root>
