@@ -25,7 +25,7 @@ namespace Shared.Integration.Models
         /// Deal description. In case of generating payment link, these description will be displayed on Checkout Page
         /// </summary>
         [StringLength(250)]
-        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [JsonConverter(typeof(RemovingHtmlTagsConverter))]
         public string DealDescription { get; set; }
 
         /// <summary>
