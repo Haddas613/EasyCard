@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Models.Binding;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using System;
