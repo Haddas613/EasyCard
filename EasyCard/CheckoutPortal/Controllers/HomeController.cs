@@ -303,17 +303,27 @@ namespace CheckoutPortal.Controllers
                 {
                     ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
                 }
+            }
 
-                if (checkoutConfig.Settings.ConsumerDataReadonly != true)
+            if (checkoutConfig.Settings.ConsumerDataReadonly != true)
+            {
+                if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
                 {
-                    if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
-                    {
-                        ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-                    }
-                    else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
-                    {
-                        ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-                    }
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
+                else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Email) && checkoutConfig.Settings.EmailRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.Email), Resources.CommonResources.EmailRequired);
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Phone) && checkoutConfig.Settings.PhoneRequired == true)
+                {
+                    ModelState.AddModelError(nameof(request.Phone), Resources.CommonResources.PhoneRequired);
                 }
             }
 

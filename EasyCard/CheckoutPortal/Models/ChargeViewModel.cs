@@ -225,6 +225,6 @@ namespace CheckoutPortal.Models
         /// </summary>
         /// <value></value>
         [BindNever]
-        public bool? SaveCreditCardByDefault { get; set; }        
+        public bool? SaveCreditCardByDefault { get; set; }
     }
 }

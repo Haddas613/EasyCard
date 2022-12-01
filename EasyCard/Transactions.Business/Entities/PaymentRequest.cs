@@ -226,5 +226,11 @@ namespace Transactions.Business.Entities
         public JDealTypeEnum JDealType { get; set; }
 
         public bool? SaveCreditCardByDefault { get; set; }
+
+        public bool? PhoneRequired { get; set; }
+
+        public bool? EmailRequired { get; set; }
+
+        public bool? NationalIDRequired { get; set; }
     }
 }
