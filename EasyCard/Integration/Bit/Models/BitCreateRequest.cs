@@ -34,7 +34,6 @@ namespace Bit.Models
         /// Required.
         /// Free text describing payment purpose: max length 50
         /// </summary>
-        [JsonConverter(typeof(EscapingHtmlConverter))]
         public string RequestSubjectDescription { get; set; }
 
         /// <summary>

@@ -19,7 +19,9 @@ namespace Shared.Helpers
     {
         public HttpClient HttpClient { get; private set; }
 
-        public WebApiClient(TimeSpan? timeout = null)
+        protected internal JsonSerializerSettings SerializerSettings { get; private set; }
+
+        public WebApiClient(TimeSpan? timeout = null, StringEscapeHandling? stringEscapeHandling = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
@@ -29,9 +31,14 @@ namespace Shared.Helpers
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
             HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
+
+            if (stringEscapeHandling != null)
+            {
+                SerializerSettings = new JsonSerializerSettings { StringEscapeHandling = stringEscapeHandling.Value };
+            }
         }
 
-        public WebApiClient(X509Certificate2 certificate, TimeSpan? timeout = null)
+        public WebApiClient(X509Certificate2 certificate, TimeSpan? timeout = null, StringEscapeHandling? stringEscapeHandling = null)
         {
             var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
@@ -48,6 +55,11 @@ namespace Shared.Helpers
             HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
 
             HttpClient.Timeout = timeout ?? TimeSpan.FromMinutes(5);
+
+            if (stringEscapeHandling != null)
+            {
+                SerializerSettings = new JsonSerializerSettings { StringEscapeHandling = stringEscapeHandling.Value };
+            }
         }
 
         public void Dispose()
@@ -242,7 +254,7 @@ namespace Shared.Helpers
                 }
             }
 
-            var json = JsonConvert.SerializeObject(payload);
+            var json = JsonConvert.SerializeObject(payload, SerializerSettings);
 
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 

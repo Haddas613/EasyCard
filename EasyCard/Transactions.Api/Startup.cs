@@ -712,7 +712,7 @@ namespace Transactions.Api
 
             services.AddSingleton<Bit.BitProcessor, Bit.BitProcessor>(serviceProvider =>
             {
-                var webApiClient = new WebApiClient(bitCertificate);
+                var webApiClient = new WebApiClient(bitCertificate, stringEscapeHandling: StringEscapeHandling.EscapeHtml);
                 var logger = serviceProvider.GetRequiredService<ILogger<Bit.BitProcessor>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.BitRequestsLogStorageTable, cfg.BitRequestsLogStorageTable);
