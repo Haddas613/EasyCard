@@ -946,7 +946,7 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {ex.Message}");
+                logger.LogError(ex, $"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {ex.Message}");
                 return new OperationResponse { Message = $"System error", Status = StatusEnum.Error };
             }
         }
