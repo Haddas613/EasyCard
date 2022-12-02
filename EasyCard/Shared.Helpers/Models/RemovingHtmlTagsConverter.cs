@@ -22,17 +22,17 @@ namespace Shared.Api.Models.Binding
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            reader.Read();
-            if (reader.GetType() == typeof(JTokenReader))
-           {
-                var res = ((string)reader.Value)?.Trim() == string.Empty ? null : ((string)reader.Value)?.Trim();
+            if (reader.TokenType == JsonToken.String)
+            {
+                var res = ((string)reader.Value)?.Trim();
+
                 if (res != null)
                 {
                     return Regex.Replace(res, @"<(.|\n)*?>", string.Empty);
                 }
 
-                return null;
-           }
+                return res;
+            }
 
             return reader.Value;
         }

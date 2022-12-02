@@ -25,24 +25,23 @@ namespace Shared.Api.Models.Binding.Tests
         public void ReadJsonTest()
         {
             string testValue = "Some string <with> [special] 'characters' & more";
-            
-            BitCreateRequest model = new BitCreateRequest()
+
+            EscapingHtmlConverterItem model = new EscapingHtmlConverterItem()
             {
-                RequestSubjectDescription = testValue,
+                Name = testValue,
             }; 
 
-            var expectedResult = JsonConvert.SerializeObject(model.RequestSubjectDescription, Formatting.None, new JsonSerializerSettings
-            {
-                StringEscapeHandling = StringEscapeHandling.EscapeHtml
-            });
-                        
-            JsonReader reader = new JTokenReader(JToken.Parse(JsonConvert.SerializeObject(model.RequestSubjectDescription)));
+            var result = JsonConvert.SerializeObject(model, Formatting.None);
 
-            var converter = new EscapingHtmlConverter();
-            
-            var result = converter.ReadJson(reader, model.RequestSubjectDescription.GetType(), testValue, null);
+            var expectedResult = "";
             Assert.NotNull(result);
             Assert.Equal(expectedResult, result?.ToString());
         }        
+    }
+
+    public class EscapingHtmlConverterItem
+    {
+        [JsonConverter(typeof(EscapingHtmlConverter))]
+        public string Name { get; set; }
     }
 }

@@ -13,32 +13,25 @@ namespace Shared.Api.Models.Binding
         {
         }
 
-        public override bool CanRead => true;
+        public override bool CanRead => false;
 
-        public override bool CanWrite => false;
+        public override bool CanWrite => true;
 
         public override bool CanConvert(Type objectType) => objectType == typeof(string);
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            reader.Read();
-            if (reader.GetType() == typeof(JTokenReader))
-           {
-                var res = ((string)reader.Value)?.Trim() == string.Empty ? null : ((string)reader.Value)?.Trim();
-
-                return res == null ? null : JsonConvert.SerializeObject(
-                                            res,
-                                            Formatting.None,
-                                            new JsonSerializerSettings
-                                            { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
-           }
-
-            return reader.Value;
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var str = value as string;
+            if (str != null)
+            {
+                var res = System.Web.HttpUtility.HtmlEncode(value);
+                writer.WriteValue(res);
+            }
         }
     }
 }
