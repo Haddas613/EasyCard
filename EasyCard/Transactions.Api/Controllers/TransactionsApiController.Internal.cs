@@ -229,7 +229,7 @@ namespace Transactions.Api.Controllers
                 if (check != null)
                 {
                     await dbTransaction.RollbackAsync();
-                    return check;
+                    return BadRequest(check);
                 }
 
                 if (initialTransactionProcess != null)
@@ -931,8 +931,15 @@ namespace Transactions.Api.Controllers
                     actionResult = await ProcessTransaction(terminal, transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
                 }
 
-                var response = actionResult.Result as ObjectResult;
-                return response.Value as OperationResponse;
+                var response = (actionResult.Result as ObjectResult)?.Value as OperationResponse;
+                if (response != null)
+                {
+                    return response;
+                }
+                else
+                {
+                    return new OperationResponse("Unknown error", StatusEnum.Error, billingDeal.BillingDealID);
+                }
             }
             catch (BusinessException businessEx)
             {
