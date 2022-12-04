@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Merchants.Shared.Models.Attributes;
+using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace Merchants.Api.Models.Merchant
         [Required(AllowEmptyStrings = false)]
         [StringLength(50, MinimumLength = 3)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
+        [NoSpecialChars]
         public string BusinessName { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
+        [NoSpecialChars]
         public string MarketingName { get; set; }
 
         [StringLength(9, MinimumLength = 9)]
