@@ -4,6 +4,7 @@ using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Transactions.Api.Models.PaymentRequests;
 
 namespace CheckoutPortal.Mappings
@@ -26,7 +27,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.PaymentIntent, o => o.MapFrom(d => d.PaymentIntent))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
-                .ForMember(d => d.Description, o => o.MapFrom(d => d.Description))
+                .ForMember(d => d.Description, o => o.MapFrom(d => Regex.Replace(d.Description, @"<[^>]*>", String.Empty)))
                 .ForMember(d => d.Email, o => o.MapFrom(d => d.Email))
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.Name))
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.NationalID))
@@ -38,7 +39,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequestID))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.PaymentRequestAmount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
-                .ForMember(d => d.Description, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.DealDescription))
+                .ForMember(d => d.Description, o => o.MapFrom(d => d.DealDetails == null ? null : Regex.Replace(d.DealDetails.DealDescription, @"<[^>]*>", String.Empty)))
                 .ForMember(d => d.Email, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerEmail))
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.CardOwnerName))
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.CardOwnerNationalID))
@@ -130,7 +131,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID));
 
             CreateMap<ChargeViewModel, Shared.Integration.Models.DealDetails>()
-                .ForMember(d => d.DealDescription, o => o.MapFrom(d => d.Description))
+                .ForMember(d => d.DealDescription, o => o.MapFrom(d => Regex.Replace(d.Description, @"<[^>]*>", String.Empty)))
                 .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.Email))
                 .ForMember(d => d.ConsumerPhone, o => o.MapFrom(d => d.Phone))
                 .ForMember(d => d.ConsumerName, o => o.MapFrom(d => d.Name))
