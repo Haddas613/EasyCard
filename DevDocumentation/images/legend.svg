@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="598px" preserveAspectRatio="none" style="width:346px;height:598px;background:#003153;" version="1.1" viewBox="0 0 346 598" width="346px" zoomAndPan="magnify"><defs/><g><rect fill="#003153" height="598" style="stroke:none;stroke-width:1.0;" width="346" x="0" y="0"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="41" x2="41" y1="36.2969" y2="279.3594"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="41" x2="41" y1="279.3594" y2="307.3594"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="41" x2="41" y1="307.3594" y2="365.625"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="41" x2="41" y1="365.625" y2="393.625"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="41" x2="41" y1="393.625" y2="451.8906"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="41" x2="41" y1="451.8906" y2="479.8906"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="41" x2="41" y1="479.8906" y2="563.2891"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="315" x2="315" y1="36.2969" y2="279.3594"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="315" x2="315" y1="279.3594" y2="307.3594"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="315" x2="315" y1="307.3594" y2="365.625"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="315" x2="315" y1="365.625" y2="393.625"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="315" x2="315" y1="393.625" y2="451.8906"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:1.0,4.0;" x1="315" x2="315" y1="451.8906" y2="479.8906"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="315" x2="315" y1="479.8906" y2="563.2891"/><rect fill="#003153" height="30.2969" rx="2.5" ry="2.5" style="stroke:#D9D3D0;stroke-width:1.0;" width="43" x="20" y="5"/><text fill="#D9D3D0" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="29" x="27" y="24.9951">Bob</text><rect fill="#003153" height="30.2969" rx="2.5" ry="2.5" style="stroke:#D9D3D0;stroke-width:1.0;" width="43" x="20" y="562.2891"/><text fill="#D9D3D0" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="29" x="27" y="582.2842">Bob</text><rect fill="#003153" height="30.2969" rx="2.5" ry="2.5" style="stroke:#D9D3D0;stroke-width:1.0;" width="49" x="291" y="5"/><text fill="#D9D3D0" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="35" x="298" y="24.9951">Alice</text><rect fill="#003153" height="30.2969" rx="2.5" ry="2.5" style="stroke:#D9D3D0;stroke-width:1.0;" width="49" x="291" y="562.2891"/><text fill="#D9D3D0" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="35" x="298" y="582.2842">Alice</text><polygon fill="#D9D3D0" points="303.5,63.4297,313.5,67.4297,303.5,71.4297,307.5,67.4297" style="stroke:#D9D3D0;stroke-width:1.0;"/><line style="stroke:#D9D3D0;stroke-width:1.0;" x1="41.5" x2="309.5" y1="67.4297" y2="67.4297"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="112" x="48.5" y="62.3638">api call (backend)</text><polygon fill="#D9D3D0" points="52.5,92.5625,42.5,96.5625,52.5,100.5625,48.5,96.5625" style="stroke:#D9D3D0;stroke-width:1.0;"/><line style="stroke:#D9D3D0;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="46.5" x2="314.5" y1="96.5625" y2="96.5625"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="59" x="58.5" y="91.4966">response</text><polygon fill="#00FFFF" points="303.5,121.6953,313.5,125.6953,303.5,129.6953,307.5,125.6953" style="stroke:#00FFFF;stroke-width:1.0;"/><line style="stroke:#00FFFF;stroke-width:1.0;" x1="41.5" x2="309.5" y1="125.6953" y2="125.6953"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="78" x="48.5" y="120.6294">user actions</text><polygon fill="#00FF00" points="303.5,150.8281,313.5,154.8281,303.5,158.8281,307.5,154.8281" style="stroke:#00FF00;stroke-width:1.0;"/><line style="stroke:#00FF00;stroke-width:1.0;" x1="41.5" x2="309.5" y1="154.8281" y2="154.8281"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="98" x="48.5" y="149.7622">redirect or MVC</text><polygon fill="#FFFF00" points="303.5,179.9609,313.5,183.9609,303.5,187.9609,307.5,183.9609" style="stroke:#FFFF00;stroke-width:1.0;"/><line style="stroke:#FFFF00;stroke-width:1.0;" x1="41.5" x2="309.5" y1="183.9609" y2="183.9609"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="52" x="48.5" y="178.895">ajax call</text><polygon fill="#FFFF00" points="52.5,209.0938,42.5,213.0938,52.5,217.0938,48.5,213.0938" style="stroke:#FFFF00;stroke-width:1.0;"/><line style="stroke:#FFFF00;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="46.5" x2="314.5" y1="213.0938" y2="213.0938"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="59" x="58.5" y="208.0278">response</text><polygon fill="#FF0000" points="303.5,238.2266,313.5,242.2266,303.5,246.2266,307.5,242.2266" style="stroke:#FF0000;stroke-width:1.0;"/><line style="stroke:#FF0000;stroke-width:1.0;" x1="41.5" x2="309.5" y1="242.2266" y2="242.2266"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="141" x="48.5" y="237.1606">call javascript method</text><polygon fill="#FF00FF" points="303.5,267.3594,313.5,271.3594,303.5,275.3594,307.5,271.3594" style="stroke:#FF00FF;stroke-width:1.0;"/><line style="stroke:#FF00FF;stroke-width:1.0;" x1="41.5" x2="309.5" y1="271.3594" y2="271.3594"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="133" x="48.5" y="266.2935">call backend method</text><polygon fill="#00FF00" points="303.5,324.4922,313.5,328.4922,303.5,332.4922,307.5,328.4922" style="stroke:#00FF00;stroke-width:1.0;"/><line style="stroke:#00FF00;stroke-width:1.0;" x1="41.5" x2="309.5" y1="328.4922" y2="328.4922"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="69" x="48.5" y="323.4263">POST form</text><polygon fill="#00FF00" points="52.5,353.625,42.5,357.625,52.5,361.625,48.5,357.625" style="stroke:#00FF00;stroke-width:1.0;"/><line style="stroke:#00FF00;stroke-width:1.0;" x1="46.5" x2="314.5" y1="357.625" y2="357.625"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="187" x="58.5" y="352.5591">redirect to confirmation page</text><polygon fill="#FF0000" points="303.5,410.7578,313.5,414.7578,303.5,418.7578,307.5,414.7578" style="stroke:#FF0000;stroke-width:1.0;"/><line style="stroke:#FF0000;stroke-width:1.0;" x1="41.5" x2="309.5" y1="414.7578" y2="414.7578"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="131" x="48.5" y="409.6919">call javascript library</text><polygon fill="#00FFFF" points="52.5,439.8906,42.5,443.8906,52.5,447.8906,48.5,443.8906" style="stroke:#00FFFF;stroke-width:1.0;"/><line style="stroke:#00FFFF;stroke-width:1.0;" x1="46.5" x2="314.5" y1="443.8906" y2="443.8906"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="136" x="58.5" y="438.8247">library creates popup</text><polygon fill="#00FFFF" points="303.5,497.0234,313.5,501.0234,303.5,505.0234,307.5,501.0234" style="stroke:#00FFFF;stroke-width:1.0;"/><line style="stroke:#00FFFF;stroke-width:1.0;" x1="41.5" x2="309.5" y1="501.0234" y2="501.0234"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="141" x="48.5" y="495.9575">user confirmed popup</text><polygon fill="#FF0000" points="52.5,541.2891,42.5,545.2891,52.5,549.2891,48.5,545.2891" style="stroke:#FF0000;stroke-width:1.0;"/><line style="stroke:#FF0000;stroke-width:1.0;" x1="46.5" x2="314.5" y1="545.2891" y2="545.2891"/><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="138" x="58.5" y="525.0903">javascript library calls</text><text fill="#D9D3D0" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="250" x="58.5" y="540.2231">javascript method on activator window</text><!--MD5=[2cf8f97d8b0bf801bd61123a0d753cc7]
+@startuml
+!theme blueprint
+Bob -> Alice : api call (backend)
+Alice - -> Bob : response
+Bob -[#aqua]> Alice : user actions
+Bob -[#lime]> Alice : redirect or MVC
+Bob -[#yellow]> Alice : ajax call
+Alice - -[#yellow]> Bob : response
+Bob -[#red]> Alice: call javascript method
+Bob -[#fuchsia]> Alice: call backend method
+
+...
+
+Bob -[#lime]> Alice : POST form
+Alice -[#lime]> Bob : redirect to confirmation page
+
+...
+
+Bob -[#red]> Alice: call javascript library
+Alice -[#aqua]> Bob : library creates popup
+
+...
+
+Bob -[#aqua]> Alice : user confirmed popup
+Alice -[#red]> Bob: javascript library calls\njavascript method on activator window
+@enduml
+
+@startuml
+
+
+
+
+
+<style>
+  root {
+    BackgroundColor #003153
+    FontColor #D9D3D0
+    FontName Verdana
+    HyperLinkColor #D9D3D0
+    LineColor #D9D3D0
+    LineThickness 1
+    Margin 5
+  }
+  caption {
+    LineThickness 0
+  }
+  footer {
+    LineThickness 0
+  }
+  header {
+    LineThickness 0
+  }
+  node {
+    MaximumWidth 300
+  }
+  title {
+    FontSize 22
+    LineThickness 0
+  }
+</style>
+
+skinparam ArrowLollipopColor #D9D3D0
+skinparam BackgroundColor #003153
+skinparam DefaultFontName Verdana
+skinparam DefaultMonospacedFontName Courier
+skinparam LifelineStrategy nosolid
+skinparam ParticipantPadding 10
+skinparam SequenceLifeLineBorderColor #D9D3D0
+skinparam Shadowing false
+skinparam UseBetaStyle true
+
+skinparam Activity {
+  BackgroundColor #003153
+  BarColor #D9D3D0
+  BorderColor #D9D3D0
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam Boundary {
+  FontColor #D9D3D0
+}
+skinparam Box {
+  Padding 5
+}
+skinparam CircledCharacter {
+  FontColor #D9D3D0
+  FontName Courier
+  Radius 9
+}
+skinparam Class {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam ClassAttribute {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam ClassStereotype {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam Footer {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam Header {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam Hyperlink {
+  Color #D9D3D0
+}
+skinparam IconPackage {
+  Color #D9D3D0
+  BackgroundColor #003153
+}
+skinparam IconPrivate {
+  Color #D9D3D0
+  BackgroundColor #003153
+}
+skinparam IconProtected {
+  Color #D9D3D0
+  BackgroundColor #003153
+}
+skinparam IconPublic {
+  Color #D9D3D0
+  BackgroundColor #003153
+}
+skinparam Note {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam Object {
+  BorderColor #D9D3D0
+}
+skinparam Package {
+  BorderColor #D9D3D0
+  FontColor #D9D3D0
+  FontName Verdana
+}
+skinparam State {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam StereotypeA {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam StereotypeC {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam StereotypeE {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam StereotypeI {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam StereotypeN {
+  BackgroundColor #003153
+  BorderColor #D9D3D0
+}
+skinparam UseCaseStereoType {
+  FontColor #D9D3D0
+  FontName Verdana
+}
+Bob -> Alice : api call (backend)
+Alice - -> Bob : response
+Bob -[#aqua]> Alice : user actions
+Bob -[#lime]> Alice : redirect or MVC
+Bob -[#yellow]> Alice : ajax call
+Alice - -[#yellow]> Bob : response
+Bob -[#red]> Alice: call javascript method
+Bob -[#fuchsia]> Alice: call backend method
+
+...
+
+Bob -[#lime]> Alice : POST form
+Alice -[#lime]> Bob : redirect to confirmation page
+
+...
+
+Bob -[#red]> Alice: call javascript library
+Alice -[#aqua]> Bob : library creates popup
+
+...
+
+Bob -[#aqua]> Alice : user confirmed popup
+Alice -[#red]> Bob: javascript library calls\njavascript method on activator window
+@enduml
+
+PlantUML version 1.2022.14beta6(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

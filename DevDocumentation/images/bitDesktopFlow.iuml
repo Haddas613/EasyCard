@@ -1,0 +1,62 @@
+@startuml
+!theme blueprint
+skinparam responseMessageBelowArrow true
+participant "Consumer" as consumer
+
+participant "Checkout (JS)" as checkout_ui
+participant "Checkout (MVC)" as checkout
+participant "Checkout (API)" as checkout_backend
+
+participant "EasyCard API" as api
+participant "bit (UI)" as bit_ui
+participant bit
+participant Aggregator
+
+consumer-[#aqua]>checkout_ui : press "Pay With bit" button
+
+activate checkout_ui
+checkout_ui-[#yellow]>checkout_backend: call "Charge" method via ajax
+
+activate checkout_backend
+checkout_backend->api: call //InitiateBitTransaction//
+activate api
+api->bit: POST /payments/bit/v2/single-payments
+bit-->api: return //transactionSerialId and paymentInitiationId//
+api-[#fuchsia]>api: create //PaymentTransaction// record
+api->Aggregator: create Deal
+Aggregator-->api: operation response (success)
+api-->checkout_backend: transactionSerialId\nand paymentInitiationId
+deactivate api
+checkout_backend--[#yellow]>checkout_ui: transactionSerialId\nand paymentInitiationId
+deactivate checkout_backend
+
+checkout_ui-[#red]>bit_ui: initiate bit window\n(pass transactionSerialId and paymentInitiationId as arguments)
+
+bit_ui-[#aqua]>consumer: bit popup displayed to consumer
+consumer-[#aqua]>bit_ui: use bit app to make payment (QR code or phone number)
+bit_ui-[#red]>checkout_ui: call onApproved handler\n(popup closed)
+
+
+
+checkout_ui-[#lime]>checkout: POST form to BitPaymentCompleted\n(programmatically)
+deactivate checkout_ui
+activate checkout
+checkout->api: call CaptureBitTransaction
+
+activate api
+api->bit: POST /payments/bit/v2/single-payments/{PaymentInitiationId)}/capture
+bit-->api: operation response (success)
+api->Aggregator: commit Deal
+Aggregator-->api: operation response (success)
+api-[#fuchsia]>api: update status of PaymentTransaction record
+api-[#fuchsia]>api: delete PaymentIntent
+api-[#fuchsia]>api: issue Invoice
+api-->checkout: operation response
+deactivate api
+
+checkout-[#lime]> consumer: redirect to confirmation page
+deactivate checkout
+
+@enduml
+
+

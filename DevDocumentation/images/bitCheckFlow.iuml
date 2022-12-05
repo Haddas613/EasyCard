@@ -1,0 +1,54 @@
+@startuml
+!theme blueprint
+skinparam responseMessageBelowArrow true
+participant "Azure Functions Host" as azure_function_host
+participant azure_function [
+"Azure Function" 
+----
+(PostProcessingBitTransactions)
+]
+participant "EasyCard API" as api
+participant bit
+participant Aggregator
+
+
+azure_function_host-[#aqua]>azure_function : timer trigger
+activate azure_function
+azure_function->api: get pending bit transactions
+api-->azure_function: pending bit transactions
+
+loop foreach bit transaction
+
+	azure_function->api: call //BitTransactionPostProcessing//\n(api/external/bit/cancelOrConfirmPending)
+	activate api
+	api->bit: get transaction by //BitPaymentInitiationId//
+	bit-->api: bit transaction details
+	alt bitTransaction.BitRequestStatusCode == 9\n(intermediate //CreditExtensionPerformed// status)
+		api->bit: Capture transaction
+		bit-->api: operation response (success)
+	end
+	
+	api->bit: get transaction by //BitPaymentInitiationId//
+	bit-->api: bit transaction details
+	alt bit transaction completed
+		api->Aggregator: commit Deal
+		Aggregator-->api: operation response (success)
+		api-[#fuchsia]>api: update status of PaymentTransaction record
+		api-[#fuchsia]>api: delete PaymentIntent
+		api-[#fuchsia]>api: issue Invoice
+	else bit transaction canceled
+		api->Aggregator: cancel deal
+		Aggregator-->api: operation response (success)
+		api-[#fuchsia]>api: update status of PaymentTransaction record
+	end
+	
+	api-->azure_function: operation response
+	deactivate api
+end
+
+deactivate azure_function
+
+
+@enduml
+
+

@@ -1,0 +1,27 @@
+@startuml
+!theme blueprint
+Bob -> Alice : api call (backend)
+Alice --> Bob : response
+Bob -[#aqua]> Alice : user actions
+Bob -[#lime]> Alice : redirect or MVC
+Bob -[#yellow]> Alice : ajax call
+Alice --[#yellow]> Bob : response
+Bob -[#red]> Alice: call javascript method
+Bob -[#fuchsia]> Alice: call backend method
+
+...
+
+Bob -[#lime]> Alice : POST form
+ALice -[#lime]> Bob : redirect to confirmation page
+
+...
+
+Bob -[#red]> Alice: call javascript library
+Alice -[#aqua]> Bob : library creates popup
+
+...
+
+Bob -[#aqua]> Alice : user confirmed popup
+Alice -[#red]> Bob: javascript library calls\njavascript method on activator window
+
+@enduml
