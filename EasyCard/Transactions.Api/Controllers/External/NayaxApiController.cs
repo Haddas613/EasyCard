@@ -268,7 +268,8 @@ namespace Transactions.Api.Controllers.External
 
                 Terminal terminalMakingTransaction = EnsureExists(await terminalsService.GetTerminal(pinPadDevice.TerminalID.Value));
 
-                var transaction = await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && ((!string.IsNullOrEmpty(model.CorrelationID) && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID) || /*in case correlationID is empty, Nayax didn't get response from validate*/t.TerminalID == terminalMakingTransaction.TerminalID));
+                var transaction = !string.IsNullOrEmpty(model.CorrelationID) ? EnsureExists(await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID)) :
+                                         await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && /*in case  Nayax didn't get response from validate*/t.TerminalID == terminalMakingTransaction.TerminalID);
                 Guid updateReceiptNumber = Guid.NewGuid();
 
                 if (transaction == null)//in case for some reason we didn't get validate request
