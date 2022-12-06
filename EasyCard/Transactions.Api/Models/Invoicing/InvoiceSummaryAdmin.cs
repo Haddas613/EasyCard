@@ -33,7 +33,5 @@ namespace Transactions.Api.Models.Invoicing
 
         [MetadataOptions(Hidden = true)]
         public new DateTime? InvoiceTimestamp { get; set; }
-
-        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

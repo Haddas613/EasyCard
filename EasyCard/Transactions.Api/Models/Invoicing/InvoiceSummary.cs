@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using JsonSubTypes;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +15,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
+    [JsonSubtypes.KnownSubType(typeof(CreditCardPaymentDetails), PaymentTypeEnum.Card)]
     public class InvoiceSummary : InvoiceSummaryAmounts
     {
         /// <summary>
@@ -58,5 +63,13 @@ namespace Transactions.Api.Models.Invoicing
         public Guid? ConsumerID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        public PaymentTypeEnum PaymentType { get { return (PaymentDetails?.FirstOrDefault()?.PaymentType).GetValueOrDefault(); } }
+
+        [JsonIgnore]
+        [MetadataOptions(Hidden = true)]
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
     }
 }
