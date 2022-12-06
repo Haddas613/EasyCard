@@ -26,6 +26,7 @@ using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging.Debug;
 using Shared.Integration.Models.PaymentDetails;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Transactions.Business.Data
 {
@@ -635,8 +636,9 @@ namespace Transactions.Business.Data
                     .HasConversion(PaymentDetailsConverter)
                     .Metadata.SetValueComparer(PaymentDetailsComparer);
 
-                builder.Property(p => p.PaymentDetailsJson).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
-                    .ValueGeneratedOnAddOrUpdate();
+                var paymentDetailsJson = builder.Property(p => p.PaymentDetailsJson).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).Metadata;
+                paymentDetailsJson.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+                paymentDetailsJson.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
