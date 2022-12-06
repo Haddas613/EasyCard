@@ -268,7 +268,13 @@ namespace Transactions.Api.Controllers.External
 
                 Terminal terminalMakingTransaction = EnsureExists(await terminalsService.GetTerminal(pinPadDevice.TerminalID.Value));
 
-                var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID));
+                var transaction = await transactionsService.GetTransaction(t => t.PinPadTransactionDetails.PinPadTransactionID == model.Vuid && ((!string.IsNullOrEmpty(model.CorrelationID) && t.PinPadTransactionDetails.PinPadCorrelationID == model.CorrelationID) || /*in case correlationID is empty, Nayax didn't get response from validate*/t.TerminalID == terminalMakingTransaction.TerminalID));
+                Guid updateReceiptNumber = Guid.NewGuid();
+
+                if (transaction == null)//in case for some reason we didn't get validate request
+                {
+                    return new NayaxResult { Vuid = model.Vuid, Approval = true, ResultText = "Couldn't find transaction ID", CorrelationID = model.CorrelationID, UpdateReceiptNumber = updateReceiptNumber.ToString() };
+                }
 
                 //already updated
                 if (transaction.ShvaTransactionDetails?.ShvaDealID == model.Uid)
@@ -276,7 +282,7 @@ namespace Transactions.Api.Controllers.External
                     return new NayaxResult { Vuid = transaction.PinPadTransactionDetails.PinPadTransactionID, Approval = true, ResultText = "Success", CorrelationID = model.CorrelationID, UpdateReceiptNumber = transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber };
                 }
 
-                Guid updateReceiptNumber = Guid.NewGuid();
+            
                 transaction.ShvaTransactionDetails.ShvaDealID = model.Uid;
                 transaction.ShvaTransactionDetails.Solek = model.Aquirer.GetTransactionSolek();
                 transaction.CreditCardDetails.CardBrand = model.Brand.ToString();
