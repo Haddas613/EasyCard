@@ -140,8 +140,22 @@ namespace Transactions.Business.Data
 
             // NOTE: security filters moved to Get() methods
 
+            modelBuilder.HasDbFunction(
+                typeof(TransactionsContext).GetMethod(nameof(JsonValue))
+            ).HasName("JSON_VALUE").IsBuiltIn();
+
+            modelBuilder.HasDbFunction(
+                typeof(TransactionsContext).GetMethod(nameof(JsonQuery))
+            ).HasName("JSON_QUERY").IsBuiltIn();
+
             base.OnModelCreating(modelBuilder);
         }
+
+        public static string JsonValue(string column, [Microsoft.EntityFrameworkCore.Query.NotParameterized] string path)
+            => throw new NotSupportedException();
+
+        public static string JsonQuery(string column, [Microsoft.EntityFrameworkCore.Query.NotParameterized] string path) =>
+            throw new NotSupportedException();
 
         internal class PaymentTransactionConfiguration : IEntityTypeConfiguration<PaymentTransaction>
         {
@@ -620,6 +634,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
                     .HasConversion(PaymentDetailsConverter)
                     .Metadata.SetValueComparer(PaymentDetailsComparer);
+
+                builder.Property(p => p.PaymentDetailsJson).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
+                    .ValueGeneratedOnAddOrUpdate();
 
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();

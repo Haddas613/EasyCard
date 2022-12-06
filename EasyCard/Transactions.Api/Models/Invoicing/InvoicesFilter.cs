@@ -51,6 +51,6 @@ namespace Transactions.Api.Models.Invoicing
 
         public string ConsumerExternalReference { get; set; }
 
-        public PaymentTypeEnum PaymentType { get; set; }
+        public PaymentTypeEnum? PaymentType { get; set; }
     }
 }

@@ -249,5 +249,7 @@ namespace Transactions.Business.Entities
                 return Status == InvoiceStatusEnum.SendingFailed || Status == InvoiceStatusEnum.Initial || Status == InvoiceStatusEnum.CancellationFailed;
             }
         }
+
+        public string PaymentDetailsJson { get; set; }
     }
 }

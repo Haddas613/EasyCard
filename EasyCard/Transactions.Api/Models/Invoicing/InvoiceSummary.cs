@@ -66,7 +66,10 @@ namespace Transactions.Api.Models.Invoicing
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
-        public PaymentTypeEnum PaymentType { get { return (PaymentDetails?.FirstOrDefault()?.PaymentType).GetValueOrDefault(); } }
+        public PaymentTypeEnum PaymentType
+        {
+            get { return (PaymentDetails?.FirstOrDefault()?.PaymentType).GetValueOrDefault(); }
+        }
 
         [JsonIgnore]
         [MetadataOptions(Hidden = true)]

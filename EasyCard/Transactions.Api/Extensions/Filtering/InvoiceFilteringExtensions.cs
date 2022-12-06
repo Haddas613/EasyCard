@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Invoicing;
+using Transactions.Business.Data;
 using Transactions.Business.Entities;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Extensions.Filtering
 {
@@ -98,6 +101,11 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.InvoiceAmount > 0)
             {
                 src = src.Where(t => t.InvoiceAmount >= filter.InvoiceAmount);
+            }
+
+            if (filter.PaymentType.HasValue)
+            {
+                src = src.Where(t => TransactionsContext.JsonValue(t.PaymentDetailsJson, "$[0].paymentType" ) == ((int)filter.PaymentType.Value).ToString());
             }
 
             return src;
