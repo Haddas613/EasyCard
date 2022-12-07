@@ -44,7 +44,7 @@ namespace Transactions.Api.Validation
                 errors.Add(new Error(nameof(model.InvoiceDetails.InvoiceType), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
             }
 
-            if (model.PaymentDetails.Any(p => p.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card))
+            if (model.PaymentDetails?.Any() == true && model.PaymentDetails.Any(p => p.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card))
             {
                 CardExpirationValidator cardExpirationValidator = new CardExpirationValidator();
                 foreach (var item in model.PaymentDetails.Where(p => p.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card))
