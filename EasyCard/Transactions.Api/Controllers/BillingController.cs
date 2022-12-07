@@ -420,7 +420,7 @@ namespace Transactions.Api.Controllers
                 if (check != null)
                 {
                     await dbTransaction.RollbackAsync();
-                    return check;
+                    return BadRequest(check);
                 }
 
                 await billingDealService.CreateEntity(newBillingDeal, dbTransaction);
