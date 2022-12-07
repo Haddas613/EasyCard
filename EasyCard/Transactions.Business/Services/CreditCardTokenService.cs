@@ -112,5 +112,10 @@ namespace Transactions.Business.Services
             //TODO: audit
             await base.UpdateEntity(entity, dbTransaction);
         }
+
+        public async Task<bool> ConsumerCCTokenExists(Guid consumerID)
+        {
+            return await context.CreditCardTokenDetails.AsNoTracking().FirstOrDefaultAsync(t => t.ConsumerID == consumerID) != null;
+        }
     }
 }
