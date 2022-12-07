@@ -189,5 +189,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public JDealTypeEnum JDealType { get; set; }
 
         public bool? SaveCreditCardByDefault { get; set; }
+
+        public bool? DisableCancelPayment { get; set; }
     }
 }

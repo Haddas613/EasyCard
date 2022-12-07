@@ -115,9 +115,12 @@
     </fieldset>
 
     <div class="form-group d-flex payment-panel_button-group__bit">
-        <button class="btn btn-outline-danger mb-4" id="bit-cancel-btn">
-            @localizer.Get("CancelPayment")
+        @if (!(Model.DisableCancelPayment ?? false))
+        {
+            <button class="btn btn-outline-danger mb-4" id="bit-cancel-btn">
+                @localizer.Get("CancelPayment")
         </button>
+        }
         <img class="cursor-pointer" height="47px" src="~/img/button_desktop.svg" role="button" id="paywithbit"/>
     </div>
 </form>

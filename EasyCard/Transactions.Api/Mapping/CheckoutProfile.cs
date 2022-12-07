@@ -25,7 +25,8 @@ namespace Transactions.Api.Mapping
             CreateMap<TerminalSettings, TerminalCheckoutCombinedSettings>();
 
             CreateMap<TerminalCheckoutSettings, TerminalCheckoutCombinedSettings>()
-                .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(d => d.AllowSaveCreditCard));
+                .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(d => d.AllowSaveCreditCard))
+             .ForMember(d => d.DisableCancelPayment, o => o.MapFrom(d => d.DisableCancelPayment));
 
             CreateMap<TerminalPaymentRequestSettings, TerminalCheckoutCombinedSettings>();
 
