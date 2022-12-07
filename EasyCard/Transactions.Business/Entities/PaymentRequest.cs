@@ -232,5 +232,6 @@ namespace Transactions.Business.Entities
         public bool? EmailRequired { get; set; }
 
         public bool? NationalIDRequired { get; set; }
+        public bool? DisableCancelPayment { get; set; }
     }
 }

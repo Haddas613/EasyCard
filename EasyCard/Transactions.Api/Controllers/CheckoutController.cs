@@ -239,6 +239,11 @@ namespace Transactions.Api.Controllers
                     response.Settings.SaveCreditCardByDefault = paymentRequest.SaveCreditCardByDefault;
                 }
 
+                if (paymentRequest.DisableCancelPayment.HasValue)
+                {
+                    response.Settings.DisableCancelPayment = paymentRequest.DisableCancelPayment;
+                }
+
                 if (paymentRequest.EmailRequired.HasValue)
                 {
                     response.Settings.EmailRequired = paymentRequest.EmailRequired;

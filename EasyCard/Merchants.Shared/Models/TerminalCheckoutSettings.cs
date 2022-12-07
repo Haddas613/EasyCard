@@ -58,6 +58,8 @@ namespace Merchants.Shared.Models
 
         public bool? SaveCreditCardByDefault { get; set; }
 
+        public bool? DisableCancelPayment { get; set; }
+
         public bool? PhoneRequired { get; set; }
 
         public bool? EmailRequired { get; set; }

@@ -302,9 +302,12 @@
     </fieldset>
 
     <div class="form-group payment-panel_button-group">
-        <button class="btn btn-secondary" id="cancel-btn">
-            @localizer.Get("CancelPayment")
-        </button>
+        @if (!(Model.DisableCancelPayment??false))
+        {
+                    <button class="btn btn-secondary" id="cancel-btn">
+                   @localizer.Get("CancelPayment")
+                     </button>
+        }
         @if (Model.IsRefund)
         {
             <input class="btn-danger" type="button" id="submitbtn" value="@localizer.Get("Refund")" />

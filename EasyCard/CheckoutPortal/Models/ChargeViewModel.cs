@@ -226,5 +226,8 @@ namespace CheckoutPortal.Models
         /// <value></value>
         [BindNever]
         public bool? SaveCreditCardByDefault { get; set; }
+
+        [BindNever]
+        public bool? DisableCancelPayment { get; set; }
     }
 }

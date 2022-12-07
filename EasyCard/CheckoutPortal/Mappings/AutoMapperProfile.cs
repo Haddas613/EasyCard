@@ -83,6 +83,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.AllowSaveCreditCard, o => o.MapFrom(src => src.AllowSaveCreditCard))
                 .ForMember(d => d.ConsumerDataReadonly, o => o.MapFrom(src => src.ConsumerDataReadonly))
                 .ForMember(d => d.SaveCreditCardByDefault, o => o.MapFrom(src => src.SaveCreditCardByDefault))
+                 .ForMember(d => d.DisableCancelPayment, o => o.MapFrom(src => src.DisableCancelPayment))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
