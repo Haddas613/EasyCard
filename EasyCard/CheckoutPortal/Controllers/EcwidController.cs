@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.AspNetCore.SignalR;
 using Shared.Api.Configuration;
 using CheckoutPortal.Models.Ecwid;

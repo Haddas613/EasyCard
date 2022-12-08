@@ -1,0 +1,88 @@
+@startuml
+
+
+folder "Management API" {
+    [Merchants.Api]
+    [Merchants.Api.Client]
+    [Merchants.Shared]
+    [Merchants.Business]
+
+    [Merchants.Shared]-->[Merchants.Api]
+    [Merchants.Shared]-->[Merchants.Api.Client]
+    [Merchants.Shared]-->[Merchants.Business]
+    [Merchants.Business]-->[Merchants.Api]
+    [Merchants.Api]..>[Merchants.Api.Client] : linked model files
+    
+}
+
+folder "Business API" {
+    [Transactions.Api]
+    [Transactions.Api.Client]
+    [Transactions.Business]
+    [Transactions.Shared]
+
+    [Transactions.Shared]-->[Transactions.Api]
+    [Transactions.Shared]-->[Transactions.Api.Client]
+    [Transactions.Shared]-->[Transactions.Business]
+    [Transactions.Business]-->[Transactions.Api]
+    [Transactions.Api]..>[Transactions.Api.Client] : linked model files
+}
+
+folder "Merchant's metadata" {
+    [MerchantProfileApi]
+    [MerchantProfileApi.Client]
+
+    [MerchantProfileApi]..>[MerchantProfileApi.Client] : linked model files
+}
+
+[CheckoutPortal]
+
+folder "Identity" {
+    [IdentityServer]
+    [IdentityServerClient]
+}
+
+folder "Shared" {
+    [Shared.Api]
+    [Shared.Business]
+    [Shared.Helpers]
+    [Shared.Integration]
+}
+
+[FunctionsCompositionApp]
+
+folder "Reporting" {
+    [Reporting.Api]
+    [Reporting.Business]
+    [Reporting.Shared]
+}
+
+folder "Integrations" {
+    [Bit]
+    [ClearingHouse]
+    [EasyInvoice]
+    [Upay]
+    [RapidOne]
+    [Shva]
+    [Nayax]
+}
+
+
+
+
+
+
+
+
+[Merchants.Api.Client]-->[IdentityServer]
+
+[IdentityServerClient]-->[Merchants.Api]
+
+
+
+
+[Transactions.Api.Client]-->[MerchantProfileApi]
+[Transactions.Api.Client]-->[CheckoutPortal]
+
+
+@enduml

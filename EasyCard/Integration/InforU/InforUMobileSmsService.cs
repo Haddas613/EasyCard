@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Services;
 using Shared.Helpers.Sms;
