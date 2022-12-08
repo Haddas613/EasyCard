@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Transactions.Business.Entities;
 
 namespace Transactions.Business.Services
@@ -14,5 +15,7 @@ namespace Transactions.Business.Services
         IQueryable<CreditCardTokenDetails> GetTokensShared(Guid baseTerminalID);
 
         IQueryable<CreditCardTokenDetails> GetTokensSharedAdmin(Guid merchantID, Guid baseTerminalID);
+
+        Task<bool> ConsumerCCTokenExists(Guid consumerID);
     }
 }

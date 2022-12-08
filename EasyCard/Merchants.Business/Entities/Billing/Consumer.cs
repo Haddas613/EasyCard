@@ -75,5 +75,7 @@ namespace Merchants.Business.Entities.Billing
         public string WoocommerceID { get; set; }
 
         public string EcwidID { get; set; }
+
+        public bool HasCreditCard { get; set; }
     }
 }

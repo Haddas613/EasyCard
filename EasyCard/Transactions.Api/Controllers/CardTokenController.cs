@@ -342,12 +342,13 @@ namespace Transactions.Api.Controllers
 
             //// merge system settings with terminal settings
             //mapper.Map(systemSettings, terminal);
+            Consumer consumer = null;
 
             TokenTerminalSettingsValidator.Validate(terminal, model);
 
             if (model.ConsumerID != null)
             {
-                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID), "Consumer");
+                consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID), "Consumer");
 
                 // TODO: enable if needed
                 //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
@@ -357,7 +358,6 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                Consumer consumer = null;
                 if (!string.IsNullOrWhiteSpace(model.CardOwnerNationalID))
                 {
                     consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID);
@@ -486,6 +486,12 @@ namespace Transactions.Api.Controllers
             if (!doNotCreateInitialDealAndDbRecord)
             {
                 await creditCardTokenService.CreateEntity(dbData);
+            }
+
+            if (consumer != null)
+            {
+                consumer.HasCreditCard = await creditCardTokenService.ConsumerCCTokenExists(consumer.ConsumerID);
+                await consumersService.UpdateEntity(consumer);
             }
 
             return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) };
