@@ -226,6 +226,13 @@
             <param name="invoiceID"></param>
             <returns></returns>
         </member>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetCopyInvoiceDownloadURL(System.Guid)">
+            <summary>
+            Get copy invoice download URL
+            </summary>
+            <param name="invoiceID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.InvoicingController.CreateInvoice(Transactions.Api.Models.Invoicing.InvoiceRequest)">
             <summary>
             Create invoice

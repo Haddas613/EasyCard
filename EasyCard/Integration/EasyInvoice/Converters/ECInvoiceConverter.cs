@@ -31,7 +31,7 @@ namespace EasyInvoice.Converters
                 TotalAmount = message.InvoiceAmount,
                 DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
                 TaxAmount = message.VATTotal,
-                TaxPercentage = message.VATRate,
+                TaxPercentage = (message.VATRate * 100).ToString(),
                 TotalAmountBeforeDiscount = message.InvoiceAmount + message.TotalDiscount.GetValueOrDefault(0),
                 TotalNetAmount = message.NetTotal,
                 TotalPaidAmount = message.InvoiceAmount,

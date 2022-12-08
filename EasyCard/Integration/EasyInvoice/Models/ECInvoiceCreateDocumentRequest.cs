@@ -42,7 +42,7 @@ namespace EasyInvoice.Models
         public decimal? TaxAmount { get; set; }
 
         [DataMember(Name = "taxPercentage")]
-        public decimal? TaxPercentage { get; set; }
+        public string TaxPercentage { get; set; }
 
         [DataMember(Name = "discountAmount")]
         public decimal? DiscountAmount { get; set; }
