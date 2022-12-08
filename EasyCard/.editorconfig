@@ -89,3 +89,5 @@ dotnet_diagnostic.S112.severity = none
 
 # S125: Sections of code should not be commented out
 dotnet_diagnostic.S125.severity = none
+
+end_of_line = lf
