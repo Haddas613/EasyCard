@@ -1,9 +1,12 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json;
+using Shared.Helpers;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Shared.Helpers.Models;
 
 namespace CheckoutPortal.Models
 {
@@ -19,6 +22,9 @@ namespace CheckoutPortal.Models
         /// </summary>
         public string Name { get; set; }
 
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
+        [IsraelNationalIDValidator]
         public string NationalID { get; set; }
 
         public string Email { get; set; }

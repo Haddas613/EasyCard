@@ -1,13 +1,17 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Models;
+using Shared.Api.Models.Binding;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.Processor;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
@@ -111,6 +115,9 @@ namespace Transactions.Business.Entities
 
         public string CardOwnerName { get; set; }
 
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
+        [IsraelNationalIDValidator]
         public string CardOwnerNationalID { get; set; }
 
         /// <summary>

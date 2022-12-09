@@ -2,6 +2,7 @@
 using Shared.Api.Models.Binding;
 using Shared.Api.Swagger;
 using Shared.Helpers;
+using Shared.Helpers.Models;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -50,7 +51,7 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [Required(AllowEmptyStrings = false)]
-        [Shared.Helpers.Models.IsraelNationalIDValidator]
+        [IsraelNationalIDValidator]
         public string ConsumerNationalID { get; set; }
 
         /// <summary>
