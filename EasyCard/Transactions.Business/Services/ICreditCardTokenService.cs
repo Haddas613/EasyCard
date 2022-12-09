@@ -16,6 +16,6 @@ namespace Transactions.Business.Services
 
         IQueryable<CreditCardTokenDetails> GetTokensSharedAdmin(Guid merchantID, Guid baseTerminalID);
 
-        Task<bool> ConsumerCCTokenExists(Guid consumerID);
+        Task<bool> ConsumerCCTokenExistsAsync(Guid consumerID);
     }
 }
