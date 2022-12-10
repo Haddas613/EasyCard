@@ -490,7 +490,7 @@ namespace Transactions.Api.Controllers
 
             if (consumer != null)
             {
-                consumer.HasCreditCard = await creditCardTokenService.ConsumerCCTokenExists(consumer.ConsumerID);
+                consumer.HasCreditCard = await creditCardTokenService.ConsumerCCTokenExistsAsync(consumer.ConsumerID);
                 await consumersService.UpdateEntity(consumer);
             }
 

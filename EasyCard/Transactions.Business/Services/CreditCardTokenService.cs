@@ -113,9 +113,9 @@ namespace Transactions.Business.Services
             await base.UpdateEntity(entity, dbTransaction);
         }
 
-        public async Task<bool> ConsumerCCTokenExists(Guid consumerID)
+        public async Task<bool> ConsumerCCTokenExistsAsync(Guid consumerID)
         {
-            return await context.CreditCardTokenDetails.AsNoTracking().FirstOrDefaultAsync(t => t.ConsumerID == consumerID) != null;
+            return await context.CreditCardTokenDetails.AnyAsync(t => t.ConsumerID == consumerID);
         }
     }
 }
