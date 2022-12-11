@@ -23,8 +23,11 @@
     [MergedFromConsumerID]    UNIQUEIDENTIFIER NULL,
     [EcwidID]                 VARCHAR (50)     NULL,
     [WoocommerceID]           VARCHAR (50)     NULL,
+    [HasCreditCard]           BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
+
+
 
 
 

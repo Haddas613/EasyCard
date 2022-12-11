@@ -68,8 +68,14 @@
     [JDealType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [AllowRegular]              BIT              NULL,
     [SaveCreditCardByDefault]   BIT              NULL,
+    [EmailRequired]             BIT              NULL,
+    [NationalIDRequired]        BIT              NULL,
+    [PhoneRequired]             BIT              NULL,
+    [DisableCancelPayment]      BIT              NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 
