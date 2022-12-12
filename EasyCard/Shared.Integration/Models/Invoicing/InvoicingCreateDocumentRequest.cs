@@ -68,7 +68,6 @@ namespace Shared.Integration.Models.Invoicing
         public string ConsumerName { get; set; }
 
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string ConsumerNationalID { get; set; }
 

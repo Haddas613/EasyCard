@@ -116,7 +116,6 @@ namespace Transactions.Business.Entities
         public string CardOwnerName { get; set; }
 
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string CardOwnerNationalID { get; set; }
 

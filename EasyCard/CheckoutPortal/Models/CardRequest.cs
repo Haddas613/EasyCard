@@ -23,7 +23,6 @@ namespace CheckoutPortal.Models
         public string Name { get; set; }
 
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string NationalID { get; set; }
 

@@ -107,7 +107,6 @@ namespace Transactions.Api.Models.Transactions
         /// Only to be used for pin pad transactions when CredotCardSecureDetails is not available
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string CardOwnerNationalID { get; set; }
 

@@ -22,7 +22,6 @@ namespace Transactions.Api.Models.Invoicing
         public string Email { get; set; }
 
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string NationalID { get; set; }
     }

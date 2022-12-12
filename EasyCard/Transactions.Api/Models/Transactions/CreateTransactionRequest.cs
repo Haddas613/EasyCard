@@ -175,7 +175,6 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [SwaggerExclude]
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string CardOwnerNationalID { get; set; }
 
