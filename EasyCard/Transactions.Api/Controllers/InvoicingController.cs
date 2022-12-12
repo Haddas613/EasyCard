@@ -199,6 +199,69 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get copy invoice download URL
+        /// </summary>
+        /// <param name="invoiceID"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{invoiceID}/downloadCopy")]
+        public async Task<ActionResult<DownloadInvoiceResponse>> GetCopyInvoiceDownloadURL([FromRoute] Guid invoiceID)
+        {
+            using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var dbInvoice = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).FirstOrDefaultAsync());
+
+                if (dbInvoice.ExternalSystemData == null || dbInvoice.ExternalSystemData.Count == 0)
+                {
+                    var downloadUrl = new List<string> { dbInvoice.CopyDonwnloadUrl };
+
+                    return new DownloadInvoiceResponse(downloadUrl) { Status = StatusEnum.Success, EntityUID = invoiceID };
+                }
+                else
+                {
+                    var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID));
+
+                    // TODO: caching
+                    var systemSettings = await systemSettingsService.GetSystemSettings();
+
+                    // merge system settings with terminal settings
+                    mapper.Map(systemSettings, terminal);
+
+                    var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+                    if (terminalInvoicing == null)
+                    {
+                        dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                        await invoiceService.UpdateEntity(dbInvoice);
+
+                        throw new BusinessException(Messages.InvoicingNotDefined);
+                    }
+
+                    var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+                    var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                    var lang = Request.GetTypedHeaders().AcceptLanguage?.FirstOrDefault()?.Value.Value;
+
+                    try
+                    {
+                        var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
+                        invoicingRequest.InvoiceingSettings = invoicingSettings;
+
+                        var invoicingResponse = await invoicing.GetDownloadUrls(dbInvoice.ExternalSystemData, invoicingSettings, lang);
+
+                        return new DownloadInvoiceResponse(invoicingResponse) { Status = StatusEnum.Success, EntityUID = invoiceID };
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Invoice get download Url failed. InvoiceID: {dbInvoice.InvoiceID}");
+
+                        return BadRequest(new OperationResponse($"Invoice get download Url failed", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
+            }
+        }
+
+
         // TODO: support several download urls
 
         /// <summary>
@@ -891,11 +954,11 @@ namespace Transactions.Api.Controllers
                     var amountWithVat = data.Sum(s => s.AmountWithVat);
                     var amountWithoutVat = data.Sum(s => s.AmountWithoutVat);
 
-                    InvoiceExcelSummaryDetails totalsRow = new InvoiceExcelSummaryDetails {  AmountWithoutVat = amountWithoutVat,  AmountWithVat = amountWithVat };
+                    InvoiceExcelSummaryDetails totalsRow = new InvoiceExcelSummaryDetails { AmountWithoutVat = amountWithoutVat, AmountWithVat = amountWithVat };
                     List<InvoiceExcelSummaryDetails> summaryRows = new List<InvoiceExcelSummaryDetails>();
                     summaryRows.Add(totalsRow);
 
-                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping,null,"yyyy-mm-dd", summaryRows);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }
