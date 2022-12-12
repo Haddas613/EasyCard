@@ -294,4 +294,10 @@
   <data name="OnlyAddCard" xml:space="preserve">
     <value>הוסף כרטיס</value>
   </data>
+  <data name="EmailRequired" xml:space="preserve">
+   <value>נדרש שדה מייל</value>
+ </data>
+  <data name="PhoneRequired" xml:space="preserve">
+   <value>נדרש שדה טלפון</value>
+      </data>
 </root>
