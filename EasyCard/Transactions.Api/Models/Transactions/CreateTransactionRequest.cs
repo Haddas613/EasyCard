@@ -3,9 +3,11 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Shared.Api.Swagger;
 using Shared.Helpers;
+using Shared.Helpers.Models;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -171,8 +173,9 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
-        [StringLength(20)]
         [SwaggerExclude]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [IsraelNationalIDValidator]
         public string CardOwnerNationalID { get; set; }
 
         /// <summary>

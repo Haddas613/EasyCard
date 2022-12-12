@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Newtonsoft.Json;
+using Shared.Api.Models.Binding;
+using Shared.Helpers.Models;
 
 namespace Shared.Integration.Models.Invoicing
 {
@@ -14,6 +18,9 @@ namespace Shared.Integration.Models.Invoicing
 
         public string Email { get; set; }
 
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
+        [IsraelNationalIDValidator]
         public string NationalID { get; set; }
     }
 }
