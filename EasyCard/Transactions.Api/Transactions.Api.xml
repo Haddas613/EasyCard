@@ -2001,6 +2001,12 @@
             Transaction amount
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.SaveCreditCard">
+            <summary>
+            Save credit card from request.
+            Requires Feature CreditCardTokens to be enabled.
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CancelTransmissionRequest">
             <summary>
             Transmission cancelation request

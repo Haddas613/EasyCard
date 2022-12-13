@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
@@ -48,8 +50,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Stored credit card details token (should be omitted in case if full credit card details used)
         /// </summary>
-        [StringLength(50)]
-        public string CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; set; }
 
         /// <summary>
         /// Transaction amount
@@ -58,5 +59,26 @@ namespace Transactions.Api.Models.Transactions
         [DataType(DataType.Currency)]
         [Required]
         public decimal TransactionAmount { get; set; }
+
+        /// <summary>
+        /// Save credit card from request.
+        /// Requires Feature CreditCardTokens to be enabled.
+        /// </summary>
+        public bool? SaveCreditCard { get; set; }
+
+        public Guid? PaymentRequestID { get; set; }
+
+        [SwaggerExclude]
+        public Guid? PaymentIntentID { get; set; }
+
+        [SwaggerExclude]
+        public JObject Extension { get; set; }
+
+        [SwaggerExclude]
+        [StringLength(50)]
+        public string ThreeDSServerTransID { get; set; }
+
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

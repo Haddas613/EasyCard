@@ -724,26 +724,70 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("blocking")]
         [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
+        public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest blockModel)
         {
-            var transaction = mapper.Map<CreateTransactionRequest>(model);
-            CreditCardTokenKeyVault token;
+            var merchantID = User.GetMerchantID();
+            var model = mapper.Map<CreateTransactionRequest>(blockModel);
             var terminal = await GetTerminal(model.TerminalID);
 
-            // Does it have sense to use J5 together with Token?
-            if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
+            CreditCardTokenKeyVault token = null;
+
+            if (model.CreditCardToken != null)
             {
-                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    CreditCardTokenDetails dbToken = null;
+                    if (terminal.Settings.SharedCreditCardTokens == true)
+                    {
+                        if (User.IsAdmin())
+                        {
+                            dbToken = await creditCardTokenService.GetTokensSharedAdmin(terminal.MerchantID, terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                        }
+                        else
+                        {
+                            dbToken = await creditCardTokenService.GetTokensShared(terminal.TerminalID).FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                        }
+                    }
+                    else
+                    {
+                        dbToken = await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken);
+                    }
+
+                    model.DealDetails.ConsumerID = dbToken?.ConsumerID;
+                }
             }
-            else
+
+            if (model.SaveCreditCard == true)
             {
+                if (model.CreditCardToken != null)
+                {
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
+                }
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    // TODO: prevent double consumer
+                    model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
+                }
+            }
+
+            // TODO: what if consumer does not created
+            if (model.CreditCardToken == null && model.SaveCreditCard == true && model.CreditCardSecureDetails != null)
+            {
+                bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
+
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
-                var dbData = mapper.Map<CreditCardTokenDetails>(tokenRequest);
-                dbData.MerchantID = terminal.MerchantID;
-                DocumentOriginEnum origin = User.IsTerminal() ? DocumentOriginEnum.API : DocumentOriginEnum.UI;
 
-                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
+                DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin, doNotCreateInitialDealAndDbRecord: doNotCreateInitialDealAndDbRecord);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -752,13 +796,20 @@ namespace Transactions.Api.Controllers
                     return tokenResponse;
                 }
 
-                await creditCardTokenService.CreateEntity(dbData);
                 token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
-                transaction.CreditCardSecureDetails = null;
-                transaction.CreditCardToken = tokenResponseOperation.EntityUID;
+
+                model.CreditCardToken = tokenResponseOperation.EntityUID;
+                model.CreditCardSecureDetails = null; // TODO
             }
 
-            return await ProcessTransaction(terminal, transaction, token, JDealTypeEnum.J5);
+            if (model.CreditCardToken != null)
+            {
+                return await ProcessTransaction(terminal, model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, jDealType: JDealTypeEnum.J5);
+            }
+            else
+            {
+                return await ProcessTransaction(terminal, model, null, jDealType: JDealTypeEnum.J5);
+            }
         }
 
         /// <summary>
