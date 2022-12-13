@@ -36,10 +36,12 @@ using Nayax.Converters;
 using Shared.Helpers.Events;
 using SharedApi = Shared.Api;
 using SharedIntegration = Shared.Integration;
+using System.Threading;
+using System.Diagnostics;
 
 namespace Transactions.Api.Controllers.External
 {
-    [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.NayaxAPI)]
+    //[Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.NayaxAPI)]
     [Route("api/external/nayax")]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -139,6 +141,12 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
+                if (model.TransactionAmount <= 100)
+                {
+                    await this.Delay(20000);
+
+                }
+
                 var pinPadDevice = await pinPadDevicesService.GetDevice(model.TerminalDetails.ClientToken);
 
                 if (pinPadDevice is null)
@@ -242,7 +250,10 @@ namespace Transactions.Api.Controllers.External
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, rejectionMessage: "Failed to validate Transaction for PAX deal");
                     return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
                 }
-
+                if (model.TransactionAmount <= 200)
+                {
+                    await this.Delay(20000);
+                }
                 return new NayaxResult(string.Empty, true, transaction.PinPadTransactionDetails.PinPadTransactionID, sysTranceNumber, transaction.PinPadTransactionDetails.PinPadCorrelationID, terminalMakingTransaction.Settings?.RavMutavNumber);
             }
             catch (Exception ex)
@@ -250,6 +261,11 @@ namespace Transactions.Api.Controllers.External
                 logger.LogError(ex, $"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}");
                 return new NayaxResult($"Failed to validate Transaction for PAX deal. Vuid: {model.Vuid}" + ex.Message, false /*ResultEnum.ServerError, false*/);
             }
+        }
+
+        public async Task Delay(int ms)
+        {
+                await Task.Delay(ms);
         }
 
         [HttpPost]
@@ -283,7 +299,7 @@ namespace Transactions.Api.Controllers.External
                     return new NayaxResult { Vuid = transaction.PinPadTransactionDetails.PinPadTransactionID, Approval = true, ResultText = "Success", CorrelationID = model.CorrelationID, UpdateReceiptNumber = transaction.PinPadTransactionDetails.PinPadUpdateReceiptNumber };
                 }
 
-            
+
                 transaction.ShvaTransactionDetails.ShvaDealID = model.Uid;
                 transaction.ShvaTransactionDetails.Solek = model.Aquirer.GetTransactionSolek();
                 transaction.CreditCardDetails.CardBrand = model.Brand.ToString();
