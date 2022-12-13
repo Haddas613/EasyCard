@@ -219,16 +219,16 @@
             <param name="invoiceID"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.InvoicingController.GetInvoiceDownloadURL(System.Guid)">
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetCopyInvoiceDownloadURL(System.Guid)">
             <summary>
-            Get invoice download URL
+            Get copy invoice download URL
             </summary>
             <param name="invoiceID"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.InvoicingController.GetCopyInvoiceDownloadURL(System.Guid)">
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GetInvoiceDownloadURL(System.Guid)">
             <summary>
-            Get copy invoice download URL
+            Get invoice download URL
             </summary>
             <param name="invoiceID"></param>
             <returns></returns>
@@ -941,6 +941,26 @@
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryAdmin.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryAdmin.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryAdmin.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceExcelSummaryAdmin.Currency">
             <summary>
             Currency
             </summary>

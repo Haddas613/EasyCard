@@ -874,6 +874,7 @@ namespace Transactions.Api.Controllers
 
                     var terminalLabel = string.Empty;
                     var businessName = string.Empty;
+                    var dateRange = string.Format("{0}-{1}", filter.DateFrom?.ToShortDateString(), filter.DateTo?.ToShortDateString());
                     if (filter.TerminalID.HasValue)
                     {
                         var terminals = await terminalsService.GetTerminals()
@@ -896,7 +897,7 @@ namespace Transactions.Api.Controllers
                     List<InvoiceExcelSummaryDetails> summaryRows = new List<InvoiceExcelSummaryDetails>();
                     summaryRows.Add(totalsRow);
 
-                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping, null, "yyyy-mm-dd", summaryRows);
+                    var res = await excelService.GenerateFileWithSummaryRow($"Invoices Report {businessName} {dateRange}", $"{User.GetMerchantID()}/{filename}", "Invoices", data, mapping, null, "yyyy-mm-dd", summaryRows);
 
                     return Ok(new OperationResponse { Status = StatusEnum.Success, EntityReference = res });
                 }
