@@ -64,6 +64,7 @@ namespace Transactions.Api.Mapping
             CreateMap<BillingDeal, Invoice>();
 
             CreateMap<UpdateInvoiceRequest, Invoice>();
+
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
                 .ForMember(d => d.InvoiceID, o => o.Ignore())
@@ -75,7 +76,8 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Invoice, InvoiceExcelSummary>()
                   .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.DealDetails.ConsumerName))
-                  .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
+                 .ForMember(d => d.InvoiceType, o => o.MapFrom(d => InvoiceEnumsResource.ResourceManager.GetString(d.InvoiceDetails.InvoiceType.ToString(), new CultureInfo("he"))))
+                 .ForMember(d => d.Status, o => o.MapFrom(d => InvoiceStatusResource.ResourceManager.GetString(d.Status.ToString(), new CultureInfo("he"))))
                   .ForMember(d => d.AmountWithVat, o => o.MapFrom(d => d.InvoiceAmount))
                   .ForMember(d => d.AmountWithoutVat, o => o.MapFrom(d => d.InvoiceAmount - d.VATTotal));
         }
