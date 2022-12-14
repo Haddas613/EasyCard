@@ -730,6 +730,8 @@ namespace Transactions.Api.Controllers
             var model = mapper.Map<CreateTransactionRequest>(blockModel);
             var terminal = await GetTerminal(model.TerminalID);
 
+            model.SaveCreditCard = true; // we always need saved token to convert J5 to J4
+
             CreditCardTokenKeyVault token = null;
 
             if (model.CreditCardToken != null)
@@ -822,20 +824,30 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID)
         {
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
-            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+            var terminal = EnsureExists(await GetTerminal(transaction.TerminalID));
 
-            var createTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
             if (transaction.Status != TransactionStatusEnum.AwaitingForSelectJ5)
             {
                 return BadRequest(Messages.TransactionStatusIsNotValid);
             }
 
+            var createTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
+
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, transaction.TransactionDate.Value);
 
-            var token = EnsureExists(await keyValueStorage.Get(createTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
-            var response = await ProcessTransaction(terminal, createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+            if (createTransactionReq.CreditCardToken != null)
+            {
+                var token = EnsureExists(await keyValueStorage.Get(createTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
+                var response = await ProcessTransaction(terminal, createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
 
-            return response;
+                return response;
+            }
+            else
+            {
+                var response = await ProcessTransaction(terminal, createTransactionReq, null, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+
+                return response;
+            }
         }
 
         /// <summary>
