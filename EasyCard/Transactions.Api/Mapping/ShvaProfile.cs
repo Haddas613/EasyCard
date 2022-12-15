@@ -57,6 +57,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<PaymentTransaction, Shva.Models.InitDealResultModel>()
+                .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.Processor.ShvaTransactionDetails>();
 
             //ThreeDSIntermediateData
