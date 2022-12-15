@@ -19,6 +19,7 @@ using Shared.Integration;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Shva.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +81,7 @@ namespace Transactions.Api.Controllers
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
             transaction.BillingDealID = billingDeal?.BillingDealID;
-            transaction.InitialTransactionID = initialTransactionID;
+            transaction.InitialTransactionID = transaction.InitialTransactionID == null?  initialTransactionID: transaction.InitialTransactionID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID, pinpadDeal);
             transaction.PaymentRequestID = paymentRequestID;
 
@@ -115,7 +116,10 @@ namespace Transactions.Api.Controllers
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
+                string shvaAuthNumber = transaction.OKNumber;
                 mapper.Map(token, transaction);
+                if (string.IsNullOrEmpty(transaction.OKNumber))
+                    transaction.OKNumber = shvaAuthNumber;
 
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
@@ -242,7 +246,19 @@ namespace Transactions.Api.Controllers
             }
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
-
+            if(transaction.InitialTransactionID.HasValue)
+            {
+                var initialTransaction = await this.transactionsService.GetTransactions().Where(x => x.PaymentTransactionID == transaction.InitialTransactionID).FirstOrDefaultAsync();
+                processorRequest.SelectJ5 = initialTransaction.JDealType == JDealTypeEnum.J5;
+                if (processorRequest.SelectJ5)
+                {
+                    processorRequest.InitialDeal = new Shva.Models.InitDealResultModel();
+                    processorRequest.InitialDeal = new InitDealResultModel();
+                    ((InitDealResultModel)processorRequest.InitialDeal).OriginalUid = initialTransaction.ShvaTransactionDetails.ShvaDealID;
+                    // mapper.Map(initialTransaction, processorRequest.InitialDeal, typeof(PaymentTransaction), typeof(Shva.Models.InitDealResultModel));
+                }
+            }
+            
             // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
 
@@ -437,6 +453,7 @@ namespace Transactions.Api.Controllers
             {
                 mapper.Map(transaction, processorRequest);
 
+               
                 if (!pinpadDeal)
                 {
                     if (token != null)

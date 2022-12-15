@@ -143,5 +143,7 @@ namespace Shared.Integration.Models
         public ThreeDSIntermediateData ThreeDSecure { get; set; }
 
         public string DealDescription { get; set; }
+
+        public bool SelectJ5 { get; set; }
     }
 }

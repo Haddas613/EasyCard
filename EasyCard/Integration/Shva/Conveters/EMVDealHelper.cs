@@ -149,6 +149,12 @@ namespace Shva.Conveters
             {
                 inputObj.authorizationNo = oKNumber;
                 inputObj.authorizationCodeManpik = "5";
+                if (req.SelectJ5)
+                {
+                    inputObj.authorizationCodeManpik = "7";
+                    inputObj.originalAmount = req.TransactionAmount.ToShvaDecimalStr();
+                    inputObj.originalUid = initialDealData.OriginalUid;
+                }
             }
 
             if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
