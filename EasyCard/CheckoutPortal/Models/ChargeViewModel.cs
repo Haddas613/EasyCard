@@ -229,5 +229,8 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool? DisableCancelPayment { get; set; }
+
+        [BindNever]
+        public bool? HideItemName { get; set; }        
     }
 }
