@@ -90,6 +90,6 @@ namespace Transactions.Api.Models.Checkout
 
         public bool? EmailRequired { get; set; }
 
-        public bool? HideItemName { get; set; }
+        public bool? HideDealDescription { get; set; }
     }
 }

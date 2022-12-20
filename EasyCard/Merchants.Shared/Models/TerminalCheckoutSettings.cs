@@ -64,6 +64,6 @@ namespace Merchants.Shared.Models
 
         public bool? EmailRequired { get; set; }
 
-        public bool? HideItemName { get; set; }
+        public bool? HideDealDescription { get; set; }
     }
 }

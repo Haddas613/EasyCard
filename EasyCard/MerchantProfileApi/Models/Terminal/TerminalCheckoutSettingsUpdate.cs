@@ -51,6 +51,6 @@ namespace MerchantProfileApi.Models.Terminal
 
         public bool? DisableCancelPayment { get; set; }
 
-        public bool? HideItemName { get; set; }
+        public bool? HideDealDescription { get; set; }
     }
 }
