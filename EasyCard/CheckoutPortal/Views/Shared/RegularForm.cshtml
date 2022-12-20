@@ -103,7 +103,7 @@
                         {
                             <div class="form-check d-flex justify-content-between">
                                 <div class="card_number">
-                                    <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.CreditCardTokenID" />
+                                    <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.CreditCardTokenID" id="savedCardRadio" />
                                     <span dir="ltr">@savedToken.Label</span>
                                 </div>
                                 @if (savedToken.Created.HasValue)
@@ -115,7 +115,7 @@
                             </div>
                         }
                         <div class="card_number">
-                            <input class="form-check-input enter-new-card" type="radio" asp-for="CreditCardToken" value="@(null)" checked />
+                            <input class="form-check-input enter-new-card" type="radio" asp-for="CreditCardToken" value="@(null)" checked id="savedCardRadioNewCard"/>
                             <span>@localizer.Get("EnterNewCard")</span>
                         </div>
 
@@ -206,11 +206,11 @@
                     <div class="form-group checkbox-group">
                         @if (Model.SaveCreditCardByDefault == true)
                         {
-                            <input type="checkbox" asp-for="SaveCreditCard" checked>
+                            <input type="checkbox" asp-for="SaveCreditCard" checked id="saveCreditCardCb">
                         }
                         else
                         {
-                            <input type="checkbox" asp-for="SaveCreditCard">
+                            <input type="checkbox" asp-for="SaveCreditCard" id="saveCreditCardCb">
                         
                         }
                         <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
@@ -394,8 +394,11 @@
         $('input[name="CreditCardToken"]').on('change', function (e) {
             if (e.target.value == "") {
                 $("#card-info-group-area").attr("hidden", false);
+                $("#saveCreditCardCb").prop( "disabled", false );
             } else {
                 $("#card-info-group-area").attr("hidden", true);
+                $("#saveCreditCardCb").prop('checked', false);
+                $("#saveCreditCardCb").prop( "disabled", true );
             }
             $("#pin-pad-deal").attr('checked', false);
         });
