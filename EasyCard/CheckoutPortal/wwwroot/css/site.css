@@ -526,3 +526,7 @@ input[type="checkbox"].input-validation-error {
     right: 0;
     padding: 1rem 3rem;
 }
+
+.hideDealDescription {
+    display: none;
+}

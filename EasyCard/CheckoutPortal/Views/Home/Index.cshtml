@@ -23,10 +23,8 @@
         <div class="payment-panel">
             <partial name="_ValidationSummary" />
 
-            @if (Model.HideDealDescription == false) {
-                <p class="payment-panel_heading">@Model.Description</p>
-            }
-
+            <p class="payment-panel_heading @(@Model.HideDealDescription == true ? "hideDealDescription" : "")">@Model.Description</p>
+            
             <div class="panel-body">
                 @if (Model.AllowBit == true)
                 {
