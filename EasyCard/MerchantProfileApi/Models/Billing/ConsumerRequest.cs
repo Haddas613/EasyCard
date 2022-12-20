@@ -43,7 +43,6 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer National ID
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [IsraelNationalIDValidator]
         public string ConsumerNationalID { get; set; }
 
