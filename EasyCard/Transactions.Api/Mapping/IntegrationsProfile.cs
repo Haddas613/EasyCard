@@ -53,7 +53,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CreditCardToken, s => s.Ignore())
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID))
                 .ForMember(m => m.PinpadDeviceID, s => s.MapFrom(src => src.PinPadDeviceID))
-                .ForMember(m => m.OKNumber, s => s.MapFrom(src => src.OKNumber))
+                .ForMember(m => m.OKNumber, s => s.MapFrom(src => src.OKNumber)) // TODO: remove this
                 .ForMember(m => m.BitPaymentInitiationId, s => s.MapFrom(src => src.BitTransactionDetails.BitPaymentInitiationId))
                 .ForMember(m => m.BitTransactionSerialId, s => s.MapFrom(src => src.BitTransactionDetails.BitTransactionSerialId))
                 .ForMember(m => m.PinPadTransactionID, s => s.Ignore());
@@ -86,9 +86,9 @@ namespace Transactions.Api.Mapping
             CreateMap<AggregatorTransactionResponse, PaymentTransaction>();
 
             CreateMap<CreditCardTokenKeyVault, CreditCardSecureDetails>();
-            CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
-                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
-                .ForAllOtherMembers(d => d.Ignore());
+            //CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
+            //    .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
+            //    .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<CreditCardSecureDetails, CreditCardSecureDetails>();
 

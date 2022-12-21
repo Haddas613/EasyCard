@@ -55,5 +55,12 @@ namespace Transactions.Business.Entities
         public string CompRetailerNum { get; set; }
 
         public string TelToGetAuthNum { get; set; }
+
+        public string AuthSolekNum { get; set; }
+
+        /// <summary>
+        /// Deal Date
+        /// </summary>
+        public DateTime? ShvaTransactionDate { get; set; }
     }
 }

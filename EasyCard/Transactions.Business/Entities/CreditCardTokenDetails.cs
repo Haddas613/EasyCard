@@ -47,6 +47,7 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
+        // TODO: this should be removed
         public ShvaInitialTransactionDetails ShvaInitialTransactionDetails { get; set; }
 
         /// <summary>

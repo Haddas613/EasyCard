@@ -541,13 +541,11 @@ namespace Transactions.Api.Controllers
             // TODO: what if consumer does not created
             if (model.CreditCardToken == null && model.SaveCreditCard == true && model.CreditCardSecureDetails != null)
             {
-                bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
-
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
                 DocumentOriginEnum origin = GetDocumentOrigin(null, null, model.PinPad.GetValueOrDefault());
-                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin, doNotCreateInitialDealAndDbRecord: doNotCreateInitialDealAndDbRecord);
+                var tokenResponse = await cardTokenController.CreateTokenInternal(terminal, tokenRequest, origin);
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
@@ -638,7 +636,9 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            if (model.CreditCardToken == null && model.SaveCreditCard == true && model.CreditCardSecureDetails != null)
+            if (model.CreditCardToken == null &&
+                (model.SaveCreditCard == true || dbPaymentRequest.JDealType == JDealTypeEnum.J5)
+                && model.CreditCardSecureDetails != null)
             {
                 bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
@@ -730,8 +730,6 @@ namespace Transactions.Api.Controllers
             var model = mapper.Map<CreateTransactionRequest>(blockModel);
             var terminal = await GetTerminal(model.TerminalID);
 
-            model.SaveCreditCard = true; // we always need saved token to convert J5 to J4
-
             CreditCardTokenKeyVault token = null;
 
             if (model.CreditCardToken != null)
@@ -781,7 +779,7 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: what if consumer does not created
-            if (model.CreditCardToken == null && model.SaveCreditCard == true && model.CreditCardSecureDetails != null)
+            if (model.CreditCardToken == null && model.CreditCardSecureDetails != null)
             {
                 bool doNotCreateInitialDealAndDbRecord = !model.SaveCreditCard.GetValueOrDefault();
 
@@ -844,7 +842,8 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var response = await ProcessTransaction(terminal, createTransactionReq, null, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+                createTransactionReq.CreditCardSecureDetails = mapper.Map<CreditCardSecureDetails>(transaction.CreditCardDetails);
+                var response = await ProcessTransaction(terminal, createTransactionReq, null, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: transaction.PaymentTransactionID);
 
                 return response;
             }

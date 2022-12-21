@@ -248,6 +248,9 @@ namespace Transactions.Business.Data
                     s.Property(p => p.EmvSoftVersion).HasColumnName("EmvSoftVersion").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CompRetailerNum).HasColumnName("CompRetailerNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TelToGetAuthNum).HasColumnName("TelToGetAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+
+                    s.Property(p => p.AuthSolekNum).HasColumnName("AuthSolekNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaTransactionDate).HasColumnName("ShvaTransactionDate").IsRequired(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>

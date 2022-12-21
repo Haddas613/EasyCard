@@ -26,15 +26,14 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
-
-            CreateMap<ShvaTransactionDetails, PaymentTransaction>()
-                .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.ShvaAuthNum));
+            //CreateMap<ShvaTransactionDetails, PaymentTransaction>()
+            //    .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.ShvaAuthNum));
 
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
                    .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
                    .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
                    .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InstallmentPaymentAmount))
-                   .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
+                   .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber)) // this is value entered in AuthorizationCode field on UI
                    .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
                    .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
                    .ForMember(d => d.PaymentIntentID, s => s.MapFrom(src => src.PaymentIntentID))
@@ -95,9 +94,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
 
-            CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
-                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
-                .ForAllOtherMembers(d => d.Ignore());
+            //CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
+            //    .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
+            //    .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<RefundRequest, CreateTransactionRequest>();
             CreateMap<BlockCreditCardRequest, CreateTransactionRequest>();

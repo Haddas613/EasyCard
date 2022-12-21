@@ -401,7 +401,6 @@ namespace Transactions.Api.Controllers
                 storageData.InitialTransactionID = transaction.PaymentTransactionID;
                 dbData.InitialTransactionID = transaction.PaymentTransactionID;
 
-                mapper.Map(storageData, transaction);
                 mapper.Map(storageData, transaction.CreditCardDetails);
 
                 // terminal settings

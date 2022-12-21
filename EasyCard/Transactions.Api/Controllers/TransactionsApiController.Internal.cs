@@ -81,7 +81,7 @@ namespace Transactions.Api.Controllers
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
             transaction.BillingDealID = billingDeal?.BillingDealID;
-            transaction.InitialTransactionID = transaction.InitialTransactionID == null?  initialTransactionID: transaction.InitialTransactionID;
+            transaction.InitialTransactionID = initialTransactionID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID, pinpadDeal);
             transaction.PaymentRequestID = paymentRequestID;
 
@@ -97,7 +97,7 @@ namespace Transactions.Api.Controllers
                 transaction.DealDetails = new Business.Entities.DealDetails();
             }
 
-            // Update card information based on token
+            // Only needed to get initialDealID and check COnsumerID
             CreditCardTokenDetails dbToken = null;
 
             if (token != null)
@@ -116,10 +116,6 @@ namespace Transactions.Api.Controllers
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
-                string shvaAuthNumber = transaction.OKNumber;
-                mapper.Map(token, transaction);
-                if (string.IsNullOrEmpty(transaction.OKNumber))
-                    transaction.OKNumber = shvaAuthNumber;
 
                 if (terminal.Settings.SharedCreditCardTokens == true)
                 {
@@ -246,24 +242,12 @@ namespace Transactions.Api.Controllers
             }
 
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
-            if(transaction.InitialTransactionID.HasValue)
-            {
-                var initialTransaction = await this.transactionsService.GetTransactions().Where(x => x.PaymentTransactionID == transaction.InitialTransactionID).FirstOrDefaultAsync();
-                processorRequest.SelectJ5 = initialTransaction.JDealType == JDealTypeEnum.J5;
-                if (processorRequest.SelectJ5)
-                {
-                    processorRequest.InitialDeal = new Shva.Models.InitDealResultModel();
-                    processorRequest.InitialDeal = new InitDealResultModel();
-                    ((InitDealResultModel)processorRequest.InitialDeal).OriginalUid = initialTransaction.ShvaTransactionDetails.ShvaDealID;
-                    // mapper.Map(initialTransaction, processorRequest.InitialDeal, typeof(PaymentTransaction), typeof(Shva.Models.InitDealResultModel));
-                }
-            }
-            
+
             // TODO: move to automapper profile
             processorRequest.SapakMutavNo = terminal.Settings.RavMutavNumber;
 
             ActionResult<OperationResponse> failedRsponse =
-             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, dbToken, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest, terminal);
+             await ProcessTransactionAggregatorAndProcessor(model, token, transaction, pinpadDeal, aggregator, processor, pinpadProcessor, aggregatorSettings, processorSettings, pinpadProcessorSettings, processorRequest, terminal);
 
             if (failedRsponse != null)
             {
@@ -355,7 +339,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, CreditCardTokenDetails dbToken, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest, Terminal terminal)
+        private async Task<ActionResult<OperationResponse>> ProcessTransactionAggregatorAndProcessor(CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction, bool pinpadDeal, IAggregator aggregator, IProcessor processor, IProcessor pinpadProcessor, object aggregatorSettings, object processorSettings, object pinpadProcessorSettings, ProcessorCreateTransactionRequest processorRequest, Terminal terminal)
         {
             ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
 
@@ -398,7 +382,7 @@ namespace Transactions.Api.Controllers
             {
                 try
                 {
-                    processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, dbToken, transaction);
+                    processorRequest.ThreeDSecure = await Process3dSecure(terminal, model, token, transaction);
                 }
                 catch (Exception ex)
                 {
@@ -453,21 +437,29 @@ namespace Transactions.Api.Controllers
             {
                 mapper.Map(transaction, processorRequest);
 
-               
                 if (!pinpadDeal)
                 {
                     if (token != null)
                     {
                         mapper.Map(token, processorRequest.CreditCardToken);
-
-                        if (dbToken != null)
-                        {
-                            mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
-                        }
                     }
                     else
                     {
                         mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
+                    }
+
+                    if (transaction.InitialTransactionID.HasValue)
+                    {
+                        var initialTransaction = await this.transactionsService.GetTransactions().Where(x => x.PaymentTransactionID == transaction.InitialTransactionID).FirstOrDefaultAsync();
+
+                        processorRequest.SelectJ5 = initialTransaction.JDealType == JDealTypeEnum.J5 && transaction.JDealType == JDealTypeEnum.J4 && initialTransaction.SpecialTransactionType != SpecialTransactionTypeEnum.InitialDeal;
+
+                        if (initialTransaction?.ShvaTransactionDetails != null)
+                        {
+                            processorRequest.InitialDeal = mapper.Map<Shva.Models.InitDealResultModel>(initialTransaction.ShvaTransactionDetails); // TODO: remove direct Shva reference
+
+                            processorRequest.OKNumber = initialTransaction.ShvaTransactionDetails.ShvaAuthNum;
+                        }
                     }
                 }
 
@@ -629,7 +621,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task<ThreeDSIntermediateData> Process3dSecure(Terminal terminal, CreateTransactionRequest model, CreditCardTokenDetails token, PaymentTransaction transaction)
+        private async Task<ThreeDSIntermediateData> Process3dSecure(Terminal terminal, CreateTransactionRequest model, CreditCardTokenKeyVault token, PaymentTransaction transaction)
         {
             if (terminal.Support3DSecure == true && !(model.PinPad == true) && token == null)
             {

@@ -145,17 +145,18 @@ namespace Shva.Conveters
             inputObj.creditTerms = creditTerms.GetShvaCreditTermsStr();
             inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
             inputObj.currency = currency.GetShvaCurrencyStr();
-            if (!string.IsNullOrEmpty(oKNumber))
-            {
-                inputObj.authorizationNo = oKNumber;
-                inputObj.authorizationCodeManpik = "5";
-                if (req.SelectJ5)
-                {
-                    inputObj.authorizationCodeManpik = "7";
-                    inputObj.originalAmount = req.TransactionAmount.ToShvaDecimalStr();
-                    inputObj.originalUid = initialDealData.OriginalUid;
-                }
-            }
+            //if (!string.IsNullOrEmpty(oKNumber))
+            //{
+            //    inputObj.authorizationNo = oKNumber;
+            //    inputObj.authorizationCodeManpik = "5";
+            //    inputObj.originalUid = initialDealData.OriginalUid; // Test
+            //    if (req.SelectJ5)
+            //    {
+            //        inputObj.authorizationCodeManpik = "7";
+            //        inputObj.originalAmount = req.TransactionAmount.ToShvaDecimalStr();
+            //        inputObj.originalUid = initialDealData.OriginalUid;
+            //    }
+            //}
 
             if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
             {

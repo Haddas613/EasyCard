@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Transactions.Business.Entities
 {
+    // TODO: this should be removed
     public class ShvaInitialTransactionDetails
     {
         /// <summary>

@@ -22,9 +22,9 @@ namespace Transactions.Api.Models.Tokens
         /// </summary>
         public Guid? InitialTransactionID { get; set; }
 
-        /// <summary>
-        /// Authorization code
-        /// </summary>
-        public string OKNumber { get; set; }
+        ///// <summary>
+        ///// Authorization code
+        ///// </summary>
+        //public string OKNumber { get; set; }
     }
 }

@@ -1926,11 +1926,6 @@
             Reference to initial transaction
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault.OKNumber">
-            <summary>
-            Authorization code
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerID">
             <summary>
             Consumer ID
