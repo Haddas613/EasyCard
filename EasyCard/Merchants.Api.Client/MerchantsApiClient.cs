@@ -155,7 +155,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, $"api/user/{userID}impersonate/{merchantID}",null, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, $"api/user/{userID}/impersonate/{merchantID}",null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {

@@ -160,7 +160,7 @@ namespace Transactions.Api
                                 if (merchantID != null)
                                 {
                                     var midentity = (ClaimsIdentity)context.Principal.Identity;
-                                    foreach (var midclaim in midentity.FindAll(Claims.MerchantIDClaim))
+                                    foreach (var midclaim in midentity.FindAll(Claims.MerchantIDClaim).ToList())
                                     {
                                         midentity.TryRemoveClaim(midclaim);
                                     }
@@ -264,7 +264,7 @@ namespace Transactions.Api
                                 if (merchantID != null)
                                 {
                                     var midentity = (ClaimsIdentity)context.Principal.Identity;
-                                    foreach (var midclaim in midentity.FindAll(Claims.MerchantIDClaim))
+                                    foreach (var midclaim in midentity.FindAll(Claims.MerchantIDClaim).ToList())
                                     {
                                         midentity.TryRemoveClaim(midclaim);
                                     }

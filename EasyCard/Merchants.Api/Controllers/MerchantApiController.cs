@@ -27,7 +27,6 @@ using Z.EntityFramework.Plus;
 namespace Merchants.Api.Controllers
 {
     [Produces("application/json")]
-    [Consumes("application/json")]
     [Route("api/merchant")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
