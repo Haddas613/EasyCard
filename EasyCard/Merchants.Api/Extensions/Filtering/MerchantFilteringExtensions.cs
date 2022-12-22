@@ -14,6 +14,10 @@ namespace Merchants.Api.Extensions.Filtering
             {
                 src = src.Where(t => t.MerchantID == filter.MerchantID.Value);
             }
+            else if (filter.MerchantIDs?.Count() > 0)
+            {
+                src = src.Where(t => filter.MerchantIDs.Contains(t.MerchantID));
+            }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {

@@ -69,6 +69,8 @@ namespace IdentityServer.Controllers
         private readonly SecuritySettings securitySettings;
         private readonly UserSecurityService userSecurityService;
 
+        private readonly IMerchantsApiClient merchantsApiClient;
+
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -88,7 +90,8 @@ namespace IdentityServer.Controllers
             UserHelpers userHelpers,
             CommonLocalizationService localization,
             IOptions<SecuritySettings> securitySettings,
-            UserSecurityService userSecurityService)
+            UserSecurityService userSecurityService,
+            IMerchantsApiClient merchantsApiClient)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -111,6 +114,7 @@ namespace IdentityServer.Controllers
             this.localization = localization;
             this.securitySettings = securitySettings.Value;
             this.userSecurityService = userSecurityService;
+            this.merchantsApiClient = merchantsApiClient;
         }
 
         /// <summary>
@@ -229,7 +233,7 @@ namespace IdentityServer.Controllers
                         }
                         else
                         {
-                            return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
+                            return RedirectToLocal(isAdmin);
                         }
                     }
 
@@ -240,7 +244,7 @@ namespace IdentityServer.Controllers
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl))
                     {
-                        return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
+                        return RedirectToLocal(isAdmin);
                     }
                     else
                     {
@@ -485,11 +489,11 @@ namespace IdentityServer.Controllers
 
                 if (!string.IsNullOrWhiteSpace(returnUrl))
                 {
-                    return RedirectToLocal(returnUrl);
+                    return Redirect(returnUrl);
                 }
                 else
                 {
-                    return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
+                    return RedirectToLocal(isAdmin);
                 }
             }
             else if (result.IsLockedOut)
@@ -1062,7 +1066,14 @@ namespace IdentityServer.Controllers
 
                 await RefreshExternalUserRoles(user, isECNGBillingAdmin, isECNGBusinessAdmin);
 
-                return RedirectToLocal(returnUrl);
+                if (string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return Redirect("~/");
+                }
+                else
+                {
+                    return Redirect(returnUrl);
+                }
             }
 
             if (result.IsLockedOut)
@@ -1106,7 +1117,15 @@ namespace IdentityServer.Controllers
 
             await signInManager.SignInAsync(newUser, isPersistent: true); //isPersistent: false
             logger.LogInformation($"User {email} created an account using {userLoginInfo.LoginProvider} provider.");
-            return RedirectToLocal(returnUrl);
+
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return Redirect("~/");
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
         }
 
         [HttpGet]
@@ -1194,19 +1213,39 @@ namespace IdentityServer.Controllers
             return RedirectToAction(nameof(LoginWith2fa));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Impersonate(Guid? impersonate)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            var res = await merchantsApiClient.Impersonate(user.Id, impersonate);
+
+            if (res.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                return View("Error");
+            }
+
+            return Redirect(apiConfiguration.MerchantProfileURL);
+        }
+
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
 
-        private IActionResult RedirectToLocal(string returnUrl)
+        private IActionResult RedirectToLocal(bool isAdmin)
         {
-            if (string.IsNullOrWhiteSpace(returnUrl))
+            if (User?.GetMerchantIDs()?.Count() > 1)
             {
-                return RedirectToAction(nameof(Login));
+                return Redirect("~/");
             }
             else
             {
-                return Redirect(returnUrl);
+                return Redirect(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
             }
         }
 
@@ -1275,6 +1314,13 @@ namespace IdentityServer.Controllers
                 }
             }
 
+            IEnumerable<MerchantLogin> merchants = null;
+            var merchantIDs = User?.GetMerchantIDs();
+            if (merchantIDs?.Count() > 1)
+            {
+                merchants = (await merchantsApiClient.GetMerchants(merchantIDs: merchantIDs))?.Select(d => new MerchantLogin { MerchantID = d.MerchantID, MerchantName = d.BusinessName });
+            }
+
             return new LoginViewModel
             {
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
@@ -1284,7 +1330,8 @@ namespace IdentityServer.Controllers
                 IsAuthorized = User?.Identity.IsAuthenticated == true,
                 UserName = User.GetDoneByName(),
                 IsAdmin = isAdmin,
-                ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
+                ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL,
+                Merchants = merchants
             };
         }
 

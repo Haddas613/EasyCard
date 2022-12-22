@@ -39,6 +39,21 @@ namespace Merchants.Business.Services
             return impersonation?.MerchantID;
         }
 
+        public async Task<OperationResponse> Impersonate(Guid userId, Guid merchantID)
+        {
+            var impersonation = await this.dataContext.Impersonations.FirstOrDefaultAsync(d => d.UserId == userId);
+
+            if (impersonation == null)
+            {
+                impersonation = new Impersonation { UserId = userId };
+                this.dataContext.Impersonations.Add(impersonation);
+            }
+
+            impersonation.MerchantID = merchantID;
+
+            return await SaveChagesSafe();
+        }
+
         public async Task<OperationResponse> LoginAsMerchant(Guid merchantID)
         {
             var userId = this.user.GetDoneByID();

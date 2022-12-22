@@ -123,6 +123,25 @@ namespace Shared.Helpers.Security
             return null;
         }
 
+        public static IEnumerable<Guid?> GetMerchantIDs(this ClaimsPrincipal user)
+        {
+            List<Guid?> res = new List<Guid?>();
+            foreach (var merchantID in user?.FindAll(Claims.MerchantIDClaim))
+            {
+                if (string.IsNullOrWhiteSpace(merchantID?.Value))
+                {
+                    continue;
+                }
+
+                if (Guid.TryParse(merchantID.Value, out var guid))
+                {
+                    res.Add(guid);
+                }
+            }
+
+            return res;
+        }
+
         public static IEnumerable<Guid> GetTerminalID(this ClaimsPrincipal user)
         {
             var terminals = user?.FindAll(Claims.TerminalIDClaim).Select(d => Guid.Parse(d.Value));

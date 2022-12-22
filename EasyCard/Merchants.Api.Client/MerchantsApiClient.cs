@@ -1,4 +1,5 @@
 ﻿using Merchants.Api.Client.Models;
+using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
@@ -147,6 +148,31 @@ namespace Merchants.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<OperationResponse> Impersonate(string userID, Guid? merchantID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, $"api/user/{userID}impersonate/{merchantID}",null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<IEnumerable<MerchantSummary>> GetMerchants(IEnumerable<Guid?> merchantIDs)
+        {
+            try
+            {
+                var res = await webApiClient.Get<SummariesResponse<MerchantSummary>>(apiConfiguration.MerchantsManagementApiAddress, "api/merchant", new { merchantIDs }, BuildHeaders);
+                return res?.Data;
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return new List<MerchantSummary>();
             }
         }
     }

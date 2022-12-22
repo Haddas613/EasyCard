@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Merchants.Api\Models\Merchant\MerchantBase.cs" Link="Models\MerchantBase.cs" />
+    <Compile Include="..\Merchants.Api\Models\Merchant\MerchantSummary.cs" Link="Models\MerchantSummary.cs" />
     <Compile Include="..\Merchants.Api\Models\Terminal\TerminalsFilter.cs" Link="Models\TerminalsFilter.cs" />
     <Compile Include="..\Merchants.Api\Models\Terminal\TerminalSummary.cs" Link="Models\TerminalSummary.cs" />
     <Compile Include="..\Shared.Api\Models\Enums\DateFilterTypeEnum.cs" Link="Models\DateFilterTypeEnum.cs" />

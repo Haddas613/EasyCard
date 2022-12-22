@@ -108,7 +108,21 @@
                 }
                 else
                 {
-                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">@localizer.Get("GoToMerchantUI")</a>
+                    @if (Model.Merchants?.Count() > 1)
+                    {
+                        <h5 class="mb-4">@localizer.Get("GoToMerchantUI")</h5>
+                        <form asp-route="Impersonate">
+                                
+                        @foreach (var merchant in Model.Merchants)
+                        {
+                            <div><button type="submit" class="btn btn-primary text-white" name="impersonate" value="@merchant.MerchantID">@merchant.MerchantName</button></div>
+                        }
+                        </form>
+                    }
+                    else
+                    {
+                        <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">@localizer.Get("GoToMerchantUI")</a>
+                    }
                 }
                 <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">@localizer.Get("Logout")</a>
             </div>
