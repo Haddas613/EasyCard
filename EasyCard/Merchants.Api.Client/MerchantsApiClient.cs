@@ -174,6 +174,10 @@ namespace Merchants.Api.Client
             {
                 return new List<MerchantSummary>();
             }
+            catch (WebApiServerErrorException serverError)
+            {
+                return new List<MerchantSummary>();
+            }
         }
     }
 }
