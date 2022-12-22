@@ -50,5 +50,7 @@ namespace MerchantProfileApi.Models.Terminal
         public bool? SaveCreditCardByDefault { get; set; }
 
         public bool? DisableCancelPayment { get; set; }
+
+        public bool? HideDealDescription { get; set; }
     }
 }

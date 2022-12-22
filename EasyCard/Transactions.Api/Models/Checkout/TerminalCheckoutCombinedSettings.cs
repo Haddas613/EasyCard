@@ -89,5 +89,7 @@ namespace Transactions.Api.Models.Checkout
         public bool? PhoneRequired { get; set; }
 
         public bool? EmailRequired { get; set; }
+
+        public bool? HideDealDescription { get; set; }
     }
 }
