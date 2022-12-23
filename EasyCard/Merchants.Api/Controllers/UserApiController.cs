@@ -141,7 +141,7 @@ namespace Merchants.Api.Controllers
                 {
                     var linkResponse = await userManagementClient.LinkUserToMerchant(user.UserID, merchant.MerchantID);
 
-                    if (linkResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                    if (linkResponse.ResponseCode != UserOperationResponseCodeEnum.UserLinkedToMerchant)
                     {
                         return BadRequest(linkResponse.Convert(correlationID: GetCorrelationID()));
                     }
