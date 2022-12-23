@@ -17,6 +17,7 @@ namespace IdentityServerClient
         UserLocked = 7,
         UserUnlocked = 8,
         UserUnlinkedFromMerchant = 9,
-        UserIsNotRegistered = 10
+        UserIsNotRegistered = 10,
+        UserLinkedToMerchant = 11,
     }
 }

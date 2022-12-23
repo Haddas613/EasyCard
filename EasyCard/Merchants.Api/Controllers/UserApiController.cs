@@ -133,14 +133,30 @@ namespace Merchants.Api.Controllers
             }
             else
             {
-                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
+                var userIsLinkedToAnyMerchant = await merchantsService.GetMerchantUsers().Where(u => u.UserID == user.UserID).ToListAsync();
 
-                if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                var userLinkedToOtherMerchant = userIsLinkedToAnyMerchant.Any(d => d.MerchantID != merchant.MerchantID);
+
+                if (userLinkedToOtherMerchant)
                 {
-                    return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                    var linkResponse = await userManagementClient.LinkUserToMerchant(user.UserID, merchant.MerchantID);
+
+                    if (linkResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                    {
+                        return BadRequest(linkResponse.Convert(correlationID: GetCorrelationID()));
+                    }
+                }
+                else
+                {
+                    var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
+
+                    if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                    {
+                        return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                    }
                 }
 
-                var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers().Where(m => m.MerchantID == merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
+                var userIsLinkedToMerchant = userIsLinkedToAnyMerchant.Any(d => d.MerchantID == merchant.MerchantID);
 
                 if (!userIsLinkedToMerchant)
                 {

@@ -118,18 +118,28 @@
                             {
                                 <div><button type="submit" class="btn btn-primary text-white btn-block mb-1 mx-1" name="impersonate" value="@merchant.MerchantID">@merchant.MerchantName</button></div>
                             }
-                            <div><a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1 btn-block">@localizer.Get("Logout")</a></div>
+                            <div><a asp-action="Logout" asp-controller="Account" class="btn btn-outline-danger mx-1 btn-block mb-1">@localizer.Get("Logout")</a></div>
+
+                            <div><a asp-action="ChangePassword" class="btn btn-outline-dark mx-1 btn-block mb-1">@localizer.Get("ChangePassword")</a></div>
+                            <div><a asp-action="TwoFactorAuthSettings" class="btn btn-outline-dark mx-1 btn-block mb-1">@localizer.Get("TwoFactorAuthSettings")</a></div>
                         </form>
                         
                     }
                     else
                     {
-                        <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">@localizer.Get("GoToMerchantUI")</a>
-                        <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">@localizer.Get("Logout")</a>
+                        <div>
+                        
+                        <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white btn-block mb-1 mx-1">@localizer.Get("GoToMerchantUI")</a>
+                        <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-danger mx-1 btn-block mb-1">@localizer.Get("Logout")</a>
+                        <a asp-action="ChangePassword" class="btn btn-outline-dark mx-1 btn-block mb-1">@localizer.Get("ChangePassword")</a>
+                        <a asp-action="TwoFactorAuthSettings" class="btn btn-outline-dark mx-1 btn-block mb-1">@localizer.Get("TwoFactorAuthSettings")</a>
+                        </div>
                     }
                 }
 
             </div>
+
+
         }
     </div>
 </div>
