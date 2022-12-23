@@ -10,6 +10,8 @@ namespace Merchants.Api.Models.Merchant
     {
         public Guid? MerchantID { get; set; }
 
+        public IEnumerable<Guid?> MerchantIDs { get; set; }
+
         public string Search { get; set; }
     }
 }

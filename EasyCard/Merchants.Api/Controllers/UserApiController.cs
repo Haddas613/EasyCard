@@ -39,13 +39,15 @@ namespace Merchants.Api.Controllers
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
         private readonly IMerchantsService merchantsService;
+        private readonly IImpersonationService impersonationService;
 
-        public UserApiController(ITerminalsService terminalsService, IUserManagementClient userManagementClient, IMapper mapper, IMerchantsService merchantsService)
+        public UserApiController(ITerminalsService terminalsService, IUserManagementClient userManagementClient, IMapper mapper, IMerchantsService merchantsService, IImpersonationService impersonationService)
         {
             this.userManagementClient = userManagementClient;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.merchantsService = merchantsService;
+            this.impersonationService = impersonationService;
         }
 
         [HttpGet]
@@ -131,14 +133,30 @@ namespace Merchants.Api.Controllers
             }
             else
             {
-                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
+                var userIsLinkedToAnyMerchant = await merchantsService.GetMerchantUsers().Where(u => u.UserID == user.UserID).ToListAsync();
 
-                if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                var userLinkedToOtherMerchant = userIsLinkedToAnyMerchant.Any(d => d.MerchantID != merchant.MerchantID);
+
+                if (userLinkedToOtherMerchant)
                 {
-                    return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                    var linkResponse = await userManagementClient.LinkUserToMerchant(user.UserID, merchant.MerchantID);
+
+                    if (linkResponse.ResponseCode != UserOperationResponseCodeEnum.UserLinkedToMerchant)
+                    {
+                        return BadRequest(linkResponse.Convert(correlationID: GetCorrelationID()));
+                    }
+                }
+                else
+                {
+                    var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
+
+                    if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                    {
+                        return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                    }
                 }
 
-                var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers().Where(m => m.MerchantID == merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
+                var userIsLinkedToMerchant = userIsLinkedToAnyMerchant.Any(d => d.MerchantID == merchant.MerchantID);
 
                 if (!userIsLinkedToMerchant)
                 {
@@ -306,6 +324,22 @@ namespace Merchants.Api.Controllers
             await merchantsService.UpdateUserStatus(updateData);
 
             return Ok(new OperationResponse { Message = Messages.UserLinkedToMerchant, Status = StatusEnum.Success });
+        }
+
+        [HttpPost]
+        [Route("{userID:guid}/impersonate/{merchantID:guid}")]
+        public async Task<ActionResult<OperationResponse>> Impersonate([FromRoute] Guid userID, [FromRoute] Guid merchantID)
+        {
+            _ = EnsureExists(await userManagementClient.GetUserByID(userID));
+
+            var updateResponse = await impersonationService.Impersonate(userID, merchantID);
+
+            if (updateResponse.Status != StatusEnum.Success)
+            {
+                return new ObjectResult(updateResponse) { StatusCode = 400 };
+            }
+
+            return new ObjectResult(updateResponse) { StatusCode = 200 };
         }
     }
 }

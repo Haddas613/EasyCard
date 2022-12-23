@@ -35,7 +35,7 @@ namespace MerchantsApi.Tests
         public async Task InviteUser_InvitesWhenUserExistsModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
-            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null);  // TODO: mock
+            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null, null);  // TODO: mock
             var userEmail = Guid.NewGuid().ToString();
 
             var actionResult = await controller.InviteUser(new InviteUserRequest { Email = userEmail });
@@ -56,7 +56,7 @@ namespace MerchantsApi.Tests
         public async Task LockUser_LocksWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
-            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null); // TODO: mock
+            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null, null); // TODO: mock
 
             var actionResult = await controller.LockUser(clientMockSetup.UserEntityId);
 
@@ -76,7 +76,7 @@ namespace MerchantsApi.Tests
         public async Task UnLockUser_UnlocksWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
-            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null);  // TODO: mock
+            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null, null);  // TODO: mock
 
             var actionResult = await controller.UnLockUser(clientMockSetup.UserEntityId);
 
@@ -96,7 +96,7 @@ namespace MerchantsApi.Tests
         public async Task ResetPassword_ResetsWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
-            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null); // TODO: mock
+            var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null, null); // TODO: mock
 
             var actionResult = await controller.ResetPasswordForUser(clientMockSetup.UserEntityId);
 

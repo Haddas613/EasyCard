@@ -194,7 +194,25 @@ namespace IdentityServerClient
             }
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                logger.LogError($"Cannot lock user. User {userId} does not exist");
+                logger.LogError($"Cannot unlink user. User {userId} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<UserOperationResponse> LinkUserToMerchant(Guid userId, Guid merchantId)
+        {
+            try
+            {
+                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/userManagement/user/{userId}/link/{merchantId}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                logger.LogError($"Cannot link user. User {userId} does not exist");
                 throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
             }
             catch (WebApiClientErrorException clientError)

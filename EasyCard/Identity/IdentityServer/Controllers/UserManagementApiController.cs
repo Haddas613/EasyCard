@@ -506,6 +506,34 @@ namespace IdentityServer.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("user/{userId}/link/{merchantId}")]
+        public async Task<IActionResult> Link([FromRoute] string userId, [FromRoute] string merchantId)
+        {
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            var merchantClaim = allClaims.FirstOrDefault(c => c.Type == Claims.MerchantIDClaim && c.Value == merchantId);
+
+            if (merchantClaim == null)
+            {
+                await userManager.AddClaimAsync(user, new Claim(Claims.MerchantIDClaim, merchantId));
+            }
+
+            return Ok(new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserLinkedToMerchant,
+                Message = "User linked to merchant"
+            });
+        }
+
         private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)
         {
             if (user == null)

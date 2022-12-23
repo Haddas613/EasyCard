@@ -11,5 +11,7 @@ namespace Merchants.Business.Services
         Task<Guid?> GetImpersonatedMerchantID(Guid userId);
 
         Task<OperationResponse> LoginAsMerchant(Guid merchantID);
+
+        Task<OperationResponse> Impersonate(Guid userId, Guid merchantID);
     }
 }

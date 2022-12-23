@@ -1,4 +1,5 @@
 ﻿using Merchants.Api.Client.Models;
+using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Shared.Api.Models;
 using System;
@@ -25,5 +26,9 @@ namespace Merchants.Api.Client
         Task<OperationResponse> AuditResetApiKey(Guid terminalID, Guid merchantID);
 
         Task<OperationResponse> UpdateTerminalParameters(Guid terminalID);
+
+        Task<IEnumerable<MerchantSummary>> GetMerchants(IEnumerable<Guid?> merchantIDs);
+
+        Task<OperationResponse> Impersonate(string id, Guid? impersonate);
     }
 }
