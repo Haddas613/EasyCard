@@ -22,6 +22,23 @@ namespace IdentityServer.Helpers
             await emailSender.SendEmail(emailMessage);
         }
 
+        public static async Task SendEmailLinkedToMerchantAsync(this IEmailSender emailSender, string email, string link, string merchantName)
+        {
+            var emailMessage = new Email
+            {
+                TemplateCode = EmailTemplateCodes.UserLinkedToMerchant,
+                EmailTo = email,
+                Subject = IdentityMessages.UserLinkedToMerchant,
+                Substitutions = new TextSubstitution[]
+                {
+                    new TextSubstitution { Substitution = "merchantProfileLink", Value = HtmlEncoder.Default.Encode(link) },
+                    new TextSubstitution { Substitution = "merchantName", Value = merchantName }
+                }
+            };
+
+            await emailSender.SendEmail(emailMessage);
+        }
+
         public static async Task SendEmailResetPasswordAsync(this IEmailSender emailSender, string email, string link)
         {
             var emailMessage = new Email

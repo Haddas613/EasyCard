@@ -33,6 +33,6 @@ namespace IdentityServerClient
 
         Task<UserOperationResponse> UnlinkUserFromMerchant(Guid userId, Guid merchantId);
 
-        Task<UserOperationResponse> LinkUserToMerchant(Guid userId, Guid merchantId);
+        Task<UserOperationResponse> LinkUserToMerchant(Guid userId, Guid merchantId, string merchantName);
     }
 }

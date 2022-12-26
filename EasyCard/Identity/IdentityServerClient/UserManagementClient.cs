@@ -204,11 +204,11 @@ namespace IdentityServerClient
             }
         }
 
-        public async Task<UserOperationResponse> LinkUserToMerchant(Guid userId, Guid merchantId)
+        public async Task<UserOperationResponse> LinkUserToMerchant(Guid userId, Guid merchantId, string merchantName)
         {
             try
             {
-                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/userManagement/user/{userId}/link/{merchantId}", null, BuildHeaders);
+                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/userManagement/user/{userId}/link/{merchantId}", new { merchantName }, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

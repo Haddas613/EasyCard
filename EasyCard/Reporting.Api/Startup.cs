@@ -103,40 +103,8 @@ namespace Reporting.Api
                         {
                             try
                             {
-                                if (context.Principal.IsInteractiveAdmin())
-                                {
-                                    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                                    var userId = context.Principal.GetDoneByID();
-                                    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
-
-                                    if (merchantID != null)
-                                    {
-                                        var impersonationIdentity = new ClaimsIdentity(new[]
-                                        {
-                                            new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
-                                            new Claim(ClaimTypes.Role, Roles.Merchant),
-                                            new Claim(ClaimTypes.Role, Roles.Manager)
-                                        });
-                                        context.Principal?.AddIdentity(impersonationIdentity);
-                                    }
-                                }
-                                else if (context.Principal.IsMerchant())
-                                {
-                                    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                                    var userId = context.Principal.GetDoneByID();
-                                    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
-
-                                    if (merchantID != null)
-                                    {
-                                        var midentity = (ClaimsIdentity)context.Principal.Identity;
-                                        foreach (var midclaim in midentity.FindAll(Claims.MerchantIDClaim).ToList())
-                                        {
-                                            midentity.TryRemoveClaim(midclaim);
-                                        }
-
-                                        midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
-                                    }
-                                }
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                await svc.SetImpersonationClaims(context.Principal);
                             }
                             catch (Exception ex)
                             {

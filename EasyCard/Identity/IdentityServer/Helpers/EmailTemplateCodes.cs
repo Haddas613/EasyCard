@@ -9,5 +9,6 @@ namespace IdentityServer.Helpers
         public const string ConfirmationEmail = "ConfirmationEmail";
         public const string ResetPasswordEmail = "ResetPasswordEmail";
         public const string TwoFactorAuth = "2fa";
+        public const string UserLinkedToMerchant = "UserLinkedToMerchant";
     }
 }

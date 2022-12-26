@@ -92,7 +92,7 @@ namespace IdentityServer.Services
                     }
                     else
                     {
-                        await userManager.AddClaim(claims, user, Claims.FirstNameClaim, model.FirstName);
+                        await userManager.AddClaimAsync(user, new Claim(Claims.FirstNameClaim, model.FirstName));
                     }
                 }
 
@@ -106,7 +106,7 @@ namespace IdentityServer.Services
                     }
                     else
                     {
-                        await userManager.AddClaim(claims, user, Claims.LastNameClaim, model.LastName);
+                        await userManager.AddClaimAsync(user, new Claim(Claims.LastNameClaim, model.LastName));
                     }
                 }
             }
