@@ -111,8 +111,12 @@
     [ThreeDSChallengeID]             UNIQUEIDENTIFIER NULL,
     [NetDiscountTotal]               DECIMAL (19, 4)  NULL,
     [UserAmount]                     BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [AuthSolekNum]                   VARCHAR (20)     NULL,
+    [ShvaTransactionDate]            DATETIME2 (7)    NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 
