@@ -40,6 +40,7 @@ namespace IdentityServer.Controllers
         private readonly UserManageService userManageService;
         private readonly IMapper mapper;
         private readonly UserHelpers userHelpers;
+        private readonly Shared.Api.Configuration.ApiSettings apiSettings;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -52,7 +53,8 @@ namespace IdentityServer.Controllers
             IMerchantsApiClient merchantsApiClient,
             UserManageService userManageService,
             IMapper mapper,
-            UserHelpers userHelpers
+            UserHelpers userHelpers,
+            IOptions<Shared.Api.Configuration.ApiSettings> apiSettings
             )
         {
             this.userManager = userManager;
@@ -66,6 +68,7 @@ namespace IdentityServer.Controllers
             this.userManageService = userManageService;
             this.mapper = mapper;
             this.userHelpers = userHelpers;
+            this.apiSettings = apiSettings?.Value;
         }
 
         /// <summary>
@@ -132,7 +135,7 @@ namespace IdentityServer.Controllers
                 {
                     foreach (var terminalID in model.Terminals)
                     {
-                        await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, terminalID.ToString());
+                        await userManager.AddClaimAsync(user, new Claim(Claims.TerminalIDClaim, terminalID.ToString()));
                     }
                 }
 
@@ -271,7 +274,7 @@ namespace IdentityServer.Controllers
 
                 if (merchantClaim == null)
                 {
-                    await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                    await userManager.AddClaimAsync(user, new Claim(Claims.MerchantIDClaim, model.MerchantID));
                 }
             }
 
@@ -508,7 +511,7 @@ namespace IdentityServer.Controllers
 
         [HttpPost]
         [Route("user/{userId}/link/{merchantId}")]
-        public async Task<IActionResult> Link([FromRoute] string userId, [FromRoute] string merchantId)
+        public async Task<IActionResult> Link([FromRoute] string userId, [FromRoute] string merchantId, [FromBody]string merchantName)
         {
             var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
 
@@ -524,6 +527,33 @@ namespace IdentityServer.Controllers
             if (merchantClaim == null)
             {
                 await userManager.AddClaimAsync(user, new Claim(Claims.MerchantIDClaim, merchantId));
+            }
+
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var unlockRes = await userManager.SetLockoutEndDateAsync(user, null);
+
+                if (!unlockRes.Succeeded)
+                {
+                    return BadRequest(new UserOperationResponse
+                    {
+                        UserID = new Guid(user.Id),
+                        ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                        Message = unlockRes.Errors.FirstOrDefault()?.Description
+                    });
+                }
+            }
+
+            if (user.PasswordHash == null)
+            {
+                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+                var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+                await emailSender.SendEmailConfirmationAsync(user.Email, callbackUrl);
+            }
+            else
+            {
+                await emailSender.SendEmailLinkedToMerchantAsync(user.Email, apiSettings.MerchantProfileURL, merchantName);
             }
 
             return Ok(new UserOperationResponse

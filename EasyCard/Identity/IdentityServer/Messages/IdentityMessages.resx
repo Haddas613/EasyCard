@@ -138,4 +138,7 @@
   <data name="UserAlreadyHasPassword" xml:space="preserve">
     <value>User already has a password set.</value>
   </data>
+  <data name="UserLinkedToMerchant" xml:space="preserve">
+    <value>Access granted to merchant account for you login</value>
+  </data>
 </root>

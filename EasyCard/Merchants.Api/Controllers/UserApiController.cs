@@ -139,7 +139,7 @@ namespace Merchants.Api.Controllers
 
                 if (userLinkedToOtherMerchant)
                 {
-                    var linkResponse = await userManagementClient.LinkUserToMerchant(user.UserID, merchant.MerchantID);
+                    var linkResponse = await userManagementClient.LinkUserToMerchant(user.UserID, merchant.MerchantID, merchant.BusinessName);
 
                     if (linkResponse.ResponseCode != UserOperationResponseCodeEnum.UserLinkedToMerchant)
                     {
@@ -323,7 +323,7 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateUserStatus(updateData);
 
-            return Ok(new OperationResponse { Message = Messages.UserLinkedToMerchant, Status = StatusEnum.Success });
+            return Ok(new OperationResponse { Message = "Status updated", Status = StatusEnum.Success });
         }
 
         [HttpPost]
