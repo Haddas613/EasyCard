@@ -75,7 +75,7 @@ namespace Merchants.Business.Services
                 {
                     var impersonationIdentity = new ClaimsIdentity(new[]
                     {
-                        new Claim(Claims.MerchantIDClaim, impersonation.MerchantID.ToString()),
+                        new Claim(Claims.MerchantIDClaim, impersonation.ToString()),
                         new Claim(ClaimTypes.Role, Roles.Merchant)
                     });
                     principal?.AddIdentity(impersonationIdentity);
@@ -84,7 +84,7 @@ namespace Merchants.Business.Services
             else if (principal.IsMerchant())
             {
                 var userId = principal.GetDoneByID();
-                var impersonation = await GetImpersonatedMerchantID(userId.Value);
+                var impersonation = await GetImpersonatedData(userId.Value);
 
                 if (impersonation != null)
                 {
@@ -139,7 +139,7 @@ namespace Merchants.Business.Services
             return operationResult;
         }
 
-        private async Task<ImpersonationData> GetImpersonatedMerchantID(Guid userId)
+        private async Task<ImpersonationData> GetImpersonatedData(Guid userId)
         {
             var impersonation = await this.dataContext.Impersonations
                 .Join(this.dataContext.UserTerminalMappings, d => d.UserId, d => d.UserID, (i, m) => new { i.UserId, i.MerchantID, m.Terminals })
@@ -148,6 +148,13 @@ namespace Merchants.Business.Services
                 .FirstOrDefaultAsync();
 
             return impersonation;
+        }
+
+        private async Task<Guid?> GetImpersonatedMerchantID(Guid userId)
+        {
+            var impersonation = await this.dataContext.Impersonations.FirstOrDefaultAsync(d => d.UserId == userId);
+
+            return impersonation?.MerchantID;
         }
 
         private class ImpersonationData
