@@ -76,7 +76,8 @@ namespace Merchants.Business.Services
                     var impersonationIdentity = new ClaimsIdentity(new[]
                     {
                         new Claim(Claims.MerchantIDClaim, impersonation.ToString()),
-                        new Claim(ClaimTypes.Role, Roles.Merchant)
+                        new Claim(ClaimTypes.Role, Roles.Merchant),
+                        new Claim(ClaimTypes.Role, Roles.Manager)
                     });
                     principal?.AddIdentity(impersonationIdentity);
                 }
