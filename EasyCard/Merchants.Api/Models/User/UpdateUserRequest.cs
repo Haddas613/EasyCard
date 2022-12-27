@@ -22,5 +22,7 @@ namespace Merchants.Api.Models.User
         public ICollection<string> Roles { get; set; }
 
         public ICollection<Guid> Terminals { get; set; }
+
+        public Guid? MerchantID { get; set; }
     }
 }

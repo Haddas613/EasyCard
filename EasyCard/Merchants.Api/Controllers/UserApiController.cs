@@ -93,15 +93,27 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{userID:guid}")]
-        public async Task<ActionResult<UserResponse>> GetUser([FromRoute]Guid userID)
+        public async Task<ActionResult<UserResponse>> GetUser([FromRoute]Guid userID, [FromQuery]Guid? merchantID)
         {
             var userEntity = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             var userData = mapper.Map<UserResponse>(userEntity);
 
-            if (userEntity.Terminals?.Count() > 0)
+            if (merchantID.HasValue)
             {
-                userData.Terminals = terminalsService.GetTerminals().Where(d => userEntity.Terminals.Contains(d.TerminalID)).Select(d => new DictionarySummary<Guid>(d.TerminalID, d.Label));
+                var dbUser = EnsureExists(await merchantsService.GetMerchantUsers().Where(d => d.MerchantID == merchantID).FirstOrDefaultAsync());
+
+                if (dbUser.Terminals?.Count() > 0)
+                {
+                    userData.Terminals = terminalsService.GetTerminals().Where(d => dbUser.Terminals.Contains(d.TerminalID)).Select(d => new DictionarySummary<Guid>(d.TerminalID, d.Label));
+                }
+            }
+            else
+            {
+                if (userEntity.Terminals?.Count() > 0)
+                {
+                    userData.Terminals = terminalsService.GetTerminals().Where(d => userEntity.Terminals.Contains(d.TerminalID)).Select(d => new DictionarySummary<Guid>(d.TerminalID, d.Label));
+                }
             }
 
             return Ok(userData);
@@ -215,7 +227,7 @@ namespace Merchants.Api.Controllers
 
             // Update user with latest info
             user = await userManagementClient.GetUserByID(request.UserID);
-            var dbUser = await merchantsService.GetMerchantUsers().FirstAsync(u => u.UserID == request.UserID);
+            var dbUser = await merchantsService.GetMerchantUsers().FirstAsync(u => u.UserID == request.UserID && u.MerchantID == request.MerchantID);
 
             mapper.Map(user, dbUser);
 

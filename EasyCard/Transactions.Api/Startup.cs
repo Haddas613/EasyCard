@@ -134,8 +134,16 @@ namespace Transactions.Api
                     {
                         OnTokenValidated = async (context) =>
                         {
-                            var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                            await svc.SetImpersonationClaims(context.Principal);
+                            try
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                await svc.SetImpersonationClaims(context.Principal);
+                            }
+                            catch (Exception ex)
+                            {
+                                // TODO: logging
+                                System.Diagnostics.Debug.WriteLine(ex.Message);
+                            }
                         }
                     };
                 })
@@ -207,8 +215,16 @@ namespace Transactions.Api
                         },
                         OnTokenValidated = async (context) =>
                         {
-                            var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                            await svc.SetImpersonationClaims(context.Principal);
+                            try
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                await svc.SetImpersonationClaims(context.Principal);
+                            }
+                            catch (Exception ex)
+                            {
+                                // TODO: logging
+                                System.Diagnostics.Debug.WriteLine(ex.Message);
+                            }
                         },
                     };
                 });

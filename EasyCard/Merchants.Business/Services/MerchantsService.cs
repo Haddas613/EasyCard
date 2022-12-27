@@ -303,7 +303,7 @@ namespace Merchants.Business.Services
 
         public async Task UpdateUser(UserTerminalMapping data)
         {
-            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserID == data.UserID);
+            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserTerminalMappingID == data.UserTerminalMappingID);
 
             if (user != null)
             {
