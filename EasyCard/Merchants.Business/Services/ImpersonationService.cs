@@ -143,7 +143,7 @@ namespace Merchants.Business.Services
         private async Task<ImpersonationData> GetImpersonatedData(Guid userId)
         {
             var impersonation = await this.dataContext.Impersonations
-                .Join(this.dataContext.UserTerminalMappings, d => d.UserId, d => d.UserID, (i, m) => new { i.UserId, i.MerchantID, m.Terminals })
+                .Join(this.dataContext.UserTerminalMappings, d => new { UserID = d.UserId, d.MerchantID }, d => new { d.UserID, d.MerchantID }, (i, m) => new { i.UserId, i.MerchantID, m.Terminals })
                 .Where(d => d.UserId == userId)
                 .Select(d => new ImpersonationData(d.MerchantID, d.Terminals))
                 .FirstOrDefaultAsync();
